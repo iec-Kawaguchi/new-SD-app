@@ -209,8 +209,13 @@
 <script>
     // ========= ヘッダー/サイドバー描画 & ロール反映 =========
     window.addEventListener('DOMContentLoaded', () => {
+
+        // ★ URLパラメータから role を取得
+        const params = new URLSearchParams(location.search);
+        const initialRole = params.get('role') || 'supplier'; // デフォルトはお好みで
+        
         if (window.MockUI) {
-            MockUI.injectHeader('#app-header', { userName: 'Test User', brand: 'New SD App', initialRole: 'supplier' });
+            MockUI.injectHeader('#app-header', { userName: 'Test User', brand: 'New SD App', initialRole: initialRole  });
             MockUI.injectSidebar('#app-sidebar');
         }
         if (window.RoleMock) RoleMock.applyRoleVisibility();
@@ -578,27 +583,36 @@
         });
 
         // ========= JSON 読み込み開始 =========
-        fetch('courses-list-sample.json')
+        fetch('selected-list-sample.json')
             .then(res => {
                 if (!res.ok) throw new Error('JSON load failed');
                 return res.json();
             })
             .then(data => {
-                 // ★★★ ここで "他団体A" のみ抽出 ★★★
-                allData = Array.isArray(data)
-                    ? data.filter(d => d.org === "他団体B")
-                    : [];
+                // ★ 現在のロール取得
+                //const role = document.querySelector('#app-header')?.dataset.role;
+
+                // ★ supplier のときだけ絞り込む
+                if (initialRole === 'supplier') {
+                    allData = Array.isArray(data)
+                        ? data.filter(d => d.org === "他団体B")
+                        : [];
+                } else {
+                    allData = Array.isArray(data) ? data : [];
+                }
+
                 loaded = 0;
-                rowsEl.innerHTML = '';       // 念のためクリア
-                appendChunk();               // 最初のチャンクを表示
-                initInfiniteScroll();        // 無限スクロール開始
+                rowsEl.innerHTML = '';
+                appendChunk();
+                initInfiniteScroll();
             })
             .catch(err => {
                 console.error(err);
                 skeletonEl.classList.add('hidden');
                 rowsEl.innerHTML = '<div class="p-4 text-sm text-red-600">サンプルデータ（JSON）の読み込みに失敗しました。</div>';
             });
-    }); // DOMContentLoaded
+
+        }); // DOMContentLoaded
 </script>
 
 
