@@ -6,11 +6,8 @@
     "org": "他団体A",
     "isNew": true,
     "stdTag": "マナー",
-    "custom": ["おすすめ"],
-    "options":[
-        {"id":1, "name":"郵便版", "price":19910, "length":"3か月"},
-        {"id":2, "name":"WEB版", "price":19910, "length":"3か月"}
-    ]
+    "custom": ["おすすめ"]
+    
  },
   {
     "id": 2,
@@ -19,11 +16,8 @@
     "org": "他団体A",
     "isNew": false,
     "stdTag": "PCスキル",
-    "custom": ["新人向け"],
-    "options":[
-        {"id":1, "name":"通常版", "price":19910, "length":"3か月"},
-        {"id":2, "name":"課題増量版", "price":23110, "length":"4か月"}
-    ]
+    "custom": ["新人向け"]
+    
   },
   {
     "id": 3,
@@ -32,10 +26,8 @@
     "org": "他団体A",
     "isNew": false,
     "stdTag": "マーケティング",
-    "custom": ["管理職向け"],
-    "options":[
-        {"id":1, "name":"", "price":19910, "length":"3か月"},
-    ]
+    "custom": ["管理職向け"]
+    
   },
   {
     "id": 4,
