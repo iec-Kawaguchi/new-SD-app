@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="ja">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Course Catalog</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <script src="https://cdn.tailwindcss.com"></script>
+        <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+        <style>
+            body { font-family: "游ゴシック体", "Yu Gothic", "游ゴシック", YuGothic, system-ui, -apple-system, Segoe UI, Roboto, sans-serif; }
+            html { scroll-behavior: smooth; }
+            .no-scrollbar::-webkit-scrollbar { display: none; }
+            .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+            .glass { backdrop-filter: blur(10px); background-color: rgba(255, 255, 255, 0.6); }
+            @media (prefers-reduced-motion: reduce){
+            * { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; scroll-behavior: auto !important; }
+            }
+            .range-vis {
+                -webkit-appearance: none; appearance: none;
+                position: absolute; left: 0; right: 0; top: 0; bottom: 0; width: 100%;
+                background: transparent; pointer-events: auto;
+            }
+            .range-vis::-webkit-slider-thumb {
+                -webkit-appearance: none; appearance: none;
+                height: 18px; width: 18px; border-radius: 9999px;
+                background: white; border: 2px solid rgb(2,132,199); /* sky-600 */
+                box-shadow: 0 1px 2px rgba(0,0,0,.12);
+                cursor: pointer;
+            }
+            .range-vis::-moz-range-thumb {
+                height: 18px; width: 18px; border-radius: 9999px;
+                background: white; border: 2px solid rgb(2,132,199);
+                box-shadow: 0 1px 2px rgba(0,0,0,.12);
+                cursor: pointer;
+            }
+        </style>
+    </head>
+    <body class="bg-gray-100 text-gray-800">
+        <!-- Header -->
+        <header class="sticky top-0 z-40 border-b border-gray-200/70 bg-white/80 backdrop-blur">
+            <div class="max-w-6xl mx-auto h-14 flex items-center px-4">
+                <a href="top.html" class="font-bold text-lg tracking-tight">Course Catalog</a>
+                <nav class="ml-auto flex items-center gap-1">
+                    <a href="cart.html" class="relative p-2 rounded-full hover:bg-gray-100" aria-label="Cart">
+                        <span class="material-symbols-outlined align-middle">shopping_cart</span>
+                        <span class="absolute -top-1 -right-1 text-[10px] h-4 w-4 grid place-items-center rounded-full bg-rose-500 text-white">1</span>
+                    </a>
+                    <button class="p-2 rounded-full hover:bg-gray-100" aria-label="Profile">
+                        <span class="material-symbols-outlined align-middle">account_circle</span>
+                    </button>
+                </nav>
+            </div>
+        </header>
+
+        <!-- Carousel -->
+        <section class="relative">
+            <div class="mx-auto max-w-6xl px-4">
+                <div class="relative mt-6">
+                    <!-- Edge fade -->
+                    <div class="pointer-events-none absolute inset-y-0 left-0 w-16 bg-gradient-to-r from-gray-50 to-transparent"></div>
+                    <div class="pointer-events-none absolute inset-y-0 right-0 w-16 bg-gradient-to-l from-gray-50 to-transparent"></div>
+
+                    <div id="hero" class="no-scrollbar flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth pb-2">
+                    <!-- Slide 1 -->
+                    <a href="guidelines.html" class="group relative snap-start shrink-0 basis-[85%] md:basis-[70%] lg:basis-[60%] rounded-2xl overflow-hidden shadow-lg">
+                        <div class="absolute inset-0 bg-gradient-to-r from-indigo-600 via-sky-500 to-emerald-500"></div>
+                        <div class="relative h-64 md:h-80 grid place-items-center text-white text-center">
+                        <div class="px-6">
+                            <div class="text-sm/5 md:text-base/6 opacity-90">2026年度 自己啓発制度</div>
+                            <h2 class="mt-2 text-3xl md:text-5xl font-black tracking-tight drop-shadow">募集要項</h2>
+                            <p class="mt-3 text-white/90">申込前に必ずご確認ください</p>
+                            <span class="inline-flex items-center gap-1 rounded-full bg-white/20 px-3 py-1 text-sm mt-4">
+                            <span class="material-symbols-outlined text-base">open_in_new</span> 詳細を見る
+                            </span>
+                        </div>
+                        </div>
+                    </a>
+                    <!-- Slide 2 -->
+                    <div class="relative snap-start shrink-0 basis-[85%] md:basis-[70%] lg:basis-[60%] rounded-2xl overflow-hidden shadow-lg">
+                        <img src="../img/slide1.webp" alt="Learning slide" class="h-64 md:h-80 w-full object-cover" loading="lazy" />
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
+                        <div class="absolute bottom-3 left-4 text-white font-medium">絶妙なライン、これってセクハラ？</div>
+                    </div>
+                    <!-- Slide 3 -->
+                    <a href="https://forbesjapan.com/articles/detail/83478?module=toppage_new" target="_blank" rel="noopener noreferrer" class="relative snap-start shrink-0 basis-[85%] md:basis-[70%] lg:basis-[60%] rounded-2xl overflow-hidden shadow-lg">
+                        <img src="../img/slide2.webp" alt="Trend" class="h-64 md:h-80 w-full object-cover" loading="lazy" />
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
+                        <div class="absolute bottom-3 left-4 text-white font-medium">BitコインでFIREだ！</div>
+                    </a>
+                    <!-- Slide 3 -->
+                    <a href="#" class="relative snap-start shrink-0 basis-[85%] md:basis-[70%] lg:basis-[60%] rounded-2xl overflow-hidden shadow-lg">
+                        <img src="../img/slide3.webp" alt="Trend" class="h-64 md:h-80 w-full object-cover" loading="lazy" />
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
+                        <div class="absolute bottom-3 left-4 text-white font-medium">物理的安全性</div>
+                    </a>
+                    <!-- Slide 4 -->
+                    <div class="relative snap-start shrink-0 basis-[85%] md:basis-[70%] lg:basis-[60%] rounded-2xl overflow-hidden shadow-lg bg-gradient-to-br from-amber-200 via-pink-200 to-cyan-200 h-64 md:h-80 grid place-items-center">
+                        <div class="text-center">
+                        <div class="text-2xl md:text-3xl font-bold">社内おすすめ</div>
+                        <div class="text-gray-700 mt-1">新着コースをチェック</div>
+                        </div>
+                    </div>
+                    </div>
+
+                    <!-- Nav buttons -->
+                    <button data-prev class="absolute left-1 top-1/2 -translate-y-1/2 rounded-full bg-white/80 hover:bg-white p-2 shadow flex">
+                        <span class="material-symbols-outlined">chevron_left</span>
+                    </button>
+                    <button data-next class="absolute right-1 top-1/2 -translate-y-1/2 rounded-full bg-white/80 hover:bg-white p-2 shadow flex">
+                        <span class="material-symbols-outlined">chevron_right</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Search / Chips -->
+        <section class="mx-auto max-w-6xl px-4 mt-8">
+            <div class="flex flex-col md:flex-row md:items-center gap-3">
+                <div class="flex items-center w-full rounded-full bg-white shadow-md pl-3  focus-within:ring-2 ring-sky-500">
+                    <span class="material-symbols-outlined text-gray-400 mr-1">search</span>
+                    <input type="search" id="search-input" placeholder="コース名やキーワードで検索" class="flex-1 py-2.5 px-1 rounded-full focus:outline-none" aria-label="コース検索" />
+                    <button id="btn-filter" class=" flex m-2 rounded-full p-2 hover:bg-gray-100" aria-haspopup="dialog" aria-controls="filter-dialog" aria-expanded="false">
+                        <span class="material-symbols-outlined">filter_list</span>
+                    </button>
+                </div>
+                <div class="flex flex-wrap gap-2">
+                    <button class="rounded-full px-3 py-1.5 text-sm border border-gray-200 bg-white text-gray-700 hover:bg-gray-50 transition" data-chip="ai"># 生成AI</button>
+                    <button class="rounded-full px-3 py-1.5 text-sm border border-gray-200 bg-white text-gray-700 hover:bg-gray-50 transition" data-chip="management"># マネジメント</button>
+                    <button class="rounded-full px-3 py-1.5 text-sm border border-gray-200 bg-white text-gray-700 hover:bg-gray-50 transition" data-chip="basic"># 基礎スキル</button>
+                    <button class="rounded-full px-3 py-1.5 text-sm border border-gray-200 bg-white text-gray-700 hover:bg-gray-50 transition" data-chip="cert"># 資格対策</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Courses Grid -->
+        <section class="mx-auto max-w-6xl px-4 mt-8 mb-16" aria-label="コース一覧">
+            <div id="course-panel" role="list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Card A -->
+            <a href="course.html" role="listitem" class="group block rounded-2xl overflow-hidden bg-white shadow hover:shadow-2xl transition duration-300">
+                <div class="relative aspect-[16/9] w-full">
+                    <img src="../img/course_c.webp" alt="Excel マクロ＆VBA入門" class="absolute inset-0 h-full w-full object-cover" loading="lazy" />
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/50 via-black/10 to-transparent"></div>
+                    <div class="absolute left-4 top-4 inline-flex items-center rounded-full bg-amber-500 text-white text-xs font-semibold px-2.5 py-1">New</div>
+                    <div class="absolute bottom-3 left-4 right-4 text-white">
+                        <h3 class="text-lg font-semibold drop-shadow">Excel マクロ＆VBA入門</h3>
+                    </div>
+                </div>
+                <div class="p-4">
+                    <p class="text-gray-600 truncate">マクロを使いこなし、大幅に業務を効率化！！！</p>
+                    <p class="mt-2 text-sm text-gray-700 flex items-center gap-4">
+                        <span class="inline-flex items-center gap-1"><span class="material-symbols-outlined text-base">payments</span> 19,910円</span>
+                        <span class="inline-flex items-center gap-1"><span class="material-symbols-outlined text-base">schedule</span> 3ヶ月</span>
+                    </p>
+                    <div class="mt-3 flex flex-wrap gap-2">
+                        <span class="rounded-full bg-gray-900 text-white text-xs px-3 py-1"># 資格</span>
+                        <span class="rounded-full bg-gray-900 text-white text-xs px-3 py-1"># 推奨</span>
+                    </div>
+                </div>
+            </a>
+
+            <!-- Card B -->
+            <a href="#" role="listitem" class="group block rounded-2xl overflow-hidden bg-white shadow hover:shadow-2xl transition duration-300">
+                <div class="relative aspect-[16/9] w-full">
+                <div class="absolute inset-0 bg-gradient-to-br from-blue-100 via-emerald-100 to-indigo-100"></div>
+                <div class="absolute inset-0 grid place-items-center text-gray-700 font-bold text-2xl">生成AIで学ぶプログラミング</div>
+                </div>
+                <div class="p-4">
+                <p class="text-gray-600 truncate">コースの簡単な説明がここに入ります。</p>
+                <p class="mt-2 text-sm text-gray-700 flex items-center gap-4">
+                    <span class="inline-flex items-center gap-1"><span class="material-symbols-outlined text-base">payments</span> 19,980円</span>
+                    <span class="inline-flex items-center gap-1"><span class="material-symbols-outlined text-base">schedule</span> 3ヶ月</span>
+                </p>
+                <div class="mt-3 flex flex-wrap gap-2">
+                    <span class="rounded-full bg-gray-900 text-white text-xs px-3 py-1"># PCスキル</span>
+                    <span class="rounded-full bg-gray-900 text-white text-xs px-3 py-1"># 50%補助</span>
+                </div>
+                </div>
+            </a>
+
+            <!-- Card C -->
+            <a href="#" role="listitem" class="group block rounded-2xl overflow-hidden bg-white shadow hover:shadow-2xl transition duration-300">
+                <div class="relative aspect-[16/9] w-full">
+                <img src="../img/course_a.webp" alt="心理的安全性100" class="absolute inset-0 h-full w-full object-cover" loading="lazy" />
+                <div class="absolute inset-0 bg-gradient-to-t from-black/50 via-black/20 to-transparent"></div>
+                <div class="absolute bottom-3 left-4 right-4 text-white">
+                    <h3 class="text-lg font-semibold drop-shadow">心理的安全性100</h3>
+                </div>
+                </div>
+                <div class="p-4">
+                <p class="text-gray-600 truncate">コースの簡単な説明がここに入ります。</p>
+                <p class="mt-2 text-sm text-gray-700 flex items-center gap-4">
+                    <span class="inline-flex items-center gap-1"><span class="material-symbols-outlined text-base">payments</span> 14,630円</span>
+                    <span class="inline-flex items-center gap-1"><span class="material-symbols-outlined text-base">schedule</span> 3ヶ月</span>
+                </p>
+                <div class="mt-3 flex flex-wrap gap-2">
+                    <span class="rounded-full bg-gray-900 text-white text-xs px-3 py-1"># マネジメント</span>
+                    <span class="rounded-full bg-gray-900 text-white text-xs px-3 py-1"># 100%補助</span>
+                </div>
+                </div>
+            </a>
+
+            <!-- Card D -->
+            <a href="#" role="listitem" class="group block rounded-2xl overflow-hidden bg-white shadow hover:shadow-2xl transition duration-300">
+                <div class="relative aspect-[16/9] w-full">
+                <img src="../img/course_b.webp" alt="ITパスポート試験合格講座" class="absolute inset-0 h-full w-full object-cover" loading="lazy" />
+                <div class="absolute inset-0 bg-gradient-to-t from-black/50 via-black/20 to-transparent"></div>
+                <div class="absolute bottom-3 left-4 right-4 text-white">
+                    <h3 class="text-lg font-semibold drop-shadow">ITパスポート試験合格講座</h3>
+                </div>
+                </div>
+                <div class="p-4">
+                <p class="text-gray-600 truncate">コースの簡単な説明がここに入ります。</p>
+                <p class="mt-2 text-sm text-gray-700 flex items-center gap-4">
+                    <span class="inline-flex items-center gap-1"><span class="material-symbols-outlined text-base">payments</span> 19,910円</span>
+                    <span class="inline-flex items-center gap-1"><span class="material-symbols-outlined text-base">schedule</span> 3ヶ月</span>
+                </p>
+                <div class="mt-3 flex flex-wrap gap-2">
+                    <span class="rounded-full bg-gray-900 text-white text-xs px-3 py-1"># 資格</span>
+                    <span class="rounded-full bg-gray-900 text-white text-xs px-3 py-1"># 推奨</span>
+                </div>
+                </div>
+            </a>
+
+            <!-- Card E -->
+            <a href="#" role="listitem" class="group block rounded-2xl overflow-hidden bg-white shadow hover:shadow-2xl transition duration-300">
+                <div class="relative aspect-[16/9] w-full">
+                <div class="absolute inset-0 bg-gradient-to-br from-rose-100 via-amber-100 to-emerald-100"></div>
+                <div class="absolute inset-0 grid place-items-center text-gray-700 font-bold text-2xl">Z世代向けマネジメント</div>
+                </div>
+                <div class="p-4">
+                <p class="text-gray-600 truncate">コースの簡単な説明がここに入ります。</p>
+                <p class="mt-2 text-sm text-gray-700 flex items-center gap-4">
+                    <span class="inline-flex items-center gap-1"><span class="material-symbols-outlined text-base">payments</span> 19,980円</span>
+                    <span class="inline-flex items-center gap-1"><span class="material-symbols-outlined text-base">schedule</span> 3ヶ月</span>
+                </p>
+                <div class="mt-3 flex flex-wrap gap-2">
+                    <span class="rounded-full bg-gray-900 text-white text-xs px-3 py-1"># マネジメント</span>
+                    <span class="rounded-full bg-gray-900 text-white text-xs px-3 py-1"># 100%補助</span>
+                </div>
+                </div>
+            </a>
+
+            <!-- Card F -->
+            <a href="#" role="listitem" class="group block rounded-2xl overflow-hidden bg-white shadow hover:shadow-2xl transition duration-300">
+                <div class="relative aspect-[16/9] w-full">
+                <div class="absolute inset-0 bg-gradient-to-br from-sky-100 via-violet-100 to-fuchsia-100"></div>
+                <div class="absolute inset-0 grid place-items-center text-gray-700 font-bold text-2xl">ビジネス基礎スキル</div>
+                </div>
+                <div class="p-4">
+                <p class="text-gray-600 truncate">コースの簡単な説明がここに入ります。</p>
+                <p class="mt-2 text-sm text-gray-700 flex items-center gap-4">
+                    <span class="inline-flex items-center gap-1"><span class="material-symbols-outlined text-base">payments</span> 9,800円</span>
+                    <span class="inline-flex items-center gap-1"><span class="material-symbols-outlined text-base">schedule</span> 1ヶ月</span>
+                </p>
+                <div class="mt-3 flex flex-wrap gap-2">
+                    <span class="rounded-full bg-gray-900 text-white text-xs px-3 py-1"># 基礎</span>
+                    <span class="rounded-full bg-gray-900 text-white text-xs px-3 py-1"># 社内推薦</span>
+                </div>
+                </div>
+            </a>
+
+             <!-- Card G -->
+            <a href="#" role="listitem" class="group block rounded-2xl overflow-hidden bg-white shadow hover:shadow-2xl transition duration-300">
+                <div class="relative aspect-[16/9] w-full">
+                <div class="absolute inset-0 bg-gradient-to-r from-rose-100 to-fuchsia-100 "></div>
+                <div class="absolute inset-0 grid place-items-center text-gray-700 font-bold text-2xl">データ分析基礎</div>
+                </div>
+                <div class="p-4">
+                <p class="text-gray-600 truncate">ExcelとPower BIで学ぶデータ分析の第一歩</p>
+                <p class="mt-2 text-sm text-gray-700 flex items-center gap-4">
+                    <span class="inline-flex items-center gap-1"><span class="material-symbols-outlined text-base">payments</span> 18,900円</span>
+                    <span class="inline-flex items-center gap-1"><span class="material-symbols-outlined text-base">schedule</span> 3ヶ月</span>
+                </p>
+                <div class="mt-3 flex flex-wrap gap-2">
+                    <span class="rounded-full bg-gray-900 text-white text-xs px-3 py-1"># 分析</span>
+                    <span class="rounded-full bg-gray-900 text-white text-xs px-3 py-1"># 実務応用</span>
+                </div>
+                </div>
+            </a>
+
+            <a href="#" role="listitem" class="group block rounded-2xl overflow-hidden bg-white shadow hover:shadow-2xl transition duration-300">
+                <div class="relative aspect-[16/9] w-full">
+                <img src="../img/course_d.webp" alt="心理的安全性100" class="absolute inset-0 h-full w-full object-cover" loading="lazy" />
+                <div class="absolute inset-0 bg-gradient-to-t from-black/50 via-black/20 to-transparent"></div>
+                <div class="absolute bottom-3 left-4 right-4 text-white">
+                    <h3 class="text-lg font-semibold drop-shadow">語彙力トレーニング</h3>
+                </div>
+                </div>
+                <div class="p-4">
+                <p class="text-gray-600 truncate">ボキャブラリーを増やして理解力や伝達力を強化</p>
+                <p class="mt-2 text-sm text-gray-700 flex items-center gap-4">
+                    <span class="inline-flex items-center gap-1"><span class="material-symbols-outlined text-base">payments</span> 19,910円</span>
+                    <span class="inline-flex items-center gap-1"><span class="material-symbols-outlined text-base">schedule</span> 3ヶ月</span>
+                </p>
+                <div class="mt-3 flex flex-wrap gap-2">
+                    <span class="rounded-full bg-gray-900 text-white text-xs px-3 py-1"># 教養</span>
+                    <span class="rounded-full bg-gray-900 text-white text-xs px-3 py-1"># 50%補助</span>
+                </div>
+                </div>
+            </a>
+
+            
+            
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="border-t border-gray-200/70 bg-white">
+            <div class="max-w-6xl mx-auto px-4 py-8 text-xs text-gray-500 flex flex-wrap items-center justify-between gap-3">
+            <div>© IEC — プライバシーポリシー / 利用規約</div>
+            <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-base">help</span>
+                <a href="#" class="hover:underline">ヘルプ</a>
+            </div>
+            </div>
+        </footer>
+
+        <!-- Filter Modal (visual-only, polished) -->
+        <div id="filter-dialog"
+            class="fixed inset-0 z-50 hidden"
+            role="dialog" aria-modal="true" aria-labelledby="filter-title">
+            <!-- Backdrop -->
+            <div id="filter-backdrop"
+                class="absolute inset-0 bg-black/40 backdrop-blur opacity-0 transition-opacity duration-200"></div>
+
+            <!-- Panel wrapper -->
+            <div class="pointer-events-none flex items-end md:items-center justify-center min-h-full">
+                <!-- Panel -->
+                <div id="filter-panel"
+                    class="pointer-events-auto relative w-full md:w-[640px] max-w-2xl
+                            md:rounded-3xl rounded-t-3xl bg-white shadow-2xl
+                            translate-y-6 md:translate-y-0 md:scale-95 opacity-0
+                            transition-all duration-200 ease-out
+                            md:my-16">
+
+                    <!-- Header -->
+                    <div class="px-6 py-5 border-b border-gray-100 flex items-center gap-3">
+                        <span class="material-symbols-outlined text-sky-600">tune</span>
+                        <div class="mr-auto">
+                        <h2 id="filter-title" class="text-lg font-semibold leading-tight">フィルタ</h2>
+                        <p class="text-sm text-gray-500">条件を選んでコースを絞り込み</p>
+                        </div>
+                        <button id="filter-close" class="p-2 rounded-full hover:bg-gray-100 flex" aria-label="Close">
+                        <span class="material-symbols-outlined">close</span>
+                        </button>
+                    </div>
+
+                    <!-- Body -->
+                    <div class="px-6 py-5 space-y-6">
+                        <!-- Keyword -->
+                        <div>
+                        <label class="block text-sm text-gray-600 mb-2">キーワード</label>
+                        <div class="flex items-center rounded-xl border border-gray-200 focus-within:ring-2 focus-within:ring-sky-500 bg-white px-3">
+                            <span class="material-symbols-outlined text-gray-400 mr-1">search</span>
+                            <input id="filter-keyword" type="search"
+                                class="w-full rounded-xl py-2.5 px-2 outline-none"
+                                placeholder="例）マネジメント / VBA など" />
+                        </div>
+                        </div>
+
+                        <!-- Tags -->
+                        <div>
+                        <label class="block text-sm text-gray-600 mb-2">タグ</label>
+                        <div class="flex flex-wrap gap-2">
+                            <!-- aria-pressedでトグル表現 -->
+                            <button class="rounded-full px-3 py-1.5 text-sm border border-gray-200 bg-white text-gray-700 hover:bg-gray-50 transition" data-chip aria-pressed="false">生成AI</button>
+                            <button class="rounded-full px-3 py-1.5 text-sm border border-gray-200 bg-white text-gray-700 hover:bg-gray-50 transition" data-chip aria-pressed="false">マネジメント</button>
+                            <button class="rounded-full px-3 py-1.5 text-sm border border-gray-200 bg-white text-gray-700 hover:bg-gray-50 transition" data-chip aria-pressed="false">基礎</button>
+                            <button class="rounded-full px-3 py-1.5 text-sm border border-gray-200 bg-white text-gray-700 hover:bg-gray-50 transition" data-chip aria-pressed="false">資格</button>
+                            <button class="rounded-full px-3 py-1.5 text-sm border border-gray-200 bg-white text-gray-700 hover:bg-gray-50 transition" data-chip aria-pressed="false">推奨</button>
+                        </div>
+                        </div>
+
+                        <!-- Duration -->
+                        <div>
+                        <label class="block text-sm text-gray-600 mb-2">受講期間</label>
+                        <div class="flex flex-wrap gap-2">
+                            <label class="inline-flex items-center px-3 py-1.5 rounded-full border border-gray-200 bg-white text-gray-700 text-sm transition">
+                            <input type="checkbox" class="peer hidden">
+                            <span class="pill-ui">1ヶ月</span>
+                            </label>
+                            <label class="inline-flex items-center px-3 py-1.5 rounded-full border border-gray-200 bg-white text-gray-700 text-sm transition">
+                            <input type="checkbox" class="peer hidden">
+                            <span class="pill-ui">3ヶ月</span>
+                            </label>
+                            <label class="inline-flex items-center px-3 py-1.5 rounded-full border border-gray-200 bg-white text-gray-700 text-sm transition">
+                            <input type="checkbox" class="peer hidden">
+                            <span class="pill-ui">6ヶ月</span>
+                            </label>
+                        </div>
+                        </div>
+
+                        <!-- Price (visual double range) -->
+                        <div>
+                        <div class="flex items-center justify-between mb-2">
+                            <label class="block text-sm text-gray-600">受講料レンジ</label>
+                            <div class="text-sm text-gray-500"><span id="price-min">0</span> 円 〜 <span id="price-max">30,000</span> 円</div>
+                        </div>
+                        <!-- visual range rails -->
+                        <div class="relative h-10">
+                            <div class="absolute left-0 right-0 top-1/2 -translate-y-1/2 h-1.5 bg-gray-200 rounded-full"></div>
+                            <div id="price-fill"
+                                class="absolute top-1/2 -translate-y-1/2 h-1.5 bg-gradient-to-r from-sky-500 to-indigo-500 rounded-full"></div>
+                            <!-- two native ranges stacked (visual only) -->
+                            <input id="range-min" type="range" min="0" max="50000" value="0"
+                                class="range-vis">
+                            <input id="range-max" type="range" min="0" max="50000" value="30000"
+                                class="range-vis">
+                        </div>
+                        </div>
+                    </div>
+
+                    <!-- Footer (sticky) -->
+                    <div class="px-6 py-4 border-t border-gray-100 bg-white md:rounded-b-3xl rounded-b-3xl flex items-center justify-between gap-3">
+                        <button id="filter-reset" class="text-sm text-gray-600 hover:text-gray-800 underline">リセット</button>
+                        <div class="flex items-center gap-2">
+                            <button class="px-4 py-2 rounded-xl border border-gray-300 hover:bg-gray-50">キャンセル</button>
+                            <button id="filter-apply" class="px-4 py-2 rounded-xl bg-sky-600 text-white hover:bg-sky-700 shadow-sm">適用</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
+
+<script>
+    // Carousel center helpers
+    (() => {
+        const root = document.getElementById('hero');
+        if (!root) return;
+
+        const items = Array.from(root.children);
+        const prev = document.querySelector('[data-prev]');
+        const next = document.querySelector('[data-next]');
+        function centerTo(i){ i=Math.max(0,Math.min(items.length-1,i)); items[i].scrollIntoView({behavior:'smooth', inline:'center', block:'nearest'}); }
+        function current(){ const c=root.scrollLeft + root.clientWidth/2; let bi=0,bd=Infinity; items.forEach((el,i)=>{const m=el.offsetLeft+el.clientWidth/2; const d=Math.abs(m-c); if(d<bd){bd=d;bi=i;}}); return bi; }
+        prev?.addEventListener('click',()=>centerTo(current()-1));
+        next?.addEventListener('click',()=>centerTo(current()+1));
+        window.addEventListener('resize',()=>centerTo(current()));
+    })();
+    
+    (() => {
+    const dialog   = document.getElementById('filter-dialog');
+    const backdrop = document.getElementById('filter-backdrop');
+    const panel    = document.getElementById('filter-panel');
+    const btnOpen  = document.getElementById('btn-filter');
+    const btnClose = document.getElementById('filter-close');
+    const btnApply = document.getElementById('filter-apply');
+    const btnReset = document.getElementById('filter-reset');
+
+    // open/close (visual)
+    let last = null;
+    function animateIn(){
+        dialog.classList.remove('hidden');
+        requestAnimationFrame(() => {
+            backdrop.style.opacity = '1';
+            panel.style.opacity = '1';
+            panel.style.transform = 'translateY(0) scale(1)';
+        });
+    }
+    function animateOut(){
+        backdrop.style.opacity = '0';
+        panel.style.opacity = '0';
+        panel.style.transform = 'translateY(1.5rem) scale(0.97)';
+        setTimeout(() => dialog.classList.add('hidden'), 180);
+    }
+    function openDlg(){
+        last = document.activeElement;
+        // 初期スタイル
+        backdrop.style.opacity = '0';
+        panel.style.opacity = '0';
+        panel.style.transform = 'translateY(1.5rem) scale(0.97)';
+        animateIn();
+        btnOpen?.setAttribute('aria-expanded','true');
+        // フォーカス
+        setTimeout(() => document.getElementById('filter-keyword')?.focus(), 60);
+    }
+    function closeDlg(){
+        animateOut();
+        btnOpen?.setAttribute('aria-expanded','false');
+        last?.focus();
+    }
+
+    btnOpen?.addEventListener('click', openDlg);
+    btnClose?.addEventListener('click', closeDlg);
+    backdrop?.addEventListener('click', (e) => { if (e.target === backdrop) closeDlg(); });
+
+    // ESC / Enter
+    dialog.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') { e.preventDefault(); closeDlg(); }
+        if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); btnApply?.click(); }
+        // 簡易フォーカストラップ
+        if (e.key === 'Tab') {
+            const f = dialog.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+            const a = Array.from(f).filter(el => el.offsetParent !== null);
+            if (!a.length) return;
+            const first = a[0], lastEl = a[a.length-1];
+            if (e.shiftKey && document.activeElement === first) { e.preventDefault(); lastEl.focus(); }
+            else if (!e.shiftKey && document.activeElement === lastEl) { e.preventDefault(); first.focus(); }
+        }
+    });
+
+    // Double range (visual-only)
+    const rMin = document.getElementById('range-min');
+    const rMax = document.getElementById('range-max');
+    const fill = document.getElementById('price-fill');
+    const lMin = document.getElementById('price-min');
+    const lMax = document.getElementById('price-max');
+    function updateRange(){
+        let min = Math.min(+rMin.value, +rMax.value);
+        let max = Math.max(+rMin.value, +rMax.value);
+        // 見た目のトラック塗り（%）
+        const w = rMin.clientWidth;
+        const minPct = (min / (+rMin.max)) * 100;
+        const maxPct = (max / (+rMax.max)) * 100;
+        fill.style.left = minPct + '%';
+        fill.style.right = (100 - maxPct) + '%';
+        // ラベル
+        lMin.textContent = min.toLocaleString();
+        lMax.textContent = max.toLocaleString();
+    }
+    rMin?.addEventListener('input', updateRange);
+    rMax?.addEventListener('input', updateRange);
+    // 初期
+    updateRange();
+
+    // Buttons (visual)
+    btnApply?.addEventListener('click', () => {
+        // 見た目だけ：閉じる
+        closeDlg();
+    });
+   
+  })();
+</script>

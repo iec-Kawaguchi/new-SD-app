@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <title>意思決定タイプ診断（順位付け→8/4/2/1 加点方式）</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { font-family: "游ゴシック体","Yu Gothic","游ゴシック",YuGothic,sans-serif; background: linear-gradient(135deg,#dbeafe,#fce7f3); min-height: 100vh; }
+    .fade-in { animation: fadeIn .45s ease; }
+    @keyframes fadeIn { from {opacity:0; transform: translateY(8px);} to {opacity:1; transform: translateY(0);} }
+    .dragging { opacity: .6; }
+  </style>
+</head>
+<body class="flex items-center justify-center p-6">
+
+  <div class="w-full max-w-3xl bg-white/80 backdrop-blur-md rounded-3xl shadow-2xl p-8">
+    <h1 class="text-2xl sm:text-3xl font-bold text-center text-gray-800">意思決定タイプ診断</h1>
+    <p class="text-center text-gray-600 mt-2">各設問で <strong>4つの選択肢に順位をつけてください</strong>
+
+    <!-- 進捗 -->
+    <div id="progress" class="hidden mt-6">
+      <div class="w-full bg-gray-200 rounded-full h-3">
+        <div id="bar" class="h-3 bg-indigo-500 rounded-full transition-all duration-300"></div>
+      </div>
+      <p id="count" class="text-sm text-gray-600 mt-2 text-center"></p>
+    </div>
+
+    <!-- 質問 -->
+    <div id="qwrap" class="mt-6 space-y-6 fade-in"></div>
+
+    <!-- 結果 -->
+    <div id="result" class="hidden fade-in">
+      <div class="bg-gradient-to-br from-indigo-100 to-pink-50 rounded-2xl shadow-lg p-6">
+        <h2 id="result-title" class="text-2xl font-bold text-center text-gray-800"></h2>
+        <p id="result-lead" class="text-center text-gray-700 mt-2 mb-4"></p>
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div class="bg-white border border-gray-200 rounded-xl p-4">
+            <h3 class="font-semibold text-gray-800 mb-2">スコア内訳</h3>
+            <ul id="score-list" class="text-gray-700 space-y-1"></ul>
+          </div>
+          <div class="bg-white border border-gray-200 rounded-xl p-4">
+            <h3 class="font-semibold text-gray-800 mb-2">タイプ解説</h3>
+            <p id="type-desc" class="text-gray-700"></p>
+          </div>
+        </div>
+        <button id="retry" class="mt-6 px-5 py-2 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 block mx-auto">もう一度やる</button>
+      </div>
+    </div>
+
+    <!-- 開始 -->
+    <div id="start" class="mt-8 text-center">
+      <button id="begin" class="px-8 py-3 bg-indigo-600 text-white font-semibold rounded-xl shadow-md hover:bg-indigo-700 transition">
+        診断をはじめる
+      </button>
+    </div>
+  </div>
+
+  <script>
+    const TYPE_META = {
+      A: { name: "A：推進タイプ", desc: "スピードと実行で結果を出す推進役。現実志向・決断力が強み。" },
+      B: { name: "B：分析タイプ", desc: "データと構造で最適解を導く分析役。正確性・再現性が強み。" },
+      C: { name: "C：創造タイプ", desc: "新しい発想と多様性で突破する創造役。柔軟性・着想力が強み。" },
+      D: { name: "D：調和タイプ", desc: "安心感と合意形成で組織を進める調整役。信頼・安定が強み。" }
+    };
+
+    const QUESTIONS = [
+      { text: "働くことによって何を得たいか？", options: ["昇進や地位","得意領域で一番になること","自身の仕事に対する評価","職や収入の安定"] },
+      { text: "あなたにとって好ましい仕事とは？", options: ["技術的で明確な仕事","多様性のある仕事","自主性のある仕事","人を巻き込んでおこなう仕事"] },
+      { text: "部下を持ったときに部下に期待することは？", options: ["生産性とスピード","能力の高さ","献身的で迅速な対応","提案を受容してくれること"] },
+      { text: "働く時、どんなことを追求したいか？", options: ["実質的な成果","ベストな解決策","新しい方法やアイデア","良好な職場環境"] },
+      { text: "仕事でのコミュニケーションで得意な方法は？", options: ["直接対話","書面","グループ討議","フォーマルな会議"] },
+      { text: "仕事の何かを計画するときにどんなことに留意するか？", options: ["現在の問題","目的への合致","将来の目標","キャリアの開発"] },
+      { text: "問題を解決するときどんな手法を使うか？", options: ["立証済みの手法","慎重な分析の適用","創造的な手法","自分の感覚を尊重"] },
+      { text: "情報に関して重視していることは？", options: ["現在の事実、潮流","正確で完全なデータ","多くの人の多様な意見","分かり易いデータ"] },
+      { text: "為すべきことがはっきりしないとき、どうするか？", options: ["直感に頼る","事実を調べる","折衷案を探る","決断できるまで待つ"] },
+      { text: "できるだけ避けたいことは？", options: ["長時間の討議","未完成の仕事","数字や数式を使うこと","他者との対立"] },
+      { text: "あなたの得意な分野は？", options: ["日時や事実の記憶","難問の解決","可能性の追求","他者との交流"] },
+      { text: "時間が限られているときはどうする？", options: ["決断し迅速に行動する","計画と優先順位に従う","プレッシャーを避ける","指導や支援を求める"] },
+      { text: "社交の場では？", options: ["人と話す","話されている事について考える","状況を観察する","会話を聴く"] },
+      { text: "よく記憶していることは？", options: ["人の名前","人と会った場所","人の顔","人の性格"] },
+      { text: "仕事で得られるものは？", options: ["人に対する影響力","挑戦的な課題","個人目標の達成","組織全体からの納得感"] },
+      { text: "一緒に働く上で好ましい人は？", options: ["精力的で覇気のある人","自信がある人","オープンな性格の人","丁寧で猜疑心のない人"] },
+      { text: "ストレスがあるときは？", options: ["不安、心配になる","目の前の問題に集中する","挫折しそうになる","物忘れが多くなる"] },
+      { text: "人はあなたをどう思っているか？", options: ["アグレッシブ","規律正しい","創造力豊か","協力的"] },
+      { text: "どのように意思決定をする？", options: ["現実的で指示的","体系的か抽象的","おおらかで柔軟","他者のニーズに敏感"] },
+      { text: "嫌なことは？", options: ["コントロールを失うこと","退屈な仕事","規則に従うこと","拒絶されること"] },
+    ];
+
+    const RANK_POINTS = [8,4,2,1];
+    const totals = { A:0, B:0, C:0, D:0 };
+    let idx = 0;
+
+    const start = document.getElementById("start");
+    const begin = document.getElementById("begin");
+    const progress = document.getElementById("progress");
+    const bar = document.getElementById("bar");
+    const count = document.getElementById("count");
+    const qwrap = document.getElementById("qwrap");
+    const result = document.getElementById("result");
+    const retry = document.getElementById("retry");
+
+    begin.onclick = () => {
+      start.classList.add("hidden");
+      progress.classList.remove("hidden");
+      renderQuestion();
+      updateProgress();
+    };
+    retry.onclick = () => location.reload();
+
+    function updateProgress() {
+      const p = Math.round((idx / QUESTIONS.length) * 100);
+      bar.style.width = p + "%";
+      count.textContent = `${idx}/${QUESTIONS.length} 問完了`;
+    }
+
+    function renderQuestion() {
+      qwrap.innerHTML = "";
+      if (idx >= QUESTIONS.length) return showResult();
+
+      const q = QUESTIONS[idx];
+      const node = document.createElement("div");
+      node.className = "fade-in";
+
+      node.innerHTML = `
+        <p class="text-lg font-semibold text-center text-gray-800 mb-4">Q${idx+1}. ${q.text}</p>
+
+        <p class="text-sm text-gray-600 mb-2 text-center">ドラッグ＆ドロップで <b>上から 1位→4位</b> に並べ替え、「この順で確定」を押してください。</p>
+
+        <ol id="rank-list" class="space-y-2">
+          ${q.options.map((opt, i) => `
+            <li class="item p-4 bg-white border border-gray-300 rounded-xl shadow-sm hover:shadow-md transition cursor-move"
+                draggable="true" data-index="${i}">
+              <div class="flex items-center gap-3">
+                <!-- ★修正：ここは空でOK。後でJSで A/B/C/D を入れます -->
+                <span class="handle select-none w-8 h-8 rounded-lg bg-gray-100 border flex items-center justify-center text-sm font-semibold"></span>
+                <span class="font-medium text-gray-800 flex-1">${opt}</span>
+                <span class="rank-hint text-xs text-gray-500">—</span>
+              </div>
+            </li>
+          `).join('')}
+        </ol>
+
+        <div class="mt-4 flex items-center justify-end text-sm text-gray-600">
+          <button id="confirm" class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">この順で確定</button>
+        </div>
+      `;
+      qwrap.appendChild(node);
+
+      // A/B/C/D ラベルを設定
+      const labels = ['A','B','C','D'];
+      qwrap.querySelectorAll('.handle').forEach((el, i) => el.textContent = labels[i]);
+
+      // 順位ヒント更新
+      function refreshHints() {
+        const lis = Array.from(document.querySelectorAll('#rank-list .item'));
+        lis.forEach((li, pos) => {
+          const hint = li.querySelector('.rank-hint');
+          hint.textContent = `${pos+1}位`;
+        });
+      }
+
+      // DnD
+      const list = document.getElementById('rank-list');
+      let dragEl = null;
+
+      list.addEventListener('dragstart', (e) => {
+        dragEl = e.target.closest('.item');
+        if (!dragEl) return;
+        dragEl.classList.add('dragging');
+        e.dataTransfer.effectAllowed = 'move';
+      });
+      list.addEventListener('dragend', () => {
+        if (dragEl) dragEl.classList.remove('dragging');
+        dragEl = null;
+        refreshHints();
+      });
+      list.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        const afterEl = getDragAfterElement(list, e.clientY);
+        const dragging = document.querySelector('.dragging');
+        if (!dragging) return;
+        if (afterEl == null) list.appendChild(dragging);
+        else list.insertBefore(dragging, afterEl);
+      });
+
+      function getDragAfterElement(container, y) {
+        const els = [...container.querySelectorAll('.item:not(.dragging)')];
+        return els.reduce((closest, child) => {
+          const box = child.getBoundingClientRect();
+          const offset = y - box.top - box.height / 2;
+          if (offset < 0 && offset > closest.offset) return { offset, element: child };
+          else return closest;
+        }, { offset: Number.NEGATIVE_INFINITY }).element;
+      }
+
+      refreshHints();
+
+      // 確定（多重押下防止付き）
+      const confirmBtn = document.getElementById('confirm');
+      let locked = false;
+      confirmBtn.onclick = () => {
+        if (locked) return;
+        locked = true;
+
+        const order = [...document.querySelectorAll('#rank-list .item')].map(li => Number(li.getAttribute('data-index')));
+        // 上から A/B/C/D の各選択肢順位 → 配点 8,4,2,1 を A/B/C/D に加点
+        order.forEach((optIndex, pos) => {
+          const typeKey = ['A','B','C','D'][optIndex];
+          totals[typeKey] += RANK_POINTS[pos];
+        });
+
+        idx++;
+        updateProgress();
+        renderQuestion();
+      };
+    }
+
+    function showResult() {
+      qwrap.classList.add("hidden");
+      progress.classList.add("hidden");
+      result.classList.remove("hidden");
+
+      const entries = Object.entries(totals).sort((a,b)=>b[1]-a[1]);
+      const [topKey, topScore] = entries[0];
+
+      document.getElementById("result-title").textContent = `あなたのタイプ：${TYPE_META[topKey].name}`;
+      document.getElementById("result-lead").textContent =
+        `合計点 A:${totals.A} / B:${totals.B} / C:${totals.C} / D:${totals.D}（最多：${topKey}=${topScore}）`;
+      document.getElementById("type-desc").textContent = TYPE_META[topKey].desc;
+
+      const ul = document.getElementById("score-list");
+      ul.innerHTML = "";
+      ["A","B","C","D"].forEach(k=>{
+        const li = document.createElement("li");
+        li.innerHTML = `<span class="inline-block w-6 font-semibold">${k}</span>：${totals[k]} 点`;
+        ul.appendChild(li);
+      });
+    }
+  </script>
+</body>
+</html>

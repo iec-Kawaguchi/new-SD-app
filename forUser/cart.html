@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="ja">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Course Catalog / Checkout</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <script src="https://cdn.tailwindcss.com"></script>
+        <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+        <style>
+            body { font-family: "游ゴシック体", "Yu Gothic", "游ゴシック", YuGothic, sans-serif; }
+            /* iOS Safe Area */
+            :root { --safe-bottom: env(safe-area-inset-bottom); }
+            /* 数字だけ許容する入力の見た目調整（モバイルで数字キーボードを出しやすく） */
+            input[data-numeric] { ime-mode: disabled; }
+        </style>
+    </head>
+    <body class="bg-gray-100 min-h-screen flex flex-col">
+        <!-- Header -->
+        <header class="sticky top-0 z-40 border-b border-gray-200/70 bg-white/80 backdrop-blur">
+            <div class="max-w-6xl mx-auto h-14 flex items-center px-4">
+            <a href="top.html" class="font-bold text-lg tracking-tight">Course Catalog</a>
+            <nav class="ml-auto flex items-center gap-1">
+                <a href="cart.html" class="relative p-2 rounded-full hover:bg-gray-100" aria-label="Cart">
+                    <span class="material-symbols-outlined align-middle">shopping_cart</span>
+                    <span class="absolute -top-1 -right-1 text-[10px] h-4 w-4 grid place-items-center rounded-full bg-rose-500 text-white">1</span>
+                </a>
+                <button class="p-2 rounded-full hover:bg-gray-100" aria-label="Profile">
+                    <span class="material-symbols-outlined align-middle">account_circle</span>
+                </button>
+            </nav>
+            </div>
+        </header>
+        <!-- Main -->
+        <main class="flex-1">
+        <div class="max-w-6xl w-full mx-auto p-4 md:p-6">
+            <!-- Progress (任意) -->
+            <ol class="flex items-center gap-2 text-sm text-gray-600 mb-4" aria-label="進行状況">
+                <li class="flex items-center gap-2"><span class="w-6 h-6 rounded-full bg-gray-800 text-white grid place-items-center text-xs font-">1</span><span>カート</span></li>
+                <li class="text-gray-400">—</li>
+                <li class="flex items-center gap-2"><span class="w-6 h-6 rounded-full bg-gray-800 text-white grid place-items-center text-xs">2</span><span>情報入力</span></li>
+                <li class="text-gray-400">—</li>
+                <li class="flex items-center gap-2"><span class="w-6 h-6 rounded-full bg-gray-300 text-gray-700 grid place-items-center text-xs">3</span><span>確認・確定</span></li>
+            </ol>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- 左：フォーム＆カート -->
+                <div class="md:col-span-2 space-y-8">
+                    <!-- Cart -->
+                    <section class="bg-white rounded-xl shadow p-5">
+                        <h2 class="text-xl font-bold border-l-4 border-gray-700 pl-2 mb-4">カート</h2>
+
+                        <ul id="cart-list" class="space-y-4">
+                            <!-- Item -->
+                            <li class="flex items-center gap-4">
+                            <div class="flex-1 min-w-0">
+                                <p class="font-medium truncate">Excel マクロ＆VBA入門</p>
+                                <p class="text-sm text-gray-500">コースID: EXVBA-101</p>
+                                <button type="button" class="text-sm text-gray-500 hover:text-red-600 underline mt-1" data-remove>削除</button>
+                            </div>
+                                <div class="flex items-center gap-2">
+                                    <div class="inline-flex items-center border rounded-lg hidden">
+                                        <button type="button" class="px-2 py-1" data-qty-dec aria-label="数量を減らす">−</button>
+                                        <input
+                                            class="w-12 text-center outline-none"
+                                            type="number" inputmode="numeric" data-numeric
+                                            min="1" value="1" data-qty />
+                                        <button type="button" class="px-2 py-1" data-qty-inc aria-label="数量を増やす">＋</button>
+                                    </div>
+                                    <div class="w-24 text-right">
+                                        <span class="font-semibold" data-price="19910" data-line-total>¥19,910</span>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+
+                        <div class="mt-4 flex justify-end">
+                            <a href="./top.html" class="text-sm text-blue-700 hover:underline">コースを追加する</a>
+                        </div>
+                    </section>
+
+                    <!-- Buyer -->
+                    <section class="bg-white rounded-xl shadow p-5">
+                        <h2 class="text-xl font-bold border-l-4 border-gray-700 pl-2 mb-4">購入者情報</h2>
+                        <form id="checkout-form" class="space-y-6" novalidate>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div class="flex flex-col">
+                                    <label for="name" class="font-medium">氏名 <span class="text-red-500">*</span></label>
+                                    <input id="name" name="name" type="text" class="border rounded-lg p-2" autocomplete="name" required />
+                                    <p class="text-sm text-red-600 mt-1 hidden" data-error-for="name">氏名を入力してください。</p>
+                                </div>
+                                <div class="flex flex-col">
+                                    <label for="kana" class="font-medium">フリガナ <span class="text-red-500">*</span></label>
+                                    <input id="kana" name="kana" type="text" class="border rounded-lg p-2" placeholder="セイ メイ" pattern="^[\u30A0-\u30FF\sー－]+$" required />
+                                    <p class="text-sm text-gray-500 mt-1">全角カタカナで入力</p>
+                                    <p class="text-sm text-red-600 mt-1 hidden" data-error-for="kana">フリガナ（全角カタカナ）を入力してください。</p>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div class="flex flex-col">
+                                    <label for="email" class="font-medium">メールアドレス <span class="text-red-500">*</span></label>
+                                    <input id="email" name="email" type="email" class="border rounded-lg p-2" autocomplete="email" required />
+                                    <p class="text-sm text-red-600 mt-1 hidden" data-error-for="email">有効なメールアドレスを入力してください。</p>
+                                </div>
+                                <div class="flex flex-col">
+                                    <label for="email2" class="font-medium">メールアドレス（確認） <span class="text-red-500">*</span></label>
+                                    <input id="email2" name="email2" type="email" class="border rounded-lg p-2" autocomplete="off" required />
+                                    <p class="text-sm text-red-600 mt-1 hidden" data-error-for="email2">メールアドレスが一致しません。</p>
+                                </div>
+                            </div>
+
+                            <div class="flex flex-col sm:w-1/2">
+                                <label for="tel" class="font-medium">電話番号 <span class="text-red-500">*</span></label>
+                                <input id="tel" name="tel" type="tel" class="border rounded-lg p-2" inputmode="numeric" data-numeric autocomplete="tel" placeholder="09012345678" pattern="^[0-9\-]+$" required />
+                                <p class="text-sm text-red-600 mt-1 hidden" data-error-for="tel">数字のみで入力してください。</p>
+                            </div>
+                            <div class="pt-2">
+                                <label class="inline-flex items-start gap-2">
+                                    <input id="agree" type="checkbox" class="mt-1">
+                                    <span class="text-sm text-gray-700">プライバシーポリシーに同意します</span>
+                                </label>
+                            </div>
+                        </form>
+                    </section>
+
+                    <!-- Shipping -->
+                    <section class="bg-white rounded-xl shadow p-5">
+                        <h2 class="text-xl font-bold border-l-4 border-gray-700 pl-2 mb-4">配送先</h2>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div class="flex flex-col">
+                                <label for="zip" class="font-medium">郵便番号 <span class="text-red-500">*</span></label>
+                                <input id="zip" name="zip" type="text" class="border rounded-lg p-2" inputmode="numeric" data-numeric placeholder="123-4567" pattern="^\d{3}-?\d{4}$" required />
+                                <p class="text-sm text-gray-500 mt-1">半角数字（自動で 123-4567 形式になります）</p>
+                                <p class="text-sm text-red-600 mt-1 hidden" data-error-for="zip">郵便番号を正しく入力してください。</p>
+                            </div>
+                            <div class="flex flex-col">
+                                <label for="pref" class="font-medium">都道府県 <span class="text-red-500">*</span></label>
+                                <input id="pref" name="pref" type="text" class="border rounded-lg p-2" autocomplete="address-level1" required />
+                                <p class="text-sm text-red-600 mt-1 hidden" data-error-for="pref">都道府県を入力してください。</p>
+                            </div>
+                            <div class="flex flex-col sm:col-span-2">
+                                <label for="city" class="font-medium">市区町村・番地 <span class="text-red-500">*</span></label>
+                                <input id="city" name="city" type="text" class="border rounded-lg p-2" autocomplete="address-line1" required />
+                                <p class="text-sm text-red-600 mt-1 hidden" data-error-for="city">市区町村・番地を入力してください。</p>
+                            </div>
+                                <div class="flex flex-col sm:col-span-2">
+                                <label for="addr2" class="font-medium">建物名・部屋番号（任意）</label>
+                                <input id="addr2" name="addr2" type="text" class="border rounded-lg p-2" autocomplete="address-line2" />
+                            </div>
+
+                            <div class="flex flex-col sm:w-1/2">
+                                <label for="telShip" class="font-medium">配送連絡先（任意）</label>
+                                <input id="telShip" name="telShip" type="tel" class="border rounded-lg p-2" inputmode="numeric" data-numeric placeholder="09012345678" pattern="^[0-9\-]+$" />
+                                <p class="text-sm text-red-600 mt-1 hidden" data-error-for="telShip">数字のみで入力してください。</p>
+                            </div>
+                        </div>
+                    </section>
+                <div class="p-4 bg-blue-100 border-blue-500 border border-dashed rounded-lg text-blue-500">この画面は募集サイト作成時の「申込フォーム」機能で設定した項目と対応する想定。</div>
+
+                </div>
+
+                <!-- 右：サマリー -->
+                <aside class="md:col-span-1">
+                    <div class="md:sticky md:top-[5rem]">
+                    <section class="bg-white rounded-xl shadow p-5">
+                        <h2 class="text-lg font-bold border-l-4 border-gray-700 pl-2 mb-4">注文サマリー</h2>
+                        <dl class="text-sm space-y-2">
+                        <div class="flex items-center justify-between">
+                            <dt>小計</dt>
+                            <dd id="subtotal" class="font-medium">¥19,910</dd>
+                        </div>
+                        <!-- <div class="flex items-center justify-between">
+                            <dt>消費税（10%）</dt>
+                            <dd id="tax" class="font-medium">¥1,810</dd>
+                        </div> -->
+                        <div class="flex items-center justify-between">
+                            <dt>送料</dt>
+                            <dd id="shipping" class="font-medium">¥0</dd>
+                        </div>
+                        <hr class="my-2">
+                        <div class="flex items-center justify-between text-base">
+                            <dt class="font-bold">合計</dt>
+                            <dd id="grandTotal" class="font-bold">¥19,910</dd>
+                        </div>
+                        </dl>
+
+                        <button
+                            id="place-order"
+                            class="w-full bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold py-3 rounded-xl mt-4"
+                            disabled
+                            >
+                            注文を確定する
+                        </button>
+                        <p class="text-xs text-gray-500 mt-2">同意チェックと必須項目の入力が完了すると、有効になります。</p>
+                        <div id="form-alert" class="mt-3 text-sm text-red-600 hidden" aria-live="polite"></div>
+                    </section>
+                    </div>
+                </aside>
+            </div>
+        </div>
+        </main>
+
+    <!-- Footer -->
+    <footer class="text-xs text-gray-500 px-4 py-8 text-center">
+      © IEC — プライバシーポリシー / 利用規約
+      <div style="height: var(--safe-bottom)"></div>
+    </footer>
+
+    <!-- Scripts -->
+    <script>
+        // ---- Utils
+        const fmtJPY = (n) => "¥" + n.toLocaleString("ja-JP");
+        const clampQty = (v) => Math.max(1, Math.min(999, Number(v) || 1));
+
+        // ---- カート計算
+        function recalcTotals() {
+        const list = document.querySelectorAll("#cart-list [data-line-total]");
+        let subtotal = 0;
+        list.forEach((el) => {
+            const line = Number((el.getAttribute("data-line-total-raw")) || el.textContent.replace(/[^\d]/g, ""));
+            subtotal += line;
+        });
+        const tax = Math.round(subtotal * 0.10);
+        const shipping = 0; // 送料ロジックを後で差し替え
+        const grand = subtotal + tax + shipping;
+
+        document.getElementById("subtotal").textContent = fmtJPY(subtotal);
+        document.getElementById("tax").textContent = fmtJPY(tax);
+        document.getElementById("shipping").textContent = fmtJPY(shipping);
+        document.getElementById("grandTotal").textContent = fmtJPY(grand);
+
+        // バッジ
+        const totalQty = [...document.querySelectorAll("[data-qty]")].reduce((a, i) => a + clampQty(i.value), 0);
+        document.getElementById("cart-badge").textContent = Math.min(totalQty, 99);
+        }
+
+        function bindCart() {
+        const root = document.getElementById("cart-list");
+        root.addEventListener("click", (e) => {
+            const li = e.target.closest("li");
+            if (!li) return;
+
+            // 数量増減
+            if (e.target.matches("[data-qty-inc]") || e.target.matches("[data-qty-dec]")) {
+            const input = li.querySelector("[data-qty]");
+            const base = Number(li.querySelector("[data-price]").getAttribute("data-price"));
+            let next = clampQty(input.value) + (e.target.matches("[data-qty-inc]") ? 1 : -1);
+            next = clampQty(next);
+            input.value = next;
+
+            const lineTotal = base * next;
+            const lineEl = li.querySelector("[data-line-total]");
+            lineEl.textContent = fmtJPY(lineTotal);
+            lineEl.setAttribute("data-line-total-raw", String(lineTotal));
+            recalcTotals();
+            }
+
+            // 削除
+            if (e.target.matches("[data-remove]")) {
+            li.remove();
+            if (!root.querySelector("li")) {
+                root.innerHTML = `<li class="text-gray-500 text-sm">カートに商品はありません。</li>`;
+            }
+            recalcTotals();
+            }
+        });
+
+        root.addEventListener("input", (e) => {
+            if (e.target.matches("[data-qty]")) {
+            const li = e.target.closest("li");
+            const base = Number(li.querySelector("[data-price]").getAttribute("data-price"));
+            const next = clampQty(e.target.value);
+            e.target.value = next;
+            const lineTotal = base * next;
+            const lineEl = li.querySelector("[data-line-total]");
+            lineEl.textContent = fmtJPY(lineTotal);
+            lineEl.setAttribute("data-line-total-raw", String(lineTotal));
+            recalcTotals();
+            }
+        });
+        }
+
+        // ---- 入力補助
+        function autoHyphenZip(e) {
+        let v = e.target.value.replace(/[^\d]/g, "");
+        if (v.length > 3) v = v.slice(0, 3) + "-" + v.slice(3, 7);
+        e.target.value = v.slice(0, 8);
+        }
+        function digitsOnly(e) {
+        e.target.value = e.target.value.replace(/[^\d\-]/g, "");
+        }
+
+        // ---- 検証
+        const form = document.getElementById("checkout-form");
+        const placeBtn = document.getElementById("place-order");
+        const alertBox = document.getElementById("form-alert");
+
+        function setError(id, show) {
+        const input = document.getElementById(id);
+        const msg = document.querySelector(`[data-error-for="${id}"]`);
+        if (!msg) return;
+        msg.classList.toggle("hidden", !show);
+        input.setAttribute("aria-invalid", show ? "true" : "false");
+        }
+
+        function validate() {
+        let ok = true;
+        // 必須
+        ["name","kana","email","email2","tel","zip","pref","city"].forEach((id) => {
+            const el = document.getElementById(id);
+            const valid = el.checkValidity();
+            setError(id, !valid);
+            if (!valid) ok = false;
+        });
+        // カタカナ
+        const kana = document.getElementById("kana");
+        if (kana.value && !kana.value.match(/^[\u30A0-\u30FF\sー－]+$/)) { setError("kana", true); ok = false; }
+
+        // email一致
+        const e1 = document.getElementById("email").value.trim();
+        const e2 = document.getElementById("email2").value.trim();
+        if (e1 !== e2) { setError("email2", true); ok = false; } else { setError("email2", false); }
+
+        // tel数字
+        const tel = document.getElementById("tel");
+        if (tel.value && !tel.value.match(/^[0-9\-]+$/)) { setError("tel", true); ok = false; }
+
+        // zip桁
+        const zip = document.getElementById("zip");
+        if (zip.value && !zip.value.match(/^\d{3}-?\d{4}$/)) { setError("zip", true); ok = false; }
+
+        // 同意
+        const agree = document.getElementById("agree").checked;
+        if (!agree) ok = false;
+
+        placeBtn.disabled = !ok;
+        alertBox.classList.toggle("hidden", ok);
+        if (!ok) {
+            alertBox.textContent = "入力内容を確認してください（必須項目、フォーマット、同意チェックなど）。";
+        }
+        return ok;
+        }
+
+        // ---- 同じ住所にコピー
+        function bindSameAsBuyer() {
+        const cb = document.getElementById("sameAsBuyer");
+        cb.addEventListener("change", () => {
+            if (!cb.checked) return;
+            // ここでは氏名から都道府県などへのコピーは要件に応じて実装。
+            // 代表例：電話番号を配送連絡先へ
+            const tel = document.getElementById("tel").value;
+            if (tel) document.getElementById("telShip").value = tel;
+        });
+        }
+
+        // ---- 送信
+        placeBtn.addEventListener("click", (e) => {
+        e.preventDefault();
+        if (!validate()) return;
+        // 実運用ではここでPOST/Fetch
+        alertBox.classList.remove("hidden");
+        alertBox.classList.remove("text-red-600");
+        alertBox.classList.add("text-green-700");
+        alertBox.textContent = "注文内容を送信しました（デモ）。";
+        });
+
+        // ---- 初期化
+        document.addEventListener("DOMContentLoaded", () => {
+        bindCart();
+        recalcTotals();
+
+        // 入力イベントで都度バリデーション
+        document.querySelectorAll("input, select, textarea").forEach((el) => {
+            el.addEventListener("input", () => validate());
+            el.addEventListener("blur", () => validate());
+        });
+
+        // 郵便番号・電話の整形
+        document.getElementById("zip").addEventListener("input", autoHyphenZip);
+        ["tel","telShip"].forEach(id => {
+            const el = document.getElementById(id);
+            el && el.addEventListener("input", digitsOnly);
+        });
+
+        bindSameAsBuyer();
+        });
+    </script>
+  </body>
+</html>

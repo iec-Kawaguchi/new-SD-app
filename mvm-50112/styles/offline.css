@@ -1,0 +1,19 @@
+.--hidden-offline {
+  display: none !important;
+}
+
+.--visible-offline {
+  display: block !important;
+}
+/*
+.--visible-offline {
+  display: none !important;
+}*/
+
+.modal--close {
+  display: none !important;
+}
+
+.article .curriculum--step--point--list .l--box figure img {
+  height: auto !important;
+}

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ja">
+    <head>
+    <meta charset="UTF-8" />
+    <title>申込期間登録</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- 親と同じ見た目にしたい場合：必要なCDNを再掲 -->
+    <style>
+        body {
+            font-family: "游ゴシック体", "Yu Gothic", "游ゴシック", YuGothic, sans-serif;
+        }
+    </style>
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+    </head>
+    <body class="bg-white text-gray-800 ">
+        <div class="p-6 ">
+            <h1 class="text-xl font-bold mb-4">参加団体登録</h1>
+            <p class="mb-4">本募集の参加団体を登録してください。</p>
+            <!-- ラッパー -->
+            <div class="text-gray-700 space-y-3 flex flex-col justify-between">
+                <main class="text-sm text-gray-700 space-y-3 flex flex-col">
+                    <!-- 入力部分 -->
+                    <div class="flex gap-4 mb-4">
+                        <select name="" id="" class="w-full max-w-72 rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-violet-400">
+                            <option value="">団体を選択してください</option>
+                            <option value="org-1">株式会社サンプル</option>
+                            <option value="org-2">株式会社テスト</option>
+                            <option value="org-3">株式会社デモ</option>
+                        </select>
+                        <select name="" id="" class="w-full max-w-72 rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-violet-400">
+                            <option value="">担当者を選択してください</option>
+                            <option value="role-1">山田</option>
+                            <option value="role-2">鈴木</option>
+                            <option value="role-3">佐藤</option>
+                        </select>
+                        <button class="rounded-md bg-blue-500 px-6 py-2 text-white">追加</button>
+                    </div>
+                    <!-- テーブル -->
+                    <div class="overflow-x-auto mt-6 pt-4">
+                        <table class="min-w-full text-left text-sm">
+                            <thead class="border-b-2 border-gray-200">
+                                <tr class="text-gray-500">
+                                    <th class="px-2 py-1 w-1"></th>
+                                    <th class="px-2 py-1">団体</th>
+                                    <th class="px-2 py-1">担当者</th>
+                                    <th class="px-2 py-1">メール</th>
+                                    <th class="px-2 py-1 text-center">役割</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200">
+                                <tr class="hover:bg-gray-50 group">
+                                    <td class="p-3 w-12"><span class="material-symbols-outlined text-red-600 text-sm opacity-0 group-hover:opacity-100">do_not_disturb_on</span></td>
+                                    <td class="p-3">株式会社サンプル</td>
+                                    <td class="p-3">山田</td>
+                                    <td class="p-3">yamada@example.com</td>
+                                    <td class="p-3 text-center"><span class="rounded-full bg-violet-100 text-violet-700 py-1 px-2">営業</span></td>
+                                </tr>
+                                <tr class="hover:bg-gray-50 group">
+                                    <td class="p-3 w-12"><span class="material-symbols-outlined text-red-600 text-sm opacity-0 group-hover:opacity-100">do_not_disturb_on</span></td>
+                                    <td class="p-3">株式会社テスト</td>
+                                    <td class="p-3">鈴木</td>
+                                    <td class="p-3">suzuki@example.com</td>
+                                    <td class="p-3 text-center"><span class="rounded-full bg-violet-100 text-violet-700 py-1 px-2">営業</span></td>
+                                </tr>
+                                <tr class="hover:bg-gray-50 group">
+                                    <td class="p-3 w-12"><span class="material-symbols-outlined text-red-600 text-sm opacity-0 group-hover:opacity-100">do_not_disturb_on</span></td>
+                                    <td class="p-3">株式会社デモ</td>
+                                    <td class="p-3">佐藤</td>
+                                    <td class="p-3">sato@example.com</td>
+                                    <td class="p-3 text-center"><span class="rounded-full bg-violet-100 text-violet-700 py-1 px-2">営業</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </main>
+            </div>
+            <!-- footer -->
+            <div class="absolute bottom-0 right-0 flex p-6 gap-4">
+                <button class="w-32 rounded-lg bg-white border-2 px-3 py-2 text-gray-500">キャンセル</button>
+                <button class="w-32 rounded-lg bg-blue-500 px-3 py-2 text-white">登録する</button>
+            </div>
+        </div>
+    </body>
+</html>

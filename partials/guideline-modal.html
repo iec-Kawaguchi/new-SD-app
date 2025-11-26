@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="ja">
+    <head>
+        <meta charset="UTF-8" />
+        <title>募集要項登録（モック整理版＋サムネイル）</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <script src="https://cdn.tailwindcss.com"></script>
+        <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+        <style>
+            body { font-family:"游ゴシック体","Yu Gothic","游ゴシック",YuGothic,sans-serif; }
+            :root { --safe-bottom: env(safe-area-inset-bottom); }
+        </style>
+    </head>
+    <body class="bg-gray-50 text-gray-800 min-h-dvh overflow-y-auto overflow-hidden flex flex-col">
+        <!-- ヘッダー -->
+        <header class="px-6 pt-8 pb-4">
+            <h1 class="text-2xl font-bold tracking-tight flex items-center gap-2">
+                <span class="material-symbols-outlined text-gray-500">description</span>
+                募集要項登録
+            </h1>
+            <p class="mt-1 text-sm text-gray-600">本募集の募集要項を登録してください。</p>
+        </header>
+
+        <!-- 2カラム：左=入力 / 右=プレビュー -->
+        <main class="flex-1 min-h-0 px-6 pb-40">
+            <div class="grid grid-cols-1 gap-6 min-h-0">
+                <!-- 左：入力（スクロール可） -->
+                <section class="rounded-2xl bg-white border border-gray-200/70 shadow-sm flex flex-col min-h-0">
+                    <!-- <div class="px-5 py-4 border-b">
+                    <div class="flex items-center gap-2">
+                        <span class="material-symbols-outlined text-gray-500">edit</span>
+                        <h2 class="text-lg font-semibold">入力</h2>
+                    </div>
+                    </div> -->
+
+                    <div class="px-5 py-5 space-y-6 overflow-y-auto min-h-0">
+                    <!-- サムネイル -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-900 mb-1">サムネイル</label>
+                        <p class="text-xs text-gray-500 mb-2">推奨 16:9（横長） / JPG・PNG・WebP / 5MB まで</p>
+
+                        <!-- 入力行 -->
+                        <div class="grid grid-cols-1 md:grid-cols-[minmax(0,1fr)_16rem] gap-4">
+                            <!-- ドロップゾーン -->
+                            <div id="thumbDrop"
+                                class="group relative rounded-xl border border-dashed border-gray-300 bg-gray-50/60 hover:bg-gray-50 transition p-4 flex items-center justify-center cursor-pointer">
+                                <input id="thumbInput" type="file" accept="image/*" class="sr-only" />
+                                <div class="text-center pointer-events-none">
+                                    <span class="material-symbols-outlined text-3xl text-gray-400 group-hover:text-gray-500">add_photo_alternate</span>
+                                    <p class="mt-1 text-sm text-gray-700">
+                                        画像をドラッグ&ドロップ<br class="hidden sm:block" />
+                                        または <span class="underline">クリックして選択</span>
+                                    </p>
+                                    <p class="text-xs text-gray-500 mt-1">JPG / PNG / WebP（5MBまで）</p>
+                                </div>
+
+                                <!-- ドロップ中のブラー層 -->
+                                <div id="thumbDropMask" class="hidden absolute inset-0 rounded-xl bg-blue-500/10 ring-2 ring-blue-400 pointer-events-none"></div>
+                            </div>
+
+                            <!-- プレビュー -->
+                            <div class="space-y-2">
+                                <div class="relative w-full rounded-lg overflow-hidden bg-gray-100 border border-gray-200 aspect-[16/9]">
+                                    <img id="thumbPreview" alt="" class="w-full h-full object-cover hidden" />
+                                    <div id="thumbEmpty" class="absolute inset-0 grid place-items-center text-gray-400 text-sm">
+                                        プレビュー（16:9）
+                                    </div>
+                                </div>
+                                <div class="flex gap-2">
+                                    <button id="thumbSelectBtn" type="button"
+                                            class="h-10 px-3 rounded-lg bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 flex items-center gap-1">
+                                        <span class="material-symbols-outlined text-base">upload</span> 画像を選ぶ
+                                    </button>
+                                    <button id="thumbClearBtn" type="button"
+                                            class="h-10 px-3 rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 flex items-center gap-1 disabled:opacity-50 disabled:cursor-not-allowed"
+                                            disabled>
+                                        <span class="material-symbols-outlined text-base">delete</span> クリア
+                                    </button>
+                                </div>
+                                <p id="thumbMeta" class="text-xs text-gray-500"></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- タイトル -->
+                    <div>
+                        <label for="title" class="block text-sm font-medium text-gray-900 mb-1">タイトル</label>
+                        <div class="flex justify-between w-full max-w-3xl">
+                            <p class="text-xs text-gray-500 mb-2 flex">サムネイル未設定時の表示用</p>
+                            <div class=" text-xs text-gray-400">
+                                <span id="titleCount">0</span>/60
+                            </div>
+                        </div>
+                        <input id="title" type="text" maxlength="60"
+                                    class="w-full max-w-3xl rounded-lg border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    placeholder="例）FY26 自己啓発制度 募集要項" />
+                    </div>
+
+                    <!-- 本文 -->
+                    <div>
+                        <label for="body" class="block text-sm font-medium text-gray-900 mb-1">本文</label>
+                        <div class="flex justify-between w-full max-w-4xl">
+                            <p class="text-xs text-gray-500 mb-2">概要・対象・期間・費用・申込方法など</p>
+                            <div class="text-xs text-gray-400">
+                                <span id="bodyCount">0</span>/2000
+                            </div>
+                        </div>
+                        <textarea id="body" rows="8" maxlength="2000"
+                                    class="w-full max-w-4xl rounded-lg border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+                                    placeholder=""></textarea>
+                    </div>
+
+                    <!-- 追記フィールドの場所（ダミー） -->
+                    <div class="rounded-xl border border-dashed border-gray-200 p-4 bg-gray-50/50">
+                        <p class="text-sm text-gray-600">
+                        他に必要な必須項目があればここに追加。
+                        </p>
+                    </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+
+        <!-- 固定アクションバー -->
+        <div class="fixed bottom-0 inset-x-0 z-40">
+            <div class="mx-auto max-w-7xl px-6 pb-[calc(12px+var(--safe-bottom))]">
+                <div class="rounded-2xl bg-white/95 backdrop-blur shadow-[0_-6px_24px_-8px_rgba(0,0,0,0.18)] border border-gray-200">
+                    <div class="flex items-center justify-end gap-3 p-4">
+                        <button class="h-10 px-4 rounded-lg border border-gray-300 bg-white text-gray-600 hover:bg-gray-50">キャンセル</button>
+                        <button class="h-10 px-5 rounded-lg bg-blue-600 text-white font-medium hover:bg-blue-700 active:scale-[.99] transition">登録する</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    <!-- 軽量JS：文字数/プレビュー/サムネイル -->
+    <script>
+        // 文字数＆本文プレビュー
+        const titleEl = document.getElementById('title');
+        const bodyEl  = document.getElementById('body');
+        const titleCount = document.getElementById('titleCount');
+        const bodyCount  = document.getElementById('bodyCount');
+        const pvTitle = document.getElementById('pv-title');
+        const pvBody  = document.getElementById('pv-body');
+        function autosize(el){ el.style.height='auto'; el.style.height=Math.min(el.scrollHeight, 480)+'px'; }
+        function syncTitle(){ titleCount.textContent = titleEl.value.length; pvTitle.textContent = titleEl.value || '（タイトルがここに表示されます）'; }
+        function syncBody(){ bodyCount.textContent = bodyEl.value.length; autosize(bodyEl); pvBody.textContent = bodyEl.value || '（本文がここに表示されます）'; }
+        titleEl.addEventListener('input', syncTitle);
+        bodyEl.addEventListener('input',  syncBody);
+        syncTitle(); syncBody();
+
+        // サムネイル：入力・D&D・プレビュー
+        const drop     = document.getElementById('thumbDrop');
+        const dropMask = document.getElementById('thumbDropMask');
+        const input    = document.getElementById('thumbInput');
+        const selectBtn= document.getElementById('thumbSelectBtn');
+        const clearBtn = document.getElementById('thumbClearBtn');
+        const preview  = document.getElementById('thumbPreview');
+        const empty    = document.getElementById('thumbEmpty');
+        const meta     = document.getElementById('thumbMeta');
+        // const pvThumb  = document.getElementById('pv-thumb');
+        // const pvEmpty  = document.getElementById('pv-thumb-empty');
+
+        const MAX_MB = 5;
+
+        function setPreview(file){
+        if(!file) return;
+        const okType = /^image\//.test(file.type);
+        const okSize = file.size <= MAX_MB*1024*1024;
+        if(!okType || !okSize){
+            alert(okType ? `サイズが大きすぎます（${MAX_MB}MBまで）` : '画像ファイルを選択してください');
+            return;
+        }
+        const url = URL.createObjectURL(file);
+        preview.src = url; preview.classList.remove('hidden'); empty.classList.add('hidden');
+        //pvThumb.src = url; pvThumb.classList.remove('hidden'); pvEmpty.classList.add('hidden');
+        clearBtn.disabled = false;
+        meta.textContent = `${file.name}（${(file.size/1024/1024).toFixed(2)}MB）`;
+        }
+        function clearPreview(){
+        preview.removeAttribute('src'); preview.classList.add('hidden'); empty.classList.remove('hidden');
+        //pvThumb.removeAttribute('src'); pvThumb.classList.add('hidden');  pvEmpty.classList.remove('hidden');
+        input.value = ''; meta.textContent = ''; clearBtn.disabled = true;
+        }
+
+        // クリック選択
+        drop.addEventListener('click', () => input.click());
+        selectBtn.addEventListener('click', () => input.click());
+        input.addEventListener('change', (e) => setPreview(e.target.files?.[0]));
+
+        // D&D
+        ['dragenter','dragover'].forEach(ev => drop.addEventListener(ev, (e)=>{e.preventDefault(); dropMask.classList.remove('hidden');}));
+        ['dragleave','drop'].forEach(ev => drop.addEventListener(ev, (e)=>{e.preventDefault(); dropMask.classList.add('hidden');}));
+        drop.addEventListener('drop', (e)=>{
+        const file = e.dataTransfer.files?.[0]; if(file) setPreview(file);
+        });
+
+        // クリア
+        clearBtn.addEventListener('click', clearPreview);
+    </script>
+    </body>
+</html>

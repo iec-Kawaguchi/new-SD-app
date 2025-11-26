@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="ja">
+    <head>
+        <meta charset="UTF-8" />
+        <title>申込期間登録</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <!-- 親と同じ見た目にしたい場合：必要なCDNを再掲 -->
+        <style>
+            body {
+                font-family: "游ゴシック体", "Yu Gothic", "游ゴシック", YuGothic, sans-serif;
+            }
+        </style>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+    </head>
+    <body class="bg-gray-50 text-gray-800">
+  <div class="min-h-dvh">
+    <!-- ページヘッダー -->
+    <header class="px-6 pt-8 pb-4">
+      <h1 class="text-2xl font-bold tracking-tight">料金確認依頼</h1>
+      <p class="mt-1 text-sm text-gray-600">参加団体への料金確認依頼書を作成します。</p>
+    </header>
+
+    <main class="px-6 pb-40 text-sm space-y-6">
+      <!-- 団体リスト（カード行） -->
+      <section class="space-y-3">
+        <!-- Row: 株式会社サンプル -->
+        <div class="group flex items-center gap-4 rounded-xl bg-white border border-gray-200 shadow-sm px-4 py-4 hover:shadow-md hover:bg-gray-50 transition">
+          <div class="shrink-0">
+            <span class="inline-grid place-items-center size-10 rounded-full bg-blue-50 text-blue-600 font-semibold">サ</span>
+          </div>
+          <div class="min-w-0 flex-1">
+            <div class="flex flex-wrap items-center gap-2">
+              <p class="font-medium text-gray-900 truncate">株式会社サンプル</p>
+              <span class="px-2 py-0.5 rounded-full text-[11px] font-medium bg-slate-100 text-slate-700">担当：山田</span>
+            </div>
+            <p class="text-gray-500 text-xs mt-0.5">yamada@example.com</p>
+          </div>
+            <div class="toggle bg-gray-200 w-[4.5rem] h-[2rem] rounded-full flex items-center justify-between cursor-pointer"
+                data-toggle-state="off">
+                <div class="text-xs m-1 ml-3 flex text-white font-bold hidden label-on">対象</div>
+                <div class="bg-white w-[1.5rem] h-[1.5rem] m-1 rounded-full knob"></div>
+                <div class="text-xs m-1 mr-3 flex text-gray-700 label-off">除外</div>
+            </div>
+           
+        </div>
+
+        <!-- Row: 株式会社テスト -->
+        <div class="group flex items-center gap-4 rounded-xl bg-white border border-gray-200 shadow-sm px-4 py-4 hover:shadow-md hover:bg-gray-50 transition">
+          <div class="shrink-0">
+            <span class="inline-grid place-items-center size-10 rounded-full bg-emerald-50 text-emerald-600 font-semibold">テ</span>
+          </div>
+          <div class="min-w-0 flex-1">
+            <div class="flex flex-wrap items-center gap-2">
+              <p class="font-medium text-gray-900 truncate">株式会社テスト</p>
+              <span class="px-2 py-0.5 rounded-full text-[11px] font-medium bg-slate-100 text-slate-700">担当：鈴木</span>
+            </div>
+            <p class="text-gray-500 text-xs mt-0.5">suzuki@example.com</p>
+          </div>
+           <div class="toggle bg-blue-500 w-[4.5rem] h-[2rem] rounded-full flex items-center justify-between cursor-pointer"
+                       data-toggle-state="on">
+                    <div class="text-xs m-1 ml-3 flex text-white font-bold label-on">対象</div>
+                    <div class="bg-white w-[1.5rem] h-[1.5rem] m-1 rounded-full knob"></div>
+                    <div class="text-xs m-1 mr-3 flex text-gray-700 hidden label-off">除外</div>
+                  </div>
+        </div>
+
+        <!-- Row: 株式会社デモ -->
+        <div class="group flex items-center gap-4 rounded-xl bg-white border border-gray-200 shadow-sm px-4 py-4 hover:shadow-md hover:bg-gray-50 transition">
+          <div class="shrink-0">
+            <span class="inline-grid place-items-center size-10 rounded-full bg-violet-50 text-violet-600 font-semibold">デ</span>
+          </div>
+          <div class="min-w-0 flex-1">
+            <div class="flex flex-wrap items-center gap-2">
+              <p class="font-medium text-gray-900 truncate">株式会社デモ</p>
+              <span class="px-2 py-0.5 rounded-full text-[11px] font-medium bg-slate-100 text-slate-700">担当：佐藤</span>
+            </div>
+            <p class="text-gray-500 text-xs mt-0.5">sato@example.com</p>
+          </div>
+           <div class="toggle bg-blue-500 w-[4.5rem] h-[2rem] rounded-full flex items-center justify-between cursor-pointer"
+                       data-toggle-state="on">
+                    <div class="text-xs m-1 ml-3 flex text-white font-bold label-on">対象</div>
+                    <div class="bg-white w-[1.5rem] h-[1.5rem] m-1 rounded-full knob"></div>
+                    <div class="text-xs m-1 mr-3 flex text-gray-700 hidden label-off">除外</div>
+                  </div>
+        </div>
+      </section>
+
+      <!-- コメント・期日 -->
+      <section class="grid grid-cols-1 md:grid-cols-1 gap-6">
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-200/60 p-5">
+          <div class="flex items-center gap-2 mb-3">
+            <span class="material-symbols-outlined text-gray-500" aria-hidden="true">check_circle</span>
+            <h2 class="font-semibold">確認項目オプション</h2>
+            
+          </div>
+            <!-- 再受講可否 -->
+            <div class="flex items-center justify-between gap-4 px-4 py-3">
+                <div class="">
+                    <div class="text-sm font-medium text-gray-900">再受講可否</div>
+                    <div class="text-xs text-gray-500 mt-0.5">コース単位での再受講設定</div>
+                </div>
+                <div class="">
+                    <div class="toggle bg-blue-500 w-[4.5rem] h-[2rem] rounded-full flex items-center justify-between cursor-pointer"
+                        data-toggle-state="on">
+                    <div class="text-xs m-1 ml-3 flex text-white font-bold label-on">あり</div>
+                    <div class="bg-white w-[1.5rem] h-[1.5rem] m-1 rounded-full knob"></div>
+                    <div class="text-xs m-1 mr-3 flex text-gray-700 hidden label-off">なし</div>
+                    </div>
+                </div>
+            </div>
+            <!-- 再受講可否 -->
+            <div class="flex items-center justify-between gap-4 px-4 py-3">
+                <div class="">
+                    <div class="text-sm font-medium text-gray-900">修了条件</div>
+                    <div class="text-xs text-gray-500 mt-0.5">団体基準通りでOKならなし</div>
+                </div>
+                <div class="">
+                    <div class="toggle bg-gray-200 w-[4.5rem] h-[2rem] rounded-full flex items-center justify-between cursor-pointer"
+                    data-toggle-state="off">
+                    <div class="text-xs m-1 ml-3 flex text-white font-bold hidden label-on">あり</div>
+                    <div class="bg-white w-[1.5rem] h-[1.5rem] m-1 rounded-full knob"></div>
+                    <div class="text-xs m-1 mr-3 flex text-gray-700 label-off">なし</div>
+                    </div>
+                </div>
+            </div>
+            <!-- 個別要件 -->
+            <div class="flex items-center justify-between gap-4 px-4 py-3">
+                <div class="">
+                    <div class="text-sm font-medium text-gray-900">ファイルアップロード</div>
+                    <div class="text-xs text-gray-500 mt-0.5">特集ページや媒体用の素材などの授受</div>
+                </div>
+                <div class="">
+                    <div class="toggle bg-blue-500 w-[4.5rem] h-[2rem] rounded-full flex items-center justify-between cursor-pointer"
+                        data-toggle-state="on">
+                    <div class="text-xs m-1 ml-3 flex text-white font-bold label-on">あり</div>
+                    <div class="bg-white w-[1.5rem] h-[1.5rem] m-1 rounded-full knob"></div>
+                    <div class="text-xs m-1 mr-3 flex text-gray-700 hidden label-off">なし</div>
+                    </div>
+                </div>
+                
+            </div>
+            <div class="px-4 py-3 ">
+                <div class="flex items-center gap-2 mb-3">
+                    <span class="material-symbols-outlined text-gray-500" aria-hidden="true">edit_note</span>
+                    <h2 class="">ファイルアップロードの要件・依頼内容※↑を「あり」にすると出現</h2>
+                </div>
+                <textarea id="free-comment" class="w-full h-36 rounded-lg border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" placeholder="PCコース体系図素材"></textarea>
+                <div class="mt-2 flex justify-end text-xs text-gray-500"><span id="char-count">0</span>/500</div>
+            </div>
+        
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-200/60 p-5">
+          <div class="flex items-center gap-2 mb-3">
+            <span class="material-symbols-outlined text-gray-500" aria-hidden="true">event</span>
+            <h2 class="font-semibold">回答期日</h2>
+          </div>
+          <input type="date" class="rounded-lg border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 w-[12rem]">
+          <p class="mt-2 text-xs text-gray-500">※ 期日を過ぎると自動でリマインドが送られます</p>
+        </div>
+      </section>
+    </main>
+
+    <!-- 固定アクションバー -->
+    <div class="fixed bottom-0 inset-x-0 z-50">
+      <div class="mx-auto max-w-5xl px-6 pb-[calc(12px+var(--safe-bottom))]">
+        <div class="rounded-2xl bg-white/95 backdrop-blur shadow-[0_-6px_24px_-8px_rgba(0,0,0,0.18)] border border-gray-200">
+          <div class="flex items-center justify-end gap-3 p-4">
+            <button class="h-10 px-4 rounded-lg border border-gray-300 bg-white text-gray-600 hover:bg-gray-50">キャンセル</button>
+            <button class="h-10 px-5 rounded-lg bg-blue-600 text-white font-medium hover:bg-blue-700 active:scale-[.99] transition">
+              確認依頼を送信する
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+
+  </script>
+</body>
+</html>

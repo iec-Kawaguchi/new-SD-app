@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="ja">
+    <head>
+        <meta charset="UTF-8">
+        <title>New SD App</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nouislider@15.7.0/dist/nouislider.min.css">
+        <script src="https://cdn.jsdelivr.net/npm/nouislider@15.7.0/dist/nouislider.min.js"></script>
+        <script type="module" src="../js/modules/dashboard/index.js"></script>
+        <script src="./js/role-visibility.js" defer></script>
+        <script src="./js/mock-ui.js" defer></script>
+        <style>
+            body {
+                font-family: "游ゴシック体", "Yu Gothic", "游ゴシック", YuGothic, sans-serif;
+            }
+        </style>
+    </head>
+    <body class="bg-gray-100 min-h-screen flex flex-col">
+        <div id="app-header"></div>
+        <main class="flex flex-1">
+            <div id="app-sidebar"></div>
+
+            <div class="p-10 flex-1 bg-gray-200">
+                <div class="flex justify-between items-center mb-4">
+                    <div class="text-2xl font-bold text-gray-700">特集1　編集</div>
+                </div>
+                <div class="bg-white w-full  rounded-xl flex flex-col mx-auto shadow-md p-6 space-y-6">
+                    <div class="flex flex-col">
+                        <div class="font-bold text-gray-700">特集名</div>
+                        <input type="text" class="border p-2 px-4 w-full rounded-md max-w-xl" placeholder="特集名を入力" value="特集１">
+                    </div>
+                    <div class="flex flex-col">
+                        <div class="font-bold text-gray-700">サムネイル</div>
+                        <div class="rounded bg-gray-200 p-2 px-4 mb-2 flex inline-flex w-max space-x-4">
+                            <div class="flex items-center cursor-pointer">
+                                image1.webp
+                                <span class="material-symbols-outlined  ml-2 text-sm">close</span>
+                            </div>
+                        </div>
+                        <img src="img/slide1.webp" alt="" class="rounded-lg max-h-92 max-w-xl w-auto h-auto object-cover border">
+                    </div>
+                    <div class="flex flex-col">
+                        <div class="font-bold text-gray-700">HTML一式</div>
+                        <div class="rounded bg-gray-200 p-2 px-4 mb-2 flex inline-flex w-max space-x-4">
+                            <div class="flex items-center cursor-pointer">
+                                html.zip
+                                <span class="material-symbols-outlined ml-2 text-sm">close</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex flex-col">
+                        <div class="font-bold text-gray-700">企業指定　※指定するとその企業でのみ利用できます</div>
+                        <select name="" id="" class="border p-2 px-4 w-full rounded-md max-w-xl">
+                            <option value="">指定しない</option>
+                            <option value="">201129.○○株式会社</option>
+                            <option value="">201130.△△株式会社</option>
+                        </select>
+                    </div>
+                    <div class="flex flex-col">
+                        <div class="font-bold text-gray-700">ステータス</div>
+                        <select name="" id="" class="border p-2 px-4 w-full rounded-md max-w-xl">
+                            <option value="">非公開</option>
+                            <option value="">公開</option>
+                        </select>
+                    </div>
+                    <div class="p-4 w-full">
+                        
+                    </div>
+                    
+                </div>
+              
+        </main>
+       
+        <!-- ローディングアニメーション -->
+        <div id="loading" class="fixed inset-0 bg-white/60 flex items-center justify-center z-50 hidden">
+            <div class="animate-spin rounded-full h-12 w-12 border-4 border-blue-500 border-t-transparent"></div>
+        </div>
+        <!-- トースト通知コンテナ -->
+        <div id="toast-container" class="fixed bottom-5 right-5 space-y-2 z-50"></div>
+    </body>
+</html>
+<script>
+  window.addEventListener('DOMContentLoaded', () => {
+    // 初期ロールやブランド名・ユーザー名は自由に
+    MockUI.injectHeader('#app-header', {
+      userName: 'Test User',
+      brand: 'New SD App',
+      initialRole: 'iec', // 初回roleが未指定ならiecをセット
+    });
+    MockUI.injectSidebar('#app-sidebar');
+
+    // サイドバー挿入直後に data-visible-for を反映（MockUI内でもApplyしていますが念のため）
+    RoleMock.applyRoleVisibility();
+  });
+</script>

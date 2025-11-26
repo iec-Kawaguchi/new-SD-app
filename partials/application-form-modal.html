@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <title>申込フォーム登録（モック・整理版）</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+    <style>
+      body { font-family: "游ゴシック体","Yu Gothic","游ゴシック",YuGothic,sans-serif; }
+      :root { --safe-bottom: env(safe-area-inset-bottom); }
+      .toggle { transition: all .25s ease; }
+      .knob { transition: transform .25s ease; }
+      .tri-btn[aria-pressed="true"] { background: rgb(59 130 246); color:#fff; font-weight:600; }
+      .tri-btn:not([aria-pressed="true"]):hover { background: rgb(243 244 246); }
+    </style>
+  </head>
+  <body class="bg-gray-50 text-gray-800 min-h-dvh overflow-hidden flex flex-col overflow-y-auto">
+    <!-- ページヘッダー -->
+    <header class="px-6 pt-8 pb-4">
+      <h1 class="text-2xl font-bold tracking-tight flex items-center gap-2">
+        <span class="material-symbols-outlined text-gray-500">assignment_add</span>
+        申込フォーム登録
+      </h1>
+      <p class="mt-1 text-sm text-gray-600">申込フォームで登録を求める項目を設定してください。</p>
+    </header>
+
+    <!-- 2カラム：左=設定 / 右=プレビュー -->
+    <main class="px-6 pb-40 gap-6 flex-1 min-h-0 overflow-hidden">
+      <!-- 左：設定パネル（スクロール可） -->
+      <section class="rounded-2xl bg-white border border-gray-200/70 shadow-sm min-h-0 overflow-hidden flex flex-col">
+
+        <!-- コンテンツ（縦スクロール） -->
+        <div class="px-5 py-4 min-h-0 flex-1 overflow-y-auto">
+          <!-- 基本情報 -->
+          <div class="mb-8">
+            <div class="flex items-center gap-2 mb-3">
+              <span class="material-symbols-outlined text-gray-500">badge</span>
+              <h3 class="text-lg font-semibold">基本情報</h3>
+            </div>
+
+            <div class="divide-y divide-gray-100 rounded-xl border border-gray-200 bg-white">
+              <!-- 氏名（トグル） -->
+              <div class="flex items-center gap-4 px-4 py-3">
+                <div class="w-40 shrink-0">
+                  <div class="text-sm font-medium text-gray-900">氏名</div>
+                  <div class="text-xs text-gray-500 mt-0.5">必須固定の想定（モック）</div>
+                </div>
+                <div class="flex-1">
+                  <!-- 既存トグルそのまま -->
+                  <div class="bg-blue-500 w-[4.5rem] h-[2rem] rounded-full flex items-center justify-center cursor-pointer"
+                       data-name="name">
+                    <div class="label-on text-xs m-1 flex text-white font-bold label-on">必須</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 性別（Tri） -->
+              <div class="flex items-center gap-4 px-4 py-3">
+                <div class="w-40 shrink-0">
+                  <div class="text-sm font-medium text-gray-900">性別</div>
+                  <div class="text-xs text-gray-500 mt-0.5">不要なら「なし」を選択</div>
+                </div>
+                <div class="flex-1">
+                  <!-- 既存 Tri-State そのまま -->
+                  <div class="tri-state inline-block" role="radiogroup" aria-label=""
+                       data-name="email_requirement" data-value="optional">
+                    <input type="radio" name="email_requirement_radio" value="none" class="sr-only" />
+                    <input type="radio" name="email_requirement_radio" value="optional" class="sr-only" />
+                    <input type="radio" name="email_requirement_radio" value="required" class="sr-only" />
+                    <div class="inline-flex rounded-lg border overflow-hidden">
+                      <button type="button" data-val="none" class="tri-btn px-3 py-1.5 text-sm border-r" aria-pressed="true">なし</button>
+                      <button type="button" data-val="optional" class="tri-btn px-3 py-1.5 text-sm border-r">任意</button>
+                      <button type="button" data-val="required" class="tri-btn px-3 py-1.5 text-sm">必須</button>
+                    </div>
+                  </div>
+                  <input type="hidden" name="email_requirement" value="none" />
+                </div>
+              </div>
+
+              <!-- 所属（Tri） -->
+              <div class="flex items-center gap-4 px-4 py-3">
+                <div class="w-40 shrink-0">
+                  <div class="text-sm font-medium text-gray-900">所属</div>
+                  <div class="text-xs text-gray-500 mt-0.5">会社名・部署など</div>
+                </div>
+                <div class="flex-1">
+                  <div class="tri-state inline-block" role="radiogroup" aria-label=""
+                       data-name="email_requirement" data-value="required">
+                    <input type="radio" name="email_requirement_radio" value="none" class="sr-only" />
+                    <input type="radio" name="email_requirement_radio" value="optional" class="sr-only" />
+                    <input type="radio" name="email_requirement_radio" value="required" class="sr-only" />
+                    <div class="inline-flex rounded-lg border overflow-hidden">
+                      <button type="button" data-val="none" class="tri-btn px-3 py-1.5 text-sm border-r">なし</button>
+                      <button type="button" data-val="optional" class="tri-btn px-3 py-1.5 text-sm border-r">任意</button>
+                      <button type="button" data-val="required" class="tri-btn px-3 py-1.5 text-sm" aria-pressed="true">必須</button>
+                    </div>
+                  </div>
+                  <input type="hidden" name="email_requirement" value="none" />
+                </div>
+              </div>
+
+              <!-- メール（Tri） -->
+              <div class="flex items-center gap-4 px-4 py-3">
+                <div class="w-40 shrink-0">
+                  <div class="text-sm font-medium text-gray-900">メールアドレス</div>
+                  <div class="text-xs text-gray-500 mt-0.5">連絡用に推奨</div>
+                </div>
+                <div class="flex-1">
+                  <div class="tri-state inline-block" role="radiogroup" aria-label="メールアドレスの必須設定"
+                       data-name="email_requirement" data-value="required">
+                    <input type="radio" name="email_requirement_radio" value="none" class="sr-only" />
+                    <input type="radio" name="email_requirement_radio" value="optional" class="sr-only" />
+                    <input type="radio" name="email_requirement_radio" value="required" class="sr-only" />
+                    <div class="inline-flex rounded-lg border overflow-hidden">
+                      <button type="button" data-val="none" class="tri-btn px-3 py-1.5 text-sm border-r" aria-pressed="true">なし</button>
+                      <button type="button" data-val="optional" class="tri-btn px-3 py-1.5 text-sm border-r">任意</button>
+                      <button type="button" data-val="required" class="tri-btn px-3 py-1.5 text-sm">必須</button>
+                    </div>
+                  </div>
+                  <input type="hidden" name="email_requirement" value="none" />
+                </div>
+              </div>
+
+              <!-- 住所（Tri） -->
+              <div class="flex items-center gap-4 px-4 py-3">
+                <div class="w-40 shrink-0">
+                  <div class="text-sm font-medium text-gray-900">住所</div>
+                  <div class="text-xs text-gray-500 mt-0.5">教材配送などがある場合に</div>
+                </div>
+                <div class="flex-1">
+                  <div class="tri-state inline-block" role="radiogroup" aria-label="メールアドレスの必須設定"
+                       data-name="email_requirement" data-value="none">
+                    <input type="radio" name="email_requirement_radio" value="none" class="sr-only" />
+                    <input type="radio" name="email_requirement_radio" value="optional" class="sr-only" />
+                    <input type="radio" name="email_requirement_radio" value="required" class="sr-only" />
+                    <div class="inline-flex rounded-lg border overflow-hidden">
+                      <button type="button" data-val="none" class="tri-btn px-3 py-1.5 text-sm border-r" aria-pressed="true">なし</button>
+                      <button type="button" data-val="optional" class="tri-btn px-3 py-1.5 text-sm border-r">任意</button>
+                      <button type="button" data-val="required" class="tri-btn px-3 py-1.5 text-sm">必須</button>
+                    </div>
+                  </div>
+                  <input type="hidden" name="email_requirement" value="none" />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- オプション設定 -->
+          <div class="mb-8">
+            <div class="flex items-center gap-2 mb-3">
+              <span class="material-symbols-outlined text-gray-500">settings_suggest</span>
+              <h3 class="text-lg font-semibold">オプション設定</h3>
+            </div>
+
+            <div class="divide-y divide-gray-100 rounded-xl border border-gray-200 bg-white">
+              <!-- 上司承認（トグル） -->
+              <div class="flex items-center gap-4 px-4 py-3">
+                <div class="w-40 shrink-0">
+                  <div class="text-sm font-medium text-gray-900">上司承認</div>
+                  <div class="text-xs text-gray-500 mt-0.5">必要な場合のみON</div>
+                </div>
+                <div class="flex-1">
+                  <!-- 既存トグルそのまま -->
+                  <div class="toggle bg-gray-200 w-[4.5rem] h-[2rem] rounded-full flex items-center justify-between cursor-pointer"
+                       data-toggle-state="off">
+                    <div class="text-xs m-1 ml-3 flex text-white font-bold hidden label-on">あり</div>
+                    <div class="bg-white w-[1.5rem] h-[1.5rem] m-1 rounded-full knob"></div>
+                    <div class="text-xs m-1 mr-3 flex text-gray-700 label-off">なし</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- アンケート（トグル） -->
+              <div class="flex items-center gap-4 px-4 py-3">
+                <div class="w-40 shrink-0">
+                  <div class="text-sm font-medium text-gray-900">アンケート</div>
+                  <div class="text-xs text-gray-500 mt-0.5">事後アンケートの有無</div>
+                </div>
+                <div class="flex-1">
+                  <div class="toggle bg-blue-500 w-[4.5rem] h-[2rem] rounded-full flex items-center justify-between cursor-pointer"
+                       data-toggle-state="on">
+                    <div class="text-xs m-1 ml-3 flex text-white font-bold label-on">あり</div>
+                    <div class="bg-white w-[1.5rem] h-[1.5rem] m-1 rounded-full knob"></div>
+                    <div class="text-xs m-1 mr-3 flex text-gray-700 hidden label-off">なし</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- アンケート項目（モックの入れ物だけ） -->
+              <div class="px-4 py-4">
+                <div class="rounded-xl border border-dashed border-blue-200 bg-blue-50/50 p-4 h-52">
+                  <div class="flex items-center gap-2 mb-1">
+                    <span class="material-symbols-outlined text-blue-500">list_alt</span>
+                    <p class="font-medium text-blue-800">アンケート項目（モック）</p>
+                  </div>
+                  <p class="text-xs text-blue-900/80">
+                    ON時にここへ項目カードが並ぶ想定。モックではプレースホルダのみ表示しています。
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- 右：プレビュー（モック） -->
+      <!-- <aside class="rounded-2xl bg-white border border-gray-200/70 shadow-sm p-5 overflow-auto hidden lg:block">
+        <div class="flex items-center gap-2 mb-2">
+          <span class="material-symbols-outlined text-gray-500">visibility</span>
+          <h3 class="font-semibold">プレビュー</h3>
+        </div>
+        <p class="text-sm text-gray-500 mb-4">左の設定を変更すると、ここに入力フォームの想定UIが並ぶ想定（モック）。</p>
+
+        <div class="space-y-4">
+          <div class="rounded-xl border border-gray-200 p-4">
+            <label class="block text-sm font-medium text-gray-800 mb-1">氏名 <span class="text-red-500 align-super text-xs">必須</span></label>
+            <input class="w-full rounded-lg border border-gray-300 px-3 py-2" placeholder="山田 太郎" />
+          </div>
+
+          <div class="rounded-xl border border-gray-200 p-4">
+            <label class="block text-sm font-medium text-gray-800 mb-1">メールアドレス</label>
+            <input class="w-full rounded-lg border border-gray-300 px-3 py-2" placeholder="example@example.com" />
+          </div>
+
+          <div class="rounded-xl border border-gray-200 p-4">
+            <label class="block text-sm font-medium text-gray-800 mb-1">住所</label>
+            <input class="w-full rounded-lg border border-gray-300 px-3 py-2" placeholder="東京都〇〇区…" />
+          </div>
+        </div>
+      </aside> -->
+    </main>
+
+    <!-- 固定アクションバー -->
+    <div class="fixed bottom-0 inset-x-0 z-40">
+      <div class="mx-auto max-w-7xl px-6 pb-[calc(12px+var(--safe-bottom))]">
+        <div class="rounded-2xl bg-white/95 backdrop-blur shadow-[0_-6px_24px_-8px_rgba(0,0,0,0.18)] border border-gray-200">
+          <div class="flex items-center justify-end gap-3 p-4">
+            <button class="h-10 px-4 rounded-lg border border-gray-300 bg-white text-gray-600 hover:bg-gray-50">キャンセル</button>
+            <button class="h-10 px-5 rounded-lg bg-blue-600 text-white font-medium hover:bg-blue-700 active:scale-[0.99] transition">登録する</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ▼ 既存のトグル / Tri-State JSはそのまま（中身は変更していません） -->
+    <script>
+      document.querySelectorAll('.toggle').forEach(toggle => {
+        const knob = toggle.querySelector('.knob');
+        const labelOn = toggle.querySelector('.label-on');
+        const labelOff = toggle.querySelector('.label-off');
+
+        // 初期位置（見た目をわずかに補正：ON時は右寄せ）
+        if (toggle.dataset.toggleState === 'on') { knob.style.transform = 'translateX(0)'; }
+
+        toggle.addEventListener('click', () => {
+          const isOn = toggle.dataset.toggleState === 'on';
+          if (isOn) {
+            toggle.dataset.toggleState = 'off';
+            toggle.classList.remove('bg-blue-500'); toggle.classList.add('bg-gray-200');
+            labelOn.classList.add('hidden'); labelOff.classList.remove('hidden');
+            knob.style.transform = 'translateX(0)';
+          } else {
+            toggle.dataset.toggleState = 'on';
+            toggle.classList.remove('bg-gray-200'); toggle.classList.add('bg-blue-500');
+            labelOn.classList.remove('hidden'); labelOff.classList.add('hidden');
+            knob.style.transform = 'translateX(0)';
+          }
+        });
+      });
+    </script>
+    <script>
+      // ------- Tri-State 共通初期化（元コード踏襲） -------
+      function initTriState(root) {
+        const hiddenInput = root.parentElement.querySelector('input[type="hidden"][name="' + root.dataset.name + '"]');
+        const radios = root.querySelectorAll('input[type="radio"]');
+        const btns = root.querySelectorAll('.tri-btn');
+
+        function setValue(val) {
+          btns.forEach(b => b.setAttribute('aria-pressed', String(b.dataset.val === val)));
+          radios.forEach(r => r.checked = (r.value === val));
+          if (hiddenInput) hiddenInput.value = val;
+          root.dataset.value = val;
+        }
+        setValue(root.dataset.value || 'none');
+
+        root.addEventListener('click', (e) => {
+          const btn = e.target.closest('.tri-btn');
+          if (!btn) return;
+          setValue(btn.dataset.val);
+        });
+
+        root.addEventListener('keydown', (e) => {
+          const order = ['none','optional','required'];
+          const cur = root.dataset.value || 'none';
+          let idx = order.indexOf(cur);
+          if (e.key === 'ArrowRight' || e.key.toLowerCase() === 'd') idx = Math.min(idx + 1, order.length - 1);
+          if (e.key === 'ArrowLeft'  || e.key.toLowerCase() === 'a') idx = Math.max(idx - 1, 0);
+          if (idx !== order.indexOf(cur)) { setValue(order[idx]); e.preventDefault(); }
+        });
+      }
+      document.querySelectorAll('.tri-state').forEach(initTriState);
+    </script>
+  </body>
+</html>

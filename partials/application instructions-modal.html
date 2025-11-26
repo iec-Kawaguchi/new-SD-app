@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="ja">
+    <head>
+        <meta charset="UTF-8" />
+        <title>申込指示登録</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <script src="https://cdn.tailwindcss.com"></script>
+        <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+        <style>
+            body {
+            font-family: "游ゴシック体", "Yu Gothic", "游ゴシック", YuGothic, sans-serif;
+            }
+            :root { --safe-bottom: env(safe-area-inset-bottom); }
+        </style>
+    </head>
+    <body class="bg-gray-50 text-gray-800 min-h-dvh overflow-y-auto overflow-hidden flex flex-col">
+        <!-- ヘッダー -->
+        <header class="px-6 pt-8 pb-4">
+            <h1 class="text-2xl font-bold flex items-center gap-2">
+                <span class="material-symbols-outlined text-gray-500">fact_check</span>
+                申込指示登録
+            </h1>
+            <p class="mt-1 text-sm text-gray-600">本募集の申込指示を登録してください。</p>
+        </header>
+
+        <!-- メイン領域 -->
+        <main class="flex-1 min-h-0 px-6 pb-40">
+            <section class="rounded-2xl bg-white border border-gray-200 shadow-sm p-6 flex flex-col min-h-0">
+                <div class="flex items-center gap-2">
+                    <span class="material-symbols-outlined text-gray-500">list_alt</span>
+                    <h2 class="text-lg font-semibold text-gray-800">申込指示設定</h2>
+                </div>
+
+                <!-- スクロール領域 -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 flex-1 min-h-0 overflow-y-auto px-2">
+                    <!-- 各設定行 -->
+                    <div class="flex flex-col">
+                        <label class="text-sm font-medium text-gray-800 mb-1">教材配送先指定</label>
+                        <select class="ml-1 rounded-lg border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
+                            <option>受講生宛</option>
+                            <option>企業宛</option>
+                        </select>
+                    </div>
+
+                    <div class="flex flex-col">
+                        <label class="text-sm font-medium text-gray-800 mb-1">成績報告先指定</label>
+                        <select class="rounded-lg border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
+                            <option>受講生宛</option>
+                            <option>企業宛</option>
+                        </select>
+                    </div>
+
+                    <div class="flex flex-col">
+                        <label class="text-sm font-medium text-gray-800 mb-1">請求書送付先</label>
+                        <select class="rounded-lg border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
+                            <option>受講生宛</option>
+                            <option>企業宛</option>
+                        </select>
+                    </div>
+
+                    <div class="flex flex-col">
+                        <label class="text-sm font-medium text-gray-800 mb-1">修了証送付先</label>
+                        <select class="rounded-lg border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
+                            <option>受講生宛</option>
+                            <option>企業宛</option>
+                        </select>
+                    </div>
+
+                    <div class="flex flex-col">
+                        <label class="text-sm font-medium text-gray-800 mb-1">再受講可否</label>
+                        <select class="rounded-lg border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
+                            <option>可</option>
+                            <option>不可</option>
+                        </select>
+                    </div>
+
+                    <div class="flex flex-col">
+                        <label class="text-sm font-medium text-gray-800 mb-1">報告フォーマット</label>
+                        <select class="rounded-lg border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
+                            <option>標準</option>
+                            <option>カスタム</option>
+                        </select>
+                    </div>
+
+                    
+                </div>
+                <!-- 特記事項 -->
+                <div class="px-2 my-4">
+                    <div class="flex justify-between">
+                        <label for="body" class="block text-sm font-medium text-gray-900 mb-1">その他特記事項</label>
+                        <div class="text-xs text-gray-400">
+                            <span id="bodyCount">0</span>/500
+                        </div>
+                    </div>
+                    <div class="relative">
+                    <textarea id="body" rows="8" maxlength="2000"
+                        class="w-full  rounded-lg border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+                        placeholder=""></textarea>
+                   
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- フッターアクションバー -->
+        <div class="fixed bottom-0 inset-x-0 z-40">
+            <div class="mx-auto max-w-5xl px-6 pb-[calc(12px+var(--safe-bottom))]">
+            <div class="rounded-t-2xl bg-white/95 backdrop-blur shadow-[0_-6px_24px_-8px_rgba(0,0,0,0.18)] border border-gray-200">
+                <div class="flex items-center justify-end gap-3 p-4">
+                <button class="h-10 px-4 rounded-lg border border-gray-300 bg-white text-gray-600 hover:bg-gray-50">キャンセル</button>
+                <button class="h-10 px-5 rounded-lg bg-blue-600 text-white font-medium hover:bg-blue-700 active:scale-[.99] transition">登録する</button>
+                </div>
+            </div>
+            </div>
+        </div>
+        <script>
+            // 文字数プレビュー
+            const bodyEl  = document.getElementById('body');
+            const bodyCount  = document.getElementById('bodyCount');
+            const pvBody  = document.getElementById('pv-body');
+            function autosize(el){ el.style.height='auto'; el.style.height=Math.min(el.scrollHeight, 480)+'px'; }
+            function syncBody(){ bodyCount.textContent = bodyEl.value.length; autosize(bodyEl); pvBody.textContent = bodyEl.value || '（本文がここに表示されます）'; }
+            bodyEl.addEventListener('input',  syncBody);
+            syncBody();
+        </script>
+    </body>
+</html>

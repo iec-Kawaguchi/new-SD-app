@@ -1,0 +1,470 @@
+[
+  {
+    "id": 1,
+    "title": "Z世代のためのマナー",
+    "code": "DF1001-80001",
+    "org": "他団体A",
+    "isNew": true,
+    "stdTag": "マナー",
+    "custom": ["おすすめ"],
+    "options":[
+        {"id":1, "name":"郵便版", "price":19910, "length":"3か月"},
+        {"id":2, "name":"WEB版", "price":19910, "length":"3か月"}
+    ]
+ },
+  {
+    "id": 2,
+    "title": "Excel基礎が完璧にわかる",
+    "code": "DF1002-80002",
+    "org": "他団体A",
+    "isNew": false,
+    "stdTag": "PCスキル",
+    "custom": ["新人向け"],
+    "options":[
+        {"id":1, "name":"通常版", "price":19910, "length":"3か月"},
+        {"id":2, "name":"課題増量版", "price":23110, "length":"4か月"}
+    ]
+  },
+  {
+    "id": 3,
+    "title": "マーケティングの嘘100",
+    "code": "DF1003-80003",
+    "org": "他団体A",
+    "isNew": false,
+    "stdTag": "マーケティング",
+    "custom": ["管理職向け"],
+    "options":[
+        {"id":1, "name":"", "price":19910, "length":"3か月"},
+    ]
+  },
+  {
+    "id": 4,
+    "title": "（仮）新コース 4",
+    "code": "DF1004-80004",
+    "org": "他団体A",
+    "isNew": false,
+    "stdTag": "DX",
+    "custom": ["おすすめ", "全額補助"]
+  },
+  {
+    "id": 5,
+    "title": "Excel基礎が完璧にわかる（応用編）",
+    "code": "DF1005-80005",
+    "org": "他団体A",
+    "isNew": true,
+    "stdTag": "PCスキル",
+    "custom": ["新人向け"]
+  },
+  {
+    "id": 6,
+    "title": "営業DX入門",
+    "code": "DF1006-80006",
+    "org": "他団体A",
+    "isNew": false,
+    "stdTag": "DX",
+    "custom": ["半額補助"]
+  },
+  {
+    "id": 7,
+    "title": "新人向けビジネスマナー",
+    "code": "DF1007-80007",
+    "org": "他団体A",
+    "isNew": true,
+    "stdTag": "マナー",
+    "custom": ["新人向け"]
+  },
+  {
+    "id": 8,
+    "title": "データ分析の基礎",
+    "code": "DF1008-80008",
+    "org": "他団体A",
+    "isNew": false,
+    "stdTag": "IT基礎",
+    "custom": ["全額補助"]
+  },
+  {
+    "id": 9,
+    "title": "マーケティング実践講座",
+    "code": "DF1009-80009",
+    "org": "他団体A",
+    "isNew": false,
+    "stdTag": "マーケティング",
+    "custom": ["管理職向け"]
+  },
+  {
+    "id": 10,
+    "title": "ITパスポート対策講座",
+    "code": "DF1010-80010",
+    "org": "他団体A",
+    "isNew": false,
+    "stdTag": "IT基礎",
+    "custom": ["新人向け"]
+  },
+
+  {
+    "id": 11,
+    "title": "Excelで学ぶ業務改善",
+    "code": "DF1011-80011",
+    "org": "他団体A",
+    "isNew": false,
+    "stdTag": "PCスキル",
+    "custom": ["おすすめ"]
+  },
+  {
+    "id": 12,
+    "title": "職場のコミュニケーション向上",
+    "code": "DF1012-80012",
+    "org": "他団体A",
+    "isNew": true,
+    "stdTag": "マナー",
+    "custom": ["新人向け"]
+  },
+  {
+    "id": 13,
+    "title": "図解で学ぶDX超入門",
+    "code": "DF1013-80013",
+    "org": "他団体A",
+    "isNew": false,
+    "stdTag": "DX",
+    "custom": ["半額補助"]
+  },
+  {
+    "id": 14,
+    "title": "（仮）新コース 14",
+    "code": "DF1014-80014",
+    "org": "他団体A",
+    "isNew": false,
+    "stdTag": "IT基礎",
+    "custom": ["全額補助"]
+  },
+  {
+    "id": 15,
+    "title": "PowerPointデザイン講座",
+    "code": "DF1015-80015",
+    "org": "他団体A",
+    "isNew": false,
+    "stdTag": "PCスキル",
+    "custom": ["おすすめ"]
+  },
+  {
+    "id": 16,
+    "title": "営業基礎スキル",
+    "code": "DF1016-80016",
+    "org": "他団体A",
+    "isNew": false,
+    "stdTag": "マーケティング",
+    "custom": ["新人向け"]
+  },
+  {
+    "id": 17,
+    "title": "Excelマクロ入門",
+    "code": "DF1017-80017",
+    "org": "他団体A",
+    "isNew": true,
+    "stdTag": "PCスキル",
+    "custom": ["管理職向け", "全額補助"]
+  },
+  {
+    "id": 18,
+    "title": "ビジネス文書作成の基礎",
+    "code": "DF1018-80018",
+    "org": "他団体A",
+    "isNew": false,
+    "stdTag": "マナー",
+    "custom": ["新人向け"]
+  },
+  {
+    "id": 19,
+    "title": "はじめてのデータ可視化",
+    "code": "DF1019-80019",
+    "org": "他団体A",
+    "isNew": true,
+    "stdTag": "IT基礎",
+    "custom": ["半額補助"]
+  },
+  {
+    "id": 20,
+    "title": "DX人材育成講座（基礎）",
+    "code": "DF1020-80020",
+    "org": "他団体A",
+    "isNew": false,
+    "stdTag": "DX",
+    "custom": ["おすすめ"]
+  },
+
+  {
+    "id": 21,
+    "title": "Excelピボットテーブル完全攻略",
+    "code": "DF1021-80021",
+    "org": "他団体A",
+    "isNew": false,
+    "stdTag": "PCスキル",
+    "custom": ["全額補助"]
+  },
+  {
+    "id": 22,
+    "title": "プレゼンテーションの技術",
+    "code": "DF1022-80022",
+    "org": "他団体A",
+    "isNew": true,
+    "stdTag": "マナー",
+    "custom": ["おすすめ"]
+  },
+  {
+    "id": 23,
+    "title": "顧客志向マーケティング入門",
+    "code": "DF1023-80023",
+    "org": "他団体A",
+    "isNew": false,
+    "stdTag": "マーケティング",
+    "custom": ["管理職向け"]
+  },
+  {
+    "id": 24,
+    "title": "（仮）新コース 24",
+    "code": "DF1024-80024",
+    "org": "他団体A",
+    "isNew": false,
+    "stdTag": "DX",
+    "custom": ["半額補助"]
+  },
+  {
+    "id": 25,
+    "title": "バックオフィスのためのIT基礎",
+    "code": "DF1025-80025",
+    "org": "他団体A",
+    "isNew": false,
+    "stdTag": "IT基礎",
+    "custom": ["新人向け"]
+  },
+
+  {
+    "id": 26,
+    "title": "ChatGPT活用ビジネス講座",
+    "code": "DF1026-80026",
+    "org": "他団体A",
+    "isNew": true,
+    "stdTag": "DX",
+    "custom": ["おすすめ"]
+  },
+  {
+    "id": 27,
+    "title": "ロジカルシンキング入門",
+    "code": "DF1027-80027",
+    "org": "他団体A",
+    "isNew": false,
+    "stdTag": "マナー",
+    "custom": ["半額補助"]
+  },
+  {
+    "id": 28,
+    "title": "Excel ショートカット大全",
+    "code": "DF1028-80028",
+    "org": "他団体A",
+    "isNew": true,
+    "stdTag": "PCスキル",
+    "custom": ["おすすめ"]
+  },
+  {
+    "id": 29,
+    "title": "マーケティングデータ分析入門",
+    "code": "DF1029-80029",
+    "org": "他団体A",
+    "isNew": false,
+    "stdTag": "マーケティング",
+    "custom": ["全額補助"]
+  },
+  {
+    "id": 30,
+    "title": "（仮）新コース 30",
+    "code": "DF1030-80030",
+    "org": "他団体A",
+    "isNew": false,
+    "stdTag": "IT基礎",
+    "custom": ["新人向け"]
+  },
+
+  {
+    "id": 31,
+    "title": "DX 推進プロジェクト基礎",
+    "code": "DF1031-80031",
+    "org": "他団体A",
+    "isNew": false,
+    "stdTag": "DX",
+    "custom": ["管理職向け"]
+  },
+  {
+    "id": 32,
+    "title": "Excel × AI 活用講座",
+    "code": "DF1032-80032",
+    "org": "他団体A",
+    "isNew": true,
+    "stdTag": "PCスキル",
+    "custom": ["おすすめ"]
+  },
+  {
+    "id": 33,
+    "title": "マーケティング基礎ワークショップ",
+    "code": "DF1033-80033",
+    "org": "他団体A",
+    "isNew": false,
+    "stdTag": "マーケティング",
+    "custom": ["半額補助"]
+  },
+  {
+    "id": 34,
+    "title": "（仮）新コース 34",
+    "code": "DF1034-80034",
+    "org": "他団体A",
+    "isNew": false,
+    "stdTag": "マナー",
+    "custom": ["新人向け"]
+  },
+  {
+    "id": 35,
+    "title": "IT基礎のすべて",
+    "code": "DF1035-80035",
+    "org": "他団体A",
+    "isNew": true,
+    "stdTag": "IT基礎",
+    "custom": ["全額補助"]
+  },
+
+  {
+    "id": 36,
+    "title": "DXを成功させる組織文化",
+    "code": "DF1036-80036",
+    "org": "他団体A",
+    "isNew": false,
+    "stdTag": "DX",
+    "custom": ["おすすめ"]
+  },
+  {
+    "id": 37,
+    "title": "ビジネスマナー実践編",
+    "code": "DF1037-80037",
+    "org": "他団体A",
+    "isNew": false,
+    "stdTag": "マナー",
+    "custom": ["新人向け"]
+  },
+  {
+    "id": 38,
+    "title": "スプレッドシート業務改善",
+    "code": "DF1038-80038",
+    "org": "他団体A",
+    "isNew": true,
+    "stdTag": "PCスキル",
+    "custom": ["管理職向け"]
+  },
+  {
+    "id": 39,
+    "title": "SNSマーケティング講座",
+    "code": "DF1039-80039",
+    "org": "他団体A",
+    "isNew": false,
+    "stdTag": "マーケティング",
+    "custom": ["おすすめ"]
+  },
+  {
+    "id": 40,
+    "title": "（仮）新コース 40",
+    "code": "DF1040-80040",
+    "org": "他団体A",
+    "isNew": true,
+    "stdTag": "IT基礎",
+    "custom": ["半額補助"]
+  },
+
+  {
+    "id": 41,
+    "title": "Power Automate 入門",
+    "code": "DF1041-80041",
+    "org": "他団体A",
+    "isNew": false,
+    "stdTag": "DX",
+    "custom": ["全額補助"]
+  },
+  {
+    "id": 42,
+    "title": "ビジネス電話応対の基礎",
+    "code": "DF1042-80042",
+    "org": "他団体A",
+    "isNew": true,
+    "stdTag": "マナー",
+    "custom": ["新人向け"]
+  },
+  {
+    "id": 43,
+    "title": "デジタル広告入門",
+    "code": "DF1043-80043",
+    "org": "他団体A",
+    "isNew": false,
+    "stdTag": "マーケティング",
+    "custom": ["おすすめ"]
+  },
+  {
+    "id": 44,
+    "title": "（仮）新コース 44",
+    "code": "DF1044-80044",
+    "org": "他団体A",
+    "isNew": false,
+    "stdTag": "PCスキル",
+    "custom": ["半額補助"]
+  },
+  {
+    "id": 45,
+    "title": "IT基礎：セキュリティ講座",
+    "code": "DF1045-80045",
+    "org": "他団体A",
+    "isNew": true,
+    "stdTag": "IT基礎",
+    "custom": ["おすすめ"]
+  },
+
+  {
+    "id": 46,
+    "title": "ノーコードDX 実践編",
+    "code": "DF1046-80046",
+    "org": "他団体A",
+    "isNew": false,
+    "stdTag": "DX",
+    "custom": ["管理職向け"]
+  },
+  {
+    "id": 47,
+    "title": "メールマナー速習",
+    "code": "DF1047-80047",
+    "org": "他団体A",
+    "isNew": false,
+    "stdTag": "マナー",
+    "custom": ["新人向け"]
+  },
+  {
+    "id": 48,
+    "title": "Excel × データ分析実践",
+    "code": "DF1048-80048",
+    "org": "他団体A",
+    "isNew": true,
+    "stdTag": "PCスキル",
+    "custom": ["全額補助"]
+  },
+  {
+    "id": 49,
+    "title": "BtoB マーケティング基礎",
+    "code": "DF1049-80049",
+    "org": "他団体A",
+    "isNew": false,
+    "stdTag": "マーケティング",
+    "custom": ["おすすめ"]
+  },
+  {
+    "id": 50,
+    "title": "（仮）新コース 50",
+    "code": "DF1050-80050",
+    "org": "他団体A",
+    "isNew": false,
+    "stdTag": "IT基礎",
+    "custom": ["半額補助"]
+  }
+]

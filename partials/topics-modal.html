@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <title>特集ページ登録（カードUIモック）</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    body { font-family: "游ゴシック体","Yu Gothic","游ゴシック",YuGothic,sans-serif; }
+    :root { --safe-bottom: env(safe-area-inset-bottom); }
+  </style>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+</head>
+<body class="bg-gray-50 text-gray-800">
+  <div class="min-h-dvh">
+    <!-- ヘッダー -->
+    <header class="px-6 pt-8 pb-4">
+      <h1 class="text-2xl font-bold tracking-tight">特集ページ登録</h1>
+      <p class="mt-1 text-sm text-gray-600">本募集の特集ページを登録してください。</p>
+    </header>
+
+    <main class="px-6 pb-40 text-sm space-y-6">
+      <!-- 追加フォーム（カード） -->
+      <section class="bg-white rounded-2xl shadow-sm border border-gray-200/60 p-5">
+        <div class="flex items-center gap-2 mb-3">
+          <span class="material-symbols-outlined text-gray-500" aria-hidden="true">bookmark_add</span>
+          <h2 class="font-semibold">特集を追加</h2>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-[20rem_auto] gap-3">
+          <select class="w-full rounded-lg border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
+            <option value="">特集を選択してください</option>
+            <option value="org-1">特集A</option>
+            <option value="org-2">特集B</option>
+            <option value="org-3">特集C</option>
+          </select>
+          <div>
+            <button class="rounded-lg bg-blue-600 px-5 py-2.5 text-white font-medium hover:bg-blue-700 active:scale-[.99] transition">追加する</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- 一覧（カード行） -->
+      <section>
+        <div class="flex items-center justify-between mb-2">
+          <h2 class="font-semibold text-base">登録済み特集</h2>
+        </div>
+
+        <div id="feature-list" class="space-y-3 max-h-[30rem] overflow-y-auto pr-1">
+          <!-- Row 1 -->
+          <article class="feature-card group flex items-center gap-4 rounded-xl bg-white border border-gray-200 shadow-sm px-4 py-3 hover:shadow-md hover:bg-gray-50 transition">
+            <!-- ドラッグ風ハンドル -->
+            <button class="handle hidden sm:inline-flex cursor-grab text-gray-400 hover:text-gray-600 -ml-1 pr-1" title="並び替え（モック）">
+              <span class="material-symbols-outlined" aria-hidden="true">drag_indicator</span>
+            </button>
+            <!-- サムネ -->
+            <div class="shrink-0">
+              <div class="h-24 w-44 rounded-lg bg-gray-700 grid place-items-center text-white font-semibold text-xs">thumbnail</div>
+            </div>
+            <!-- テキスト -->
+            <div class="min-w-0 flex-1">
+              <p class="font-medium text-gray-900 truncate">最近のだらしないマネジャーの原因は？</p>
+              <p class="text-xs text-gray-500 mt-0.5">特集ID：FT-001</p>
+            </div>
+            <!-- 並び替え／削除 -->
+            <div class="flex items-center gap-1 sm:gap-2">
+              <button class="rounded-lg border border-gray-300 px-2 py-1 text-gray-700 hover:bg-gray-50" data-move="up" title="上へ">
+                <span class="material-symbols-outlined flex" aria-hidden="true">keyboard_arrow_up</span>
+              </button>
+              <button class="rounded-lg border border-gray-300 px-2 py-1 text-gray-700 hover:bg-gray-50" data-move="down" title="下へ">
+                <span class="material-symbols-outlined flex" aria-hidden="true">keyboard_arrow_down</span>
+              </button>
+              <button class="ml-1 inline-flex items-center gap-1 text-gray-400 hover:text-red-600 transition" title="削除">
+                <span class="material-symbols-outlined text-[20px]" aria-hidden="true">do_not_disturb_on</span>
+                <span class="text-xs hidden sm:inline">削除</span>
+              </button>
+            </div>
+          </article>
+
+          <!-- Row 2 -->
+          <article class="feature-card group flex items-center gap-4 rounded-xl bg-white border border-gray-200 shadow-sm px-4 py-3 hover:shadow-md hover:bg-gray-50 transition">
+            <button class="handle hidden sm:inline-flex cursor-grab text-gray-400 hover:text-gray-600 -ml-1 pr-1" title="並び替え（モック）">
+              <span class="material-symbols-outlined" aria-hidden="true">drag_indicator</span>
+            </button>
+            <div class="shrink-0">
+              <div class="h-24 w-44 rounded-lg bg-gray-700 grid place-items-center text-white font-semibold text-xs">thumbnail</div>
+            </div>
+            <div class="min-w-0 flex-1">
+              <p class="font-medium text-gray-900 truncate">特集B</p>
+              <p class="text-xs text-gray-500 mt-0.5">特集ID：FT-002</p>
+            </div>
+            <div class="flex items-center gap-1 sm:gap-2">
+              <button class="rounded-lg border border-gray-300 px-2 py-1 text-gray-700 hover:bg-gray-50" data-move="up" title="上へ">
+                <span class="material-symbols-outlined flex" aria-hidden="true">keyboard_arrow_up</span>
+              </button>
+              <button class="rounded-lg border border-gray-300 px-2 py-1 text-gray-700 hover:bg-gray-50" data-move="down" title="下へ">
+                <span class="material-symbols-outlined flex" aria-hidden="true">keyboard_arrow_down</span>
+              </button>
+              <button class="ml-1 inline-flex items-center gap-1 text-gray-400 hover:text-red-600 transition" title="削除">
+                <span class="material-symbols-outlined text-[20px]" aria-hidden="true">do_not_disturb_on</span>
+                <span class="text-xs hidden sm:inline">削除</span>
+              </button>
+            </div>
+          </article>
+
+          <!-- Row 3 -->
+          <article class="feature-card group flex items-center gap-4 rounded-xl bg-white border border-gray-200 shadow-sm px-4 py-3 hover:shadow-md hover:bg-gray-50 transition">
+            <button class="handle hidden sm:inline-flex cursor-grab text-gray-400 hover:text-gray-600 -ml-1 pr-1" title="並び替え（モック）">
+              <span class="material-symbols-outlined" aria-hidden="true">drag_indicator</span>
+            </button>
+            <div class="shrink-0">
+              <div class="h-24 w-44 rounded-lg bg-gray-700 grid place-items-center text-white font-semibold text-xs">thumbnail</div>
+            </div>
+            <div class="min-w-0 flex-1">
+              <p class="font-medium text-gray-900 truncate">特集C</p>
+              <p class="text-xs text-gray-500 mt-0.5">特集ID：FT-003</p>
+            </div>
+            <div class="flex items-center gap-1 sm:gap-2">
+              <button class="rounded-lg border border-gray-300 px-2 py-1 text-gray-700 hover:bg-gray-50" data-move="up" title="上へ">
+                <span class="material-symbols-outlined flex" aria-hidden="true">keyboard_arrow_up</span>
+              </button>
+              <button class="rounded-lg border border-gray-300 px-2 py-1 text-gray-700 hover:bg-gray-50" data-move="down" title="下へ">
+                <span class="material-symbols-outlined flex" aria-hidden="true">keyboard_arrow_down</span>
+              </button>
+              <button class="ml-1 inline-flex items-center gap-1 text-gray-400 hover:text-red-600 transition" title="削除">
+                <span class="material-symbols-outlined text-[20px]" aria-hidden="true">do_not_disturb_on</span>
+                <span class="text-xs hidden sm:inline">削除</span>
+              </button>
+            </div>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <!-- 固定アクションバー -->
+    <div class="fixed bottom-0 inset-x-0 z-50">
+      <div class="mx-auto max-w-5xl px-6 pb-[calc(12px+var(--safe-bottom))]">
+        <div class="rounded-t-2xl bg-white/95 backdrop-blur shadow-[0_-6px_24px_-8px_rgba(0,0,0,0.18)] border border-gray-200">
+          <div class="flex items-center justify-end gap-3 p-4">
+            <button class="h-10 px-4 rounded-lg border border-gray-300 bg-white text-gray-600 hover:bg-gray-50">キャンセル</button>
+            <button class="h-10 px-5 rounded-lg bg-blue-600 text-white font-medium hover:bg-blue-700 active:scale-[.99] transition">登録する</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- モック用JS：↑↓で並び替え、削除 -->
+  <script>
+    const list = document.getElementById('feature-list');
+
+    // 上下ボタンで要素を移動（モック）
+    list.addEventListener('click', (e) => {
+      const btn = e.target.closest('button');
+      if (!btn) return;
+
+      const card = e.target.closest('.feature-card');
+      if (!card) return;
+
+      // 削除
+      if (btn.title === '削除') {
+        card.remove();
+        return;
+      }
+
+      // 上下
+      const move = btn.getAttribute('data-move');
+      if (move === 'up' && card.previousElementSibling) {
+        list.insertBefore(card, card.previousElementSibling);
+      }
+      if (move === 'down' && card.nextElementSibling) {
+        list.insertBefore(card.nextElementSibling, card);
+      }
+    });
+  </script>
+</body>
+</html>

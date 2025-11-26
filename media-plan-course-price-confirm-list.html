@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="ja">
+    <head>
+        <meta charset="UTF-8" />
+        <title>New SD App</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <!-- 既存CDN -->
+        <script src="https://cdn.tailwindcss.com"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nouislider@15.7.0/dist/nouislider.min.css">
+        <script src="https://cdn.jsdelivr.net/npm/nouislider@15.7.0/dist/nouislider.min.js"></script>
+
+        <!-- あなたの共通JS -->
+        <script src="./js/role-visibility.js" defer></script>
+        <script src="./js/mock-ui.js" defer></script>
+
+        <style>
+        body { font-family: "游ゴシック体","Yu Gothic","游ゴシック",YuGothic,sans-serif; }
+        :root { --safe-bottom: env(safe-area-inset-bottom); }
+        </style>
+    </head>
+    <body class="bg-gray-100 h-screen overflow-hidden flex flex-col">
+        <!-- ヘッダー -->
+        <div id="app-header" class="sticky top-0 z-50"></div>
+
+        <main class="flex flex-1 min-h-0">
+        <!-- サイドバー -->
+        <div id="app-sidebar" class="shrink-0"></div>
+
+        <!-- コンテンツ -->
+        <div class="p-6 md:p-6 flex-1 bg-gray-200 min-w-0">
+            <div class="flex justify-between items-center mb-4">
+            <h1 class="text-2xl font-bold text-gray-700 truncate">●●食品株式会社様 FY26SD募集　コース提案</h1>
+            </div>
+
+            <div class=" w-full h-[calc(100vh-9rem)] rounded-xl flex flex-col mx-auto">
+            
+            <!-- 2カラム：左=リスト / 右=プレビュー -->
+            <div class="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_28rem] gap-6  pb-4 min-h-0">
+                <!-- 左：リストボックス -->
+                <section class="rounded-2xl border border-gray-200/60 bg-white shadow-sm flex flex-col min-h-0">
+                <!-- ツールバー -->
+                <div class="p-4 border-b border-gray-200 flex flex-wrap items-center gap-3">
+                    <div class="relative">
+                    <span class="material-symbols-outlined absolute left-2 top-1/2 -translate-y-1/2 text-gray-400">search</span>
+                    <input id="q" type="text" placeholder="コース名 / コード / タグで検索"
+                            class="pl-9 pr-3 h-10 w-72 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400">
+                    </div>
+
+                    <div class="ml-auto flex items-center gap-2">
+                    <button id="open-course-modal" class="h-9 px-3 rounded-md bg-blue-600 text-white hover:bg-blue-700 flex items-center"
+                            data-visible-for="iec,supplier">
+                        <span class="material-symbols-outlined text-base mr-1 ">add</span>コースを追加する
+                    </button>
+
+                    </div>
+                </div>
+
+                <!-- スティッキーヘッダー -->
+                <div class="grid grid-cols-[2rem_1fr_12rem_8rem_6rem_12rem_minmax(0,1fr)] text-xs uppercase tracking-wide text-gray-500 px-4 py-2 sticky top-0 bg-white z-[1]">
+                    <div></div><div>コース名</div>
+                    <div data-col="code">コード</div>
+                    <div data-col="org">団体</div>
+                    <div>NEW</div>
+                    <div data-col="stdTag">標準タグ</div>
+                    <div data-col="customTag">カスタムタグ</div>
+                </div>
+
+                <!-- リスト本体 -->
+                <div id="list" class="min-h-[16rem] max-h-[46vh] overflow-y-auto">
+                    <div id="skeleton" class="p-4 space-y-2">
+                    <div class="h-12 rounded-lg bg-gray-100 animate-pulse"></div>
+                    <div class="h-12 rounded-lg bg-gray-100 animate-pulse"></div>
+                    <div class="h-12 rounded-lg bg-gray-100 animate-pulse"></div>
+                    <div class="h-12 rounded-lg bg-gray-100 animate-pulse"></div>
+                    <div class="h-12 rounded-lg bg-gray-100 animate-pulse"></div>
+                    </div>
+                    <div id="rows"></div>
+                    <div id="sentinel" class="h-10"></div>
+                </div>
+
+                <!-- 一括操作バー -->
+                <div id="bulkbar" class="hidden sticky bottom-0 bg-white border-t border-gray-200 px-4 py-2 flex items-center gap-3 rounded-b-2xl">
+                    <p class="text-sm text-gray-700"><span id="selCount">0</span> 件選択中</p>
+                    <button id="clearSelection" class="h-9 px-3 rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-50">選択を解除</button>
+                    <div class="ml-auto flex items-center gap-2">
+                    <!-- <button class="h-9 px-3 rounded-lg bg-blue-600 text-white hover:bg-blue-700">一括追加</button> -->
+                    <button
+                        id="markDeleteRequest"
+                        class="h-9 px-3 rounded-md bg-red-50 text-red-700 border border-red-200 hover:bg-red-600 hover:text-white"
+                        >
+                        削除希望にする
+                    </button>
+                    </div>
+                </div>
+                </section>
+
+                <!-- 右：プレビュー -->
+                <aside id="preview" class="hidden lg:block bg-white rounded-2xl shadow-sm border border-gray-200/60 p-5 overflow-auto">
+                <div class="text-sm text-gray-500">行をクリックするとここにプレビュー（概要/タグ/リンクなど）が表示されます（モック）。</div>
+                </aside>
+            </div>
+
+                    
+            <!-- 下部アクション（踏襲） -->
+            <div class="bg-white rounded-xl p-4 mt-2">
+                <div class=" flex justify-end gap-3 flex-wrap" >
+                    <div class=" w-full" data-visible-for="customer">
+                        <label for="body" class="block text-sm font-semibold text-gray-900 mb-1">提案要望</label>
+                        <div class="relative">
+                        <textarea id="body" rows="1" maxlength="500"
+                            class="w-full  rounded-lg border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+                            placeholder=""></textarea>
+                        <div class="absolute right-2 bottom-2 text-xs text-gray-400">
+                            <span id="bodyCount">0</span>/500
+                        </div>
+                        </div>
+                    </div>
+
+                <button class="bg-white border-2 border-gray-300 text-gray-500 px-4 py-2 rounded-md hover:bg-gray-100">戻る</button>
+                <button class="bg-blue-500 text-white px-4 py-2 rounded-md" data-visible-for="iec">登録する</button>
+                <button class="bg-blue-500 text-white px-4 py-2 rounded-md" data-visible-for="supplier">コースを提案する</button>
+                <button class="bg-red-500 text-white px-4 py-2 rounded-md" data-visible-for="customer">再提案を依頼する</button>
+                <button class="bg-blue-500 text-white px-4 py-2 rounded-md" data-visible-for="customer">承認する</button>
+                </div>
+            </div>
+            </div>
+        </div>
+        </main>
+
+        <!-- ===== 全コースリスト モーダル（追加ボタンで開く） ===== -->
+        <div id="course-modal" class="fixed inset-0 bg-black/60 hidden items-center justify-center z-50 p-6">
+        <div class="bg-white rounded-xl shadow-lg w-full max-w-6xl p-6 relative">
+            <button id="close-course-modal" class="absolute top-2 right-2 text-gray-500 hover:text-gray-700">
+            <span class="material-symbols-outlined">close</span>
+            </button>
+
+            <div class="flex items-center gap-2 mb-4">
+            <span class="material-symbols-outlined text-gray-500">library_add</span>
+            <h2 class="text-lg font-semibold">全コース一覧から追加</h2>
+            </div>
+
+            <div class="flex flex-wrap items-center gap-3 mb-3">
+            <div class="relative">
+                <span class="material-symbols-outlined absolute left-2 top-1/2 -translate-y-1/2 text-gray-400">search</span>
+                <input id="modal-q" type="text" placeholder="コース名 / コードで絞り込み"
+                    class="pl-9 pr-3 h-10 w-80 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400">
+            </div>
+            <span class="text-xs text-gray-500">※モック：100件の別データ集合を生成</span>
+            </div>
+
+            <div id="modal-list" class="max-h-[60vh] overflow-y-auto border border-gray-200 rounded-lg">
+            <!-- ヘッダー -->
+            <div class="grid grid-cols-[1.5rem_1fr_12rem] text-xs uppercase tracking-wide text-gray-500 px-4 py-2 sticky top-0 bg-white z-[1] border-b">
+                <div></div><div>コース名</div><div>コード</div>
+            </div>
+            <!-- 行 -->
+            <div id="modal-rows"></div>
+            </div>
+
+            <div class="flex justify-end gap-3 mt-6">
+            <button id="cancel-course-modal" class="px-4 py-2 rounded-md border border-gray-300 text-gray-600 hover:bg-gray-100">キャンセル</button>
+            <button id="add-selected-courses" class="px-4 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700">
+                追加（<span id="modal-selected-count">0</span>）
+            </button>
+            </div>
+        </div>
+        </div>
+
+<script>
+    // ========= ヘッダー/サイドバー描画 & ロール反映 =========
+    window.addEventListener('DOMContentLoaded', () => {
+        if (window.MockUI) {
+            MockUI.injectHeader('#app-header', { userName: 'Test User', brand: 'New SD App', initialRole: 'supplier' });
+            MockUI.injectSidebar('#app-sidebar');
+        }
+        if (window.RoleMock) RoleMock.applyRoleVisibility();
+
+        // ========= リスト生成（長いリスト前提） =========
+        const TAGS_STD = ["マナー","PCスキル","マーケティング","IT基礎","DX"];
+        const TAGS_CUSTOM = ["おすすめ","半額補助","全額補助","新人向け","管理職向け"];
+        const ORGS = ["他団体A"];
+        const ROW_MAX = 200, CHUNK = 20;
+        let loaded = 0, dense = true;
+
+        const rowsEl = document.getElementById('rows');
+        const skeletonEl = document.getElementById('skeleton');
+        const listEl = document.getElementById('list');
+        const preview = document.getElementById('preview');
+
+        // コース別コメント保存用（モック：メモリ上だけ）
+        const commentMap = new Map(); // key: course id, value: comment string
+
+        function rand(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+        function makeRowData(i){
+            return {
+                id: i,
+                title: i%7===0 ? "Z世代のためのマナー" : i%5===0 ? "Excel基礎が完璧にわかる" : i%3===0 ? "マーケティングの嘘100" : `（仮）新コース ${i}`,
+                code: i%4===0 ? "未発行" : `DF${String(1000+i).padStart(4,"0")}-${80000+i}`,
+                org: rand(ORGS),
+                isNew: i%11===0,
+                stdTag: rand(TAGS_STD),
+                custom: Array.from({length: Math.random()<0.5?1:2}, ()=>rand(TAGS_CUSTOM)),
+            };
+        }
+
+        function rowTemplate(dense, d){
+            const py = dense ? "py-2" : "py-3";
+            return `
+            <div class="row group grid grid-cols-[2rem_1fr_12rem_8rem_6rem_12rem_minmax(0,1fr)] items-center ${py} px-4 border-b border-gray-100 hover:bg-gray-50 transition"
+                data-id="${d.id}"
+                data-title="${d.title}" data-code="${d.code}" data-org="${d.org}" data-std="${d.stdTag}" data-custom="${d.custom.join(",")}"
+                data-delete-requested="0"
+                data-visible-for="iec,customer,supplier">
+                <label class="inline-flex items-center justify-center">
+                    <input type="checkbox" class="sel accent-blue-600">
+                </label>
+                <button class="flex text-left truncate hover:underline text-gray-900 font-medium open-preview">
+                    ${d.title}
+                </button>
+
+                <div class="text-gray-600" data-col="code">${d.code}</div>
+                <div class="text-gray-600" data-col="org">${d.org}</div>
+                <div class="flex justify-center">
+                    ${d.isNew ? `<span class="text-[10px] text-white rounded-full bg-amber-500 px-2 py-0.5">NEW</span>` : ``}
+                </div>
+                <div class="flex items-center gap-1 flex-wrap" data-col="stdTag">
+                    <span class="text-[11px] rounded-full bg-blue-100 text-blue-700 px-2 py-0.5">${d.stdTag}</span>
+                </div>
+                <div class="flex items-center gap-1 flex-wrap" data-col="customTag">
+                    ${d.custom.map(t=>`<span class="text-[11px] rounded-full bg-gray-800 text-white px-2 py-0.5">${t}</span>`).join("")}
+                    <button class="opacity-0 group-hover:opacity-100 text-gray-400 hover:text-gray-700 transition inline-flex items-center" title="タグ追加（モック）">
+                        <span class="material-symbols-outlined text-base">add_circle</span>
+                    </button>
+                </div>
+            </div>`;
+        }
+
+        function appendChunk(){
+            skeletonEl.classList.remove('hidden');
+            setTimeout(()=>{
+                const frag = document.createDocumentFragment();
+                for(let i=0;i<CHUNK && loaded<ROW_MAX;i++,loaded++){
+                    const d = makeRowData(loaded+1);
+                    const wrap = document.createElement('div');
+                    wrap.innerHTML = rowTemplate(dense, d);
+                    frag.appendChild(wrap.firstElementChild);
+                }
+                rowsEl.appendChild(frag);
+                skeletonEl.classList.add('hidden');
+                if (window.RoleMock) RoleMock.applyRoleVisibility(); // 新規行にも適用
+                updateFilter();
+            }, 120);
+        }
+
+        // 無限スクロール
+        const sentinel = document.getElementById('sentinel');
+        const io = new IntersectionObserver((entries)=>{
+            entries.forEach(e=>{ if(e.isIntersecting && loaded < ROW_MAX) appendChunk(); });
+        }, {root: listEl, rootMargin: '400px 0px'});
+        io.observe(sentinel);
+        appendChunk();
+
+        // 検索＆フィルタ
+        const q = document.getElementById('q');
+        let activeFilter = null;
+        function matchFilter(row){
+            if(activeFilter === 'new') return row.querySelector('.bg-amber-500') !== null;
+            if(activeFilter?.startsWith('tag:')){
+                const tag = activeFilter.slice(4);
+                return (row.dataset.std?.includes(tag) || row.dataset.custom?.includes(tag));
+            }
+            return true;
+        }
+        function updateFilter(){
+            const text = (q.value || '').toLowerCase();
+            document.querySelectorAll('#rows .row').forEach(row=>{
+                const hay = (row.dataset.title + ' ' + row.dataset.code + ' ' + row.dataset.org + ' ' + row.dataset.std + ' ' + row.dataset.custom).toLowerCase();
+                row.style.display = (hay.includes(text) && matchFilter(row)) ? '' : 'none';
+            });
+        }
+        q.addEventListener('input', updateFilter);
+        document.querySelectorAll('[data-filter]').forEach(btn=>{
+            btn.addEventListener('click', ()=>{
+                const v = btn.getAttribute('data-filter');
+                activeFilter = (v==='clear') ? null : v;
+                updateFilter();
+            });
+        });
+
+        // 一括バー
+        const bulkbar = document.getElementById('bulkbar'), selCount = document.getElementById('selCount');
+        function refreshBulkbar(){
+            const n = document.querySelectorAll('#rows .sel:checked').length;
+            selCount.textContent = n;
+            bulkbar.classList.toggle('hidden', n===0);
+        }
+        listEl.addEventListener('change', e=>{ if(e.target.classList.contains('sel')) refreshBulkbar(); });
+        document.getElementById('clearSelection').addEventListener('click', ()=>{
+            document.querySelectorAll('#rows .sel:checked').forEach(c=> c.checked=false); 
+            refreshBulkbar();
+        });
+
+        // 「削除希望にする」ボタンでフラグ ON/OFF（バッジのみ）
+        const markDeleteRequestBtn = document.getElementById('markDeleteRequest');
+
+        if (markDeleteRequestBtn) {
+            markDeleteRequestBtn.addEventListener('click', () => {
+                const checked = document.querySelectorAll('#rows .sel:checked');
+                if (!checked.length) return;
+
+                checked.forEach(c => {
+                    const row = c.closest('.row');
+                    if (!row) return;
+
+                    // 現在のフラグ状態
+                    const current = row.dataset.deleteRequested === '1';
+
+                    // フラグ切替
+                    row.dataset.deleteRequested = current ? '0' : '1';
+
+                    // 行の見た目調整
+                    row.classList.toggle('bg-red-100', !current);
+                    row.classList.toggle('hover:bg-red-200', !current);
+                    row.classList.toggle('opacity-100', !current);
+
+                    const titleBtn = row.querySelector('.open-preview');
+                    if (titleBtn) {
+                        let badge = titleBtn.querySelector('.delete-badge');
+                        if (!current) {
+                            // ON にする：バッジがなければ追加
+                            if (!badge) {
+                                badge = document.createElement('span');
+                                badge.className =
+                                    'delete-badge ml-2 inline-flex items-center text-xs px-1.5 py-0.5 rounded-full bg-red-200 text-red-700 border border-red-300';
+                                badge.textContent = '削除希望';
+                                titleBtn.appendChild(badge);
+                            }
+                        } else {
+                            // OFF にする：バッジ削除
+                            if (badge) badge.remove();
+                        }
+                    }
+                });
+
+                // 一括処理後はチェックを外す
+                checked.forEach(c => (c.checked = false));
+                refreshBulkbar();
+            });
+        }
+
+        // プレビュー＋コメント
+        listEl.addEventListener('click', (e)=>{
+            const btn = e.target.closest('.open-preview'); 
+            if(!btn) return;
+            const row = btn.closest('.row');
+            const { id, title, code, org, std, custom } = row.dataset;
+
+            const savedComment = commentMap.get(id) || "";
+
+            preview.innerHTML = `
+                <div class="flex items-center gap-2 mb-2">
+                    <span class="material-symbols-outlined text-gray-500">description</span>
+                    <h2 class="font-semibold">プレビュー</h2>
+                </div>
+                <p class="text-lg font-semibold text-gray-900">${title}</p>
+                <div class="mt-2 text-sm text-gray-600">コード：${code} / 団体：${org}</div>
+                <div class="mt-3 flex flex-wrap gap-1">
+                    <span class="text-[11px] rounded-full bg-blue-100 text-blue-700 px-2 py-0.5">${std}</span>
+                    ${String(custom).split(',').map(t=>`<span class="text-[11px] rounded-full bg-gray-800 text-white px-2 py-0.5">${t}</span>`).join("")}
+                </div>
+                <div class="mt-4">
+                    <a href="#" class="inline-flex items-center gap-1 text-blue-600 hover:underline">
+                        HTMLを開く <span class="material-symbols-outlined text-sm">open_in_new</span>
+                    </a>
+                </div>
+                <div class="mt-6 border-t pt-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">
+                        掲載判断用コメント
+                    </label>
+                    <textarea
+                        id="course-comment"
+                        class="w-full min-h-[80px] rounded-md border border-gray-300 px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 resize-y"
+                        placeholder="このコースに関するメモや削除希望の理由を自由に記入してください。"
+                    ></textarea>
+                </div>
+                <div class="mt-6 border-t pt-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">
+                        公開範囲
+                    </label>
+                    <div class="flex gap-4 items-center">
+                        <label class="block">
+                            <input type="date" class="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
+                        </label>
+                        ～
+                        <label class="block">
+                            <input type="date" class="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
+                        </label>
+                    </div>
+                </div>
+            `;
+
+            const textarea = preview.querySelector('#course-comment');
+            if (textarea) {
+                textarea.value = savedComment;
+                textarea.addEventListener('input', () => {
+                    commentMap.set(id, textarea.value);
+                });
+            }
+        });
+
+        // ========= 追加モーダル =========
+        const openCourseModalBtn = document.getElementById('open-course-modal');
+        const courseModal = document.getElementById('course-modal');
+        const closeCourseModalBtn = document.getElementById('close-course-modal');
+        const cancelCourseModalBtn = document.getElementById('cancel-course-modal');
+        const addSelectedBtn = document.getElementById('add-selected-courses');
+        const modalSelectedCount = document.getElementById('modal-selected-count');
+        const modalRows = document.getElementById('modal-rows');
+        const modalQ = document.getElementById('modal-q');
+
+        // モーダル用ダミーデータ100件（本体とは別集合）
+        const MODAL_MAX = 100;
+        const modalData = Array.from({length: MODAL_MAX}, (_,i)=>({
+            id: i+1,
+            title: i%4===0 ? "実例で学ぶExcel関数" : i%3===0 ? "ビジネスマナー実践" : i%5===0 ? "はじめてのDX" : `（全体）サンプルコース ${i+1}`,
+            code: `MX${String(3000+i).padStart(4,"0")}-${50000+i}`,
+        }));
+
+        function renderModalList(){
+            const q = (modalQ.value||'').toLowerCase();
+            modalRows.innerHTML = modalData
+                .filter(d => (d.title + ' ' + d.code).toLowerCase().includes(q))
+                .map(d => `
+                    <label class="grid grid-cols-[1.5rem_1fr_12rem] items-center px-4 py-2 border-b hover:bg-gray-50 cursor-pointer">
+                        <input type="checkbox" class="modal-sel accent-blue-600" data-id="${d.id}">
+                        <span class="truncate">${d.title}</span>
+                        <span class="text-gray-600">${d.code}</span>
+                    </label>
+                `).join('');
+            modalSelectedCount.textContent = document.querySelectorAll('.modal-sel:checked').length;
+        }
+
+        function openCourseModal(){ courseModal.classList.remove('hidden'); courseModal.classList.add('flex'); renderModalList(); }
+        function closeCourseModal(){ courseModal.classList.add('hidden'); courseModal.classList.remove('flex'); }
+
+        openCourseModalBtn?.addEventListener('click', openCourseModal);
+        closeCourseModalBtn?.addEventListener('click', closeCourseModal);
+        cancelCourseModalBtn?.addEventListener('click', closeCourseModal);
+        courseModal?.addEventListener('click', (e)=>{ if(e.target === courseModal) closeCourseModal(); });
+        modalQ?.addEventListener('input', renderModalList);
+        modalRows?.addEventListener('change', (e)=>{
+            if(e.target.classList.contains('modal-sel')){
+                modalSelectedCount.textContent = document.querySelectorAll('.modal-sel:checked').length;
+            }
+        });
+
+        // 追加：モーダルで選択したコースを先頭に挿入（モック）
+        addSelectedBtn?.addEventListener('click', ()=>{
+            const ids = Array.from(document.querySelectorAll('.modal-sel:checked')).map(c=>Number(c.dataset.id));
+            if(!ids.length) { closeCourseModal(); return; }
+            const frag = document.createDocumentFragment();
+            ids.map(id => modalData.find(d=>d.id===id)).forEach(md=>{
+                const d = {
+                    id: `A-${md.id}`,
+                    title: md.title + "（追加）",
+                    code: md.code,
+                    org: "他団体A",
+                    isNew: true,
+                    stdTag: rand(TAGS_STD),
+                    custom: ["おすすめ"]
+                };
+                const wrap = document.createElement('div');
+                wrap.innerHTML = rowTemplate(dense, d);
+                frag.appendChild(wrap.firstElementChild);
+            });
+            rowsEl.prepend(frag);
+            if (window.RoleMock) RoleMock.applyRoleVisibility();
+            closeCourseModal();
+        });
+    }); // DOMContentLoaded
+</script>
+
+
+    </body>
+</html>

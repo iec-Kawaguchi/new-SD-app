@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="ja">
+    <head>
+        <meta charset="UTF-8">
+        <title>New SD App</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nouislider@15.7.0/dist/nouislider.min.css">
+        <script src="https://cdn.jsdelivr.net/npm/nouislider@15.7.0/dist/nouislider.min.js"></script>
+        <script type="module" src="../js/modules/dashboard/index.js"></script>
+        <script src="./js/role-visibility.js" defer></script>
+        <script src="./js/mock-ui.js" defer></script>
+        <style>
+            body {
+                font-family: "游ゴシック体", "Yu Gothic", "游ゴシック", YuGothic, sans-serif;
+            }
+        </style>
+    </head>
+    <body class="bg-gray-100 min-h-screen flex flex-col">
+        <div id="app-header"></div>
+        <main class="flex flex-1">
+            <div id="app-sidebar"></div>
+
+            <div class="p-10 flex-1 bg-gray-200">
+                <div class="flex justify-between items-center mb-4">
+                    <div class="text-2xl font-bold text-gray-700">特集ページ一覧</div>
+                </div>
+                <div class="bg-white w-full  rounded-xl flex flex-col mx-auto shadow-md p-4">
+                    <div class="p-4 flex items-center justify-between">
+                        <input type="text" class="border p-2 px-4 w-96 rounded-full" placeholder="特集名で検索...">
+                        <a href=""
+                            class="group bg-white text-blue-500 px-4 py-2 rounded-md ml-4 hover:bg-blue-500 hover:text-white flex items-center overflow-hidden transition-all duration-300 ease-in-out">
+                            <span class="material-symbols-outlined text-lg">add</span>
+                            <span class="opacity-0 max-w-0 group-hover:opacity-100 group-hover:max-w-[100px] transition-all duration-300 ease-in-out whitespace-nowrap">
+                                <span class="ml-2">新規登録</span>
+                            </span>
+                        </a>
+                    </div>
+                    <div class="p-4 w-full">
+                        <table class="w-full table-auto text-left text-gray-700">
+                            <tr>
+                                <th class="border-b px-4 py-2">サムネイル</th>
+                                <th class="border-b px-4 py-2">特集名</th>
+                                <th class="border-b px-4 py-2">企業指定</th>
+                                <th class="border-b px-4 py-2 text-center">ステータス</th>
+                                <th class="border-b px-4 py-2 text-center">アクション</th>
+                            </tr>
+                            <tr class="hover:bg-gray-100 cursor-pointer">
+                                <td class="border-b px-4 py-2">
+                                    <img src="./img/slide1.webp" alt="" class="w-32 h-20 object-cover rounded-md">
+                                </td>
+                                <td class="border-b px-4 py-2">特集1</td>
+                                <td class="border-b px-4 py-2">なし</td>
+                                <td class="border-b px-4 py-2 text-center">
+                                    <span class="text-sm text-green-400 font-bold rounded- border-green-500 bg-green-100  px-2 py-1">公開</span>
+                                </td>
+                                <td class="border-b px-4 py-2  text-center">
+                                    <div class="relative group ml-1 inline-flex items-center">
+                                        <span data-row="2" class="menu-trigger material-symbols-outlined text-lg cursor-pointer align-middle">more_horiz</span>
+                                        <div id="row-2-items" class="menu text-left flex flex-col absolute w-max bottom-full left-1/2 transform -translate-x-1/2 bg-white border border-gray-300 rounded shadow-lg p-2 hidden">
+                                            <a href="topics-master-detail.html" class="py-1 px-2 text-base hover:bg-gray-100 cursor-pointer flex items-center">
+                                                <span class="material-symbols-outlined text-sm mr-2">edit</span>
+                                                編集する
+                                            </a>
+                                            <a href="#" class="py-1 px-2 text-base hover:bg-gray-100 cursor-pointer flex items-center text-red-500">
+                                                <span class="material-symbols-outlined text-sm mr-2 text-red-500">delete</span>
+                                                削除する
+                                            </a>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="hover:bg-gray-100 cursor-pointer">
+                                <td class="border-b px-4 py-2">
+                                    <img src="./img/slide2.webp" alt="" class="w-32 h-20 object-cover rounded-md">
+                                </td>
+                                <td class="border-b px-4 py-2">特集2</td>
+                                <td class="border-b px-4 py-2">なし</td>
+                                <td class="border-b px-4 py-2 text-center">
+                                    <span class="text-sm text-green-400 font-bold rounded- border-green-500 bg-green-100  px-2 py-1">公開</span>
+                                </td>
+                                <td class="border-b px-4 py-2  text-center">
+                                    <div class="relative group ml-1 inline-flex items-center">
+                                        <span data-row="3" class="menu-trigger material-symbols-outlined text-lg cursor-pointer align-middle">more_horiz</span>
+                                        <div id="row-3-items" class="menu text-left flex flex-col absolute w-max bottom-full left-1/2 transform -translate-x-1/2 bg-white border border-gray-300 rounded shadow-lg p-2 hidden">
+                                            <a href="#" class="py-1 px-2 text-base hover:bg-gray-100 cursor-pointer flex items-center">
+                                                <span class="material-symbols-outlined text-sm mr-2">edit</span>
+                                                編集する
+                                            </a>
+                                            <a href="#" class="py-1 px-2 text-base hover:bg-gray-100 cursor-pointer flex items-center text-red-500">
+                                                <span class="material-symbols-outlined text-sm mr-2 text-red-500">delete</span>
+                                                削除する
+                                            </a>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="hover:bg-gray-100 cursor-pointer">
+                                <td class="border-b px-4 py-2">
+                                    <img src="" alt="no image" class="w-32 h-20 object-cover rounded-md bg-gray-300">
+                                </td>
+                                <td class="border-b px-4 py-2">特集3</td>
+                                <td class="border-b px-4 py-2">201129.○○株式会社</td>
+                                <td class="border-b px-4 py-2 text-center">
+                                    <span class="text-sm text-gray-400 font-bold rounded- bg-gray-200  px-2 py-1">非公開</span>
+                                </td>
+                                <td class="border-b px-4 py-2  text-center">
+                                    <div class="relative group ml-1 inline-flex items-center">
+                                        <span data-row="1" class="menu-trigger material-symbols-outlined text-lg cursor-pointer align-middle">more_horiz</span>
+                                        <div id="row-1-items" class="menu text-left flex flex-col absolute w-max bottom-full left-1/2 transform -translate-x-1/2 bg-white border border-gray-300 rounded shadow-lg p-2 hidden">
+                                            <a href="#" class="py-1 px-2 text-base hover:bg-gray-100 cursor-pointer flex items-center">
+                                                <span class="material-symbols-outlined text-sm mr-2">edit</span>
+                                                編集する
+                                            </a>
+                                            <a href="#" class="py-1 px-2 text-base hover:bg-gray-100 cursor-pointer flex items-center text-red-500">
+                                                <span class="material-symbols-outlined text-sm mr-2 text-red-500">delete</span>
+                                                削除する
+                                            </a>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    
+                </div>
+              
+        </main>
+       
+        <!-- ローディングアニメーション -->
+        <div id="loading" class="fixed inset-0 bg-white/60 flex items-center justify-center z-50 hidden">
+            <div class="animate-spin rounded-full h-12 w-12 border-4 border-blue-500 border-t-transparent"></div>
+        </div>
+        <!-- トースト通知コンテナ -->
+        <div id="toast-container" class="fixed bottom-5 right-5 space-y-2 z-50"></div>
+    </body>
+</html>
+<script>
+  window.addEventListener('DOMContentLoaded', () => {
+    // 初期ロールやブランド名・ユーザー名は自由に
+    MockUI.injectHeader('#app-header', {
+      userName: 'Test User',
+      brand: 'New SD App',
+      initialRole: 'iec', // 初回roleが未指定ならiecをセット
+    });
+    MockUI.injectSidebar('#app-sidebar');
+
+    // サイドバー挿入直後に data-visible-for を反映（MockUI内でもApplyしていますが念のため）
+    RoleMock.applyRoleVisibility();
+  });
+
+  // すべてのトリガーを取得
+  const triggers = document.querySelectorAll(".menu-trigger");
+  const menus = document.querySelectorAll(".menu");
+
+  triggers.forEach(trigger => {
+    trigger.addEventListener("click", (e) => {
+      e.stopPropagation(); // 外部クリック処理を止める
+
+      // 他のメニューを閉じる
+      menus.forEach(menu => menu.classList.add("hidden"));
+
+      // 対応するメニューを開閉
+      const rowId = trigger.dataset.row;
+      const menu = document.getElementById(`row-${rowId}-items`);
+      menu.classList.toggle("hidden");
+    });
+  });
+
+  // メニュー内クリックでは閉じない
+  menus.forEach(menu => {
+    menu.addEventListener("click", (e) => e.stopPropagation());
+  });
+
+  // 領域外クリックで全部閉じる
+  document.addEventListener("click", () => {
+    menus.forEach(menu => menu.classList.add("hidden"));
+  });
+</script>

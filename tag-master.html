@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="ja">
+    <head>
+        <meta charset="UTF-8">
+        <title>New SD App</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nouislider@15.7.0/dist/nouislider.min.css">
+        <script src="https://cdn.jsdelivr.net/npm/nouislider@15.7.0/dist/nouislider.min.js"></script>
+        <script type="module" src="../js/modules/dashboard/index.js"></script>
+        <script src="./js/role-visibility.js" defer></script>
+        <script src="./js/mock-ui.js" defer></script>
+        <style>
+            body {
+                font-family: "游ゴシック体", "Yu Gothic", "游ゴシック", YuGothic, sans-serif;
+            }
+        </style>
+    </head>
+    <body class="bg-gray-100 min-h-screen flex flex-col">
+        <div id="app-header"></div>
+        <main class="flex flex-1">
+            <div id="app-sidebar"></div>
+            <div class="p-10 flex-1 bg-gray-200">
+                <div class="flex justify-between items-center mb-4">
+                    <div class="text-2xl font-bold text-gray-700">オリジナルタグ一覧</div>
+                </div>
+                <div class="bg-white w-full  rounded-xl flex flex-col mx-auto shadow-md p-4">
+                    <div class="p-4 flex items-center justify-between">
+                        <input type="text" class="border p-2 px-4 w-96 rounded-full" placeholder="タグ名で検索...">
+                        <div id="btnOpenModal"
+                            class="group bg-white text-blue-500 px-4 py-2 rounded-md ml-4 hover:bg-blue-500 hover:text-white flex items-center overflow-hidden transition-all duration-300 ease-in-out">
+                            <span class="material-symbols-outlined text-lg">add</span>
+                            <span class="opacity-0 max-w-0 group-hover:opacity-100 group-hover:max-w-[100px] transition-all duration-300 ease-in-out whitespace-nowrap">
+                                <span class="ml-2">新規登録</span>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="p-4 w-full">
+                        <table class="w-full max-w-3xl table-auto text-left text-gray-700">
+                            <tr>
+                                <th class="border-b px-4 py-2">タグ名</th>
+                                <th class="border-b px-4 py-2">対象企業</th>
+                                <th class="border-b px-4 py-2 text-center">ステータス</th>
+                                <th class="border-b px-4 py-2 text-center">アクション</th>
+                            </tr>
+                            <tr class="hover:bg-gray-100 cursor-pointer">
+                                <td class="border-b px-4 py-2">100％補助</td>
+                                <td class="border-b px-4 py-2">201129.○○株式会社</td>
+                                <td class="border-b px-4 py-2 text-center">
+                                    <span class="text-sm text-green-400 font-bold rounded- border-green-500 bg-green-100  px-2 py-1">公開</span>
+                                </td>
+                                <td class="border-b px-4 py-2  text-center">
+                                    <div class="relative group ml-1 inline-flex items-center">
+                                        <span data-row="2" class="menu-trigger material-symbols-outlined text-lg cursor-pointer align-middle">more_horiz</span>
+                                        <div id="row-2-items" class="menu text-left flex flex-col absolute w-max bottom-full left-1/2 transform -translate-x-1/2 bg-white border border-gray-300 rounded shadow-lg p-2 hidden">
+                                            <a href="#" class="py-1 px-2 text-base hover:bg-gray-100 cursor-pointer flex items-center">
+                                                <span class="material-symbols-outlined text-sm mr-2">public_off</span>
+                                                非公開にする
+                                            </a>
+                                            <a href="#" class="py-1 px-2 text-base hover:bg-gray-100 cursor-pointer flex items-center text-red-500">
+                                                <span class="material-symbols-outlined text-sm mr-2 text-red-500">delete</span>
+                                                削除する
+                                            </a>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            
+                            <tr class="hover:bg-gray-100 cursor-pointer">
+                               
+                                <td class="border-b px-4 py-2">50%補助</td>
+                                <td class="border-b px-4 py-2">201129.○○株式会社</td>
+                                <td class="border-b px-4 py-2 text-center">
+                                    <span class="text-sm text-gray-400 font-bold rounded- bg-gray-200  px-2 py-1">非公開</span>
+                                </td>
+                                <td class="border-b px-4 py-2  text-center">
+                                    <div class="relative group ml-1 inline-flex items-center">
+                                        <span data-row="1" class="menu-trigger material-symbols-outlined text-lg cursor-pointer align-middle">more_horiz</span>
+                                        <div id="row-1-items" class="menu text-left flex flex-col absolute w-max bottom-full left-1/2 transform -translate-x-1/2 bg-white border border-gray-300 rounded shadow-lg p-2 hidden">
+                                            <a href="#" class="py-1 px-2 text-base hover:bg-gray-100 cursor-pointer flex items-center">
+                                                <span class="material-symbols-outlined text-sm mr-2">public</span>
+                                                公開する
+                                            </a>
+                                            <a href="#" class="py-1 px-2 text-base hover:bg-gray-100 cursor-pointer flex items-center text-red-500">
+                                                <span class="material-symbols-outlined text-sm mr-2 text-red-500">delete</span>
+                                                削除する
+                                            </a>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- modal -->
+        <div id="modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
+            <div class="p-4 bg-white rounded-lg shadow-lg md:w-1/3">
+                <div class="">
+                    <h2 class="text-xl font-bold text-gray-700 mt-2 mb-6">オリジナルタグ新規登録</h2>
+                </div>
+                <div class="flex flex-col gap-4">
+                    <div class="flex flex-col gap-2" data-visible-for="iec">
+                        <label for="">企業</label>
+                        <select name="" id="" class="w-full max-w-72 rounded-md border px-3 py-2 focus:outline-none focus:ring-2 focus:ring-violet-400">
+                            <option value="">企業を選択してください</option>
+                            <option value="corp-1">IEC</option>
+                            <option value="corp-2">産業能率大学</option>
+                            <option value="corp-3">JTEX</option>
+                            <option value="corp-4">○○食品株式会社</option>
+                        </select>
+                    </div>
+                    <div class="flex flex-col gap-2">
+                        <label for="">タグ名</label>
+                        <input type="text" class="max-w-72 rounded border p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 ">
+                    </div>
+                    <div class="flex flex-col gap-2" data-visible-for="iec">
+                        <label for="">ステータス</label>
+                        <select name="" id="" class="w-full max-w-72 rounded-md border px-3 py-2 focus:outline-none focus:ring-2 focus:ring-violet-400">
+                            <option value="">ステータスを選択してください</option>
+                            <option value="">公開</option>
+                            <option value="">非公開</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="flex gap-4 mx-auto justify-center mt-10">
+                    <button id="btnCloseModal" class="w-32 rounded-lg bg-white border-2 px-3 py-2 text-gray-500">キャンセル</button>
+                    <button class="w-32 rounded-lg bg-blue-500 px-3 py-2 text-white">登録する</button>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
+<script>
+    window.addEventListener('DOMContentLoaded', () => {
+    // 初期ロールやブランド名・ユーザー名は自由に
+    MockUI.injectHeader('#app-header', {
+        userName: 'Test User',
+        brand: 'New SD App',
+        initialRole: 'iec', // 初回roleが未指定ならiecをセット
+    });
+    MockUI.injectSidebar('#app-sidebar');
+
+    // サイドバー挿入直後に data-visible-for を反映
+    RoleMock.applyRoleVisibility();
+    });
+
+    const btnOpenModal = document.getElementById('btnOpenModal');
+    btnOpenModal.addEventListener('click', () => {
+    document.getElementById('modal').classList.remove('hidden');
+    });
+
+    const btnCloseModal = document.getElementById('btnCloseModal');
+    btnCloseModal.addEventListener('click', () => {
+    document.getElementById('modal').classList.add('hidden');
+    });
+
+    // すべてのトリガーを取得
+    const triggers = document.querySelectorAll(".menu-trigger");
+    const menus = document.querySelectorAll(".menu");
+
+    triggers.forEach(trigger => {
+    trigger.addEventListener("click", (e) => {
+        e.stopPropagation(); // 外部クリック処理を止める
+
+        // 他のメニューを閉じる
+        menus.forEach(menu => menu.classList.add("hidden"));
+
+        // 対応するメニューを開閉
+        const rowId = trigger.dataset.row;
+        const menu = document.getElementById(`row-${rowId}-items`);
+        menu.classList.toggle("hidden");
+    });
+    });
+
+    // メニュー内クリックでは閉じない
+    menus.forEach(menu => {
+    menu.addEventListener("click", (e) => e.stopPropagation());
+    });
+
+    // 領域外クリックで全部閉じる
+    document.addEventListener("click", () => {
+    menus.forEach(menu => menu.classList.add("hidden"));
+    });
+</script>
