@@ -41,12 +41,12 @@
 
             <div class="divide-y divide-gray-100 rounded-xl border border-gray-200 bg-white">
               <!-- 氏名（トグル） -->
-              <div class="flex items-center gap-4 px-4 py-3">
-                <div class="w-40 shrink-0">
+              <div class="grid grid-cols-3 flex items-center gap-4 px-4 py-3">
+                <div class="">
                   <div class="text-sm font-medium text-gray-900">氏名</div>
-                  <div class="text-xs text-gray-500 mt-0.5">必須固定の想定（モック）</div>
+                  <div class="text-xs text-gray-500 mt-0.5">必須固定</div>
                 </div>
-                <div class="flex-1">
+                <div class="">
                   <!-- 既存トグルそのまま -->
                   <div class="bg-blue-500 w-[4.5rem] h-[2rem] rounded-full flex items-center justify-center cursor-pointer"
                        data-name="name">
@@ -55,13 +55,36 @@
                 </div>
               </div>
 
+              <!-- 生年月日（Tri） -->
+              <div class="grid grid-cols-3 flex items-center gap-4 px-4 py-3">
+                <div class="">
+                  <div class="text-sm font-medium text-gray-900">生年月日</div>
+                  <div class="text-xs text-gray-500 mt-0.5">不要なら「なし」を選択</div>
+                </div>
+                <div class="">
+                  <!-- 既存 Tri-State そのまま -->
+                  <div class="tri-state inline-block" role="radiogroup" aria-label=""
+                       data-name="email_requirement" data-value="optional">
+                    <input type="radio" name="email_requirement_radio" value="none" class="sr-only" />
+                    <input type="radio" name="email_requirement_radio" value="optional" class="sr-only" />
+                    <input type="radio" name="email_requirement_radio" value="required" class="sr-only" />
+                    <div class="inline-flex rounded-lg border overflow-hidden">
+                      <button type="button" data-val="none" class="tri-btn px-3 py-1.5 text-sm border-r" aria-pressed="true">なし</button>
+                      <button type="button" data-val="optional" class="tri-btn px-3 py-1.5 text-sm border-r">任意</button>
+                      <button type="button" data-val="required" class="tri-btn px-3 py-1.5 text-sm">必須</button>
+                    </div>
+                  </div>
+                  <input type="hidden" name="email_requirement" value="none" />
+                </div>
+              </div>
+
               <!-- 性別（Tri） -->
-              <div class="flex items-center gap-4 px-4 py-3">
-                <div class="w-40 shrink-0">
+              <div class="grid grid-cols-3 flex items-center gap-4 px-4 py-3">
+                <div class="">
                   <div class="text-sm font-medium text-gray-900">性別</div>
                   <div class="text-xs text-gray-500 mt-0.5">不要なら「なし」を選択</div>
                 </div>
-                <div class="flex-1">
+                <div class="">
                   <!-- 既存 Tri-State そのまま -->
                   <div class="tri-state inline-block" role="radiogroup" aria-label=""
                        data-name="email_requirement" data-value="optional">
@@ -79,12 +102,12 @@
               </div>
 
               <!-- 所属（Tri） -->
-              <div class="flex items-center gap-4 px-4 py-3">
-                <div class="w-40 shrink-0">
+              <div class="grid grid-cols-3 flex items-center gap-4 px-4 py-3">
+                <div class="">
                   <div class="text-sm font-medium text-gray-900">所属</div>
                   <div class="text-xs text-gray-500 mt-0.5">会社名・部署など</div>
                 </div>
-                <div class="flex-1">
+                <div class="">
                   <div class="tri-state inline-block" role="radiogroup" aria-label=""
                        data-name="email_requirement" data-value="required">
                     <input type="radio" name="email_requirement_radio" value="none" class="sr-only" />
@@ -100,13 +123,60 @@
                 </div>
               </div>
 
+              <!-- 社員番号（Tri） -->
+              <div class="grid grid-cols-3 flex items-center justify-between gap-4 px-4 py-3">
+                <div class="">
+                  <div class="text-sm font-medium text-gray-900">社員番号</div>
+                  <div class="text-xs text-gray-500 mt-0.5">社員を一意に定めるコード</div>
+                </div>
+                <div class="">
+                  <div class="tri-state inline-block" role="radiogroup" aria-label=""
+                       data-name="email_requirement" data-value="required">
+                    <input type="radio" name="email_requirement_radio" value="none" class="sr-only" />
+                    <input type="radio" name="email_requirement_radio" value="optional" class="sr-only" />
+                    <input type="radio" name="email_requirement_radio" value="required" class="sr-only" />
+                    <div class="inline-flex rounded-lg border overflow-hidden">
+                      <button type="button" data-val="none" class="tri-btn px-3 py-1.5 text-sm border-r">なし</button>
+                      <button type="button" data-val="optional" class="tri-btn px-3 py-1.5 text-sm border-r">任意</button>
+                      <button type="button" data-val="required" class="tri-btn px-3 py-1.5 text-sm" aria-pressed="true">必須</button>
+                    </div>
+                  </div>
+                  <input type="hidden" name="email_requirement" value="none" />
+                </div>
+                <div>
+                  <label for="" class="text-sm">表示名指定</label>
+                  <input type="text" class="border text-sm rounded-md px-2 py-1 w-32" placeholder="例：社員ID" />
+                </div>
+              </div>
+
               <!-- メール（Tri） -->
-              <div class="flex items-center gap-4 px-4 py-3">
-                <div class="w-40 shrink-0">
+              <div class="grid grid-cols-3 flex items-center gap-4 px-4 py-3">
+                <div class="">
                   <div class="text-sm font-medium text-gray-900">メールアドレス</div>
                   <div class="text-xs text-gray-500 mt-0.5">連絡用に推奨</div>
                 </div>
-                <div class="flex-1">
+                <div class="">
+                  <div class="tri-state inline-block" role="radiogroup" aria-label="メールアドレスの必須設定"
+                       data-name="email_requirement" data-value="required">
+                    <input type="radio" name="email_requirement_radio" value="none" class="sr-only" />
+                    <input type="radio" name="email_requirement_radio" value="optional" class="sr-only" />
+                    <input type="radio" name="email_requirement_radio" value="required" class="sr-only" />
+                    <div class="inline-flex rounded-lg border overflow-hidden">
+                      <button type="button" data-val="none" class="tri-btn px-3 py-1.5 text-sm border-r" aria-pressed="true">なし</button>
+                      <button type="button" data-val="optional" class="tri-btn px-3 py-1.5 text-sm border-r">任意</button>
+                      <button type="button" data-val="required" class="tri-btn px-3 py-1.5 text-sm">必須</button>
+                    </div>
+                  </div>
+                  <input type="hidden" name="email_requirement" value="none" />
+                </div>
+              </div>
+              <!-- TEL（Tri） -->
+              <div class="grid grid-cols-3 flex items-center gap-4 px-4 py-3">
+                <div class="">
+                  <div class="text-sm font-medium text-gray-900">電話番号</div>
+                  <div class="text-xs text-gray-500 mt-0.5">連絡用に推奨</div>
+                </div>
+                <div class="">
                   <div class="tri-state inline-block" role="radiogroup" aria-label="メールアドレスの必須設定"
                        data-name="email_requirement" data-value="required">
                     <input type="radio" name="email_requirement_radio" value="none" class="sr-only" />
@@ -123,12 +193,12 @@
               </div>
 
               <!-- 住所（Tri） -->
-              <div class="flex items-center gap-4 px-4 py-3">
-                <div class="w-40 shrink-0">
+              <div class="grid grid-cols-3 flex items-center gap-4 px-4 py-3">
+                <div class="">
                   <div class="text-sm font-medium text-gray-900">住所</div>
                   <div class="text-xs text-gray-500 mt-0.5">教材配送などがある場合に</div>
                 </div>
-                <div class="flex-1">
+                <div class="">
                   <div class="tri-state inline-block" role="radiogroup" aria-label="メールアドレスの必須設定"
                        data-name="email_requirement" data-value="none">
                     <input type="radio" name="email_requirement_radio" value="none" class="sr-only" />
@@ -154,13 +224,29 @@
             </div>
 
             <div class="divide-y divide-gray-100 rounded-xl border border-gray-200 bg-white">
+              <!-- 再受講 -->
+              <div class="grid grid-cols-3 flex items-center gap-4 px-4 py-3">
+                <div class="">
+                  <div class="text-sm font-medium text-gray-900">再受講</div>
+                  <div class="text-xs text-gray-500 mt-0.5">申込指示の再受講可否と連動</div>
+                </div>
+                <div class="">
+                  <!-- 既存トグルそのまま -->
+                  <div class="toggle bg-gray-200 w-[4.5rem] h-[2rem] rounded-full flex items-center justify-between cursor-pointer"
+                       data-toggle-state="off">
+                    <div class="text-xs m-1 ml-3 flex text-white font-bold hidden label-on">あり</div>
+                    <div class="bg-white w-[1.5rem] h-[1.5rem] m-1 rounded-full knob"></div>
+                    <div class="text-xs m-1 mr-3 flex text-gray-700 label-off">なし</div>
+                  </div>
+                </div>
+              </div>
               <!-- 上司承認（トグル） -->
-              <div class="flex items-center gap-4 px-4 py-3">
-                <div class="w-40 shrink-0">
+              <div class="grid grid-cols-3 flex items-center gap-4 px-4 py-3">
+                <div class="">
                   <div class="text-sm font-medium text-gray-900">上司承認</div>
                   <div class="text-xs text-gray-500 mt-0.5">必要な場合のみON</div>
                 </div>
-                <div class="flex-1">
+                <div class="">
                   <!-- 既存トグルそのまま -->
                   <div class="toggle bg-gray-200 w-[4.5rem] h-[2rem] rounded-full flex items-center justify-between cursor-pointer"
                        data-toggle-state="off">
@@ -172,12 +258,12 @@
               </div>
 
               <!-- アンケート（トグル） -->
-              <div class="flex items-center gap-4 px-4 py-3">
-                <div class="w-40 shrink-0">
+              <div class="grid grid-cols-3 flex items-center gap-4 px-4 py-3">
+                <div class="">
                   <div class="text-sm font-medium text-gray-900">アンケート</div>
                   <div class="text-xs text-gray-500 mt-0.5">事後アンケートの有無</div>
                 </div>
-                <div class="flex-1">
+                <div class="">
                   <div class="toggle bg-blue-500 w-[4.5rem] h-[2rem] rounded-full flex items-center justify-between cursor-pointer"
                        data-toggle-state="on">
                     <div class="text-xs m-1 ml-3 flex text-white font-bold label-on">あり</div>
