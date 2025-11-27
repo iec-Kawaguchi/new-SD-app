@@ -103,7 +103,7 @@
                                 <!-- 再受講時のみ表示 -->
                                 <div id="re-enroll-block" class="flex flex-col sm:w-1/2 hidden">
                                     <label for="prevEnrollNo" class="font-medium">前回の受講番号 <span class="text-red-500">*</span></label>
-                                    <input id="prevEnrollNo" name="prevEnrollNo" type="text" class="border rounded-lg p-2" autocomplete="off" />
+                                    <input id="prevEnrollNo" name="prevEnrollNo" type="text" class="border rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-400" autocomplete="off" />
                                     <p class="text-sm text-gray-500 mt-1">受講証やメールに記載の「受講番号」を入力してください。</p>
                                     <p class="text-sm text-red-600 mt-1 hidden" data-error-for="prevEnrollNo">前回の受講番号を入力してください。</p>
                                 </div>
@@ -111,23 +111,23 @@
                                 <div class="grid grid-cols-2 sm:grid-cols-2 gap-4">
                                     <div class="flex flex-col">
                                         <label for="name" class="font-medium">姓 <span class="text-red-500">*</span></label>
-                                        <input id="name" name="name" type="text" class="border rounded-lg p-2" autocomplete="name" required />
+                                        <input id="name" name="name" type="text" class="border rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-400" autocomplete="name" required />
                                         <!-- <p class="text-sm text-red-600 mt-1 hidden" data-error-for="name">氏名を入力してください。</p> -->
                                     </div>
                                     <div class="flex flex-col">
                                         <label for="kana" class="font-medium">セイ <span class="text-red-500">*</span></label>
-                                        <input id="kana" name="kana" type="text" class="border rounded-lg p-2" placeholder="" pattern="^[\u30A0-\u30FF\sー－]+$" required />
+                                        <input id="kana" name="kana" type="text" class="border rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-400" placeholder="" pattern="^[\u30A0-\u30FF\sー－]+$" required />
                                         <p class="text-sm text-gray-500 mt-1">全角カタカナで入力</p>
                                         <!-- <p class="text-sm text-red-600 mt-1 hidden" data-error-for="kana">フリガナ（全角カタカナ）を入力してください。</p> -->
                                     </div>
                                     <div class="flex flex-col">
                                         <label for="name" class="font-medium">名 <span class="text-red-500">*</span></label>
-                                        <input id="name" name="name" type="text" class="border rounded-lg p-2" autocomplete="name" required />
+                                        <input id="name" name="name" type="text" class="border rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-400" autocomplete="name" required />
                                         <!-- <p class="text-sm text-red-600 mt-1 hidden" data-error-for="name">氏名を入力してください。</p> -->
                                     </div>
                                     <div class="flex flex-col">
                                         <label for="kana" class="font-medium">メイ <span class="text-red-500">*</span></label>
-                                        <input id="kana" name="kana" type="text" class="border rounded-lg p-2" placeholder="" pattern="^[\u30A0-\u30FF\sー－]+$" required />
+                                        <input id="kana" name="kana" type="text" class="border rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-400" placeholder="" pattern="^[\u30A0-\u30FF\sー－]+$" required />
                                         <p class="text-sm text-gray-500 mt-1">全角カタカナで入力</p>
                                         <!-- <p class="text-sm text-red-600 mt-1 hidden" data-error-for="kana">フリガナ（全角カタカナ）を入力してください。</p> -->
                                     </div>
@@ -138,7 +138,7 @@
                                     <div class="flex flex-col">
                                         <label for="email" class="font-medium">メールアドレス <span class="text-red-500">*</span></label>
                                         <div class="flex flex-col sm:flex-row sm:items-center gap-2 mt-1">
-                                            <input id="email" name="email" type="email" class="border rounded-lg p-2 flex-1" autocomplete="email" required />
+                                            <input id="email" name="email" type="email" class="border rounded-lg p-2 flex-1 focus:outline-none focus:ring-2 focus:ring-blue-400" autocomplete="email" required />
                                             <button
                                                 type="button"
                                                 id="send-otp"
@@ -186,34 +186,28 @@
 
                                 <div class="flex flex-col sm:w-1/2">
                                     <label for="tel" class="font-medium">電話番号 <span class="text-red-500">*</span></label>
-                                    <input id="tel" name="tel" type="tel" class="border rounded-lg p-2" inputmode="numeric" data-numeric autocomplete="tel" placeholder="09012345678" pattern="^[0-9\-]+$" required />
+                                    <input id="tel" name="tel" type="tel" class="border rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-400" inputmode="numeric" data-numeric autocomplete="tel" placeholder="09012345678" pattern="^[0-9\-]+$" required />
                                     <p class="text-sm text-red-600 mt-1 hidden" data-error-for="tel">数字のみで入力してください。</p>
                                 </div>
-                                <!-- <div class="pt-2">
-                                    <label class="inline-flex items-start gap-2">
-                                        <input id="agree" type="checkbox" class="mt-1">
-                                        <span class="text-sm text-gray-700">プライバシーポリシーに同意します</span>
-                                    </label>
-                                </div> -->
                                 <!-- プライバシーポリシー同意（モーダル起点） -->
-                <div class="pt-2">
-                  <label class="inline-flex items-start gap-2">
-                    <input id="agree" type="checkbox" class="mt-1" disabled>
-                    <span class="text-sm text-gray-700">
-                      <button
-                        type="button"
-                        id="open-privacy"
-                        class="underline text-blue-700 hover:text-blue-900"
-                      >
-                        プライバシーポリシー
-                      </button>
-                      を確認のうえ、内容に同意します
-                    </span>
-                  </label>
-                  <p class="text-xs text-gray-500 mt-1">
-                    プライバシーポリシーを開き、「同意する」ボタンを押すとチェックが付きます。
-                  </p>
-                </div>
+                                <div class="pt-2">
+                                <label class="inline-flex items-start gap-2">
+                                    <input id="agree" type="checkbox" class="mt-1" disabled>
+                                    <span class="text-sm text-gray-700">
+                                    <button
+                                        type="button"
+                                        id="open-privacy"
+                                        class="underline text-blue-700 hover:text-blue-900"
+                                    >
+                                        プライバシーポリシー
+                                    </button>
+                                    を確認のうえ、内容に同意します
+                                    </span>
+                                </label>
+                                <p class="text-xs text-gray-500 mt-1">
+                                    プライバシーポリシーを開き、「同意する」ボタンを押すとチェックが付きます。
+                                </p>
+                                </div>
                             </form>
                         </section>
 
@@ -224,29 +218,23 @@
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <div class="flex flex-col">
                                     <label for="zip" class="font-medium">郵便番号 <span class="text-red-500">*</span></label>
-                                    <input id="zip" name="zip" type="text" class="border rounded-lg p-2" inputmode="numeric" data-numeric placeholder="123-4567" pattern="^\d{3}-?\d{4}$" required onKeyUp="AjaxZip3.zip2addr(this, '', 'pref', 'city');" />
+                                    <input id="zip" name="zip" type="text" class="border rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-400" inputmode="numeric" data-numeric placeholder="123-4567" pattern="^\d{3}-?\d{4}$" required onKeyUp="AjaxZip3.zip2addr(this, '', 'pref', 'city');" />
                                     <p class="text-sm text-gray-500 mt-1">半角数字（自動で 123-4567 形式になります）</p>
                                     <p class="text-sm text-red-600 mt-1 hidden" data-error-for="zip">郵便番号を正しく入力してください。</p>
                                 </div>
                                 <div class="flex flex-col">
                                     <label for="pref" class="font-medium">都道府県 <span class="text-red-500">*</span></label>
-                                    <input id="pref" name="pref" type="text" class="border rounded-lg p-2" autocomplete="address-level1" required />
+                                    <input id="pref" name="pref" type="text" class="border rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-400" autocomplete="address-level1" required />
                                     <p class="text-sm text-red-600 mt-1 hidden" data-error-for="pref">都道府県を入力してください。</p>
                                 </div>
                                 <div class="flex flex-col sm:col-span-2">
                                     <label for="city" class="font-medium">市区町村・番地 <span class="text-red-500">*</span></label>
-                                    <input id="city" name="city" type="text" class="border rounded-lg p-2" autocomplete="address-line1" required />
+                                    <input id="city" name="city" type="text" class="border rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-400" autocomplete="address-line1" required />
                                     <p class="text-sm text-red-600 mt-1 hidden" data-error-for="city">市区町村・番地を入力してください。</p>
                                 </div>
                                 <div class="flex flex-col sm:col-span-2">
                                     <label for="addr2" class="font-medium">建物名・部屋番号（任意）</label>
-                                    <input id="addr2" name="addr2" type="text" class="border rounded-lg p-2" autocomplete="address-line2" />
-                                </div>
-
-                                <div class="flex flex-col sm:w-1/2">
-                                    <label for="telShip" class="font-medium">配送連絡先（任意）</label>
-                                    <input id="telShip" name="telShip" type="tel" class="border rounded-lg p-2" inputmode="numeric" data-numeric placeholder="09012345678" pattern="^[0-9\-]+$" />
-                                    <p class="text-sm text-red-600 mt-1 hidden" data-error-for="telShip">数字のみで入力してください。</p>
+                                    <input id="addr2" name="addr2" type="text" class="border rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-400" autocomplete="address-line2" />
                                 </div>
                             </div>
                         </section>
@@ -302,68 +290,68 @@
         </main>
 
         <!-- Privacy Policy Modal -->
-    <div
-      id="privacy-modal"
-      class="fixed inset-0 z-50 hidden"
-      aria-modal="true"
-      role="dialog"
-      aria-labelledby="privacy-modal-title"
-    >
-        <!-- backdrop -->
-        <div id="privacy-backdrop" class="absolute inset-0 bg-black/30"></div>
+        <div
+        id="privacy-modal"
+        class="fixed inset-0 z-50 hidden"
+        aria-modal="true"
+        role="dialog"
+        aria-labelledby="privacy-modal-title"
+        >
+            <!-- backdrop -->
+            <div id="privacy-backdrop" class="absolute inset-0 bg-black/30"></div>
 
-        <!-- dialog -->
-        <div class="relative z-10 max-w-2xl mx-auto mt-16 bg-white rounded-2xl shadow-xl border border-gray-200">
-            <div class="flex items-center justify-between px-5 py-3 border-b border-gray-100">
-                <h2 id="privacy-modal-title" class="text-base font-semibold">プライバシーポリシー</h2>
-                <button
-                    type="button"
-                    id="privacy-close"
-                    class="p-1 rounded-full hover:bg-gray-100"
-                    aria-label="閉じる"
-                >
-                    <span class="material-symbols-outlined text-gray-500 text-xl">close</span>
-                </button>
+            <!-- dialog -->
+            <div class="relative z-10 max-w-2xl mx-auto mt-16 bg-white rounded-2xl shadow-xl border border-gray-200">
+                <div class="flex items-center justify-between px-5 py-3 border-b border-gray-100">
+                    <h2 id="privacy-modal-title" class="text-base font-semibold">プライバシーポリシー</h2>
+                    <button
+                        type="button"
+                        id="privacy-close"
+                        class="p-1 rounded-full hover:bg-gray-100"
+                        aria-label="閉じる"
+                    >
+                        <span class="material-symbols-outlined text-gray-500 text-xl">close</span>
+                    </button>
+                </div>
+
+            <div class="px-5 pt-4 pb-3 max-h-[60vh] overflow-y-auto text-sm leading-relaxed text-gray-700">
+                <!-- ここに実際のプライバシーポリシー本文を入れる想定。以下ダミー。 -->
+                <p class="mb-3">
+                    本サービスでは、お申込みおよび受講に必要な範囲で、お客様の氏名・メールアドレス・住所・電話番号等の個人情報を取得・利用します。
+                </p>
+                <p class="mb-3">
+                    取得した個人情報は、受講に関するご連絡、教材発送、成績・修了管理、各種ご案内の送付等の目的のみに利用し、法令に基づく場合を除き、ご本人の同意なく第三者に提供することはありません。
+                </p>
+                <p class="mb-3">
+                    また、個人情報の漏えい・紛失・改ざん等を防止するため、適切な安全管理措置を講じます。詳細な取扱いについては、当社Webサイトに掲載のプライバシーポリシー全文をご確認ください。
+                </p>
             </div>
 
-        <div class="px-5 pt-4 pb-3 max-h-[60vh] overflow-y-auto text-sm leading-relaxed text-gray-700">
-            <!-- ここに実際のプライバシーポリシー本文を入れる想定。以下ダミー。 -->
-            <p class="mb-3">
-                本サービスでは、お申込みおよび受講に必要な範囲で、お客様の氏名・メールアドレス・住所・電話番号等の個人情報を取得・利用します。
-            </p>
-            <p class="mb-3">
-                取得した個人情報は、受講に関するご連絡、教材発送、成績・修了管理、各種ご案内の送付等の目的のみに利用し、法令に基づく場合を除き、ご本人の同意なく第三者に提供することはありません。
-            </p>
-            <p class="mb-3">
-                また、個人情報の漏えい・紛失・改ざん等を防止するため、適切な安全管理措置を講じます。詳細な取扱いについては、当社Webサイトに掲載のプライバシーポリシー全文をご確認ください。
-            </p>
+            <div class="px-5 py-3 border-t border-gray-100 space-y-3">
+            <label class="flex items-start gap-2 text-sm">
+                <input id="modal-agree" type="checkbox" class="mt-1">
+                <span>上記の内容を読み、同意します。</span>
+            </label>
+            <div class="flex justify-end gap-2">
+                <button
+                type="button"
+                id="privacy-cancel"
+                class="px-4 py-2 rounded-lg border border-gray-300 text-sm text-gray-700 hover:bg-gray-50"
+                >
+                同意せず閉じる
+                </button>
+                <button
+                type="button"
+                id="privacy-confirm"
+                class="px-4 py-2 rounded-lg bg-blue-600 text-sm text-white font-semibold disabled:opacity-50 disabled:cursor-not-allowed hover:bg-blue-700"
+                disabled
+                >
+                同意する
+                </button>
+            </div>
+            </div>
         </div>
-
-        <div class="px-5 py-3 border-t border-gray-100 space-y-3">
-          <label class="flex items-start gap-2 text-sm">
-            <input id="modal-agree" type="checkbox" class="mt-1">
-            <span>上記の内容を読み、同意します。</span>
-          </label>
-          <div class="flex justify-end gap-2">
-            <button
-              type="button"
-              id="privacy-cancel"
-              class="px-4 py-2 rounded-lg border border-gray-300 text-sm text-gray-700 hover:bg-gray-50"
-            >
-              同意せず閉じる
-            </button>
-            <button
-              type="button"
-              id="privacy-confirm"
-              class="px-4 py-2 rounded-lg bg-blue-600 text-sm text-white font-semibold disabled:opacity-50 disabled:cursor-not-allowed hover:bg-blue-700"
-              disabled
-            >
-              同意する
-            </button>
-          </div>
         </div>
-      </div>
-    </div>
 
         <!-- Footer -->
         <footer class="text-xs text-gray-500 px-4 py-8 text-center">
