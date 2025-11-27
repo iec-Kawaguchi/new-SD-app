@@ -4,7 +4,7 @@
     "title": "Z世代のためのマナー",
     "code": "DF1001-80001",
     "org": "IEC",
-    "isNew": true,
+    "isNew": false,
     "stdTag": "マナー",
     "custom": ["おすすめ"],
     "options":[
@@ -42,7 +42,7 @@
     "title": "若手社員のためのビジネス文章術",
     "code": "DF1004-80004",
     "org": "他団体B",
-    "isNew": true,
+    "isNew": false,
     "stdTag": "文章力",
     "custom": ["おすすめ", "新人向け"],
     "options":[
@@ -67,7 +67,7 @@
     "title": "ミドル層のためのタイムマネジメント",
     "code": "DF1006-80006",
     "org": "他団体C",
-    "isNew": true,
+    "isNew": false,
     "stdTag": "仕事力",
     "custom": ["働き方改革"],
     "options":[
@@ -92,7 +92,7 @@
     "title": "DX時代のデータリテラシー入門",
     "code": "DF1008-80008",
     "org": "IEC",
-    "isNew": true,
+    "isNew": false,
     "stdTag": "DX",
     "custom": ["人気"],
     "options":[
@@ -130,7 +130,7 @@
     "title": "Excel関数マスターコース",
     "code": "DF1011-80011",
     "org": "他団体C",
-    "isNew": true,
+    "isNew": false,
     "stdTag": "PCスキル",
     "custom": ["新人向け"],
     "options":[
@@ -155,7 +155,7 @@
     "title": "デザイン思考で学ぶ問題解決",
     "code": "DF1013-80013",
     "org": "IEC",
-    "isNew": true,
+    "isNew": false,
     "stdTag": "思考法",
     "custom": ["人気"],
     "options":[
@@ -180,7 +180,7 @@
     "title": "心理的安全性のつくりかた",
     "code": "DF1015-80015",
     "org": "他団体B",
-    "isNew": true,
+    "isNew": false,
     "stdTag": "マネジメント",
     "custom": ["管理職向け"],
     "options":[
@@ -205,7 +205,7 @@
     "title": "データ分析のための統計入門",
     "code": "DF1017-80017",
     "org": "他団体C",
-    "isNew": true,
+    "isNew": false,
     "stdTag": "統計",
     "custom": ["おすすめ"],
     "options":[
@@ -230,7 +230,7 @@
     "title": "事務職のための情報整理術",
     "code": "DF1019-80019",
     "org": "他団体B",
-    "isNew": true,
+    "isNew": false,
     "stdTag": "仕事力",
     "custom": [],
     "options":[

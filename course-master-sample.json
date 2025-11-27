@@ -1,0 +1,210 @@
+[
+  {
+    "id": 101,
+    "title": "新人のためのビジネスマナー基礎",
+    "code": "MF2001-90001",
+    "org": "他団体A",
+    "stdTag": "マナー",
+    "options": [
+      { "id": 1, "name": "郵便版", "price": 17600, "length": "2か月" },
+      { "id": 2, "name": "WEB版", "price": 17600, "length": "2か月" }
+    ]
+  },
+  {
+    "id": 102,
+    "title": "Excel実務で使えるショートカット大全",
+    "code": "MF2002-90002",
+    "org": "他団体B",
+    "stdTag": "PCスキル",
+    "options": [
+      { "id": 1, "name": "WEB版", "price": 18920, "length": "3か月" }
+    ]
+  },
+  {
+    "id": 103,
+    "title": "入門マーケティングリサーチ",
+    "code": "MF2003-90003",
+    "org": "他団体C",
+    "stdTag": "マーケティング",
+    "options": [
+      { "id": 1, "name": "通常版", "price": 21450, "length": "3か月" },
+      { "id": 2, "name": "ケーススタディ版", "price": 24640, "length": "4か月" }
+    ]
+  },
+  {
+    "id": 104,
+    "title": "伝わるメール・チャットの書き方",
+    "code": "MF2004-90004",
+    "org": "IEC",
+    "stdTag": "コミュニケーション",
+    "options": [
+      { "id": 1, "name": "WEB版", "price": 16500, "length": "1か月" }
+    ]
+  },
+  {
+    "id": 105,
+    "title": "非財務出身者のための決算書の読み方",
+    "code": "MF2005-90005",
+    "org": "他団体A",
+    "stdTag": "会計",
+    "options": [
+      { "id": 1, "name": "", "price": 23100, "length": "3か月" }
+    ]
+  },
+  {
+    "id": 106,
+    "title": "若手リーダーのためのタイムマネジメント",
+    "code": "MF2006-90006",
+    "org": "他団体B",
+    "stdTag": "仕事力",
+    "options": [
+      { "id": 1, "name": "通常版", "price": 18700, "length": "2か月" },
+      { "id": 2, "name": "演習追加版", "price": 21450, "length": "3か月" }
+    ]
+  },
+  {
+    "id": 107,
+    "title": "ロジカルシンキング実践トレーニング",
+    "code": "MF2007-90007",
+    "org": "IEC",
+    "stdTag": "思考法",
+    "options": [
+      { "id": 1, "name": "", "price": 22000, "length": "3か月" }
+    ]
+  },
+  {
+    "id": 108,
+    "title": "DX推進担当者のための基礎知識",
+    "code": "MF2008-90008",
+    "org": "他団体C",
+    "stdTag": "DX",
+    "options": [
+      { "id": 1, "name": "WEB版", "price": 24200, "length": "3か月" },
+      { "id": 2, "name": "演習付き版", "price": 27500, "length": "4か月" }
+    ]
+  },
+  {
+    "id": 109,
+    "title": "人事担当者のための労務トラブル事例集",
+    "code": "MF2009-90009",
+    "org": "他団体A",
+    "stdTag": "労務",
+    "options": [
+      { "id": 1, "name": "", "price": 23650, "length": "3か月" }
+    ]
+  },
+  {
+    "id": 110,
+    "title": "オンライン会議ファシリテーション入門",
+    "code": "MF2010-90010",
+    "org": "他団体B",
+    "stdTag": "コミュニケーション",
+    "options": [
+      { "id": 1, "name": "WEB版", "price": 17930, "length": "2か月" }
+    ]
+  },
+  {
+    "id": 111,
+    "title": "Wordで作る分かりやすい社内文書",
+    "code": "MF2011-90011",
+    "org": "IEC",
+    "stdTag": "PCスキル",
+    "options": [
+      { "id": 1, "name": "郵便版", "price": 17160, "length": "2か月" },
+      { "id": 2, "name": "WEB版", "price": 17160, "length": "2か月" }
+    ]
+  },
+  {
+    "id": 112,
+    "title": "管理職のためのハラスメント防止",
+    "code": "MF2012-90012",
+    "org": "他団体C",
+    "stdTag": "コンプライアンス",
+    "options": [
+      { "id": 1, "name": "", "price": 22000, "length": "3か月" }
+    ]
+  },
+  {
+    "id": 113,
+    "title": "デザイン思考で考える新規事業アイデア",
+    "code": "MF2013-90013",
+    "org": "他団体A",
+    "stdTag": "思考法",
+    "options": [
+      { "id": 1, "name": "WEB版", "price": 25300, "length": "3か月" }
+    ]
+  },
+  {
+    "id": 114,
+    "title": "法人営業のためのヒアリング技術",
+    "code": "MF2014-90014",
+    "org": "他団体B",
+    "stdTag": "営業",
+    "options": [
+      { "id": 1, "name": "通常版", "price": 20900, "length": "3か月" },
+      { "id": 2, "name": "ロールプレイ版", "price": 24200, "length": "4か月" }
+    ]
+  },
+  {
+    "id": 115,
+    "title": "1on1で部下を育てるマネジメント",
+    "code": "MF2015-90015",
+    "org": "IEC",
+    "stdTag": "マネジメント",
+    "options": [
+      { "id": 1, "name": "", "price": 23650, "length": "3か月" }
+    ]
+  },
+  {
+    "id": 116,
+    "title": "伝わるプレゼンテーション資料作成術",
+    "code": "MF2016-90016",
+    "org": "他団体C",
+    "stdTag": "PCスキル",
+    "options": [
+      { "id": 1, "name": "WEB版", "price": 22000, "length": "2か月" },
+      { "id": 2, "name": "演習付き版", "price": 25300, "length": "3か月" }
+    ]
+  },
+  {
+    "id": 117,
+    "title": "ビジネス統計の超入門",
+    "code": "MF2017-90017",
+    "org": "他団体A",
+    "stdTag": "統計",
+    "options": [
+      { "id": 1, "name": "", "price": 24750, "length": "4か月" }
+    ]
+  },
+  {
+    "id": 118,
+    "title": "現場リーダーのためのチームビルディング",
+    "code": "MF2018-90018",
+    "org": "他団体B",
+    "stdTag": "リーダーシップ",
+    "options": [
+      { "id": 1, "name": "通常版", "price": 22550, "length": "3か月" }
+    ]
+  },
+  {
+    "id": 119,
+    "title": "バックオフィス業務の段取り力向上",
+    "code": "MF2019-90019",
+    "org": "IEC",
+    "stdTag": "仕事力",
+    "options": [
+      { "id": 1, "name": "", "price": 18150, "length": "2か月" }
+    ]
+  },
+  {
+    "id": 120,
+    "title": "最新コンプライアンスケース100",
+    "code": "MF2020-90020",
+    "org": "他団体C",
+    "stdTag": "コンプライアンス",
+    "options": [
+      { "id": 1, "name": "WEB版", "price": 23650, "length": "3か月" },
+      { "id": 2, "name": "演習付き版", "price": 26950, "length": "4か月" }
+    ]
+  }
+]
