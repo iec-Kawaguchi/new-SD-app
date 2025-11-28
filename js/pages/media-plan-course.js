@@ -61,6 +61,31 @@ window.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // ★ DOM の並び順をもとに allData を再構成（loaded 範囲だけを並べ替え）
+    function reorderAllDataByDom() {
+        const domRows = Array.from(rowsEl.querySelectorAll('.row'));
+        const domIds = domRows.map(r => String(r.dataset.id));
+
+        const loadedPart = allData.slice(0, loaded);
+        const restPart   = allData.slice(loaded);
+
+        const loadedMap = new Map(loadedPart.map(item => [String(item.id), item]));
+        const reorderedLoaded = [];
+
+        domIds.forEach(id => {
+            const item = loadedMap.get(id);
+            if (item) {
+                reorderedLoaded.push(item);
+                loadedMap.delete(id);
+            }
+        });
+
+        // 念のため、DOM上にない loaded 部分があれば後ろに足しておく
+        loadedMap.forEach(item => reorderedLoaded.push(item));
+
+        allData = reorderedLoaded.concat(restPart);
+    }
+
     // 行の data-id からコースオブジェクトを取得
     function findCourseByRowId(rowId) {
         if (!allData || !allData.length) return null;
@@ -224,7 +249,7 @@ window.addEventListener('DOMContentLoaded', () => {
             skeletonEl.classList.add('hidden');
             if (window.RoleMock) RoleMock.applyRoleVisibility(); // 新規行にも適用
             updateFilter();
-            updateOrderLabels(); // ★ 行追加後に並び順ラベルを更新（supplier のときは何も起きない）
+            updateOrderLabels(); // ★ 行追加後に並び順ラベルを更新
         }, 120);
     }
 
@@ -253,6 +278,46 @@ window.addEventListener('DOMContentLoaded', () => {
     });
     document.getElementById('clearSelection').addEventListener('click', ()=>{
         document.querySelectorAll('#rows .sel:checked').forEach(c=> c.checked=false);
+        refreshBulkbar();
+    });
+
+    // ★ 一括：選択行を先頭へ移動
+    document.getElementById('moveTop')?.addEventListener('click', () => {
+        const allRows = Array.from(rowsEl.querySelectorAll('.row'));
+        const selected = allRows.filter(r => r.querySelector('.sel:checked'));
+        if (!selected.length) return;
+
+        const others = allRows.filter(r => !selected.includes(r));
+
+        rowsEl.innerHTML = '';
+        [...selected, ...others].forEach(r => {
+            const chk = r.querySelector('.sel');
+            if (chk) chk.checked = false;
+            rowsEl.appendChild(r);
+        });
+
+        reorderAllDataByDom();
+        updateOrderLabels();
+        refreshBulkbar();
+    });
+
+    // ★ 一括：選択行を末尾へ移動
+    document.getElementById('moveBottom')?.addEventListener('click', () => {
+        const allRows = Array.from(rowsEl.querySelectorAll('.row'));
+        const selected = allRows.filter(r => r.querySelector('.sel:checked'));
+        if (!selected.length) return;
+
+        const others = allRows.filter(r => !selected.includes(r));
+
+        rowsEl.innerHTML = '';
+        [...others, ...selected].forEach(r => {
+            const chk = r.querySelector('.sel');
+            if (chk) chk.checked = false;
+            rowsEl.appendChild(r);
+        });
+
+        reorderAllDataByDom();
+        updateOrderLabels();
         refreshBulkbar();
     });
 
@@ -364,7 +429,7 @@ window.addEventListener('DOMContentLoaded', () => {
             <div class="mt-3 flex flex-wrap gap-1">
                 <span class="text-[11px] rounded-full bg-blue-100 text-blue-700 px-2 py-0.5">${std}</span>
                 ${String(custom).split(',').map(t=> t
-                    ? `<span class="text-[11px] rounded-full bg-gray-800 text-white px-2 py-0.5"
+                    ? `<span class="text-[11px] rounded-full bg-gray-800 text白 px-2 py-0.5"
                         data-visible-for="iec, customer">${t}</span>`
                     : ""
                 ).join("")}
