@@ -431,7 +431,7 @@ window.addEventListener('DOMContentLoaded', () => {
             <div class="mt-3 flex flex-wrap gap-1">
                 <span class="text-[11px] rounded-full bg-blue-100 text-blue-700 px-2 py-0.5">${std}</span>
                 ${String(custom).split(',').map(t=> t
-                    ? `<span class="text-[11px] rounded-full bg-gray-800 text白 px-2 py-0.5"
+                    ? `<span class="text-[11px] rounded-full bg-gray-800 text-white px-2 py-0.5"
                         data-visible-for="iec, customer">${t}</span>`
                     : ""
                 ).join("")}
