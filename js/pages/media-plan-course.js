@@ -29,8 +29,8 @@ window.addEventListener('DOMContentLoaded', () => {
     function rand(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
 
     // ★ グリッド定義（ヘッダー／行で共通）
-    const GRID_COLS_FULL     = 'grid-cols-[2rem_5rem_1fr_10rem_8rem_6rem_9rem_11rem]'; // 並び順＋カスタムあり（8列）
-    const GRID_COLS_SUPPLIER = 'grid-cols-[2rem_1fr_12rem_8rem_6rem_12rem]';           // supplier 用（6列）
+    const GRID_COLS_FULL     = 'grid-cols-[2rem_5rem_1fr_8rem_6rem_9rem_11rem]'; // 並び順＋カスタムあり（8列）
+    const GRID_COLS_SUPPLIER = 'grid-cols-[2rem_1fr_8rem_6rem_12rem]';           // supplier 用（6列）
 
     function getGridColsClass() {
         return initialRole === 'supplier' ? GRID_COLS_SUPPLIER : GRID_COLS_FULL;
@@ -166,12 +166,14 @@ window.addEventListener('DOMContentLoaded', () => {
             </div>
             ` : ''}
 
-            <!-- コース名 -->
-            <button class="flex text-left truncate hover:underline text-gray-900 font-medium open-preview">
-                ${d.title}
-            </button>
-
-            <div class="text-gray-500 text-sm" data-col="code">${d.code}</div>
+            <!-- コース名+コースコード -->
+            <div class="flex flex-col">
+                <button class="flex text-left truncate hover:underline text-gray-900 font-medium open-preview">
+                    ${d.title}
+                </button>
+                <div class="text-gray-400 text-xs" data-col="code">${d.code}</div>
+            </div>
+            
             <div class="text-gray-600" data-col="org">${d.org}</div>
             <div class="flex justify-center">
                 ${d.isNew ? `<span class="text-[10px] text-white rounded-full bg-amber-500 px-2 py-0.5">NEW</span>` : ``}

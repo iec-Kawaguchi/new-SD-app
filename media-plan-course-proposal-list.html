@@ -33,135 +33,134 @@
             </div>
 
             <div class=" w-full h-[calc(100vh-9rem)] rounded-xl flex flex-col mx-auto">
-            <!-- 通知 -->
-            <div id="notifications" class="pb-4" data-visible-for="supplier">
-                <div class="flex flex-col gap-2 bg-blue-50 text-blue-800 rounded-2xl shadow p-4 hover:shadow-md transition">
-                <div class="flex justify-between items-center pb-2">
-                    <h3 class="flex items-center font-bold text-xl">
-                    <span class="material-symbols-outlined text-md mr-2">info</span>お客様要望
-                    </h3>
-                    <span id="notificationCloseButton" class="material-symbols-outlined text-md mr-2 text-blue-700 cursor-pointer">keyboard_arrow_up</span>
-                </div>
-                <div class="flex items-center text-sm leading-relaxed">
-                    ●●食品株式会社様の中期経営計画にのっとり、デジタルシフトを実現するためのITスキルやITリテラシー強化に寄与するコースを積極的に採用したいとの要望をいただいております。
-                </div>
-                </div>
-            </div>
-
-            <!-- 2カラム：左=リスト / 右=プレビュー -->
-            <div class="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_28rem] gap-6  pb-4 min-h-0">
-                <!-- 左：リストボックス -->
-                <section class="rounded-2xl border border-gray-200/60 bg-white shadow-sm flex flex-col min-h-0">
-                <!-- ツールバー -->
-                <div class="p-4 border-b border-gray-200 flex flex-wrap items-center gap-3">
-                    <div class="relative">
-                    <span class="material-symbols-outlined absolute left-2 top-1/2 -translate-y-1/2 text-gray-400">search</span>
-                    <input id="q" type="text" placeholder="コース名 / コード / タグで検索"
-                            class="pl-9 pr-3 h-10 w-72 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400">
+                <!-- 通知 -->
+                <div id="notifications" class="pb-4" data-visible-for="supplier">
+                    <div class="flex flex-col gap-2 bg-blue-50 text-blue-800 rounded-2xl shadow p-4 hover:shadow-md transition">
+                    <div class="flex justify-between items-center pb-2">
+                        <h3 class="flex items-center font-bold text-xl">
+                        <span class="material-symbols-outlined text-md mr-2">info</span>お客様要望
+                        </h3>
+                        <span id="notificationCloseButton" class="material-symbols-outlined text-md mr-2 text-blue-700 cursor-pointer">keyboard_arrow_up</span>
                     </div>
-                    <div class="flex items-center gap-2">   
-                    <button data-filter="new" class="h-9 px-3 rounded-lg border border-gray-300 bg-white text-gray-700 hover:bg-gray-50">NEW</button>
-                    <button data-filter="clear" class="h-9 px-3 rounded-lg bg-gray-100 text-gray-700 hover:bg-gray-200">フィルタ解除</button>
+                    <div class="flex items-center text-sm leading-relaxed">
+                        ●●食品株式会社様の中期経営計画にのっとり、デジタルシフトを実現するためのITスキルやITリテラシー強化に寄与するコースを積極的に採用したいとの要望をいただいております。
                     </div>
+                    </div>
+                </div>
 
-                    <div class="ml-auto flex items-center gap-2">
-                    <button id="open-course-modal" class="h-9 px-3 rounded-md bg-blue-600 text-white hover:bg-blue-700 flex items-center"
-                            data-visible-for="iec,supplier">
-                        <span class="material-symbols-outlined text-base mr-1 ">add</span>コースを追加する
-                    </button>
-
-                    <!-- 列表示 -->
-                    <!-- <div class="relative">
-                        <button id="columnMenuBtn" class="h-9 px-3 rounded-lg border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 inline-flex items-center gap-1">
-                        <span class="material-symbols-outlined text-base">view_column</span> 列表示
-                        <span class="material-symbols-outlined text-sm">expand_more</span>
-                        </button>
-                        <div id="columnMenu" class="hidden absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg p-2 z-10">
-                        <label class="flex items-center gap-2 px-2 py-1 text-sm"><input type="checkbox" data-col="code" checked> 団体管理コード</label>
-                        <label class="flex items-center gap-2 px-2 py-1 text-sm"><input type="checkbox" data-col="org" checked> 提供団体</label>
-                        <label class="flex items-center gap-2 px-2 py-1 text-sm"><input type="checkbox" data-col="stdTag" checked> 標準タグ</label>
-                        <label class="flex items-center gap-2 px-2 py-1 text-sm"><input type="checkbox" data-col="customTag" checked> カスタムタグ</label>
+                <!-- 2カラム：左=リスト / 右=プレビュー -->
+                <div class="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_28rem] gap-6  pb-4 min-h-0">
+                    <!-- 左：リストボックス -->
+                    <section class="rounded-2xl border border-gray-200/60 bg-white shadow-sm flex flex-col min-h-0">
+                    <!-- ツールバー -->
+                    <div class="p-4 border-b border-gray-200 flex flex-wrap items-center gap-3">
+                        <div class="relative">
+                        <span class="material-symbols-outlined absolute left-2 top-1/2 -translate-y-1/2 text-gray-400">search</span>
+                        <input id="q" type="text" placeholder="コース名 / コード / タグで検索"
+                                class="pl-9 pr-3 h-10 w-72 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400">
                         </div>
-                    </div> -->
+                        <div class="flex items-center gap-2">   
+                        <button data-filter="new" class="h-9 px-3 rounded-lg border border-gray-300 bg-white text-gray-700 hover:bg-gray-50">NEW</button>
+                        <button data-filter="clear" class="h-9 px-3 rounded-lg bg-gray-100 text-gray-700 hover:bg-gray-200">フィルタ解除</button>
+                        </div>
 
-                    </div>
-                </div>
-
-                <!-- スティッキーヘッダー -->
-                <div class="grid grid-cols-[2rem_5rem_1fr_10rem_8rem_6rem_9rem_11rem] text-xs uppercase tracking-wide text-gray-500 px-4 py-2 sticky top-0 bg-white z-[1]">
-                    <div></div>
-                    <div data-col="order"class="">並び順</div>
-                    <div>コース名</div>
-                    <div data-col="code">コード</div>
-                    <div data-col="org">団体</div>
-                    <div>NEW</div>
-                    <div data-col="stdTag">標準タグ</div>
-                    <div data-col="customTag">カスタムタグ</div>
-                </div>
-
-                <!-- リスト本体 -->
-                <div id="list" class="min-h-[16rem] max-h-[46vh] overflow-y-auto">
-                    <div id="skeleton" class="p-4 space-y-2">
-                    <div class="h-12 rounded-lg bg-gray-100 animate-pulse"></div>
-                    <div class="h-12 rounded-lg bg-gray-100 animate-pulse"></div>
-                    <div class="h-12 rounded-lg bg-gray-100 animate-pulse"></div>
-                    <div class="h-12 rounded-lg bg-gray-100 animate-pulse"></div>
-                    <div class="h-12 rounded-lg bg-gray-100 animate-pulse"></div>
-                    </div>
-                    <div id="rows"></div>
-                    <div id="sentinel" class="h-10"></div>
-                </div>
-
-                <!-- 一括操作バー -->
-                <div id="bulkbar" class="hidden sticky bottom-0 bg-white border-t border-gray-200 px-4 py-2 flex items-center gap-3 rounded-b-2xl">
-                    <p class="text-sm text-gray-700"><span id="selCount">0</span> 件選択中</p>
-                    <button id="clearSelection" class="h-9 px-3 rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-50">選択を解除</button>
-                    <div class="ml-auto flex items-center gap-2">
-                        <button
-                            id="markDeleteRequest"
-                            class="h-9 px-3 rounded-md bg-red-50 text-red-700 border border-red-200 hover:bg-red-600 hover:text-white"
-                            >
-                            削除希望にする
+                        <div class="ml-auto flex items-center gap-2">
+                        <button id="open-course-modal" class="h-9 px-3 rounded-md bg-blue-600 text-white hover:bg-blue-700 flex items-center"
+                                data-visible-for="iec,supplier">
+                            <span class="material-symbols-outlined text-base mr-1 ">add</span>コースを追加する
                         </button>
-                        <button
-                            id=""
-                            class="h-9 px-3 rounded-md bg-red-50 text-red-700 border border-red-200 hover:bg-red-600 hover:text-white"
-                            >
-                            削除する
-                        </button>
-                    </div>
-                </div>
-                </section>
 
-                <!-- 右：プレビュー -->
-                <aside id="preview" class="hidden lg:block bg-white rounded-2xl shadow-sm border border-gray-200/60 p-5 overflow-auto">
-                <div class="text-sm text-gray-500">行をクリックするとここにコース詳細（概要/タグ/リンクなど）が表示されます（モック）。</div>
-                </aside>
-            </div>
+                        <!-- 列表示 -->
+                        <!-- <div class="relative">
+                            <button id="columnMenuBtn" class="h-9 px-3 rounded-lg border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 inline-flex items-center gap-1">
+                            <span class="material-symbols-outlined text-base">view_column</span> 列表示
+                            <span class="material-symbols-outlined text-sm">expand_more</span>
+                            </button>
+                            <div id="columnMenu" class="hidden absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg p-2 z-10">
+                            <label class="flex items-center gap-2 px-2 py-1 text-sm"><input type="checkbox" data-col="code" checked> 団体管理コード</label>
+                            <label class="flex items-center gap-2 px-2 py-1 text-sm"><input type="checkbox" data-col="org" checked> 提供団体</label>
+                            <label class="flex items-center gap-2 px-2 py-1 text-sm"><input type="checkbox" data-col="stdTag" checked> 標準タグ</label>
+                            <label class="flex items-center gap-2 px-2 py-1 text-sm"><input type="checkbox" data-col="customTag" checked> カスタムタグ</label>
+                            </div>
+                        </div> -->
+
+                        </div>
+                    </div>
+
+                    <!-- スティッキーヘッダー -->
+                    <div class="grid grid-cols-[2rem_5rem_1fr_8rem_6rem_9rem_11rem] text-xs uppercase tracking-wide text-gray-500 px-4 py-2 sticky top-0 bg-white z-[1]">
+                        <div></div>
+                        <div data-col="order"class="">並び順</div>
+                        <div>コース名</div>
+                        <div data-col="org">団体</div>
+                        <div>NEW</div>
+                        <div data-col="stdTag">標準タグ</div>
+                        <div data-col="customTag">カスタムタグ</div>
+                    </div>
+
+                    <!-- リスト本体 -->
+                    <div id="list" class="min-h-[16rem] max-h-[46vh] overflow-y-auto">
+                        <div id="skeleton" class="p-4 space-y-2">
+                        <div class="h-12 rounded-lg bg-gray-100 animate-pulse"></div>
+                        <div class="h-12 rounded-lg bg-gray-100 animate-pulse"></div>
+                        <div class="h-12 rounded-lg bg-gray-100 animate-pulse"></div>
+                        <div class="h-12 rounded-lg bg-gray-100 animate-pulse"></div>
+                        <div class="h-12 rounded-lg bg-gray-100 animate-pulse"></div>
+                        </div>
+                        <div id="rows"></div>
+                        <div id="sentinel" class="h-10"></div>
+                    </div>
+
+                    <!-- 一括操作バー -->
+                    <div id="bulkbar" class="hidden sticky bottom-0 bg-white border-t border-gray-200 px-4 py-2 flex items-center gap-3 rounded-b-2xl">
+                        <p class="text-sm text-gray-700"><span id="selCount">0</span> 件選択中</p>
+                        <button id="clearSelection" class="h-9 px-3 rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-50">選択を解除</button>
+                        <div class="ml-auto flex items-center gap-2">
+                            <button
+                                id="markDeleteRequest"
+                                class="h-9 px-3 rounded-md bg-red-50 text-red-700 border border-red-200 hover:bg-red-600 hover:text-white"
+                                >
+                                削除希望にする
+                            </button>
+                            <button
+                                id=""
+                                class="h-9 px-3 rounded-md bg-red-50 text-red-700 border border-red-200 hover:bg-red-600 hover:text-white"
+                                >
+                                削除する
+                            </button>
+                        </div>
+                    </div>
+                    </section>
+
+                    <!-- 右：プレビュー -->
+                    <aside id="preview" class="hidden lg:block bg-white rounded-2xl shadow-sm border border-gray-200/60 p-5 overflow-auto">
+                    <div class="text-sm text-gray-500">行をクリックするとここにコース詳細（概要/タグ/リンクなど）が表示されます（モック）。</div>
+                    </aside>
+                </div>
 
                     
-            <!-- 下部アクション（踏襲） -->
-            <div class="bg-white rounded-xl p-4 mt-2">
-                <div class=" flex justify-end gap-3 flex-wrap" >
-                    <div class=" w-full" data-visible-for="customer">
-                        <label for="body" class="block text-sm font-semibold text-gray-900 mb-1">提案要望</label>
-                        <div class="relative">
-                        <textarea id="body" rows="1" maxlength="500"
-                            class="w-full  rounded-lg border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
-                            placeholder=""></textarea>
-                        <div class="absolute right-2 bottom-2 text-xs text-gray-400">
-                            <span id="bodyCount">0</span>/500
+                <!-- 下部アクション（踏襲） -->
+                <div class="bg-white rounded-xl p-4 mt-2">
+                    <div class=" flex justify-end gap-3 flex-wrap" >
+                        <div class=" w-full" data-visible-for="customer">
+                            <label for="body" class="block text-sm font-semibold text-gray-900 mb-1">提案要望</label>
+                            <div class="relative">
+                            <textarea id="body" rows="1" maxlength="500"
+                                class="w-full  rounded-lg border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+                                placeholder=""></textarea>
+                            <div class="absolute right-2 bottom-2 text-xs text-gray-400">
+                                <span id="bodyCount">0</span>/500
+                            </div>
+                            </div>
                         </div>
-                        </div>
-                    </div>
 
-                <button class="bg-white border-2 border-gray-300 text-gray-500 px-4 py-2 rounded-md hover:bg-gray-100">戻る</button>
-                <button class="bg-blue-500 text-white px-4 py-2 rounded-md" data-visible-for="iec">登録する</button>
-                <button class="bg-blue-500 text-white px-4 py-2 rounded-md" data-visible-for="supplier">コースを提案する</button>
-                <button class="bg-red-500 text-white px-4 py-2 rounded-md" data-visible-for="customer">再提案を依頼する</button>
-                <button class="bg-blue-500 text-white px-4 py-2 rounded-md" data-visible-for="customer">承認する</button>
+                        <button class="bg-white border-2 border-gray-300 text-gray-500 px-4 py-2 rounded-md hover:bg-gray-100">戻る</button>
+                        <button class="bg-blue-500 text-white px-4 py-2 rounded-md" data-visible-for="iec">登録する</button>
+                        <button class="bg-blue-500 text-white px-4 py-2 rounded-md" data-visible-for="supplier">コースを提案する</button>
+                        <button class="bg-red-500 text-white px-4 py-2 rounded-md" data-visible-for="customer">再提案を依頼する</button>
+                        <button class="bg-blue-500 text-white px-4 py-2 rounded-md" data-visible-for="customer">承認する</button>
+                    </div>
                 </div>
-            </div>
             </div>
         </div>
         </main>
