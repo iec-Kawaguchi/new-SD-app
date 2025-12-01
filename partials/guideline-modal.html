@@ -107,13 +107,39 @@
                         </div>
                         <textarea id="body" rows="8" maxlength="2000"
                                     class="w-full max-w-4xl rounded-lg border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
-                                    placeholder=""></textarea>
+                                    placeholder="実際には装飾可能なエディタで実装予定"></textarea>
+                    </div>
+
+                    <!-- ポリシー -->
+                    <div>
+                        <label for="body2" class="block text-sm font-medium text-gray-900 mb-1">個人情報保護とキャンセルポリシー</label>
+                        <div class="flex justify-between w-full max-w-4xl">
+                            <p class="text-xs text-gray-500 mb-2">個人情報保護方針とキャンセルポリシーを記載</p>
+                            <div class="text-xs text-gray-400">
+                                <span id="bodyCount2">0</span>/2000
+                            </div>
+                        </div>
+                        <div class="flex items-center mb-2 gap-2">
+                        <select class="mt-1 rounded-lg border border-gray-300 bg-white px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
+                            <option value="">テンプレートを選択</option>
+                            <option value="opt-1">A：キャンセル可能</option>
+                            <option value="opt-2">B：キャンセル不可</option>
+                        </select>
+                            <button class="bg-blue-500 py-2 px-4 rounded-lg text-white hover:bg-blue-600 active:scale-[0.98] transition">
+                                <span class="material-symbols-outlined"></span>
+                                テンプレートをセット
+                            </button>
+                        </div>
+                        
+                        <textarea id="body2" rows="8" maxlength="2000"
+                                    class="w-full max-w-4xl rounded-lg border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+                                    placeholder="テンプレートをセットしてから編集。データとしてはあくまでテキストデータなので、企業個別カスタムが可能"></textarea>
                     </div>
 
                     <!-- 追記フィールドの場所（ダミー） -->
                     <div class="rounded-xl border border-dashed border-gray-200 p-4 bg-gray-50/50">
                         <p class="text-sm text-gray-600">
-                        他に必要な必須項目があればここに追加。
+                        他に必要な必須項目があれば追加。
                         </p>
                     </div>
                     </div>
