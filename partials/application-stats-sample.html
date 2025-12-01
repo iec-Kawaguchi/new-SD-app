@@ -5,6 +5,8 @@
     <title>申込状況サンプル</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+    <script src="../js/role-visibility.js" defer></script>
+
     <style>
         body { font-family: "Yu Gothic", "游ゴシック体", "YuGothic", sans-serif; }
     </style>
@@ -21,7 +23,8 @@
          <!-- 承認画面へ -->
     <a id="btn-go-manage"
        href="applications-manage.html"
-       class="inline-flex items-center px-3 py-2 rounded-full border border-blue-600 text-blue-600 text-xs font-semibold bg-white hover:bg-blue-50">
+       class="inline-flex items-center px-3 py-2 rounded-full border border-blue-600 text-blue-600 text-xs font-semibold bg-white hover:bg-blue-50"
+       data-visible-for="iec, customer">
       <span class="material-symbols-outlined text-sm mr-1">assignment_turned_in</span>
       申込承認へ
     </a>
@@ -99,6 +102,7 @@
     </div>
 
     <script>
+        
         // ====== サンプルデータ定義 ======
         // application-modal.html 側のサンプルに合わせた開講日を定義
         const PERIODS = [
