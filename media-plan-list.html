@@ -550,10 +550,21 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="flex bg-white rounded-xl mt-6 p-4 gap-4">
-                                申込情報とかの統計、結果DLとか？
-                            </div>
+                            <!-- 申込状況 IFRAME 埋め込み -->
+                            <div class="bg-white rounded-xl mt-6 p-4">
+                                <h3 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
+                                    <span class="material-symbols-outlined text-blue-700 mr-2">insights</span>
+                                    申込状況ダッシュボード
+                                </h3>
 
+                                <div class="border rounded-xl overflow-hidden bg-gray-50">
+                                    <iframe
+                                        src="./partials/application-stats-sample.html"
+                                        class="w-full h-[40rem]"
+                                        loading="lazy"
+                                    ></iframe>
+                                </div>
+                            </div>
                         </div>
                     </div>  
                 </div>

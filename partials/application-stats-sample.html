@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8" />
+    <title>申込状況サンプル</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+    <style>
+        body { font-family: "Yu Gothic", "游ゴシック体", "YuGothic", sans-serif; }
+    </style>
+</head>
+<body class="bg-gray-50 p-6">
+
+    <!-- ヘッダー＋DLボタン -->
+    <div class="flex justify-between items-center mb-3">
+        <h2 class="text-xl font-bold text-gray-800 flex items-center">
+            <span class="material-symbols-outlined text-blue-700 mr-1">bar_chart</span>
+            申込状況
+        </h2>
+
+         <!-- 承認画面へ -->
+    <a id="btn-go-manage"
+       href="applications-manage.html"
+       class="inline-flex items-center px-3 py-2 rounded-full border border-blue-600 text-blue-600 text-xs font-semibold bg-white hover:bg-blue-50">
+      <span class="material-symbols-outlined text-sm mr-1">assignment_turned_in</span>
+      申込承認へ
+    </a>
+
+        <!-- DL -->
+        <!-- <div class="text-right">
+            <a href="#"
+               class="inline-flex items-center px-4 py-2 rounded-lg bg-blue-600 text-white font-semibold hover:bg-blue-500">
+                <span class="material-symbols-outlined mr-2">download</span>
+                現在の条件でダウンロード
+            </a>
+        </div> -->
+    </div>
+
+    <!-- 絞り込み：申込期間 × 開講日 -->
+    <div class="mb-6 flex flex-wrap items-center gap-3">
+        <!-- 申込期間セレクト -->
+        <div class="inline-flex items-center gap-2 bg-white border border-gray-200 rounded-full px-3 py-1.5 shadow-sm">
+            <span class="material-symbols-outlined text-gray-400 text-base">event_upcoming</span>
+            <span class="text-xs text-gray-500">申込期間</span>
+            <select id="filter-period"
+                    class="bg-transparent text-sm font-medium text-gray-900 border-none focus:outline-none focus:ring-0">
+                <!-- JSで埋め込み -->
+            </select>
+        </div>
+
+        <!-- 開講日セレクト -->
+        <div class="inline-flex items-center gap-2 bg-white border border-gray-200 rounded-full px-3 py-1.5 shadow-sm">
+            <span class="material-symbols-outlined text-gray-400 text-base">calendar_month</span>
+            <span class="text-xs text-gray-500">開講日</span>
+            <select id="filter-opening"
+                    class="bg-transparent text-sm font-medium text-gray-900 border-none focus:outline-none focus:ring-0">
+                <!-- JSで埋め込み -->
+            </select>
+        </div>
+
+        <!-- 現在の条件ラベル -->
+        <div class="text-xs text-gray-500 flex items-center gap-1">
+            <span class="material-symbols-outlined text-[16px] text-gray-400">info</span>
+            <span id="filter-label">すべての申込期間・開講日を表示中</span>
+        </div>
+    </div>
+
+    <!-- 申込サマリー -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+        <div class="bg-white p-4 rounded-xl shadow flex flex-col">
+            <div class="text-gray-500 text-sm">総申込件数</div>
+            <div id="summary-total" class="text-3xl font-bold mt-2">124</div>
+        </div>
+        <div class="bg-white p-4 rounded-xl shadow flex flex-col">
+            <div class="text-gray-500 text-sm">承認済み</div>
+            <div id="summary-approved" class="text-3xl font-bold mt-2 text-green-600">108</div>
+        </div>
+        <div class="bg-white p-4 rounded-xl shadow flex flex-col">
+            <div class="text-gray-500 text-sm">未承認</div>
+            <div id="summary-pending" class="text-3xl font-bold mt-2 text-orange-500">16</div>
+        </div>
+    </div>
+
+    <!-- コース別申込数 -->
+    <h3 class="text-lg font-semibold text-gray-800 mb-3">コース別申込数</h3>
+    <div class="bg-white rounded-xl shadow overflow-hidden">
+        <table class="w-full text-left text-sm">
+            <thead class="bg-gray-100">
+                <tr>
+                    <th class="p-3 font-semibold">コース名</th>
+                    <th class="p-3 font-semibold">団体</th>
+                    <th class="p-3 font-semibold">申込数</th>
+                </tr>
+            </thead>
+            <tbody id="course-rows">
+                <!-- JSで行をレンダリング -->
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        // ====== サンプルデータ定義 ======
+        // application-modal.html 側のサンプルに合わせた開講日を定義
+        const PERIODS = [
+            { id: "all", label: "すべての申込期間" },
+            { id: "2026-h1", label: "2026年度上期募集（例：2026/05/01〜05/15）" },
+            { id: "2026-h2", label: "2026年度下期募集（例：2026/11/01〜11/15）" }
+        ];
+
+        const OPENINGS_BY_PERIOD = {
+            "all": [
+                { id: "all", label: "すべての開講日" }
+            ],
+            "2026-h1": [
+                { id: "all", label: "すべての開講日" },
+                { id: "2026-06-01", label: "2026/06/01 開講" },
+                { id: "2026-07-01", label: "2026/07/01 開講" }
+            ],
+            "2026-h2": [
+                { id: "all", label: "すべての開講日" },
+                { id: "2026-12-01", label: "2026/12/01 開講" },
+                { id: "2026-12-15", label: "2026/12/15 開講" },
+                { id: "2027-01-05", label: "2027/01/05 開講" }
+            ]
+        };
+
+        // 各絞り込み条件ごとのサマリー＆コース一覧
+        const STATS = [
+            // 全体
+            {
+                periodId: "all",
+                openingId: "all",
+                summary: { total: 124, approved: 108, pending: 16 },
+                courses: [
+                    { name: "基礎から学ぶExcel", group: "団体A", count: 42 },
+                    { name: "DX入門",           group: "団体A", count: 33 },
+                    { name: "ビジネス文章講座", group: "団体A", count: 20 },
+                    { name: "プロジェクト管理", group: "団体A", count: 29 }
+                ]
+            },
+            // 2026年度上期：すべての開講日
+            {
+                periodId: "2026-h1",
+                openingId: "all",
+                summary: { total: 76, approved: 65, pending: 11 }, // 40 + 36 のイメージ
+                courses: [
+                    { name: "基礎から学ぶExcel", group: "団体A", count: 30 },
+                    { name: "DX入門",           group: "団体A", count: 26 },
+                    { name: "ビジネス文章講座", group: "団体A", count: 20 }
+                ]
+            },
+            // 2026/06/01 開講
+            {
+                periodId: "2026-h1",
+                openingId: "2026-06-01",
+                summary: { total: 40, approved: 34, pending: 6 },
+                courses: [
+                    { name: "基礎から学ぶExcel", group: "団体A", count: 22 },
+                    { name: "DX入門",           group: "団体A", count: 18 }
+                ]
+            },
+            // 2026/07/01 開講
+            {
+                periodId: "2026-h1",
+                openingId: "2026-07-01",
+                summary: { total: 36, approved: 31, pending: 5 },
+                courses: [
+                    { name: "ビジネス文章講座", group: "団体A", count: 16 },
+                    { name: "プロジェクト管理", group: "団体A", count: 20 }
+                ]
+            },
+            // 2026年度下期：すべての開講日
+            {
+                periodId: "2026-h2",
+                openingId: "all",
+                summary: { total: 48, approved: 43, pending: 5 }, // 20+16+12 のイメージ
+                courses: [
+                    { name: "DX入門",           group: "団体A", count: 7  },
+                    { name: "ビジネス文章講座", group: "団体A", count: 24 },
+                    { name: "プロジェクト管理", group: "団体A", count: 17 }
+                ]
+            },
+            // 2026/12/01 開講
+            {
+                periodId: "2026-h2",
+                openingId: "2026-12-01",
+                summary: { total: 20, approved: 17, pending: 3 },
+                courses: [
+                    { name: "ビジネス文章講座", group: "団体A", count: 11 },
+                    { name: "プロジェクト管理", group: "団体A", count: 9 }
+                ]
+            },
+            // 2026/12/15 開講
+            {
+                periodId: "2026-h2",
+                openingId: "2026-12-15",
+                summary: { total: 16, approved: 14, pending: 2 },
+                courses: [
+                    { name: "DX入門",           group: "団体A", count: 6 },
+                    { name: "ビジネス文章講座", group: "団体A", count: 10 }
+                ]
+            },
+            // 2027/01/05 開講
+            {
+                periodId: "2026-h2",
+                openingId: "2027-01-05",
+                summary: { total: 12, approved: 12, pending: 0 },
+                courses: [
+                    { name: "プロジェクト管理", group: "団体A", count: 12 }
+                ]
+            }
+        ];
+
+        // ====== DOM 要素参照 ======
+        const periodSelect  = document.getElementById("filter-period");
+        const openingSelect = document.getElementById("filter-opening");
+        const filterLabel   = document.getElementById("filter-label");
+
+        const summaryTotal    = document.getElementById("summary-total");
+        const summaryApproved = document.getElementById("summary-approved");
+        const summaryPending  = document.getElementById("summary-pending");
+        const courseRowsBody  = document.getElementById("course-rows");
+
+        // ====== 初期化 ======
+        function initPeriodOptions() {
+            PERIODS.forEach(p => {
+                const opt = document.createElement("option");
+                opt.value = p.id;
+                opt.textContent = p.label;
+                periodSelect.appendChild(opt);
+            });
+            periodSelect.value = "all";
+        }
+
+        function initOpeningOptions(periodId) {
+            openingSelect.innerHTML = "";
+            const list = OPENINGS_BY_PERIOD[periodId] || OPENINGS_BY_PERIOD["all"];
+            list.forEach(o => {
+                const opt = document.createElement("option");
+                opt.value = o.id;
+                opt.textContent = o.label;
+                openingSelect.appendChild(opt);
+            });
+
+            // 「すべての申込期間」の場合は開講日フィルタは全体のみ・半透明
+            if (periodId === "all") {
+                openingSelect.value = "all";
+                openingSelect.disabled = true;
+                openingSelect.classList.add("text-gray-400");
+            } else {
+                openingSelect.disabled = false;
+                openingSelect.classList.remove("text-gray-400");
+            }
+        }
+
+        function findStats(periodId, openingId) {
+            // まず完全一致を探す
+            let found = STATS.find(s => s.periodId === periodId && s.openingId === openingId);
+            // なければ period+all を探す
+            if (!found) {
+                found = STATS.find(s => s.periodId === periodId && s.openingId === "all");
+            }
+            // それでもなければ全体
+            if (!found) {
+                found = STATS.find(s => s.periodId === "all" && s.openingId === "all");
+            }
+            return found;
+        }
+
+        function updateLabel(periodId, openingId) {
+            const p = PERIODS.find(x => x.id === periodId);
+            const openings = OPENINGS_BY_PERIOD[periodId] || OPENINGS_BY_PERIOD["all"];
+            const o = openings.find(x => x.id === openingId) || openings[0];
+
+            if (periodId === "all") {
+                filterLabel.textContent = "すべての申込期間・開講日を表示中";
+            } else if (openingId === "all") {
+                filterLabel.textContent = `${p?.label ?? ""}／すべての開講日を表示中`;
+            } else {
+                filterLabel.textContent = `${p?.label ?? ""}／${o?.label ?? ""} の申込状況を表示中`;
+            }
+        }
+
+        function render(stats) {
+            // サマリー
+            summaryTotal.textContent    = stats.summary.total;
+            summaryApproved.textContent = stats.summary.approved;
+            summaryPending.textContent  = stats.summary.pending;
+
+            // テーブル
+            courseRowsBody.innerHTML = "";
+            stats.courses.forEach(c => {
+                const tr = document.createElement("tr");
+                tr.className = "border-t";
+                tr.innerHTML = `
+                    <td class="p-3">${c.name}</td>
+                    <td class="p-3">${c.group}</td>
+                    <td class="p-3 font-semibold">${c.count}</td>
+                `;
+                courseRowsBody.appendChild(tr);
+            });
+        }
+
+        function handleChange() {
+            const periodId  = periodSelect.value;
+            const openingId = openingSelect.value || "all";
+            const stats = findStats(periodId, openingId);
+            render(stats);
+            updateLabel(periodId, openingId);
+        }
+
+        // DOM 読み込み後に初期化
+        document.addEventListener("DOMContentLoaded", () => {
+            initPeriodOptions();
+            initOpeningOptions("all");
+
+            const initialStats = findStats("all", "all");
+            render(initialStats);
+            updateLabel("all", "all");
+
+            periodSelect.addEventListener("change", () => {
+                const periodId = periodSelect.value;
+                initOpeningOptions(periodId);
+                handleChange();
+            });
+
+            openingSelect.addEventListener("change", handleChange);
+        });
+    </script>
+
+</body>
+</html>

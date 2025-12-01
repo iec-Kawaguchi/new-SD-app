@@ -64,7 +64,7 @@
                 <div class="">
                   <!-- 既存 Tri-State そのまま -->
                   <div class="tri-state inline-block" role="radiogroup" aria-label=""
-                       data-name="email_requirement" data-value="optional">
+                       data-name="bithday_requirement" data-value="optional">
                     <input type="radio" name="email_requirement_radio" value="none" class="sr-only" />
                     <input type="radio" name="email_requirement_radio" value="optional" class="sr-only" />
                     <input type="radio" name="email_requirement_radio" value="required" class="sr-only" />
@@ -87,7 +87,7 @@
                 <div class="">
                   <!-- 既存 Tri-State そのまま -->
                   <div class="tri-state inline-block" role="radiogroup" aria-label=""
-                       data-name="email_requirement" data-value="optional">
+                       data-name="gender_requirement" data-value="optional">
                     <input type="radio" name="email_requirement_radio" value="none" class="sr-only" />
                     <input type="radio" name="email_requirement_radio" value="optional" class="sr-only" />
                     <input type="radio" name="email_requirement_radio" value="required" class="sr-only" />
@@ -109,7 +109,7 @@
                 </div>
                 <div class="">
                   <div class="tri-state inline-block" role="radiogroup" aria-label=""
-                       data-name="email_requirement" data-value="required">
+                       data-name="dept_requirement" data-value="required">
                     <input type="radio" name="email_requirement_radio" value="none" class="sr-only" />
                     <input type="radio" name="email_requirement_radio" value="optional" class="sr-only" />
                     <input type="radio" name="email_requirement_radio" value="required" class="sr-only" />
@@ -131,7 +131,7 @@
                 </div>
                 <div class="">
                   <div class="tri-state inline-block" role="radiogroup" aria-label=""
-                       data-name="email_requirement" data-value="required">
+                       data-name="member_id_requirement" data-value="required">
                     <input type="radio" name="email_requirement_radio" value="none" class="sr-only" />
                     <input type="radio" name="email_requirement_radio" value="optional" class="sr-only" />
                     <input type="radio" name="email_requirement_radio" value="required" class="sr-only" />
@@ -178,7 +178,7 @@
                 </div>
                 <div class="">
                   <div class="tri-state inline-block" role="radiogroup" aria-label="メールアドレスの必須設定"
-                       data-name="email_requirement" data-value="required">
+                       data-name="tell_requirement" data-value="required">
                     <input type="radio" name="email_requirement_radio" value="none" class="sr-only" />
                     <input type="radio" name="email_requirement_radio" value="optional" class="sr-only" />
                     <input type="radio" name="email_requirement_radio" value="required" class="sr-only" />
@@ -200,7 +200,7 @@
                 </div>
                 <div class="">
                   <div class="tri-state inline-block" role="radiogroup" aria-label="メールアドレスの必須設定"
-                       data-name="email_requirement" data-value="none">
+                       data-name="address_requirement" data-value="none">
                     <input type="radio" name="email_requirement_radio" value="none" class="sr-only" />
                     <input type="radio" name="email_requirement_radio" value="optional" class="sr-only" />
                     <input type="radio" name="email_requirement_radio" value="required" class="sr-only" />
@@ -213,6 +213,32 @@
                   <input type="hidden" name="email_requirement" value="none" />
                 </div>
               </div>
+              <!-- 自由記述 -->
+              <div class="grid grid-cols-3 flex items-center justify-between gap-4 px-4 py-3">
+                <div class="">
+                  <div class="text-sm font-medium text-gray-900">自由設定領域</div>
+                  <div class="text-xs text-gray-500 mt-0.5">フリーワード回答のカスタム設問</div>
+                </div>
+                <div class="">
+                  <div class="tri-state inline-block" role="radiogroup" aria-label=""
+                       data-name="free_requirement" data-value="optional">
+                    <input type="radio" name="email_requirement_radio" value="none" class="sr-only" />
+                    <input type="radio" name="email_requirement_radio" value="optional" class="sr-only" />
+                    <input type="radio" name="email_requirement_radio" value="required" class="sr-only" />
+                    <div class="inline-flex rounded-lg border overflow-hidden">
+                      <button type="button" data-val="none" class="tri-btn px-3 py-1.5 text-sm border-r">なし</button>
+                      <button type="button" data-val="optional" class="tri-btn px-3 py-1.5 text-sm border-r "aria-pressed="true">任意</button>
+                      <button type="button" data-val="required" class="tri-btn px-3 py-1.5 text-sm" >必須</button>
+                    </div>
+                  </div>
+                  <input type="hidden" name="email_requirement" value="none" />
+                </div>
+                <div class="">
+                  <label for="" class="text-sm">質問</label>
+                  <input type="text" class="w-40 border text-sm rounded-md px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-400" placeholder="例：hogehoge" />
+                </div>
+              </div>
+
             </div>
           </div>
 
@@ -261,7 +287,7 @@
               <div class="grid grid-cols-3 flex items-center gap-4 px-4 py-3">
                 <div class="">
                   <div class="text-sm font-medium text-gray-900">アンケート</div>
-                  <div class="text-xs text-gray-500 mt-0.5">事後アンケートの有無</div>
+                  <div class="text-xs text-gray-500 mt-0.5">申込時アンケートの有無</div>
                 </div>
                 <div class="">
                   <div class="toggle bg-blue-500 w-[4.5rem] h-[2rem] rounded-full flex items-center justify-between cursor-pointer"
