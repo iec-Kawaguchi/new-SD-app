@@ -619,6 +619,7 @@ window.addEventListener('DOMContentLoaded', () => {
         closeCourseModal();
     });
 
+    
 
 
     // ========= JSON 読み込み開始（モーダル用） =========
@@ -650,6 +651,128 @@ window.addEventListener('DOMContentLoaded', () => {
             skeletonEl.classList.add('hidden');
             rowsEl.innerHTML = '<div class="p-4 text-sm text-red-600">サンプルデータ（JSON）の読み込みに失敗しました。</div>';
         });
+            // ========= JSON 読み込み開始 =========
+    fetch('selected-list-sample.json')
+        .then(res => {
+            if (!res.ok) throw new Error('JSON load failed');
+            return res.json();
+        })
+        .then(data => {
+            // supplier のときだけ絞り込む
+            if (initialRole === 'supplier') {
+                allData = Array.isArray(data)
+                    ? data.filter(d => d.org === "他団体B")
+                    : [];
+            } else {
+                allData = Array.isArray(data) ? data : [];
+            }
 
+            loaded = 0;
+            rowsEl.innerHTML = '';
+            appendChunk();
+            initInfiniteScroll();
+        })
+        .catch(err => {
+            console.error(err);
+            skeletonEl.classList.add('hidden');
+            rowsEl.innerHTML = '<div class="p-4 text-sm text-red-600">サンプルデータ（JSON）の読み込みに失敗しました。</div>';
+        });
+
+        // ===== Shift + ↑↓ の範囲選択（連続チェック） =====
+
+    // 起点（クリックした行の index）
+    let anchorIndex = null;
+    // 現在のフォーカス位置（Shift＋矢印で動くカーソル）
+    let focusIndex = null;
+    // 任意：ホバー中の行 index
+    let hoveredIndex = null;
+
+    // rows 内の .row を配列で取得
+    function getRowElements() {
+        return Array.from(rowsEl.querySelectorAll('.row'));
+    }
+
+    // --- 行クリックで「起点＆フォーカス」をセット ---
+    rowsEl.addEventListener('click', (e) => {
+        const row = e.target.closest('.row');
+        if (!row) return;
+
+        const rows = getRowElements();
+        const idx = rows.indexOf(row);
+        if (idx === -1) return;
+
+        anchorIndex = idx;
+        focusIndex  = idx;
+        // console.log('anchor:', anchorIndex, 'focus:', focusIndex);
+    });
+
+    // --- ホバーしている行を記録（任意：起点がないときの候補に使う） ---
+    rowsEl.addEventListener('mousemove', (e) => {
+        const row = e.target.closest('.row');
+        if (!row) return;
+        const rows = getRowElements();
+        hoveredIndex = rows.indexOf(row);
+    });
+
+    // --- Shift + ↑↓ での範囲選択 ---
+    window.addEventListener('keydown', (e) => {
+        // 入力中のテキストボックス等では反応させない
+        const tag = (e.target.tagName || '').toLowerCase();
+        if (tag === 'input' || tag === 'textarea' || tag === 'select') return;
+
+        if (!e.shiftKey) return;
+
+        const rows = getRowElements();
+        if (!rows.length) return;
+
+        // まだ anchor が決まってないとき：
+        // 1) ホバー中の行
+        // 2) 既にチェックされている行のうち最初のもの
+        if (anchorIndex === null) {
+            if (hoveredIndex !== null && hoveredIndex >= 0) {
+                anchorIndex = hoveredIndex;
+            } else {
+                const firstChecked = rows.findIndex(r => r.querySelector('.sel:checked'));
+                if (firstChecked !== -1) {
+                    anchorIndex = firstChecked;
+                }
+            }
+        }
+        if (anchorIndex === null) return; // それでも起点なしなら何もしない
+
+        // フォーカスが未設定なら起点に合わせる
+        if (focusIndex === null) {
+            focusIndex = anchorIndex;
+        }
+
+        let newFocus = focusIndex;
+
+        if (e.key === 'ArrowDown') {
+            if (newFocus < rows.length - 1) newFocus++;
+            else return; // 末尾ならこれ以上動かさない
+        } else if (e.key === 'ArrowUp') {
+            if (newFocus > 0) newFocus--;
+            else return; // 先頭ならこれ以上動かさない
+        } else {
+            return;
+        }
+
+        e.preventDefault();
+
+        focusIndex = newFocus;
+
+        // 起点(anchor)〜フォーカス(focus) の範囲を ON、それ以外は OFF
+        const start = Math.min(anchorIndex, focusIndex);
+        const end   = Math.max(anchorIndex, focusIndex);
+
+        rows.forEach((row, idx) => {
+            const sel = row.querySelector('.sel');
+            if (!sel) return;
+            sel.checked = (idx >= start && idx <= end);
+        });
+
+        // 一括バーの件数更新
+        refreshBulkbar();
+    });
 
 });

@@ -1,261 +1,468 @@
 <!DOCTYPE html>
 <html lang="ja">
     <head>
-        <meta charset="UTF-8">
-        <title>New SD App</title>
+        <meta charset="UTF-8" />
+        <title>企業組織ノード管理（シンプル・おしゃれ版）</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <style>
+            body { font-family: "游ゴシック体","Yu Gothic","游ゴシック",YuGothic,sans-serif; }
+            :root { --safe-bottom: env(safe-area-inset-bottom); }
+        </style>
         <script src="https://cdn.tailwindcss.com"></script>
-        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
         <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nouislider@15.7.0/dist/nouislider.min.css">
-        <script src="https://cdn.jsdelivr.net/npm/nouislider@15.7.0/dist/nouislider.min.js"></script>
-        <script type="module" src="../js/modules/dashboard/index.js"></script>
         <script src="./js/role-visibility.js" defer></script>
         <script src="./js/mock-ui.js" defer></script>
-        <style>
-            body {
-                font-family: "游ゴシック体", "Yu Gothic", "游ゴシック", YuGothic, sans-serif;
-            }
-        </style>
     </head>
     <body class="bg-gray-100 min-h-screen flex flex-col">
         <div id="app-header"></div>
         <main class="flex flex-1">
             <div id="app-sidebar"></div>
             <div class="p-10 flex-1 bg-gray-200">
+                <!-- ページヘッダー -->
                 <div class="flex justify-between items-center mb-4">
-                    <div class="text-2xl font-bold text-gray-700">組織一覧</div>
+                    <h1 class="text-2xl font-bold text-gray-700">企業組織ノード管理</h1>
                 </div>
-                <div class="bg-white w-full  rounded-xl flex flex-col mx-auto shadow-md p-4">
-                    <div class="p-4 flex items-center justify-between">
-                        <input type="text" class="border p-2 px-4 w-96 rounded-full" placeholder="組織名で検索...">
-                        <div id="btnOpenModal"
-                            class="group bg-white text-blue-500 px-4 py-2 rounded-md ml-4 hover:bg-blue-500 hover:text-white flex items-center overflow-hidden transition-all duration-300 ease-in-out cursor-pointer">
-                            <span class="material-symbols-outlined text-lg">add</span>
-                            <span class="opacity-0 max-w-0 group-hover:opacity-100 group-hover:max-w-[100px] transition-all duration-300 ease-in-out whitespace-nowrap">
-                                <span class="ml-2">新規登録</span>
-                            </span>
-                        </div>
-                    </div>
-                    <div class="p-4 w-full">
-                        <table class="w-full  table-auto text-left text-gray-700">
-                            <tr>
-                                <th class="border-b px-4 py-2" data-visible-for="iec">企業</th>
-                                <th class="border-b px-4 py-2">組織名</th>
-                                <th class="border-b px-4 py-2" data-visible-for="iec">事業所指定</th>
-                                <th class="border-b px-4 py-2 text-center">アクション</th>
-                            </tr>
-                            <tr class="hover:bg-gray-100 cursor-pointer" data-visible-for="iec,customer">
-                                <td class="border-b px-4 py-2" data-visible-for="iec">○○食品株式会社</td>
-                                <td class="border-b px-4 py-2">総務部</td>
-                                <td class="border-b px-4 py-2" data-visible-for="iec">4124.○○食品株式会社</td>
-                                <td class="border-b px-4 py-2  text-center">
-                                    <div class="relative group ml-1 inline-flex items-center">
-                                        <span data-row="1" class="menu-trigger material-symbols-outlined text-lg cursor-pointer align-middle">more_horiz</span>
-                                        <div id="row-1-items" class="menu text-left flex flex-col absolute w-max bottom-full left-1/2 transform -translate-x-1/2 bg-white border border-gray-300 rounded shadow-lg p-2 hidden">
-                                            <a href="#" class="py-1 px-2 text-base hover:bg-gray-100 cursor-pointer flex items-center">
-                                                <span class="material-symbols-outlined text-sm mr-2">edit</span>
-                                                編集する
-                                            </a>
-                                            <a href="#" class="py-1 px-2 text-base hover:bg-gray-100 cursor-pointer flex items-center text-red-500">
-                                                <span class="material-symbols-outlined text-sm mr-2 text-red-500">delete</span>
-                                                削除する
-                                            </a>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr class="hover:bg-gray-100 cursor-pointer" data-visible-for="iec,customer">
-                                <td class="border-b px-4 py-2" data-visible-for="iec">○○食品株式会社</td>
-                                <td class="border-b px-4 py-2">経理部</td>
-                                <td class="border-b px-4 py-2" data-visible-for="iec">4124.○○食品株式会社</td>
-                                <td class="border-b px-4 py-2  text-center">
-                                    <div class="relative group ml-1 inline-flex items-center">
-                                        <span data-row="2" class="menu-trigger material-symbols-outlined text-lg cursor-pointer align-middle">more_horiz</span>
-                                        <div id="row-2-items" class="menu text-left flex flex-col absolute w-max bottom-full left-1/2 transform -translate-x-1/2 bg-white border border-gray-300 rounded shadow-lg p-2 hidden">
-                                            <a href="#" class="py-1 px-2 text-base hover:bg-gray-100 cursor-pointer flex items-center">
-                                                <span class="material-symbols-outlined text-sm mr-2">edit</span>
-                                                編集する
-                                            </a>
-                                            <a href="#" class="py-1 px-2 text-base hover:bg-gray-100 cursor-pointer flex items-center text-red-500">
-                                                <span class="material-symbols-outlined text-sm mr-2 text-red-500">delete</span>
-                                                削除する
-                                            </a>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr class="hover:bg-gray-100 cursor-pointer" data-visible-for="iec,customer">
-                                <td class="border-b px-4 py-2" data-visible-for="iec">○○食品株式会社</td>
-                                <td class="border-b px-4 py-2">営業部</td>
-                                <td class="border-b px-4 py-2" data-visible-for="iec">4124.○○食品株式会社</td>
-                                <td class="border-b px-4 py-2  text-center">
-                                    <div class="relative group ml-1 inline-flex items-center">
-                                        <span data-row="3" class="menu-trigger material-symbols-outlined text-lg cursor-pointer align-middle">more_horiz</span>
-                                        <div id="row-3-items" class="menu text-left flex flex-col absolute w-max bottom-full left-1/2 transform -translate-x-1/2 bg-white border border-gray-300 rounded shadow-lg p-2 hidden">
-                                            <a href="#" class="py-1 px-2 text-base hover:bg-gray-100 cursor-pointer flex items-center">
-                                                <span class="material-symbols-outlined text-sm mr-2">edit</span>
-                                                編集する
-                                            </a>
-                                            <a href="#" class="py-1 px-2 text-base hover:bg-gray-100 cursor-pointer flex items-center text-red-500">
-                                                <span class="material-symbols-outlined text-sm mr-2 text-red-500">delete</span>
-                                                削除する
-                                            </a>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr class="hover:bg-gray-100 cursor-pointer" data-visible-for="iec">
-                                <td class="border-b px-4 py-2" data-visible-for="iec">▲▲工業株式会社</td>
-                                <td class="border-b px-4 py-2">▲▲工業株式会社 東京本社</td>
-                                <td class="border-b px-4 py-2" data-visible-for="iec">281129.▲▲工業株式会社 東京本社</td>
-                                <td class="border-b px-4 py-2  text-center">
-                                    <div class="relative group ml-1 inline-flex items-center">
-                                        <span data-row="4" class="menu-trigger material-symbols-outlined text-lg cursor-pointer align-middle">more_horiz</span>
-                                        <div id="row-4-items" class="menu text-left flex flex-col absolute w-max bottom-full left-1/2 transform -translate-x-1/2 bg-white border border-gray-300 rounded shadow-lg p-2 hidden">
-                                            <a href="#" class="py-1 px-2 text-base hover:bg-gray-100 cursor-pointer flex items-center">
-                                                <span class="material-symbols-outlined text-sm mr-2">edit</span>
-                                                編集する
-                                            </a>
-                                            <a href="#" class="py-1 px-2 text-base hover:bg-gray-100 cursor-pointer flex items-center text-red-500">
-                                                <span class="material-symbols-outlined text-sm mr-2 text-red-500">delete</span>
-                                                削除する
-                                            </a>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr class="hover:bg-gray-100 cursor-pointer" data-visible-for="iec">
-                                <td class="border-b px-4 py-2" data-visible-for="iec">▲▲工業株式会社</td>
-                                <td class="border-b px-4 py-2">▲▲工業株式会社 大坂支社</td>
-                                <td class="border-b px-4 py-2" data-visible-for="iec">281130.▲▲工業株式会社 大坂支社</td><td class="border-b px-4 py-2  text-center">
-                                    <div class="relative group ml-1 inline-flex items-center">
-                                        <span data-row="5" class="menu-trigger material-symbols-outlined text-lg cursor-pointer align-middle">more_horiz</span>
-                                        <div id="row-5-items" class="menu text-left flex flex-col absolute w-max bottom-full left-1/2 transform -translate-x-1/2 bg-white border border-gray-300 rounded shadow-lg p-2 hidden">
-                                            <a href="#" class="py-1 px-2 text-base hover:bg-gray-100 cursor-pointer flex items-center">
-                                                <span class="material-symbols-outlined text-sm mr-2">edit</span>
-                                                編集する
-                                            </a>
-                                            <a href="#" class="py-1 px-2 text-base hover:bg-gray-100 cursor-pointer flex items-center text-red-500">
-                                                <span class="material-symbols-outlined text-sm mr-2 text-red-500">delete</span>
-                                                削除する
-                                            </a>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr class="hover:bg-gray-100 cursor-pointer" data-visible-for="iec">
-                                <td class="border-b px-4 py-2" data-visible-for="iec">▲▲工業株式会社</td>
-                                <td class="border-b px-4 py-2">▲▲工業株式会社 福岡支社</td>
-                                <td class="border-b px-4 py-2" data-visible-for="iec">281131.▲▲工業株式会社 福岡支社</td><td class="border-b px-4 py-2  text-center">
-                                    <div class="relative group ml-1 inline-flex items-center">
-                                        <span data-row="6" class="menu-trigger material-symbols-outlined text-lg cursor-pointer align-middle">more_horiz</span>
-                                        <div id="row-6-items" class="menu text-left flex flex-col absolute w-max bottom-full left-1/2 transform -translate-x-1/2 bg-white border border-gray-300 rounded shadow-lg p-2 hidden">
-                                            <a href="#" class="py-1 px-2 text-base hover:bg-gray-100 cursor-pointer flex items-center">
-                                                <span class="material-symbols-outlined text-sm mr-2">edit</span>
-                                                編集する
-                                            </a>
-                                            <a href="#" class="py-1 px-2 text-base hover:bg-gray-100 cursor-pointer flex items-center text-red-500">
-                                                <span class="material-symbols-outlined text-sm mr-2 text-red-500">delete</span>
-                                                削除する
-                                            </a>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                          
-                        </table>
-                    </div>
-                    
-                </div>
-              
-        </main>
 
-        <!-- modal -->
-        <div id="modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
-            <div class="p-4 bg-white rounded-lg shadow-lg md:w-1/3">
-                <div class="">
-                    <h2 class="text-xl font-bold text-gray-700 mt-2 mb-6">組織新規登録</h2>
-                </div>
-                <div class="flex flex-col gap-4">
-                    <div class="flex flex-col gap-2" data-visible-for="iec">
-                        <label for="">企業</label>
-                        <select name="" id="" class="w-full max-w-72 rounded-md border px-3 py-2 focus:outline-none focus:ring-2 focus:ring-violet-400">
-                            <option value="">企業を選択してください</option>
-                            <option value="corp-1">IEC</option>
-                            <option value="corp-2">産業能率大学</option>
-                            <option value="corp-3">JTEX</option>
-                            <option value="corp-4">○○食品株式会社</option>
-                        </select>
+                <div class="p-6 flex flex-col gap-4 bg-white rounded-2xl"><!-- 下の固定バー分の余白 -->
+
+                    <!-- 企業選択カード -->
+                    <section class="mb-6" data-visible-for="iec">
+                        <div class="flex flex-col space-y-2">
+                            <div class="flex items-center gap-2 mb-1">
+                                <span class="material-symbols-outlined text-gray-500" aria-hidden="true">business</span>
+                                <h2 class="font-semibold">対象企業</h2>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <label class="block">
+                                <select
+                                    class="mt-1 w-full min-w-[20rem] rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+                                >
+                                    <option value="">企業を選択してください</option>
+                                    <option value="1">IEC株式会社（サンプル）</option>
+                                    <option value="2">テスト企業A</option>
+                                    <option value="3">テスト企業B</option>
+                                </select>
+                                </label>
+                                <!-- <label class="flex items-center gap-2 text-xs text-gray-600 mt-5 sm:mt-6">
+                                <input
+                                    type="checkbox"
+                                    class="h-3.5 w-3.5 rounded border-gray-300 text-blue-600 focus:ring-blue-400"
+                                    checked
+                                />
+                                非表示ノードも一覧に含める
+                                </label> -->
+                            </div>
+                            <!-- <p class="mt-1 text-xs text-gray-500">
+                                企業を選択してから、下の「階層ごとの編集」カードでレベル1〜3のノードを登録してください。
+                            </p> -->
+                        </div>
+                    </section>
+
+                    <!-- 階層ごとの編集カード -->
+                    <section class="">
+                        <div class="space-y-4">
+                        <!-- 見出し＋タブ -->
+                        <div class="flex flex-wrap items-center justify-between gap-3">
+                            <div class="flex items-center gap-2">
+                            <span class="material-symbols-outlined text-gray-500" aria-hidden="true">account_tree</span>
+                            <h2 class="font-semibold">階層ごとの編集</h2>
+                            </div>
+                            <!-- タブ -->
+                            <div class="inline-flex rounded-full bg-gray-100/80 p-1 text-xs">
+                            <button
+                                type="button"
+                                data-level-tab="1"
+                                class="px-3 py-1.5 rounded-full bg-white shadow-sm text-blue-700 font-medium border border-gray-200 flex items-center gap-1"
+                            >
+                                <span class="material-symbols-outlined text-sm">looks_one</span>
+                                レベル1
+                            </button>
+                            <button
+                                type="button"
+                                data-level-tab="2"
+                                class="px-3 py-1.5 rounded-full text-gray-600 hover:text-gray-800 flex items-center gap-1"
+                            >
+                                <span class="material-symbols-outlined text-sm">looks_two</span>
+                                レベル2
+                            </button>
+                            <button
+                                type="button"
+                                data-level-tab="3"
+                                class="px-3 py-1.5 rounded-full text-gray-600 hover:text-gray-800 flex items-center gap-1"
+                            >
+                                <span class="material-symbols-outlined text-sm">looks_3</span>
+                                レベル3
+                            </button>
+                            </div>
+                        </div>
+
+                        <p id="current-level-label" class="text-xs text-gray-500">
+                            現在：レベル1（最上位階層）を編集中です。
+                        </p>
+
+                        <!-- レベル1 パネル -->
+                        <div data-level-panel="1" class="space-y-3">
+                            <!-- 新規追加 -->
+                            <div class="rounded-xl border border-gray-200 bg-gray-50/80 px-4 py-3 space-y-2">
+                                <div class="flex items-center gap-2">
+                                    <span class="material-symbols-outlined text-gray-500 text-sm" aria-hidden="true">add_circle</span>
+                                    <p class="text-xs font-medium text-gray-800">レベル1ノードを追加</p>
+                                </div>
+                                <div class="mt-1 flex items-end gap-2">
+                                    <div class="flex flex-col">
+                                        <span class="text-xs text-gray-500">名称</span>
+                                        <input
+                                            type="text"
+                                            placeholder="例：営業本部"
+                                            class="mt-1 w-64 rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+                                        />
+                                    </div>
+                                    <div class="flex flex-col" data-visible-for="iec">
+                                        <span class="text-xs text-gray-500">事業所指定</span>
+                                        <select
+                                            class="mt-1 w-64 rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+                                        >
+                                            <option>事業所を指定</option>
+                                            <option>事業所A</option>
+                                            <option>事業所B</option>
+                                        </select>
+                                    </div>
+                                
+                                    <button
+                                    type="button"
+                                    class="w-full sm:w-auto rounded-lg bg-blue-600 px-5 py-2.5 text-xs font-medium text-white hover:bg-blue-700 active:scale-[0.99] transition"
+                                    >
+                                    追加
+                                    </button>
+                                </div>
+                                <!-- <p class="text-[11px] text-gray-500">
+                                    レベル1は最上位階層です。親ノードは指定不要で、自動的に level = 1 として登録されます。
+                                </p> -->
+                            </div>
+
+                            <!-- 一覧（テーブル） -->
+                            <div class="rounded-xl border border-gray-200 overflow-hidden">
+                            <table class="min-w-full border-collapse text-xs">
+                                <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="w-16 border-b border-gray-200 px-3 py-2 text-left text-gray-500">順序</th>
+                                    <th class="border-b border-gray-200 px-3 py-2 text-left text-gray-500">名称</th>
+                                    <th class="border-b border-gray-200 px-3 py-2 text-left text-gray-500" data-visible-for="iec">事業所</th>
+                                    <th class="w-28 border-b border-gray-200 px-3 py-2 text-left text-gray-500">使用中</th>
+                                    <th class="w-24 border-b border-gray-200 px-3 py-2 text-left text-gray-500">操作</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <!-- サンプル1 -->
+                                <tr class="border-b border-gray-100">
+                                    <td class="px-3 py-2 align-middle text-gray-600">
+                                    <span class="inline-flex min-w-[2.5rem] justify-center rounded-full border border-gray-300 bg-white px-2 py-0.5 text-[11px]">
+                                        1
+                                    </span>
+                                    </td>
+                                    <td class="px-3 py-2 align-middle">
+                                        営業本部
+                                    </td>
+                                    <td class="px-3 py-2 align-middle" data-visible-for="iec">
+                                        事業所A
+                                    </td>
+                                    <td class="px-3 py-2 align-middle">
+                                    <label class="inline-flex items-center gap-1.5 text-[11px] text-gray-700">
+                                        <input
+                                        type="checkbox"
+                                        class="h-3.5 w-3.5 rounded border-gray-300 text-blue-600 focus:ring-blue-400"
+                                        checked
+                                        />
+                                        使用中
+                                    </label>
+                                    </td>
+                                    <td class="px-3 py-2 align-middle">
+                                    <button type="button" class="text-[11px] text-red-500 hover:underline">削除</button>
+                                    </td>
+                                </tr>
+                                <!-- サンプル2 -->
+                                <tr>
+                                    <td class="px-3 py-2 align-middle text-gray-600">
+                                    <span class="inline-flex min-w-[2.5rem] justify-center rounded-full border border-gray-300 bg-white px-2 py-0.5 text-[11px]">
+                                        2
+                                    </span>
+                                    </td>
+                                    <td class="px-3 py-2 align-middle">
+                                        管理本部
+                                    </td>
+                                    <td class="px-3 py-2 align-middle" data-visible-for="iec">
+                                       事業所A
+                                    </td>
+                                    <td class="px-3 py-2 align-middle">
+                                    <label class="inline-flex items-center gap-1.5 text-[11px] text-gray-700">
+                                        <input
+                                        type="checkbox"
+                                        class="h-3.5 w-3.5 rounded border-gray-300 text-blue-600 focus:ring-blue-400"
+                                        />
+                                        使用中
+                                    </label>
+                                    </td>
+                                    <td class="px-3 py-2 align-middle">
+                                    <button type="button" class="text-[11px] text-red-500 hover:underline">削除</button>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                            </div>
+                        </div>
+
+                        <!-- レベル2 パネル -->
+                        <div data-level-panel="2" class="space-y-3 hidden">
+                            <div class="rounded-xl border border-gray-200 bg-gray-50/80 px-4 py-3 space-y-2">
+                            <div class="flex items-center gap-2">
+                                <span class="material-symbols-outlined text-gray-500 text-sm" aria-hidden="true">add_circle</span>
+                                <p class="text-xs font-medium text-gray-800">レベル2ノードを追加</p>
+                            </div>
+                            <div class="mt-1 flex items-end gap-2">
+                                <div class="flex flex-col">
+                                    <span class="text-xs text-gray-500">親ノード（レベル1）</span>
+                                    <select
+                                        class="mt-1 w-64 rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+                                    >
+                                        <option>親ノードを指定</option>
+                                        <option>営業本部</option>
+                                        <option>管理本部</option>
+                                    </select>
+                                </div>
+                                <div class="flex flex-col">
+                                    <span class="text-xs text-gray-500">名称</span>
+                                    <input
+                                        type="text"
+                                        placeholder="例：営業本部"
+                                        class="mt-1 w-64 rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+                                    />
+                                </div>
+                                <div class="flex flex-col" data-visible-for="iec">
+                                    <span class="text-xs text-gray-500">事業所指定</span>
+                                    <select
+                                        class="mt-1 w-64 rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+                                    >
+                                        <option>事業所を指定</option>
+                                        <option>事業所A</option>
+                                        <option>事業所B</option>
+                                    </select>
+                                </div>
+                                
+                                <button
+                                type="button"
+                                class="w-full sm:w-auto rounded-lg bg-blue-600 px-5 py-2.5 text-xs font-medium text-white hover:bg-blue-700 active:scale-[0.99] transition"
+                                >
+                                追加
+                                </button>
+                            </div>
+                            <!-- <p class="text-[11px] text-gray-500">
+                                レベル2は、選択したレベル1ノードの配下として parent_id を紐づけて登録されます。
+                            </p> -->
+                            </div>
+
+                            <div class="rounded-xl border border-gray-200 overflow-hidden">
+                            <table class="min-w-full border-collapse text-xs">
+                                <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="w-28 border-b border-gray-200 px-3 py-2 text-left text-gray-500">親（Lv1）</th>
+                                    <th class="w-16 border-b border-gray-200 px-3 py-2 text-left text-gray-500">順序</th>
+                                    <th class="border-b border-gray-200 px-3 py-2 text-left text-gray-500">名称</th>
+                                    <th class="border-b border-gray-200 px-3 py-2 text-left text-gray-500" data-visible-for="iec">事業所</th>
+                                    <th class="w-28 border-b border-gray-200 px-3 py-2 text-left text-gray-500">使用中</th>
+                                    <th class="w-24 border-b border-gray-200 px-3 py-2 text-left text-gray-500">操作</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr class="border-b border-gray-100">
+                                    <td class="px-3 py-2 align-middle text-gray-800">営業本部</td>
+                                    <td class="px-3 py-2 align-middle text-gray-600">
+                                    <span class="inline-flex min-w-[2.5rem] justify-center rounded-full border border-gray-300 bg-white px-2 py-0.5 text-[11px]">
+                                        1
+                                    </span>
+                                    </td>
+                                    <td class="px-3 py-2 align-middle">
+                                        第一営業部
+                                    </td>
+                                    <td class="px-3 py-2 align-middle" data-visible-for="iec">
+                                       事業所A
+                                    </td>
+                                    <td class="px-3 py-2 align-middle">
+                                    <label class="inline-flex items-center gap-1.5 text-[11px] text-gray-700">
+                                        <input
+                                        type="checkbox"
+                                        class="h-3.5 w-3.5 rounded border-gray-300 text-blue-600 focus:ring-blue-400"
+                                        checked
+                                        />
+                                        使用中
+                                    </label>
+                                    </td>
+                                    <td class="px-3 py-2 align-middle">
+                                    <button type="button" class="text-[11px] text-red-500 hover:underline">削除</button>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                            </div>
+                        </div>
+
+                        <!-- レベル3 パネル -->
+                        <div data-level-panel="3" class="space-y-3 hidden">
+                            <div class="rounded-xl border border-gray-200 bg-gray-50/80 px-4 py-3 space-y-2">
+                            <div class="flex items-center gap-2">
+                                <span class="material-symbols-outlined text-gray-500 text-sm" aria-hidden="true">add_circle</span>
+                                <p class="text-xs font-medium text-gray-800">レベル3ノードを追加</p>
+                            </div>
+                            <div class="mt-1 flex items-end gap-2">
+                                <div class="flex flex-col">
+                                    <span class="text-xs text-gray-500">親ノード（レベル2）</span>
+                                    <select
+                                        class="mt-1 w-64 rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+                                    >
+                                        <option>親ノードを指定</option>
+                                        <option>第一営業部</option>
+                                    </select>
+                                </div>
+                                <div class="flex flex-col">
+                                    <span class="text-xs text-gray-500">名称</span>
+                                    <input
+                                        type="text"
+                                        placeholder="例：営業本部"
+                                        class="mt-1 w-64 rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+                                    />
+                                </div>
+                                <div class="flex flex-col" data-visible-for="iec">
+                                    <span class="text-xs text-gray-500">事業所指定</span>
+                                    <select
+                                        class="mt-1 w-64 rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+                                    >
+                                        <option>事業所を指定</option>
+                                        <option>事業所A</option>
+                                        <option>事業所B</option>
+                                    </select>
+                                </div>
+                                
+                                <button
+                                type="button"
+                                class="w-full sm:w-auto rounded-lg bg-blue-600 px-5 py-2.5 text-xs font-medium text-white hover:bg-blue-700 active:scale-[0.99] transition"
+                                >
+                                追加
+                                </button>
+                            </div>
+                            <p class="text-[11px] text-gray-500">
+                                レベル3が最下層です。これ以上下位の階層（level 4 以降）は登録できません。
+                            </p>
+                            </div>
+
+                            <div class="rounded-xl border border-gray-200 overflow-hidden">
+                            <table class="min-w-full border-collapse text-xs">
+                                <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="w-32 border-b border-gray-200 px-3 py-2 text-left text-gray-500">親（Lv2）</th>
+                                    <th class="w-16 border-b border-gray-200 px-3 py-2 text-left text-gray-500">順序</th>
+                                    <th class="border-b border-gray-200 px-3 py-2 text-left text-gray-500">名称</th>
+                                    <th class="border-b border-gray-200 px-3 py-2 text-left text-gray-500" data-visible-for="iec">事業所</th>
+                                    <th class="w-28 border-b border-gray-200 px-3 py-2 text-left text-gray-500">使用中</th>
+                                    <th class="w-24 border-b border-gray-200 px-3 py-2 text-left text-gray-500">操作</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr class="border-b border-gray-100">
+                                    <td class="px-3 py-2 align-middle text-gray-800">第一営業部</td>
+                                    <td class="px-3 py-2 align-middle text-gray-600">
+                                    <span class="inline-flex min-w-[2.5rem] justify-center rounded-full border border-gray-300 bg-white px-2 py-0.5 text-[11px]">
+                                        1
+                                    </span>
+                                    </td>
+                                    <td class="px-3 py-2 align-middle">
+                                        第1課
+                                    </td>
+                                    <td class="px-3 py-2 align-middle" data-visible-for="iec">
+                                       事業所A
+                                    </td>
+                                    <td class="px-3 py-2 align-middle">
+                                    <label class="inline-flex items-center gap-1.5 text-[11px] text-gray-700">
+                                        <input
+                                        type="checkbox"
+                                        class="h-3.5 w-3.5 rounded border-gray-300 text-blue-600 focus:ring-blue-400"
+                                        checked
+                                        />
+                                        使用中
+                                    </label>
+                                    </td>
+                                    <td class="px-3 py-2 align-middle">
+                                    <button type="button" class="text-[11px] text-red-500 hover:underline">削除</button>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                            </div>
+                        </div>
+
+                        </div>
+                    </section>
+                    <div class="flex items-center justify-end gap-3 p-4">
+                        <button
+                        type="button"
+                        class="h-10 px-4 rounded-lg border border-gray-300 bg-white text-gray-600 text-sm hover:bg-gray-50"
+                        >
+                        キャンセル
+                        </button>
+                        <button
+                        type="button"
+                        class="h-10 px-5 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 active:scale-[0.99] transition"
+                        >
+                        変更内容を保存
+                        </button>
                     </div>
-                    <div class="flex flex-col gap-2">
-                        <label for="">組織名</label>
-                        <input type="text" class="max-w-72 rounded border p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 ">
-                    </div>
-                    <div class="flex flex-col gap-2" data-visible-for="iec">
-                        <label for="">ILMS事業所指定</label>
-                        <select name="" id="" class="w-full max-w-72 rounded-md border px-3 py-2 focus:outline-none focus:ring-2 focus:ring-violet-400">
-                            <option value="">事業所を選択してください</option>
-                            <option value="role-1">1.xxxxx</option>
-                            <option value="role-2">2.xxxxx</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="flex gap-4 mx-auto justify-center mt-10">
-                    <button id="btnCloseModal" class="w-32 rounded-lg bg-white border-2 px-3 py-2 text-gray-500">キャンセル</button>
-                    <button class="w-32 rounded-lg bg-blue-500 px-3 py-2 text-white">登録する</button>
+
                 </div>
             </div>
-        </div>
+        </main>
+
+
+    <!-- タブ切り替え用の簡易JS -->
+    <script>
+    window.addEventListener('DOMContentLoaded', () => {
+    // 初期ロールやブランド名・ユーザー名は自由に
+    MockUI.injectHeader('#app-header', {
+        userName: 'Test User',
+        brand: 'New SD App',
+        initialRole: 'iec', // 初回roleが未指定ならiecをセット
+    });
+    MockUI.injectSidebar('#app-sidebar');
+
+    // サイドバー挿入直後に data-visible-for を反映
+    RoleMock.applyRoleVisibility();
+    });
+
+        const tabs = document.querySelectorAll("[data-level-tab]");
+        const panels = document.querySelectorAll("[data-level-panel]");
+        const label = document.getElementById("current-level-label");
+
+        const labelText = {
+        "1": "現在：レベル1（最上位階層）を編集中です。",
+        "2": "現在：レベル2（レベル1配下）を編集中です。",
+        "3": "現在：レベル3（レベル2配下／最下層）を編集中です。"
+        };
+
+        tabs.forEach((tab) => {
+        tab.addEventListener("click", () => {
+            const level = tab.getAttribute("data-level-tab");
+
+            tabs.forEach((t) => {
+            t.classList.remove("bg-white", "shadow-sm", "text-blue-700", "font-medium", "border", "border-gray-200");
+            t.classList.add("text-gray-600");
+            });
+            tab.classList.add("bg-white", "shadow-sm", "text-blue-700", "font-medium", "border", "border-gray-200");
+            tab.classList.remove("text-gray-600");
+
+            panels.forEach((p) => p.classList.add("hidden"));
+            const activePanel = document.querySelector(`[data-level-panel="${level}"]`);
+            if (activePanel) activePanel.classList.remove("hidden");
+
+            if (label) label.textContent = labelText[level] || "";
+        });
+        });
+    </script>
     </body>
 </html>
-<script>
-    window.addEventListener('DOMContentLoaded', () => {
-        // 初期ロールやブランド名・ユーザー名は自由に
-        MockUI.injectHeader('#app-header', {
-            userName: 'Test User',
-            brand: 'New SD App',
-            initialRole: 'iec', // 初回roleが未指定ならiecをセット
-        });
-        MockUI.injectSidebar('#app-sidebar');
-
-        // サイドバー挿入直後に data-visible-for を反映
-        RoleMock.applyRoleVisibility();
-    });
-
-    const btnOpenModal = document.getElementById('btnOpenModal');
-    btnOpenModal.addEventListener('click', () => {
-        document.getElementById('modal').classList.remove('hidden');
-    });
-
-    const btnCloseModal = document.getElementById('btnCloseModal');
-    btnCloseModal.addEventListener('click', () => {
-        document.getElementById('modal').classList.add('hidden');
-    });
-        // すべてのトリガーを取得
-    const triggers = document.querySelectorAll(".menu-trigger");
-    const menus = document.querySelectorAll(".menu");
-
-    triggers.forEach(trigger => {
-        trigger.addEventListener("click", (e) => {
-        e.stopPropagation(); // 外部クリック処理を止める
-
-        // 他のメニューを閉じる
-        menus.forEach(menu => menu.classList.add("hidden"));
-
-        // 対応するメニューを開閉
-        const rowId = trigger.dataset.row;
-        const menu = document.getElementById(`row-${rowId}-items`);
-        menu.classList.toggle("hidden");
-        });
-    });
-
-    // メニュー内クリックでは閉じない
-    menus.forEach(menu => {
-        menu.addEventListener("click", (e) => e.stopPropagation());
-    });
-
-    // 領域外クリックで全部閉じる
-    document.addEventListener("click", () => {
-        menus.forEach(menu => menu.classList.add("hidden"));
-    });
-</script>
