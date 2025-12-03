@@ -459,6 +459,50 @@
                 </div>
             </div>
         </div>
+        <!-- 開講月・申込締切 固定バナー -->
+        <div
+            id="deadline-banner"
+            class="fixed inset-x-3 bottom-3 md:inset-x-auto md:right-6 md:bottom-6
+                z-40 md:z-50"
+        >
+            <div
+                class="max-w-xl md:max-w-sm mx-auto md:mx-0
+                    rounded-2xl shadow-lg border border-sky-100
+                    bg-white/95 backdrop-blur px-4 py-3
+                    flex items-start gap-3"
+            >
+                <div
+                    class="mt-0.5 flex h-8 w-8 flex-none items-center justify-center
+                        rounded-full bg-sky-100 text-sky-700"
+                >
+                    <span class="material-symbols-outlined text-[20px]">
+                        event_upcoming
+                    </span>
+                </div>
+
+                <div class="min-w-0 flex-1 text-xs md:text-sm text-gray-800">
+                    <!-- 文言は必要に応じて差し替え -->
+                    <p class="font-semibold text-gray-900 text-sm md:text-base">
+                        6月1日開講の<br>申込締切は
+                        <span class="font-bold text-sky-700 text-2xl">3月25日</span>
+                        です。
+                    </p>
+                    <p>お申込みはお早めに！</p>
+                </div>
+
+                <button
+                    id="deadline-banner-close"
+                    type="button"
+                    class="ml-1 flex h-7 w-7 flex-none items-center justify-center
+                        rounded-full hover:bg-gray-100 text-gray-400 hover:text-gray-600
+                        transition"
+                    aria-label="このお知らせを閉じる"
+                >
+                    <span class="material-symbols-outlined text-[18px]">close</span>
+                </button>
+            </div>
+        </div>
+
     </body>
 </html>
 
@@ -570,4 +614,15 @@
     });
    
   })();
+  // 開講月・申込締切バナー：閉じたら再表示しない
+(() => {
+    const banner = document.getElementById('deadline-banner');
+    if (!banner) return;
+
+    const closeBtn = document.getElementById('deadline-banner-close');
+    closeBtn?.addEventListener('click', () => {
+        banner.classList.add('hidden');
+    });
+})();
+
 </script>
