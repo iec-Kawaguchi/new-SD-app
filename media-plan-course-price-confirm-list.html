@@ -37,73 +37,175 @@
             <div class=" w-full h-[calc(100vh-9rem)] rounded-xl flex flex-col mx-auto">
 
                 <!-- 2カラム：左=リスト / 右=プレビュー -->
-                <div class="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_28rem] gap-6  pb-4 min-h-0">
+                <div class="flex gap-6  pb-4 min-h-0">
                     <!-- 左：リストボックス -->
-                    <section class="rounded-2xl border border-gray-200/60 bg-white shadow-sm flex flex-col min-h-0">
-                    <!-- ツールバー -->
-                    <div class="p-4 border-b border-gray-200 flex flex-wrap items-center gap-3">
-                        <div class="relative">
-                            <span class="material-symbols-outlined absolute left-2 top-1/2 -translate-y-1/2 text-gray-400">search</span>
-                            <input id="q" type="text" placeholder="コース名 / コード / タグで検索"
-                                    class="pl-9 pr-3 h-10 w-72 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400">
-                        </div>
-                        <div class="flex items-center gap-2">   
-                            <button data-filter="new" class="h-9 px-3 rounded-lg border border-gray-300 bg-white text-gray-700 hover:bg-gray-50">NEW</button>
-                            <button data-filter="clear" class="h-9 px-3 rounded-lg bg-gray-100 text-gray-700 hover:bg-gray-200">フィルタ解除</button>
+                    <section class="w-full flex flex-col min-h-0">
+                        <div class="w-full rounded-2xl border border-gray-200/60 bg-white shadow-sm flex flex-col min-h-0">
+                            <!-- ツールバー -->
+                            <div class="p-4 border-b border-gray-200 flex flex-wrap items-center gap-3">
+                                <div class="relative">
+                                    <span class="material-symbols-outlined absolute left-2 top-1/2 -translate-y-1/2 text-gray-400">search</span>
+                                    <input id="q" type="text" placeholder="コース名 / コード / タグで検索"
+                                            class="pl-9 pr-3 h-10 w-72 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400">
+                                </div>
+                                <div class="flex items-center gap-2">   
+                                    <button data-filter="new" class="h-9 px-3 rounded-lg border border-gray-300 bg-white text-gray-700 hover:bg-gray-50">NEW</button>
+                                    <button data-filter="clear" class="h-9 px-3 rounded-lg bg-gray-100 text-gray-700 hover:bg-gray-200">フィルタ解除</button>
+                                </div>
+
+                                <div class="ml-auto flex items-center gap-2">
+                                <!-- <button id="open-course-modal" class="h-9 px-3 rounded-md bg-blue-600 text-white hover:bg-blue-700 flex items-center"
+                                        data-visible-for="iec,supplier">
+                                    <span class="material-symbols-outlined text-base mr-1 ">add</span>コースを追加する
+                                </button> -->
+                                </div>
+                            </div>
+
+                            <!-- スティッキーヘッダー -->
+                            <div class="grid grid-cols-[2rem_1fr_6rem_1fr] text-xs uppercase tracking-wide text-gray-500 px-4 py-2 sticky top-0 bg-white z-[1]">
+                                <div></div>
+                                <div>確認対象コース</div>
+                                <div>判定</div>
+                                <div>差し替えコース</div>
+                            </div>
+
+                            <!-- リスト本体 -->
+                            <div id="list" class="min-h-[10rem] max-h-[30rem] overflow-y-auto">
+                                <div id="skeleton" class="p-4 space-y-2">
+                                <div class="h-12 rounded-lg bg-gray-100 animate-pulse"></div>
+                                <div class="h-12 rounded-lg bg-gray-100 animate-pulse"></div>
+                                <div class="h-12 rounded-lg bg-gray-100 animate-pulse"></div>
+                                <div class="h-12 rounded-lg bg-gray-100 animate-pulse"></div>
+                                <div class="h-12 rounded-lg bg-gray-100 animate-pulse"></div>
+                                </div>
+                                <div id="rows"></div>
+                                <div id="sentinel" class="h-10"></div>
+                            </div>
+
+                            <!-- 一括操作バー -->
+                            <div class="bg-white h-[3.5rem] border-t border-gray-200 px-4 py-2 flex items-center gap-3 rounded-b-2xl">
+                                <div id="bulkbar" class="hidden bg-white px-4 py-2 flex items-center gap-3 rounded-b-2xl">
+                                    <p class="text-sm text-gray-700"><span id="selCount">0</span> 件選択中</p>
+                                    <button id="clearSelection" class="h-9 px-3 rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-50">選択を解除</button>
+                                    <div class="ml-auto flex items-center gap-2">
+                                        <button
+                                            id="markOK"
+                                            class="h-9 px-3 rounded-md bg-green-50 text-green-700 border border-green-200 hover:bg-green-600 hover:text-white"
+                                            >
+                                            判定OKにする
+                                        </button>
+                                        <button
+                                            id="markNG"
+                                            class="h-9 px-3 rounded-md bg-red-50 text-red-700 border border-red-200 hover:bg-red-600 hover:text-white"
+                                            >
+                                            判定NGにする
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                           
+                             <!-- 下部：ファイル指示エリア＋フッターアクションを分離 -->
+                            <div class="mt-3 space-y-3">
+                                <!-- ① ファイル指示エリア -->
+                                <section class="bg-gray-100 rounded-2xl border border-gray-200 shadow-sm px-5 py-4 mx-3" data-visible-for="supplier">
+                                    <div class="flex items-start gap-3 mb-3">
+                                        <span class="material-symbols-outlined text-blue-500 text-xl mt-0.5">info</span>
+                                        <div class="space-y-1">
+                                            <h2 class="text-sm font-semibold text-gray-900">その他指示</h2>
+                                            <p class="text-sm text-gray-700 leading-relaxed">
+                                                PC講座の提供がある場合、添付のPC体系図をダウンロードのうえ、
+                                                貴社PCコースを体系図上のどこに配置するかを示してご返送ください。
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    <div class="grid gap-3 md:grid-cols-[minmax(0,1.1fr)_minmax(0,1.5fr)]">
+                                        <!-- DLカード -->
+                                        <div class="rounded-xl border border-gray-200 bg-gray-50 px-3 py-3 flex items-center gap-3">
+                                        
+                                            <div class="flex flex-1 min-w-0">
+                                                <p class="text-sm font-medium text-gray-900 truncate">
+                                                    PC体系図.xlsx
+                                                </p>
+                                                <p class="text-sm text-gray-500 ml-2">
+                                                    1.2MB
+                                                </p>
+                                            </div>
+                                            <button
+                                                type="button"
+                                                class="inline-flex items-center gap-1 rounded-full border border-gray-300 bg-white px-3 py-1.5 text-xs text-gray-700 hover:bg-gray-100"
+                                            >
+                                                <span class="material-symbols-outlined text-sm">download</span>
+                                                ダウンロード
+                                            </button>
+                                        </div>
+
+                                        <!-- UPカード -->
+                                        <label
+                                            for="pc-map-upload"
+                                            class="cursor-pointer rounded-xl border-2 border-dashed border-gray-300 bg-gray-50 px-3 py-3 flex flex-col justify-center gap-2 hover:border-blue-400 hover:bg-blue-50/40 transition"
+                                        >
+                                            <div class="flex items-center justify-between gap-2">
+                                                <div class="flex">
+                                                    <span class="material-symbols-outlined text-blue-500 text-2xl">upload</span>
+                                                    <div class="ml-2">
+                                                        <p class="text-sm font-medium text-gray-900">編集済みファイルをアップロード</p>
+                                                        <p class="text-[11px] text-gray-500">
+                                                            1ファイル（最大 10MB）をアップロードしてください。
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="">
+                                                <span class="inline-flex items-center justify-center rounded-full bg-white px-3 py-1.5 text-[11px] text-gray-600 border border-gray-200">
+                                                    ファイルを選択するか、ここにドラッグ＆ドロップ
+                                                </span>
+                                            </div>
+                                            </div>
+                                        
+                                            <input
+                                                id="pc-map-upload"
+                                                type="file"
+                                                class="hidden"
+                                                accept=".pdf,image/*"
+                                            />
+                                        </label>
+                                    </div>
+                                </section>
+
+                                <!-- ② フッターアクションバー（戻る / 完了） -->
+                                <section class="bg-white rounded-2xl  border-gray-200 shadow-sm px-5 py-3">
+                                    <div class="flex flex-col sm:flex-row sm:items-center gap-3">
+                                        <!-- 左側に軽い説明を置きたければここに -->
+                                        <div class="flex-1 text-xs text-gray-500">
+                                        </div>
+
+                                        <div class="flex items-center justify-end gap-2 sm:gap-3">
+                                            <button
+                                                type="button"
+                                                class="w-full sm:w-auto inline-flex items-center justify-center rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-50"
+                                            >
+                                                戻る
+                                            </button>
+                                            <button
+                                                type="button"
+                                                class="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-700"
+                                                data-visible-for="supplier"
+                                            >
+                                                <span class="material-symbols-outlined text-base">check_circle</span>
+                                                料金確認を完了する
+                                            </button>
+                                        </div>
+                                    </div>
+                                </section>
+                            </div>
+
                         </div>
 
-                        <div class="ml-auto flex items-center gap-2">
-                        <!-- <button id="open-course-modal" class="h-9 px-3 rounded-md bg-blue-600 text-white hover:bg-blue-700 flex items-center"
-                                data-visible-for="iec,supplier">
-                            <span class="material-symbols-outlined text-base mr-1 ">add</span>コースを追加する
-                        </button> -->
-                        </div>
-                    </div>
-
-                    <!-- スティッキーヘッダー -->
-                    <div class="grid grid-cols-[2rem_1fr_6rem_1fr] text-xs uppercase tracking-wide text-gray-500 px-4 py-2 sticky top-0 bg-white z-[1]">
-                        <div></div>
-                        <div>確認対象コース</div>
-                        <div>判定</div>
-                        <div>差し替えコース</div>
-                    </div>
-
-                    <!-- リスト本体 -->
-                    <div id="list" class="min-h-[16rem] max-h-[46vh] overflow-y-auto">
-                        <div id="skeleton" class="p-4 space-y-2">
-                        <div class="h-12 rounded-lg bg-gray-100 animate-pulse"></div>
-                        <div class="h-12 rounded-lg bg-gray-100 animate-pulse"></div>
-                        <div class="h-12 rounded-lg bg-gray-100 animate-pulse"></div>
-                        <div class="h-12 rounded-lg bg-gray-100 animate-pulse"></div>
-                        <div class="h-12 rounded-lg bg-gray-100 animate-pulse"></div>
-                        </div>
-                        <div id="rows"></div>
-                        <div id="sentinel" class="h-10"></div>
-                    </div>
-
-                    <!-- 一括操作バー -->
-                    <div id="bulkbar" class="hidden sticky bottom-0 bg-white border-t border-gray-200 px-4 py-2 flex items-center gap-3 rounded-b-2xl">
-                        <p class="text-sm text-gray-700"><span id="selCount">0</span> 件選択中</p>
-                        <button id="clearSelection" class="h-9 px-3 rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-50">選択を解除</button>
-                        <div class="ml-auto flex items-center gap-2">
-                            <button
-                                id="markOK"
-                                class="h-9 px-3 rounded-md bg-green-50 text-green-700 border border-green-200 hover:bg-green-600 hover:text-white"
-                                >
-                                判定OKにする
-                            </button>
-                            <button
-                                id="markNG"
-                                class="h-9 px-3 rounded-md bg-red-50 text-red-700 border border-red-200 hover:bg-red-600 hover:text-white"
-                                >
-                                判定NGにする
-                            </button>
-                        </div>
-                    </div>
                     </section>
 
                     <!-- 右：プレビュー -->
-                    <aside id="preview" class="hidden lg:block bg-white rounded-2xl shadow-sm border border-gray-200/60 p-5 overflow-auto">
+                    <aside id="preview" class="w-[30rem] bg-white rounded-2xl shadow-sm border border-gray-200/60 p-5 overflow-auto">
                     <div class="text-sm text-gray-500">行をクリックするとここにコース詳細が表示されます。</div>
                     </aside>
                 </div>
@@ -111,102 +213,7 @@
                 
 
                     
-                <!-- 下部：ファイル指示エリア＋フッターアクションを分離 -->
-                <div class="mt-3 space-y-3">
-                    <!-- ① ファイル指示エリア -->
-                    <section class="bg-white rounded-2xl border border-gray-200 shadow-sm px-5 py-4" data-visible-for="supplier">
-                        <div class="flex items-start gap-3 mb-3">
-                            <span class="material-symbols-outlined text-blue-500 text-xl mt-0.5">info</span>
-                            <div class="space-y-1">
-                                <h2 class="text-sm font-semibold text-gray-900">その他指示</h2>
-                                <p class="text-sm text-gray-700 leading-relaxed">
-                                    PC講座の提供がある場合、添付のPC体系図をダウンロードのうえ、
-                                    貴社PCコースを体系図上のどこに配置するかを示してご返送ください。
-                                </p>
-                            </div>
-                        </div>
-
-                        <div class="grid gap-3 md:grid-cols-[minmax(0,1.1fr)_minmax(0,1.5fr)]">
-                            <!-- DLカード -->
-                            <div class="rounded-xl border border-gray-200 bg-gray-50 px-3 py-3 flex items-center gap-3">
-                               
-                                <div class="flex flex-1 min-w-0">
-                                    <p class="text-sm font-medium text-gray-900 truncate">
-                                        PC体系図.xlsx
-                                    </p>
-                                    <p class="text-sm text-gray-500 ml-2">
-                                        1.2MB
-                                    </p>
-                                </div>
-                                <button
-                                    type="button"
-                                    class="inline-flex items-center gap-1 rounded-full border border-gray-300 bg-white px-3 py-1.5 text-xs text-gray-700 hover:bg-gray-100"
-                                >
-                                    <span class="material-symbols-outlined text-sm">download</span>
-                                    ダウンロード
-                                </button>
-                            </div>
-
-                            <!-- UPカード -->
-                            <label
-                                for="pc-map-upload"
-                                class="cursor-pointer rounded-xl border-2 border-dashed border-gray-300 bg-gray-50 px-3 py-3 flex flex-col justify-center gap-2 hover:border-blue-400 hover:bg-blue-50/40 transition"
-                            >
-                                <div class="flex items-center justify-between gap-2">
-                                    <div class="flex">
-                                        <span class="material-symbols-outlined text-blue-500 text-2xl">upload</span>
-                                        <div class="ml-2">
-                                            <p class="text-sm font-medium text-gray-900">編集済みファイルをアップロード</p>
-                                            <p class="text-[11px] text-gray-500">
-                                                1ファイル（最大 10MB）をアップロードしてください。
-                                            </p>
-                                        </div>
-                                    </div>
-                                    
-                                     <div class="">
-                                    <span class="inline-flex items-center justify-center rounded-full bg-white px-3 py-1.5 text-[11px] text-gray-600 border border-gray-200">
-                                        ファイルを選択するか、ここにドラッグ＆ドロップ
-                                    </span>
-                                </div>
-                                </div>
-                               
-                                <input
-                                    id="pc-map-upload"
-                                    type="file"
-                                    class="hidden"
-                                    accept=".pdf,image/*"
-                                />
-                            </label>
-                        </div>
-                    </section>
-
-                    <!-- ② フッターアクションバー（戻る / 完了） -->
-                    <section class="bg-white rounded-2xl border border-gray-200 shadow-sm px-5 py-3">
-                        <div class="flex flex-col sm:flex-row sm:items-center gap-3">
-                            <!-- 左側に軽い説明を置きたければここに -->
-                            <div class="flex-1 text-xs text-gray-500">
-                            </div>
-
-                            <div class="flex items-center justify-end gap-2 sm:gap-3">
-                                <button
-                                    type="button"
-                                    class="w-full sm:w-auto inline-flex items-center justify-center rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-50"
-                                >
-                                    戻る
-                                </button>
-                                <button
-                                    type="button"
-                                    class="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-700"
-                                    data-visible-for="supplier"
-                                >
-                                    <span class="material-symbols-outlined text-base">check_circle</span>
-                                    料金確認を完了する
-                                </button>
-                            </div>
-                        </div>
-                    </section>
-                </div>
-
+               
             </div>
         </div>
         </main>

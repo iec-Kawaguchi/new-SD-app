@@ -270,10 +270,12 @@ window.addEventListener('DOMContentLoaded', () => {
 
     // ===== 一括バー =====
     const bulkbar = document.getElementById('bulkbar'), selCount = document.getElementById('selCount');
+    const defbar = document.getElementById('def-bar');
     function refreshBulkbar(){
         const n = document.querySelectorAll('#rows .sel:checked').length;
         selCount.textContent = n;
         bulkbar.classList.toggle('hidden', n === 0);
+        defbar.classList.toggle('hidden', n > 0);
     }
     listEl.addEventListener('change', e=>{
         if(e.target.classList.contains('sel')) refreshBulkbar();
@@ -450,21 +452,21 @@ window.addEventListener('DOMContentLoaded', () => {
                 </label>
                 <textarea
                     id="course-comment"
-                    class="w-full min-h-[80px] rounded-md border border-gray-300 px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 resize-y"
+                    class="w-full min-h-[80px] max-h-[160px] rounded-md border border-gray-300 px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 resize-y"
                     placeholder="このコースに関するメモや削除希望の理由を自由に記入してください。"
                 ></textarea>
             </div>
-            <div class="mt-6 border-t pt-4" data-visible-for="iec">
+            <div class="w-full mt-6 border-t pt-4" data-visible-for="iec">
                 <label class="block text-sm font-medium text-gray-700 mb-1">
                     公開範囲
                 </label>
-                <div class="flex gap-4 items-center">
+                <div class="w-full flex gap-4 items-center  text-sm">
                     <label class="block">
-                        <input type="date" class="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
+                        <input type="date" class="mt-1 text-sm rounded-lg border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
                     </label>
                     ～
                     <label class="block">
-                        <input type="date" class="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
+                        <input type="date" class="mt-1 text-sm rounded-lg border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
                     </label>
                 </div>
             </div>

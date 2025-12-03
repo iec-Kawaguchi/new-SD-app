@@ -13,7 +13,7 @@
         <script src="./js/role-visibility.js" defer></script>
         <script src="./js/mock-ui.js" defer></script>
     </head>
-    <body class="bg-gray-100 min-h-screen flex flex-col">
+    <body class="bg-gray-100 min-h-screen flex flex-col  text-gray-800">
         <div id="app-header"></div>
         <main class="flex flex-1">
             <div id="app-sidebar"></div>
@@ -35,7 +35,7 @@
                             <div class="flex items-center gap-3">
                                 <label class="block">
                                 <select
-                                    class="mt-1 w-full min-w-[20rem] rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+                                    class="mt-1 w-full min-w-[20rem] rounded-lg border border-gray-300 bg-white px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
                                 >
                                     <option value="">企業を選択してください</option>
                                     <option value="1">IEC株式会社（サンプル）</option>
@@ -72,25 +72,25 @@
                             <button
                                 type="button"
                                 data-level-tab="1"
-                                class="px-3 py-1.5 rounded-full bg-white shadow-sm text-blue-700 font-medium border border-gray-200 flex items-center gap-1"
+                                class="px-4 py-1.5 rounded-full bg-white shadow-sm text-blue-700 font-medium border border-gray-200 flex items-center gap-1"
                             >
-                                <span class="material-symbols-outlined text-sm">looks_one</span>
+                                <span class="material-symbols-outlined text-base">looks_one</span>
                                 レベル1
                             </button>
                             <button
                                 type="button"
                                 data-level-tab="2"
-                                class="px-3 py-1.5 rounded-full text-gray-600 hover:text-gray-800 flex items-center gap-1"
+                                class="px-4 py-1.5 rounded-full text-gray-600 hover:text-gray-800 flex items-center gap-1"
                             >
-                                <span class="material-symbols-outlined text-sm">looks_two</span>
+                                <span class="material-symbols-outlined text-base">looks_two</span>
                                 レベル2
                             </button>
                             <button
                                 type="button"
                                 data-level-tab="3"
-                                class="px-3 py-1.5 rounded-full text-gray-600 hover:text-gray-800 flex items-center gap-1"
+                                class="px-4 py-1.5 rounded-full text-gray-600 hover:text-gray-800 flex items-center gap-1"
                             >
-                                <span class="material-symbols-outlined text-sm">looks_3</span>
+                                <span class="material-symbols-outlined text-base">looks_3</span>
                                 レベル3
                             </button>
                             </div>
@@ -108,19 +108,19 @@
                                     <span class="material-symbols-outlined text-gray-500 text-sm" aria-hidden="true">add_circle</span>
                                     <p class="text-xs font-medium text-gray-800">レベル1ノードを追加</p>
                                 </div>
-                                <div class="mt-1 flex items-end gap-2">
+                                <div class="mt-1 flex grid grid-cols-4 items-end gap-2">
                                     <div class="flex flex-col">
                                         <span class="text-xs text-gray-500">名称</span>
                                         <input
                                             type="text"
                                             placeholder="例：営業本部"
-                                            class="mt-1 w-64 rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+                                            class="mt-1 rounded-lg border border-gray-300 bg-white px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
                                         />
                                     </div>
                                     <div class="flex flex-col" data-visible-for="iec">
                                         <span class="text-xs text-gray-500">事業所指定</span>
                                         <select
-                                            class="mt-1 w-64 rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+                                            class="mt-1 rounded-lg border border-gray-300 bg-white px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
                                         >
                                             <option>事業所を指定</option>
                                             <option>事業所A</option>
@@ -130,9 +130,10 @@
                                 
                                     <button
                                     type="button"
-                                    class="w-full sm:w-auto rounded-lg bg-blue-600 px-5 py-2.5 text-xs font-medium text-white hover:bg-blue-700 active:scale-[0.99] transition"
+                                    class="w-[10rem] flex items-center justify-center rounded-lg bg-blue-600 px-5 py-2 font-medium text-white hover:bg-blue-700 active:scale-[0.99] transition"
                                     >
-                                    追加
+                                        <span class="material-symbols-outlined text-base mr-2">add</span>
+                                        追加
                                     </button>
                                 </div>
                                 <!-- <p class="text-[11px] text-gray-500">
@@ -142,14 +143,14 @@
 
                             <!-- 一覧（テーブル） -->
                             <div class="rounded-xl border border-gray-200 overflow-hidden">
-                            <table class="min-w-full border-collapse text-xs">
+                            <table class="min-w-full border-collapse text-base">
                                 <thead class="bg-gray-50">
                                 <tr>
                                     <th class="w-16 border-b border-gray-200 px-3 py-2 text-left text-gray-500">順序</th>
                                     <th class="border-b border-gray-200 px-3 py-2 text-left text-gray-500">名称</th>
                                     <th class="border-b border-gray-200 px-3 py-2 text-left text-gray-500" data-visible-for="iec">事業所</th>
-                                    <th class="w-28 border-b border-gray-200 px-3 py-2 text-left text-gray-500">使用中</th>
-                                    <th class="w-24 border-b border-gray-200 px-3 py-2 text-left text-gray-500">操作</th>
+                                    <th class="w-[8rem] border-b border-gray-200 px-3 py-2 text-left text-gray-500">使用中</th>
+                                    <th class="w-[8rem] border-b border-gray-200 px-3 py-2 text-left text-gray-500">操作</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -167,7 +168,7 @@
                                         事業所A
                                     </td>
                                     <td class="px-3 py-2 align-middle">
-                                    <label class="inline-flex items-center gap-1.5 text-[11px] text-gray-700">
+                                    <label class="inline-flex items-center gap-1.5 text-gray-700">
                                         <input
                                         type="checkbox"
                                         class="h-3.5 w-3.5 rounded border-gray-300 text-blue-600 focus:ring-blue-400"
@@ -177,7 +178,7 @@
                                     </label>
                                     </td>
                                     <td class="px-3 py-2 align-middle">
-                                    <button type="button" class="text-[11px] text-red-500 hover:underline">削除</button>
+                                    <button type="button" class=" text-red-500 hover:underline">削除</button>
                                     </td>
                                 </tr>
                                 <!-- サンプル2 -->
@@ -194,7 +195,7 @@
                                        事業所A
                                     </td>
                                     <td class="px-3 py-2 align-middle">
-                                    <label class="inline-flex items-center gap-1.5 text-[11px] text-gray-700">
+                                    <label class="inline-flex items-center gap-1.5 text-gray-700">
                                         <input
                                         type="checkbox"
                                         class="h-3.5 w-3.5 rounded border-gray-300 text-blue-600 focus:ring-blue-400"
@@ -203,7 +204,7 @@
                                     </label>
                                     </td>
                                     <td class="px-3 py-2 align-middle">
-                                    <button type="button" class="text-[11px] text-red-500 hover:underline">削除</button>
+                                    <button type="button" class=" text-red-500 hover:underline">削除</button>
                                     </td>
                                 </tr>
                                 </tbody>
@@ -218,11 +219,11 @@
                                 <span class="material-symbols-outlined text-gray-500 text-sm" aria-hidden="true">add_circle</span>
                                 <p class="text-xs font-medium text-gray-800">レベル2ノードを追加</p>
                             </div>
-                            <div class="mt-1 flex items-end gap-2">
+                            <div class="mt-1 flex grid grid-cols-4 items-end gap-2">
                                 <div class="flex flex-col">
                                     <span class="text-xs text-gray-500">親ノード（レベル1）</span>
                                     <select
-                                        class="mt-1 w-64 rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+                                        class="mt-1 rounded-lg border border-gray-300 bg-white px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
                                     >
                                         <option>親ノードを指定</option>
                                         <option>営業本部</option>
@@ -234,13 +235,13 @@
                                     <input
                                         type="text"
                                         placeholder="例：営業本部"
-                                        class="mt-1 w-64 rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+                                        class="mt-1 rounded-lg border border-gray-300 bg-white px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
                                     />
                                 </div>
                                 <div class="flex flex-col" data-visible-for="iec">
                                     <span class="text-xs text-gray-500">事業所指定</span>
                                     <select
-                                        class="mt-1 w-64 rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+                                        class="mt-1 rounded-lg border border-gray-300 bg-white px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
                                     >
                                         <option>事業所を指定</option>
                                         <option>事業所A</option>
@@ -250,9 +251,10 @@
                                 
                                 <button
                                 type="button"
-                                class="w-full sm:w-auto rounded-lg bg-blue-600 px-5 py-2.5 text-xs font-medium text-white hover:bg-blue-700 active:scale-[0.99] transition"
+                                class="w-[10rem] flex items-center justify-center rounded-lg bg-blue-600 px-5 py-2 font-medium text-white hover:bg-blue-700 active:scale-[0.99] transition"
                                 >
-                                追加
+                                    <span class="material-symbols-outlined text-base mr-2">add</span>
+                                    追加
                                 </button>
                             </div>
                             <!-- <p class="text-[11px] text-gray-500">
@@ -261,7 +263,7 @@
                             </div>
 
                             <div class="rounded-xl border border-gray-200 overflow-hidden">
-                            <table class="min-w-full border-collapse text-xs">
+                            <table class="min-w-full border-collapse text-base">
                                 <thead class="bg-gray-50">
                                 <tr>
                                     <th class="w-28 border-b border-gray-200 px-3 py-2 text-left text-gray-500">親（Lv1）</th>
@@ -312,11 +314,11 @@
                                 <span class="material-symbols-outlined text-gray-500 text-sm" aria-hidden="true">add_circle</span>
                                 <p class="text-xs font-medium text-gray-800">レベル3ノードを追加</p>
                             </div>
-                            <div class="mt-1 flex items-end gap-2">
+                            <div class="mt-1 flex grid grid-cols-4 items-end gap-2">
                                 <div class="flex flex-col">
                                     <span class="text-xs text-gray-500">親ノード（レベル2）</span>
                                     <select
-                                        class="mt-1 w-64 rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+                                        class="mt-1 rounded-lg border border-gray-300 bg-white px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
                                     >
                                         <option>親ノードを指定</option>
                                         <option>第一営業部</option>
@@ -327,13 +329,13 @@
                                     <input
                                         type="text"
                                         placeholder="例：営業本部"
-                                        class="mt-1 w-64 rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+                                        class="mt-1 rounded-lg border border-gray-300 bg-white px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
                                     />
                                 </div>
                                 <div class="flex flex-col" data-visible-for="iec">
                                     <span class="text-xs text-gray-500">事業所指定</span>
                                     <select
-                                        class="mt-1 w-64 rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+                                        class="mt-1 rounded-lg border border-gray-300 bg-white px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
                                     >
                                         <option>事業所を指定</option>
                                         <option>事業所A</option>
@@ -343,9 +345,10 @@
                                 
                                 <button
                                 type="button"
-                                class="w-full sm:w-auto rounded-lg bg-blue-600 px-5 py-2.5 text-xs font-medium text-white hover:bg-blue-700 active:scale-[0.99] transition"
+                                class="w-[10rem] flex items-center justify-center rounded-lg bg-blue-600 px-5 py-2 font-medium text-white hover:bg-blue-700 active:scale-[0.99] transition"
                                 >
-                                追加
+                                    <span class="material-symbols-outlined text-base mr-2">add</span>
+                                    追加
                                 </button>
                             </div>
                             <p class="text-[11px] text-gray-500">
@@ -354,7 +357,7 @@
                             </div>
 
                             <div class="rounded-xl border border-gray-200 overflow-hidden">
-                            <table class="min-w-full border-collapse text-xs">
+                            <table class="min-w-full border-collapse text-base">
                                 <thead class="bg-gray-50">
                                 <tr>
                                     <th class="w-32 border-b border-gray-200 px-3 py-2 text-left text-gray-500">親（Lv2）</th>
