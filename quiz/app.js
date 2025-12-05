@@ -23,6 +23,9 @@ const qwrap = document.getElementById("qwrap");
 const result = document.getElementById("result");
 const header = document.querySelector("header");
 
+// スマホ用：タップ順序を記録する配列
+let tapOrder = [];
+
 // 共通UI
 begin.onclick = () => {
     start.classList.add("hidden");
@@ -45,91 +48,197 @@ function updateProgress() {
     count.textContent = `${idx} / ${QUESTIONS.length}`;
 }
 
+// 振動フィードバック（軽量）
+function vibrate() {
+    if (navigator.vibrate) navigator.vibrate(10); 
+}
+
 function renderQuestion() {
     qwrap.innerHTML = "";
     if (idx >= QUESTIONS.length) return showResult();
 
+    // タップ順序を初期化
+    tapOrder = [];
+
     const q = QUESTIONS[idx];
     const node = document.createElement("div");
-    node.className = "w-full max-w-2xl mx-auto fade-in";
+    node.className = "w-full max-w-2xl mx-auto fade-in pb-20"; // 下部に余白確保
 
-    // 変更点1：質問文エリアの高さを固定（h-24 sm:h-32）し、Flexboxで中央揃えにする
-    // これにより、文字数で行数が増減しても下の要素の位置がズレません。
+    // UI構築
     node.innerHTML = `
-        <div class="mb-6 text-center w-full">
+        <div class="mb-4 text-center w-full">
             <span class="inline-block text-indigo-500 font-bold tracking-widest text-xs mb-2">QUESTION ${idx+1}</span>
-            <div class="h-20 sm:h-28 flex items-center justify-center px-4">
-                <h2 class="text-xl sm:text-3xl font-bold text-slate-800 leading-snug w-full">
+            <div class="min-h-[5rem] flex items-center justify-center px-2">
+                <h2 class="text-xl sm:text-2xl font-bold text-slate-800 leading-snug w-full">
                     ${q.text}
                 </h2>
             </div>
         </div>
 
-        <p class="text-sm text-slate-500 mb-4 text-center flex items-center justify-center gap-2">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"></path></svg>
-            カードをドラッグして優先度順（上＝高）に並べ替えてください
-        </p>
+        <div class="bg-indigo-50/50 border border-indigo-100 rounded-lg p-3 mb-4 text-sm text-indigo-800 text-center">
+            <p class="font-bold mb-1">💡 回答方法（どちらでもOK）</p>
+            <ul class="text-xs text-indigo-600 space-y-1">
+                <li>A. 好きな順に<b>タップ</b>（自動で1→2→3...とつきます）</li>
+                <li>B. カードを掴んで<b>ドラッグ</b>して並べ替え</li>
+            </ul>
+        </div>
 
-        <ol id="rank-list" class="space-y-3 select-none">
+        <ol id="rank-list" class="space-y-3 select-none relative">
             ${q.options.map((opt, i) => `
-            <li class="draggable-item group relative bg-white border border-slate-200 p-4 rounded-xl shadow-sm hover:shadow-md hover:border-indigo-300 flex items-center gap-4"
-                draggable="true" data-index="${i}">
-                <div class="handle w-8 h-8 rounded-lg bg-slate-100 text-slate-400 flex items-center justify-center font-bold text-sm group-hover:bg-indigo-100 group-hover:text-indigo-600 transition-colors">
-                    ${i + 1}
+            <li class="rank-card group relative bg-white border-2 border-slate-100 p-4 rounded-xl shadow-sm cursor-pointer transition-all active:scale-[0.98] touch-manipulation"
+                draggable="true" data-index="${i}" data-original-index="${i}">
+                <div class="flex items-center gap-4 pointer-events-none">
+                    <div class="rank-badge w-10 h-10 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center font-bold text-lg transition-colors border border-slate-200">
+                        <span class="text-xs"></span>
+                    </div>
+                    <div class="flex-1 font-semibold text-slate-700 leading-relaxed text-sm sm:text-base selection-none">${opt}</div>
                 </div>
-                <div class="flex-1 font-semibold text-slate-700 group-hover:text-slate-900 text-sm sm:text-base">${opt}</div>
-                <div class="text-slate-300">
-                   <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8h16M4 16h16"></path></svg>
-                </div>
+                <div class="absolute inset-0 border-2 border-indigo-500 rounded-xl opacity-0 transition-opacity peer-checked:opacity-100 pointer-events-none selection-ring"></div>
             </li>
             `).join('')}
         </ol>
 
-        <div class="mt-8 text-center">
-            <button id="confirm" class="btn-primary w-full sm:w-auto py-3 px-10 rounded-xl font-bold text-lg shadow-lg shadow-indigo-200">
-                次へ進む
+        <div class="mt-6 flex gap-3 justify-center items-center sticky bottom-6 z-20">
+            <button id="reset-rank" class="btn-ghost bg-white/90 backdrop-blur shadow-md text-sm py-3 px-5 rounded-xl border-slate-300 text-slate-500 hidden">
+                リセット
+            </button>
+            <button id="confirm" class="btn-primary flex-1 max-w-xs py-3 px-6 rounded-xl font-bold text-lg shadow-xl shadow-indigo-200 opacity-50 cursor-not-allowed transition-all" disabled>
+                決定する
             </button>
         </div>
     `;
     qwrap.appendChild(node);
 
-    function refreshNumbers() {
-        const lis = Array.from(document.querySelectorAll('#rank-list li'));
-        lis.forEach((li, pos) => {
-            const handle = li.querySelector('.handle');
-            handle.textContent = pos + 1;
-            if (pos === 0) { handle.className = "handle w-8 h-8 rounded-lg bg-indigo-500 text-white flex items-center justify-center font-bold text-sm shadow-md"; }
-            else if (pos === 1) { handle.className = "handle w-8 h-8 rounded-lg bg-indigo-100 text-indigo-600 flex items-center justify-center font-bold text-sm"; }
-            else { handle.className = "handle w-8 h-8 rounded-lg bg-slate-100 text-slate-400 flex items-center justify-center font-bold text-sm"; }
-        });
+    const list = document.getElementById('rank-list');
+    const items = Array.from(list.querySelectorAll('li'));
+    const confirmBtn = document.getElementById('confirm');
+    const resetBtn = document.getElementById('reset-rank');
+
+    // === UI更新ロジック ===
+    function updateVisuals() {
+        // 1. タップモードの場合の表示更新
+        if (tapOrder.length > 0) {
+            items.forEach(li => {
+                const originalIndex = Number(li.dataset.originalIndex);
+                const rankIndex = tapOrder.indexOf(originalIndex); // 0=1位, 1=2位...
+                const badge = li.querySelector('.rank-badge');
+                
+                if (rankIndex !== -1) {
+                    // 選択済み
+                    li.classList.add('border-indigo-500', 'bg-indigo-50');
+                    li.classList.remove('border-slate-100', 'bg-white');
+                    
+                    // バッジの色と数字
+                    if(rankIndex === 0) {
+                        badge.className = "rank-badge w-10 h-10 rounded-full bg-indigo-500 text-white flex items-center justify-center font-bold text-xl shadow-md border-indigo-500 scale-110 transition-transform";
+                    } else {
+                        badge.className = "rank-badge w-10 h-10 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center font-bold text-lg border-indigo-200";
+                    }
+                    badge.textContent = rankIndex + 1;
+                } else {
+                    // 未選択
+                    li.classList.remove('border-indigo-500', 'bg-indigo-50');
+                    li.classList.add('border-slate-100', 'bg-white');
+                    badge.className = "rank-badge w-10 h-10 rounded-full bg-slate-100 text-slate-300 flex items-center justify-center font-bold text-sm border-slate-200";
+                    badge.textContent = "";
+                }
+            });
+            
+            // 全選択完了チェック
+            if (tapOrder.length === 4) {
+                confirmBtn.disabled = false;
+                confirmBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                confirmBtn.innerHTML = "次へ進む";
+            } else {
+                confirmBtn.disabled = true;
+                confirmBtn.classList.add('opacity-50', 'cursor-not-allowed');
+                confirmBtn.innerHTML = `あと ${4 - tapOrder.length}つ 選択`;
+            }
+            resetBtn.classList.remove('hidden');
+
+        } else {
+            // 2. ドラッグモード（または初期状態）の表示更新
+            // DOMの並び順に基づいて番号を振る
+            const currentItems = Array.from(list.querySelectorAll('li'));
+            currentItems.forEach((li, index) => {
+                const badge = li.querySelector('.rank-badge');
+                
+                // 上位を目立たせる
+                if (index === 0) {
+                    badge.className = "rank-badge w-10 h-10 rounded-full bg-indigo-500 text-white flex items-center justify-center font-bold text-xl shadow-md scale-110";
+                } else {
+                    badge.className = "rank-badge w-10 h-10 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center font-bold text-lg";
+                }
+                badge.textContent = index + 1;
+                
+                // カード自体のスタイルはシンプルに
+                li.className = "rank-card group relative bg-white border border-slate-200 p-4 rounded-xl shadow-sm flex items-center gap-4 cursor-grab active:cursor-grabbing";
+            });
+            
+            // ドラッグモードは常に確定可能
+            confirmBtn.disabled = false;
+            confirmBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+            confirmBtn.textContent = "この順序で決定";
+            resetBtn.classList.add('hidden');
+        }
     }
 
-    // DnD Logic
-    const list = document.getElementById('rank-list');
+    // === タップ操作（クリック） ===
+    items.forEach(li => {
+        li.addEventListener('click', () => {
+            const index = Number(li.dataset.originalIndex);
+            
+            // 既に選択済みなら何もしない（あるいは解除ロジックを入れてもいいが、今回は追加のみにする）
+            if (tapOrder.includes(index)) return;
+
+            vibrate(); // スマホ振動
+            tapOrder.push(index);
+            updateVisuals();
+        });
+    });
+
+    // === リセットボタン ===
+    resetBtn.addEventListener('click', () => {
+        vibrate();
+        tapOrder = [];
+        updateVisuals();
+    });
+
+    // === ドラッグ＆ドロップ (DnD) ===
     let dragEl = null;
 
     list.addEventListener('dragstart', (e) => {
+        // タップモードで進行中の場合はDnDを無効化、またはリセットする
+        if (tapOrder.length > 0 && tapOrder.length < 4) {
+            e.preventDefault();
+            return;
+        }
+        tapOrder = []; // ドラッグ開始したらタップ順序は破棄して物理順序優先
         dragEl = e.target.closest('li');
         if (!dragEl) return;
-        dragEl.classList.add('dragging');
+        dragEl.classList.add('opacity-50');
         e.dataTransfer.effectAllowed = 'move';
+        vibrate();
     });
+    
     list.addEventListener('dragend', () => {
-        if (dragEl) dragEl.classList.remove('dragging');
+        if (dragEl) dragEl.classList.remove('opacity-50');
         dragEl = null;
-        refreshNumbers();
+        tapOrder = []; // 念のためクリア
+        updateVisuals();
     });
+    
     list.addEventListener('dragover', (e) => {
         e.preventDefault();
         const afterEl = getDragAfterElement(list, e.clientY);
-        const dragging = document.querySelector('.dragging');
+        const dragging = document.querySelector('.opacity-50');
         if (!dragging) return;
         if (afterEl == null) list.appendChild(dragging);
         else list.insertBefore(dragging, afterEl);
     });
 
     function getDragAfterElement(container, y) {
-        const els = [...container.querySelectorAll('li:not(.dragging)')];
+        const els = [...container.querySelectorAll('li:not(.opacity-50)')];
         return els.reduce((closest, child) => {
             const box = child.getBoundingClientRect();
             const offset = y - box.top - box.height / 2;
@@ -137,18 +246,31 @@ function renderQuestion() {
             else return closest;
         }, { offset: Number.NEGATIVE_INFINITY }).element;
     }
-    refreshNumbers();
 
-    const confirmBtn = document.getElementById('confirm');
+
+    // === 確定処理 ===
     let locked = false;
     confirmBtn.onclick = () => {
         if (locked) return;
         locked = true;
-        confirmBtn.innerHTML = `<svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white inline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> 処理中...`;
-        
-        const order = [...document.querySelectorAll('#rank-list li')].map(li => Number(li.getAttribute('data-index')));
+        vibrate();
+
+        // 最終的な順序配列を作成
+        let finalOrderIndices = [];
+
+        if (tapOrder.length === 4) {
+            // タップモードの順序を採用
+            finalOrderIndices = tapOrder;
+        } else {
+            // DOMの並び順（ドラッグモード）を採用
+            finalOrderIndices = [...document.querySelectorAll('#rank-list li')].map(li => Number(li.getAttribute('data-original-index')));
+        }
+
+        confirmBtn.innerHTML = `<svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white inline" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> 集計中...`;
+
         setTimeout(() => {
-             order.forEach((optIndex, pos) => {
+             // 点数加算
+             finalOrderIndices.forEach((optIndex, pos) => {
                 const typeKey = ['A','B','C','D'][optIndex];
                 totals[typeKey] += RANK_POINTS[pos];
             });
@@ -157,8 +279,13 @@ function renderQuestion() {
             renderQuestion();
         }, 300);
     };
+    
+    // 初回描画
+    updateVisuals();
 }
 
+
+// (以降、buildOrderCode, showResult, renderCardなどの関数は以前のまま変更なし)
 function buildOrderCode(entries) {
     const groups = [];
     let i = 0;
@@ -193,8 +320,7 @@ function showResult() {
     let imgSrc = "";
     if (PAIR_IMAGE && PAIR_IMAGE[pairKey]) imgSrc = PAIR_IMAGE[pairKey];
     
-    // 変更点2：NO IMAGE用のプレースホルダーSVG生成
-    // 背景グレー、中央に「NO IMAGE」と表示されるSVGデータURIです。
+    // フォールバック画像（SVG）
     const fallbackSvg = "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='800' height='450' viewBox='0 0 800 450'%3e%3crect fill='%23f1f5f9' width='800' height='450'/%3e%3ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='24' fill='%2394a3b8' font-weight='bold' letter-spacing='0.1em'%3eNO IMAGE%3c/text%3e%3c/svg%3e";
 
     result.innerHTML = `
@@ -219,7 +345,7 @@ function showResult() {
 
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-10">
           <div class="rounded-2xl overflow-hidden shadow-xl border border-slate-200 bg-white relative group min-h-[300px] flex items-center justify-center bg-slate-50">
-               <img src="${imgSrc}" 
+              <img src="${imgSrc}" 
                    class="w-full h-full object-cover transform group-hover:scale-105 transition duration-700" 
                    alt="Result Image" 
                    onerror="this.onerror=null; this.src='${fallbackSvg}';">
