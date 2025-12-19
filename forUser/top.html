@@ -556,7 +556,14 @@
             });
         }
 
-        function centerTo(i){ i=Math.max(0,Math.min(items.length-1,i)); items[i].scrollIntoView({behavior:'smooth', inline:'center', block:'nearest'}); }
+        function centerTo(i){
+            i = Math.max(0, Math.min(items.length - 1, i));
+            const el = items[i];
+            if (!el) return;
+            // scroll horizontally only (avoid page jump on mobile)
+            const target = el.offsetLeft - (root.clientWidth - el.clientWidth) / 2;
+            root.scrollTo({ left: target, behavior: 'smooth' });
+        }
         function current(){ const c=root.scrollLeft + root.clientWidth/2; let bi=0,bd=Infinity; items.forEach((el,i)=>{const m=el.offsetLeft+el.clientWidth/2; const d=Math.abs(m-c); if(d<bd){bd=d;bi=i;}}); return bi; }
         prev?.addEventListener('click',()=>centerTo(current()-1));
         next?.addEventListener('click',()=>centerTo(current()+1));
