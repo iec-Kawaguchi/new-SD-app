@@ -1,63 +1,260 @@
 <!DOCTYPE html>
 <html lang="ja">
-    <head>
-        <meta charset="UTF-8">
-        <title>Course Catalog</title>
-        <script src="https://cdn.tailwindcss.com"></script>
-        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-        <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nouislider@15.7.0/dist/nouislider.min.css">
-        <script src="https://cdn.jsdelivr.net/npm/nouislider@15.7.0/dist/nouislider.min.js"></script>
-        <script type="module" src="../js/modules/dashboard/index.js"></script>
-        
-        <style>
-            body {
-                font-family: "游ゴシック体", "Yu Gothic", "游ゴシック", YuGothic, sans-serif;
-            }
-        </style>
-    </head>
-    <body class="bg-gray-100 min-h-screen flex flex-col">
-        <!-- Header -->
-        <header class="sticky top-0 z-40 border-b border-gray-200/70 bg-white/80 backdrop-blur">
-            <div class="max-w-6xl mx-auto h-14 flex items-center px-4">
-            <a href="top.html" class="font-bold text-lg tracking-tight">Course Catalog</a>
+<head>
+    <meta charset="UTF-8" />
+    <title>自己啓発制度 募集要項 | Course Catalog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: "Inter", "Noto Sans JP", system-ui, -apple-system, Segoe UI, sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        .bg-grid {
+            background-image: radial-gradient(#e5e7eb 1px, transparent 1px);
+            background-size: 20px 20px;
+            mask-image: radial-gradient(ellipse 60% 60% at 50% 50%, #000 70%, transparent 100%);
+        }
+        @media (prefers-reduced-motion: reduce) {
+            * { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-slate-800 selection:bg-sky-200 selection:text-sky-900">
+    <div class="fixed inset-0 -z-10 bg-grid"></div>
+
+    <!-- Header -->
+    <header class="sticky top-0 z-40 w-full border-b border-white/60 bg-white/80 backdrop-blur-md">
+        <div class="max-w-6xl mx-auto h-14 flex items-center px-4 sm:px-6">
+            <a href="top.html" class="font-bold text-lg tracking-tight text-slate-900 flex items-center gap-2">
+                <span class="material-symbols-outlined text-sky-600 text-[22px]">school</span>
+                Course Catalog
+            </a>
             <nav class="ml-auto flex items-center gap-1">
-                <a href="cart.html" class="relative p-2 rounded-full hover:bg-gray-100" aria-label="Cart">
+                <a href="cart.html" class="relative p-2 rounded-full hover:bg-gray-100 transition-colors" aria-label="Cart">
                     <span class="material-symbols-outlined align-middle">shopping_cart</span>
                     <span class="absolute -top-1 -right-1 text-[10px] h-4 w-4 grid place-items-center rounded-full bg-rose-500 text-white">1</span>
                 </a>
-                <button class="p-2 rounded-full hover:bg-gray-100" aria-label="Profile">
+                <button class="p-1.5 rounded-full hover:bg-gray-100 transition-colors" aria-label="Profile">
                     <span class="material-symbols-outlined align-middle">account_circle</span>
                 </button>
             </nav>
+        </div>
+    </header>
+
+    <main class="max-w-5xl mx-auto px-4 sm:px-6 pb-16">
+        <!-- Hero -->
+        <section class="mt-8">
+            <div class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-indigo-600 via-violet-600 to-sky-500 shadow-xl text-white">
+                <div class="absolute inset-0 opacity-30">
+                    <div class="absolute -left-12 -top-16 h-48 w-48 rounded-full bg-white/20 blur-3xl"></div>
+                    <div class="absolute right-0 bottom-0 h-64 w-64 rounded-full bg-emerald-200/30 blur-3xl"></div>
+                </div>
+                <div class="relative p-8 sm:p-10 flex flex-col gap-6">
+                    <div class="flex flex-wrap items-center gap-3 text-xs font-semibold">
+                        <span class="inline-flex items-center gap-1 rounded-full bg-white/20 px-3 py-1 backdrop-blur-sm border border-white/20">
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-300 animate-pulse"></span>
+                            2026年度 自己啓発制度
+                        </span>
+                        <span class="inline-flex items-center gap-1 rounded-full bg-black/20 px-3 py-1 backdrop-blur-sm border border-white/20">
+                            <span class="material-symbols-outlined text-sm">campaign</span>
+                            募集要項 公開中
+                        </span>
+                    </div>
+                    <div class="max-w-3xl space-y-2">
+                        <p class="text-indigo-100 font-semibold">お申し込み前に必ずご確認ください</p>
+                        <h1 class="text-3xl sm:text-4xl font-extrabold leading-tight tracking-tight">受講申込・補助制度のご案内</h1>
+                        <p class="text-indigo-100/90 leading-relaxed text-sm sm:text-base">
+                            申込条件・補助対象・提出書類など、2026年度版のルールをまとめました。前年度から継続受講される方も新しい要件が適用されます。
+                        </p>
+                    </div>
+                    <!-- <div class="flex flex-wrap gap-3">
+                        <a href="#" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white text-indigo-700 font-bold shadow-lg shadow-indigo-900/20 hover:bg-indigo-50 transition-colors">
+                            申込フォームへ
+                            <span class="material-symbols-outlined text-lg">arrow_forward</span>
+                        </a>
+                        <a href="top.html" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-full border border-white/50 text-white/90 hover:bg-white/10 transition-colors">
+                            トップへ戻る
+                        </a>
+                    </div> -->
+                </div>
             </div>
-        </header>
-        <!-- メインコンテンツ -->
-        <main class="flex flex-col p-10">
-            <div class="max-w-4xl w-full bg-white mx-auto p-4 rounded-xl shadow">
-                <div class="flex"></div>
-                    <h2 class="text-xl font-bold mb-4  border-l-4 border-gray-600 pl-2 my-2">募集要項</h2>
+        </section>
 
-                    <div class="flex-1">
-                        <span>何か文章がはいります。何か文章がはいります。何か文章がはいります。何か文章がはいります。何か文章がはいります。何か文章がはいります。</span>
+        <!-- Highlights -->
+        <!-- <section class="mt-8">
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div class="rounded-2xl border border-indigo-100 bg-white shadow-sm p-4 flex items-start gap-3">
+                    <div class="h-10 w-10 rounded-xl bg-indigo-50 text-indigo-600 grid place-items-center">
+                        <span class="material-symbols-outlined">event</span>
                     </div>
-                    
-
-                    <h2 class="text-xl font-bold mb-4  border-l-4 border-gray-600 pl-2 mt-10">基本情報</h2>
-                    <div class="flex flex-col mt-6 gap-4">
-                        <dl class="flex flex-col">
-                            <dd class="font-bold">募集期間</dd>
-                            <dt class="ml-4 mb-4">2026年4月1日〜2026年4月30日</dt>
-                            <dd class="font-bold">援助制度</dd>
-                            <dt class="ml-4 mb-4">修了時半額援助</dt>
-                        </dl>
+                    <div>
+                        <p class="text-xs font-semibold text-indigo-600">申込期間</p>
+                        <p class="text-sm font-bold text-slate-900 leading-tight">2026/4/1 〜 2026/4/30</p>
+                        <p class="text-xs text-slate-500 mt-1">定員に達し次第締切となります。</p>
                     </div>
-                    <h2 class="text-xl font-bold mb-4  border-l-4 border-gray-600 pl-2 mt-10">その他</h2>
-                    <div class="flex flex-col mt-6 gap-4">
-                        <span>何か文章がはいります。何か文章がはいります。何か文章がはいります。何か文章がはいります。何か文章がはいります。何か文章がはいります。</span>
+                </div>
+                <div class="rounded-2xl border border-emerald-100 bg-white shadow-sm p-4 flex items-start gap-3">
+                    <div class="h-10 w-10 rounded-xl bg-emerald-50 text-emerald-600 grid place-items-center">
+                        <span class="material-symbols-outlined">workspace_premium</span>
+                    </div>
+                    <div>
+                        <p class="text-xs font-semibold text-emerald-600">補助内容</p>
+                        <p class="text-sm font-bold text-slate-900 leading-tight">受講料の最大50%補助</p>
+                        <p class="text-xs text-slate-500 mt-1">上限 30,000円 / 人・年度</p>
+                    </div>
+                </div>
+                <div class="rounded-2xl border border-amber-100 bg-white shadow-sm p-4 flex items-start gap-3">
+                    <div class="h-10 w-10 rounded-xl bg-amber-50 text-amber-600 grid place-items-center">
+                        <span class="material-symbols-outlined">fact_check</span>
+                    </div>
+                    <div>
+                        <p class="text-xs font-semibold text-amber-600">対象者</p>
+                        <p class="text-sm font-bold text-slate-900 leading-tight">正社員 / 契約社員</p>
+                        <p class="text-xs text-slate-500 mt-1">試用期間中の方は対象外です。</p>
                     </div>
                 </div>
             </div>
-        </main>
-    </body>
+        </section> -->
+
+        <!-- Details -->
+        <section class="mt-10 space-y-8">
+            <div class="rounded-3xl bg-white shadow-sm border border-slate-100 p-6 sm:p-8">
+                <div class="flex items-center gap-2 mb-4">
+                    <span class="w-1.5 h-6 rounded-full bg-indigo-500"></span>
+                    <h2 class="text-xl font-bold text-slate-900">募集要項</h2>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm leading-relaxed text-slate-700">
+                    <ul class="space-y-2 list-disc pl-5">
+                        <li>会社指定のeラーニング / 通信講座 / セミナーが対象です。</li>
+                        <li>1人あたり年間2コースまで申請できます。</li>
+                        <li>勤務時間外の受講を原則とし、業務時間内受講は上長承認が必要です。</li>
+                        <li>社外資格試験の受験料補助は別途資格取得支援制度をご確認ください。</li>
+                        <li>受講後30日以内にレポート提出とアンケート回答が必要です。</li>
+                        <li>申込順で受付し、予算上限に達した場合は早期終了します。</li>
+                        <li>同一コースの再受講は補助対象外です。</li>
+                        <li>派遣社員の方は派遣元の制度を優先してください。</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="rounded-3xl bg-white shadow-sm border border-slate-100 p-6 sm:p-8">
+                <div class="flex items-center gap-2 mb-4">
+                    <span class="w-1.5 h-6 rounded-full bg-emerald-500"></span>
+                    <h2 class="text-xl font-bold text-slate-900">補助制度の概要</h2>
+                </div>
+                <div class="overflow-hidden rounded-2xl border border-slate-100">
+                    <table class="w-full text-sm text-slate-700">
+                        <thead class="bg-slate-50 text-slate-500 uppercase text-xs tracking-wide">
+                            <tr>
+                                <th class="px-4 py-3 text-left font-semibold">項目</th>
+                                <th class="px-4 py-3 text-left font-semibold">内容</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100">
+                            <tr>
+                                <td class="px-4 py-3 font-semibold text-slate-900">補助率 / 上限</td>
+                                <td class="px-4 py-3">受講料（税込）の50%・上限30,000円/人/年度</td>
+                            </tr>
+                            <tr class="bg-slate-50/60">
+                                <td class="px-4 py-3 font-semibold text-slate-900">対象コース</td>
+                                <td class="px-4 py-3">カタログ掲載コース（社内/社外）・会社指定の推奨コース</td>
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-3 font-semibold text-slate-900">必要書類</td>
+                                <td class="px-4 py-3">申込フォーム、上長承認、受講後レポート、領収書の写し</td>
+                            </tr>
+                            <tr class="bg-slate-50/60">
+                                <td class="px-4 py-3 font-semibold text-slate-900">支払方法</td>
+                                <td class="px-4 py-3">個人立替（受講完了後に精算） ※会社払いは不可</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="rounded-3xl bg-white shadow-sm border border-slate-100 p-6 sm:p-8">
+                <div class="flex items-center gap-2 mb-4">
+                    <span class="w-1.5 h-6 rounded-full bg-sky-500"></span>
+                    <h2 class="text-xl font-bold text-slate-900">申込の流れ</h2>
+                </div>
+                <ol class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <li class="rounded-2xl border border-slate-100 bg-slate-50/60 p-4 flex flex-col gap-2">
+                        <div class="flex items-center gap-2 text-xs font-semibold text-slate-500">
+                            <span class="h-6 w-6 rounded-full bg-sky-600 text-white grid place-items-center text-sm font-bold">1</span>
+                            コース選定
+                        </div>
+                        <p class="text-sm text-slate-700 leading-relaxed">カタログから受講したいコースを選び、受講条件と日程を確認。</p>
+                    </li>
+                    <li class="rounded-2xl border border-slate-100 bg-slate-50/60 p-4 flex flex-col gap-2">
+                        <div class="flex items-center gap-2 text-xs font-semibold text-slate-500">
+                            <span class="h-6 w-6 rounded-full bg-sky-600 text-white grid place-items-center text-sm font-bold">2</span>
+                            上長承認
+                        </div>
+                        <p class="text-sm text-slate-700 leading-relaxed">申込フォームを作成し、上長の事前承認を取得してください。</p>
+                    </li>
+                    <li class="rounded-2xl border border-slate-100 bg-slate-50/60 p-4 flex flex-col gap-2">
+                        <div class="flex items-center gap-2 text-xs font-semibold text-slate-500">
+                            <span class="h-6 w-6 rounded-full bg-sky-600 text-white grid place-items-center text-sm font-bold">3</span>
+                            受講・修了
+                        </div>
+                        <p class="text-sm text-slate-700 leading-relaxed">受講後、修了証やレポートを準備し、必要書類を揃えます。</p>
+                    </li>
+                    <li class="rounded-2xl border border-slate-100 bg-slate-50/60 p-4 flex flex-col gap-2">
+                        <div class="flex items-center gap-2 text-xs font-semibold text-slate-500">
+                            <span class="h-6 w-6 rounded-full bg-sky-600 text-white grid place-items-center text-sm font-bold">4</span>
+                            精算・申請完了
+                        </div>
+                        <p class="text-sm text-slate-700 leading-relaxed">領収書の写しとレポートを添付し、申請完了後に補助が支給されます。</p>
+                    </li>
+                </ol>
+            </div>
+
+            <div class="rounded-3xl bg-white shadow-sm border border-slate-100 p-6 sm:p-8">
+                <div class="flex items-center gap-2 mb-4">
+                    <span class="w-1.5 h-6 rounded-full bg-amber-500"></span>
+                    <h2 class="text-xl font-bold text-slate-900">よくある確認事項</h2>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-slate-700 leading-relaxed">
+                    <div class="rounded-2xl border border-amber-100 bg-amber-50/60 p-4">
+                        <p class="font-semibold text-amber-700 mb-1">途中で受講できなくなった場合</p>
+                        <p>事前に上長と事務局へ連絡し、日程変更またはキャンセル手続きを行ってください。無断キャンセルは次年度の申請が制限される場合があります。</p>
+                    </div>
+                    <div class="rounded-2xl border border-amber-100 bg-amber-50/60 p-4">
+                        <p class="font-semibold text-amber-700 mb-1">業務時間内に受講したい</p>
+                        <p>業務都合による時間確保が必要な場合は、上長の承認と業務調整を事前に完了させてください。残業代の精算は対象外です。</p>
+                    </div>
+                    <div class="rounded-2xl border border-amber-100 bg-amber-50/60 p-4">
+                        <p class="font-semibold text-amber-700 mb-1">領収書を紛失した</p>
+                        <p>再発行が難しい場合は、支払証跡（クレジット明細など）を添付してください。証跡がない場合は補助対象外になることがあります。</p>
+                    </div>
+                    <div class="rounded-2xl border border-amber-100 bg-amber-50/60 p-4">
+                        <p class="font-semibold text-amber-700 mb-1">複数コースをまとめて申請したい</p>
+                        <p>コースごとにフォームを分けて申請してください。年度の上限額内であれば複数コースの受講が可能です。</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA -->
+        <!-- <section class="mt-12 flex flex-col sm:flex-row items-center justify-between gap-4 rounded-3xl border border-sky-100 bg-white shadow-sm p-6">
+            <div>
+                <p class="text-xs font-semibold text-sky-600">Next Step</p>
+                <h3 class="text-lg font-bold text-slate-900">受講条件を満たしているか再チェックし、申込フォームへ進んでください。</h3>
+            </div>
+            <div class="flex gap-3">
+                <a href="#" class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-sky-600 text-white font-semibold shadow-sm hover:bg-sky-700 transition-colors">
+                    申込フォームを開く
+                    <span class="material-symbols-outlined text-sm">open_in_new</span>
+                </a>
+                <a href="top.html" class="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-slate-200 text-slate-700 hover:bg-slate-50 transition-colors">
+                    トップへ戻る
+                </a>
+            </div>
+        </section> -->
+    </main>
+</body>
 </html>

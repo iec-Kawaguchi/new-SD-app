@@ -39,7 +39,11 @@
         <!-- Header -->
         <header class="sticky top-0 z-40 border-b border-gray-200/70 bg-white/80 backdrop-blur">
             <div class="max-w-6xl mx-auto h-14 flex items-center px-4">
-                <a href="top.html" class="font-bold text-lg tracking-tight">Course Catalog</a>
+                <a href="top.html" class="font-bold text-lg tracking-tight text-slate-900 flex items-center gap-2">
+                <span class="material-symbols-outlined text-sky-600 text-[22px]">school</span>
+                Course Catalog
+            </a>
+                <!-- <a href="top.html" class="font-bold text-lg tracking-tight">Course Catalog</a> -->
                 <nav class="ml-auto flex items-center gap-1">
                     <a href="cart.html" class="relative p-2 rounded-full hover:bg-gray-100" aria-label="Cart">
                         <span class="material-symbols-outlined align-middle">shopping_cart</span>
@@ -112,6 +116,11 @@
                 </div>
             </div>
         </section>
+        <!-- Slider indicator -->
+        <div class="mx-auto max-w-6xl px-4 mt-3 flex items-center justify-center gap-3 text-xs text-gray-600" id="hero-indicator">
+            <div class="flex items-center gap-2" id="hero-dots"></div>
+           
+        </div>
                 <!-- Notice / Announcements -->
         <section class="mx-auto max-w-6xl px-4 mt-8" aria-labelledby="notice-heading">
 
@@ -554,11 +563,45 @@
         const items = Array.from(root.children);
         const prev = document.querySelector('[data-prev]');
         const next = document.querySelector('[data-next]');
+        const dotsWrap = document.getElementById('hero-dots');
+        const curEl = document.getElementById('hero-current');
+        const totalEl = document.getElementById('hero-total');
+
+        function buildDots() {
+            if (!dotsWrap) return;
+            dotsWrap.innerHTML = '';
+            items.forEach((_, idx) => {
+                const dot = document.createElement('span');
+                dot.className = 'h-2.5 w-2.5 rounded-full border border-slate-300 bg-white shadow-sm transition-all duration-200 cursor-pointer';
+                dot.addEventListener('click', () => centerTo(idx));
+                dotsWrap.appendChild(dot);
+            });
+            totalEl && (totalEl.textContent = items.length.toString());
+        }
+
+        function updateIndicator(i){
+            curEl && (curEl.textContent = (i + 1).toString());
+            if (!dotsWrap) return;
+            dotsWrap.querySelectorAll('span').forEach((el, idx) => {
+                el.classList.toggle('bg-sky-500', idx === i);
+                el.classList.toggle('border-sky-500', idx === i);
+            });
+        }
+
         function centerTo(i){ i=Math.max(0,Math.min(items.length-1,i)); items[i].scrollIntoView({behavior:'smooth', inline:'center', block:'nearest'}); }
         function current(){ const c=root.scrollLeft + root.clientWidth/2; let bi=0,bd=Infinity; items.forEach((el,i)=>{const m=el.offsetLeft+el.clientWidth/2; const d=Math.abs(m-c); if(d<bd){bd=d;bi=i;}}); return bi; }
         prev?.addEventListener('click',()=>centerTo(current()-1));
         next?.addEventListener('click',()=>centerTo(current()+1));
         window.addEventListener('resize',()=>centerTo(current()));
+
+        let raf = null;
+        root.addEventListener('scroll', () => {
+            if (raf) cancelAnimationFrame(raf);
+            raf = requestAnimationFrame(() => updateIndicator(current()));
+        });
+
+        buildDots();
+        updateIndicator(current());
     })();
     
     (() => {

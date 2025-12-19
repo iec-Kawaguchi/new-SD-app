@@ -2,7 +2,7 @@
 <html lang="ja">
   <head>
     <meta charset="UTF-8" />
-    <title>サイトユーザー登録（モック・おしゃれ版）</title>
+    <title>サイトユーザー登録（指示紐付け版）</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <style>
       body { font-family: "游ゴシック体","Yu Gothic","游ゴシック",YuGothic,sans-serif; }
@@ -13,38 +13,34 @@
   </head>
   <body class="bg-gray-50 text-gray-800">
     <div class="min-h-dvh">
-      <!-- ページヘッダー -->
       <header class="px-6 pt-8 pb-4">
         <h1 class="text-2xl font-bold tracking-tight">サイトユーザー登録</h1>
-        <p class="mt-1 text-sm text-gray-600">募集サイトのログインユーザーを登録してください。</p>
+        <p class="mt-1 text-sm text-gray-600">募集サイトのログインユーザーを登録し、適用する申込指示を選択してください。</p>
       </header>
 
-      <main class="px-6 space-y-6 pb-40"><!-- 下部固定バーの余白 -->
-        <!-- 入力カード -->
-        <section class="bg-white rounded-2xl shadow-sm border border-gray-200/60">
+      <main class="px-6 space-y-6 pb-40"><section class="bg-white rounded-2xl shadow-sm border border-gray-200/60">
           <div class="p-5">
             <div class="flex items-center gap-2 mb-3">
               <span class="material-symbols-outlined text-gray-500">person_add</span>
               <h2 class="font-semibold">新規ユーザーを追加</h2>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
-              <!-- 名前 -->
+            <div class="grid grid-cols-1 md:grid-cols-5 gap-3">
               <label class="block">
                 <span class="text-xs text-gray-500">名前</span>
                 <input id="name" type="text" class="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" placeholder="例）共通ユーザー③" />
               </label>
-              <!-- ID -->
+              
               <label class="block">
                 <span class="text-xs text-gray-500">ID</span>
                 <div class="mt-1 flex items-center gap-2">
                   <input id="uid" type="text" class="w-full rounded-lg border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" placeholder="例）FY2026_3h" />
-                  <button id="gen-id" class="shrink-0 h-10 px-3 rounded-lg border border-gray-300 bg-white hover:bg-gray-50">
+                  <button id="gen-id" class="shrink-0 h-10 px-3 rounded-lg border border-gray-300 bg-white hover:bg-gray-50" title="ID自動生成">
                     <span class="material-symbols-outlined align-middle text-base">auto_fix</span>
                   </button>
                 </div>
               </label>
-              <!-- パスワード -->
+              
               <label class="block">
                 <span class="text-xs text-gray-500">パスワード</span>
                 <div class="mt-1 flex items-center gap-2">
@@ -54,20 +50,24 @@
                   </button>
                 </div>
               </label>
-              <!-- 追加ボタン -->
+
+              <label class="block">
+                <span class="text-xs text-gray-500">適用する申込指示</span>
+                <select id="instruction-select" class="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 bg-white">
+                  </select>
+              </label>
+
               <div class="flex items-end">
-                <button id="add" class="w-full md:w-auto rounded-lg bg-blue-600 px-5 py-2.5 text-white font-medium hover:bg-blue-700 active:scale-[0.99] transition">
+                <button id="add" class="w-full rounded-lg bg-blue-600 px-5 py-2.5 text-white font-medium hover:bg-blue-700 active:scale-[0.99] transition shadow-md shadow-blue-500/20">
                   追加
                 </button>
               </div>
             </div>
 
-            <!-- ヒント -->
-            <p class="mt-3 text-xs text-gray-500">※IDは共有利用を想定した簡易IDでOK（モック）。本番では強度チェック／重複チェックを実装。</p>
+            <p class="mt-3 text-xs text-gray-500">※IDは共有利用を想定した簡易IDでOK（モック）。申込指示パターンは前画面で登録されたものから選択します。</p>
           </div>
         </section>
 
-        <!-- リスト（カード行） -->
         <section class="bg-white rounded-2xl shadow-sm border border-gray-200/60">
           <div class="p-5">
             <div class="flex items-center gap-2 mb-3">
@@ -76,10 +76,8 @@
             </div>
 
             <div id="list" class="space-y-3">
-              <!-- 行テンプレ：JSで生成。初期データだけ下に置く -->
-            </div>
+              </div>
 
-            <!-- 空状態 -->
             <div id="empty" class="rounded-xl border border-dashed border-gray-300 bg-gray-50/60 py-10 mt-4 grid place-items-center text-center hidden">
               <div>
                 <span class="material-symbols-outlined text-4xl text-gray-400 mb-2">group</span>
@@ -91,7 +89,6 @@
         </section>
       </main>
 
-      <!-- 固定アクションバー -->
       <div class="fixed bottom-0 inset-x-0 z-50">
         <div class="mx-auto max-w-5xl px-6 pb-[calc(12px+var(--safe-bottom))]">
           <div class="rounded-2xl bg-white/95 backdrop-blur shadow-[0_-6px_24px_-8px_rgba(0,0,0,0.18)] border border-gray-200">
@@ -110,37 +107,73 @@
           <span class="avatar inline-grid place-items-center size-9 rounded-full bg-blue-50 text-blue-600 font-semibold">U</span>
         </div>
         <div class="min-w-0 flex-1">
-          <p class="name font-medium text-gray-900 truncate">共通ユーザー</p>
-          <div class="mt-0.5 flex items-center gap-2 text-sm text-gray-600">
-            <span class="id mono px-2 py-0.5 rounded bg-gray-100">FY2026_xx</span>
-            <button class="copy-id text-gray-400 hover:text-gray-700" title="IDをコピー">
-              <span class="material-symbols-outlined text-base align-middle">content_copy</span>
-            </button>
+          <div class="flex items-center gap-2">
+            <p class="name font-medium text-gray-900 truncate">共通ユーザー</p>
+            <span class="instruction-badge text-[10px] px-2 py-0.5 rounded bg-indigo-50 text-indigo-700 border border-indigo-100 font-medium truncate max-w-[120px]">
+              パターン名
+            </span>
           </div>
-          <div class="mt-1 flex items-center gap-2 text-sm">
-            <span class="pwd-dot tracking-widest text-gray-700">••••••</span>
-            <button class="toggle-row-pwd text-gray-400 hover:text-gray-700" title="表示/非表示">
-              <span class="material-symbols-outlined text-base align-middle">visibility</span>
-            </button>
+          
+          <div class="mt-1 flex items-center gap-3 text-sm text-gray-600">
+            <div class="flex items-center gap-1">
+              <span class="id mono px-2 py-0.5 rounded bg-gray-100 text-xs">ID</span>
+              <button class="copy-id text-gray-400 hover:text-gray-700" title="IDをコピー">
+                <span class="material-symbols-outlined text-sm align-middle">content_copy</span>
+              </button>
+            </div>
+            <div class="w-px h-3 bg-gray-300"></div>
+            <div class="flex items-center gap-1">
+              <span class="pwd-dot tracking-widest text-gray-700 text-xs">••••••</span>
+              <button class="toggle-row-pwd text-gray-400 hover:text-gray-700" title="表示/非表示">
+                <span class="material-symbols-outlined text-sm align-middle">visibility</span>
+              </button>
+            </div>
           </div>
         </div>
         <button class="remove ml-auto inline-flex items-center gap-1 text-gray-400 hover:text-red-600 transition">
           <span class="material-symbols-outlined text-[20px]">do_not_disturb_on</span>
-          <span class="text-xs">削除</span>
+          <span class="text-xs hidden md:inline">削除</span>
         </button>
       </div>
     </template>
 
     <script>
-      // ------- 初期データ（モック） -------
-      const initial = [
-        { name: "共通ユーザー①", id: "FY2026_1h", pwd: "study" },
-        { name: "共通ユーザー②", id: "FY2026_2h", pwd: "study" },
+      // ------- モックデータ定義 -------
+      
+      // 1. 前画面で作ったであろう「申込指示パターン」のマスタ
+      const instructionMaster = [
+        { id: 1, name: "新卒入社者向け（教材送付：自宅）" },
+        { id: 2, name: "管理職研修用（教材送付：会社）" },
+        { id: 3, name: "関東エリア配属者用" }
       ];
 
+      // 2. 登録済みユーザー（初期データ）
+      // instructionId で紐付けを表現
+      const initialUsers = [
+        { name: "共通ユーザー①", id: "FY2026_1h", pwd: "study", instructionId: 1 },
+        { name: "共通ユーザー②", id: "FY2026_2h", pwd: "study", instructionId: 2 },
+      ];
+
+      // ------- DOM要素 -------
       const listEl = document.getElementById("list");
       const emptyEl = document.getElementById("empty");
       const tpl = document.getElementById("row-tpl");
+      const selectEl = document.getElementById("instruction-select");
+      const nameInput = document.getElementById("name");
+      const idInput   = document.getElementById("uid");
+      const pwdInput  = document.getElementById("pwd");
+
+      // ------- 初期化処理 -------
+
+      // プルダウンの選択肢生成
+      function initSelect() {
+        instructionMaster.forEach(inst => {
+          const opt = document.createElement("option");
+          opt.value = inst.id;
+          opt.textContent = inst.name;
+          selectEl.appendChild(opt);
+        });
+      }
 
       function setEmptyState() {
         const hasRows = listEl.children.length > 0;
@@ -151,12 +184,23 @@
         return (text || "U").trim().charAt(0).toUpperCase();
       }
 
-      function makeRow({ name, id, pwd }) {
+      // 指示IDから名称を引くヘルパー
+      function getInstructionName(id) {
+        const found = instructionMaster.find(m => m.id == id);
+        return found ? found.name : "未設定";
+      }
+
+      // 行生成ロジック
+      function makeRow({ name, id, pwd, instructionId }) {
         const node = tpl.content.firstElementChild.cloneNode(true);
+        
         node.querySelector(".avatar").textContent = avatarLetter(name);
         node.querySelector(".name").textContent = name || "";
         node.querySelector(".id").textContent = id || "";
         node.dataset.pwd = pwd || "";
+        
+        // ★紐付いた指示名の表示
+        node.querySelector(".instruction-badge").textContent = getInstructionName(instructionId);
 
         // IDコピー
         node.querySelector(".copy-id").addEventListener("click", () => {
@@ -184,41 +228,43 @@
         return node;
       }
 
-      // 初期行を描画
-      initial.forEach(d => listEl.appendChild(makeRow(d)));
+      // 実行：初期描画
+      initSelect();
+      initialUsers.forEach(d => listEl.appendChild(makeRow(d)));
       setEmptyState();
 
-      // ------- 新規追加UI -------
-      const $ = (s) => document.querySelector(s);
-      const nameInput = $("#name");
-      const idInput   = $("#uid");
-      const pwdInput  = $("#pwd");
 
-      $("#toggle-pwd").addEventListener("click", () => {
+      // ------- UIイベント -------
+
+      document.getElementById("toggle-pwd").addEventListener("click", () => {
         pwdInput.type = pwdInput.type === "password" ? "text" : "password";
       });
 
-      // 簡易ID自動生成（モック）
-      $("#gen-id").addEventListener("click", () => {
+      // 簡易ID自動生成
+      document.getElementById("gen-id").addEventListener("click", () => {
         const n = Math.floor(Math.random() * 900 + 100);
         idInput.value = `FY2026_${n}h`;
       });
 
-      $("#add").addEventListener("click", () => {
+      // 追加ボタンクリック
+      document.getElementById("add").addEventListener("click", () => {
         const name = nameInput.value.trim();
         const id = idInput.value.trim();
         const pwd = pwdInput.value.trim();
+        const instructionId = selectEl.value; // 選択されたIDを取得
 
         if (!name || !id || !pwd) {
-          // モックなので簡易バリデーション
           [nameInput, idInput, pwdInput].forEach(el => {
-            el.classList.toggle("ring-2", !el.value.trim());
-            el.classList.toggle("ring-red-400", !el.value.trim());
+            if(!el.value.trim()) {
+               el.classList.add("ring-2", "ring-red-400");
+               setTimeout(() => el.classList.remove("ring-2", "ring-red-400"), 2000);
+            }
           });
           return;
         }
 
-        listEl.prepend(makeRow({ name, id, pwd }));
+        // 新規行を追加
+        listEl.prepend(makeRow({ name, id, pwd, instructionId }));
         setEmptyState();
 
         // 入力クリア
@@ -226,9 +272,7 @@
         idInput.value = "";
         pwdInput.value = "";
         pwdInput.type = "password";
-        [nameInput, idInput, pwdInput].forEach(el => {
-          el.classList.remove("ring-2", "ring-red-400");
-        });
+        nameInput.focus();
       });
     </script>
   </body>
