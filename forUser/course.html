@@ -13,7 +13,9 @@
     
     <style>
         body {
-            font-family: "Yu Gothic", "游ゴシック Medium", "游ゴシック", YuGothic, sans-serif;
+            font-family: "Inter", "Noto Sans JP", system-ui, -apple-system, Segoe UI, sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
         /* Safe area padding for devices with a bottom inset */
         .safe-bottom { padding-bottom: max(env(safe-area-inset-bottom), 12px); }
@@ -21,7 +23,7 @@
 </head>
 <body class="bg-gray-200 min-h-screen flex flex-col">
     <!-- Header -->
-    <header class="sticky top-0 z-40 border-b border-gray-200/70 bg-white/85 backdrop-blur shadow-sm">
+    <header class="sticky top-0 z-40 border-b border-gray-200/70 bg-white/85 backdrop-blur">
         <div class="max-w-6xl mx-auto h-14 flex items-center px-4 sm:px-6">
             <a href="top.html" class="font-bold text-lg tracking-tight text-slate-900 flex items-center gap-2">
                 <span class="material-symbols-outlined text-sky-600 text-[22px]">school</span>
