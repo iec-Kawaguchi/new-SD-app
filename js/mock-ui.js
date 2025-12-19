@@ -65,7 +65,7 @@
                 組織
             </li>
             </a>
-            <a href="topics-master-list.html" data-visible-for="iec">
+            <a href="topics-master-list.html" data-visible-for="iec, customer">
             <li class="flex items-center ml-3 py-2 px-4 text-gray-700 border-l-2 border-gray-300 hover:border-gray-500 hover:font-bold">
                 <span class="material-symbols-outlined text-[1.2rem] mr-1">view_agenda</span>
                 特集ページ
