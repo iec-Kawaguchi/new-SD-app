@@ -27,6 +27,7 @@ window.addEventListener('DOMContentLoaded', () => {
     const markOKBtn     = document.getElementById('markOK');
     const markNGBtn     = document.getElementById('markNG');
     const qInput        = document.getElementById('q');
+    const selectAllCheckbox = document.getElementById('selectAll');
 
     // モーダル関連
     const courseModal          = document.getElementById('course-modal');
@@ -76,6 +77,28 @@ window.addEventListener('DOMContentLoaded', () => {
         } else {
             bulkbar.classList.add('hidden');
         }
+    }
+
+    function getVisibleCheckboxes() {
+        return Array.from(document.querySelectorAll('#rows .sel'))
+            .filter(c => {
+                const row = c.closest('.row');
+                return row && row.style.display !== 'none';
+            });
+    }
+
+    function updateSelectAllState() {
+        if (!selectAllCheckbox) return;
+        const visibleCheckboxes = getVisibleCheckboxes();
+        if (!visibleCheckboxes.length) {
+            selectAllCheckbox.indeterminate = false;
+            selectAllCheckbox.checked = false;
+            return;
+        }
+
+        const checkedCount = visibleCheckboxes.filter(c => c.checked).length;
+        selectAllCheckbox.indeterminate = checkedCount > 0 && checkedCount < visibleCheckboxes.length;
+        selectAllCheckbox.checked = checkedCount > 0 && checkedCount === visibleCheckboxes.length;
     }
 
     function findCourseByRowId(rowId) {
@@ -277,6 +300,7 @@ window.addEventListener('DOMContentLoaded', () => {
         Array.from(document.querySelectorAll('#rows .row')).forEach(row => {
             row.style.display = matchFilter(row, text) ? '' : 'none';
         });
+        updateSelectAllState();
     }
 
     // ---- 詳細ビュー＋コメント ----
@@ -338,12 +362,21 @@ window.addEventListener('DOMContentLoaded', () => {
     listEl.addEventListener('change', (e) => {
         if (e.target.classList.contains('sel')) {
             refreshBulkbar();
+            updateSelectAllState();
         }
+    });
+
+    selectAllCheckbox?.addEventListener('change', () => {
+        const targets = getVisibleCheckboxes();
+        targets.forEach(c => c.checked = selectAllCheckbox.checked);
+        refreshBulkbar();
+        updateSelectAllState();
     });
 
     clearSelectionBtn?.addEventListener('click', () => {
         document.querySelectorAll('#rows .sel:checked').forEach(c => c.checked = false);
         refreshBulkbar();
+        updateSelectAllState();
     });
 
     // ---- 判定OKボタン ----
@@ -367,6 +400,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
         document.querySelectorAll('#rows .sel:checked').forEach(c => c.checked = false);
         refreshBulkbar();
+        updateSelectAllState();
     });
 
     // ---- 判定NGボタン ----
@@ -391,6 +425,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
         document.querySelectorAll('#rows .sel:checked').forEach(c => c.checked = false);
         refreshBulkbar();
+        updateSelectAllState();
     });
 
     // ---- 全コースモーダル ----

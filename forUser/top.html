@@ -431,20 +431,20 @@
                         <!-- Duration -->
                         <div>
                         <label class="block text-sm text-gray-600 mb-2">受講期間</label>
-                        <div class="flex flex-wrap gap-2">
-                            <label class="inline-flex items-center px-3 py-1.5 rounded-full border border-gray-200 bg-white text-gray-700 text-sm transition">
-                            <input type="checkbox" class="peer hidden">
-                            <span class="pill-ui">1ヶ月</span>
-                            </label>
-                            <label class="inline-flex items-center px-3 py-1.5 rounded-full border border-gray-200 bg-white text-gray-700 text-sm transition">
-                            <input type="checkbox" class="peer hidden">
-                            <span class="pill-ui">3ヶ月</span>
-                            </label>
-                            <label class="inline-flex items-center px-3 py-1.5 rounded-full border border-gray-200 bg-white text-gray-700 text-sm transition">
-                            <input type="checkbox" class="peer hidden">
-                            <span class="pill-ui">6ヶ月</span>
-                            </label>
-                        </div>
+                            <div class="flex flex-wrap gap-2">
+                                <label class="inline-flex items-center px-3 py-1.5 rounded-full border border-gray-200 bg-white text-gray-700 text-sm transition">
+                                <input type="checkbox" class="peer hidden">
+                                <span class="pill-ui">1ヶ月</span>
+                                </label>
+                                <label class="inline-flex items-center px-3 py-1.5 rounded-full border border-gray-200 bg-white text-gray-700 text-sm transition">
+                                <input type="checkbox" class="peer hidden">
+                                <span class="pill-ui">3ヶ月</span>
+                                </label>
+                                <label class="inline-flex items-center px-3 py-1.5 rounded-full border border-gray-200 bg-white text-gray-700 text-sm transition">
+                                <input type="checkbox" class="peer hidden">
+                                <span class="pill-ui">6ヶ月</span>
+                                </label>
+                            </div>
                         </div>
 
                         <!-- Price (visual double range) -->
@@ -590,6 +590,9 @@
     const btnClose = document.getElementById('filter-close');
     const btnApply = document.getElementById('filter-apply');
     const btnReset = document.getElementById('filter-reset');
+    const chips    = Array.from(dialog.querySelectorAll('[data-chip]'));
+    const keyword  = document.getElementById('filter-keyword');
+    const durationChecks = Array.from(dialog.querySelectorAll('input[type="checkbox"]'));
 
     // open/close (visual)
     let last = null;
@@ -667,10 +670,33 @@
     // 初期
     updateRange();
 
+    // Tag chips toggle
+    function setChipState(el, active){
+        el.setAttribute('aria-pressed', active ? 'true' : 'false');
+        el.classList.toggle('bg-sky-100', active);
+        el.classList.toggle('border-sky-300', active);
+        el.classList.toggle('text-sky-700', active);
+    }
+    chips.forEach((chip) => {
+        setChipState(chip, chip.getAttribute('aria-pressed') === 'true');
+        chip.addEventListener('click', () => {
+            const next = chip.getAttribute('aria-pressed') !== 'true';
+            setChipState(chip, next);
+        });
+    });
+
     // Buttons (visual)
     btnApply?.addEventListener('click', () => {
         // 見た目だけ：閉じる
         closeDlg();
+    });
+    btnReset?.addEventListener('click', () => {
+        keyword && (keyword.value = '');
+        durationChecks.forEach((c) => c.checked = false);
+        chips.forEach((chip) => setChipState(chip, false));
+        if (rMin) rMin.value = rMin.min || '0';
+        if (rMax) rMax.value = rMax.max || '50000';
+        updateRange();
     });
    
   })();
