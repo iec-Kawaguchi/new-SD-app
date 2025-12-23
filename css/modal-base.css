@@ -1,0 +1,12 @@
+:root {
+  /* 安全マージン（モバイル用） */
+  --safe-bottom: env(safe-area-inset-bottom);
+}
+
+body {
+  font-family: "游ゴシック体", "Yu Gothic", "游ゴシック", YuGothic, sans-serif;
+  background-color: #f9fafb;
+  color: #1f2937;
+}
+
+/* モーダル内のヘッダー余白や下部固定バー用の補助クラスが必要になった場合はここに追加する */

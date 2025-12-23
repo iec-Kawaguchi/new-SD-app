@@ -1,354 +1,122 @@
 <!DOCTYPE html>
 <html lang="ja">
-    <head>
-        <meta charset="UTF-8" />
-        <title>顧客担当登録</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <style>
-            body { font-family: "游ゴシック体","Yu Gothic","游ゴシック",YuGothic,sans-serif; }
-            :root { --safe-bottom: env(safe-area-inset-bottom); }
-        </style>
-        <script src="https://cdn.tailwindcss.com"></script>
-        <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
-    </head>
-    <body class="bg-gray-50 text-gray-800">
-        <div class="min-h-dvh">
-            <!-- ページヘッダー -->
-            <header class="px-6 pt-8 pb-4">
-                <h1 class="text-2xl font-bold tracking-tight">参加団体登録</h1>
-                <p class="mt-1 text-sm text-gray-600">本募集の参加団体情報を登録してください。</p>
-            </header>
+  <head>
+    <meta charset="UTF-8" />
+    <title>参加団体登録</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="../css/modal-base.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+  </head>
+  <body class="bg-gray-50 text-gray-800">
+    <div class="min-h-dvh">
+      <!-- ページヘッダー -->
+      <header class="px-6 pt-8 pb-4">
+        <h1 class="text-2xl font-bold tracking-tight">参加団体登録</h1>
+        <p class="mt-1 text-sm text-gray-600">本募集の参加団体情報を登録してください。</p>
+      </header>
 
-            <main class="px-6 space-y-6 pb-40"><!-- 下の固定バー分の余白 -->
-                <!-- 入力カード -->
-                <section class="bg-white rounded-2xl shadow-sm border border-gray-200/60">
-                    <div class="p-5">
-                    <div class="flex items-center gap-2 mb-3">
-                        <span class="material-symbols-outlined text-gray-500" aria-hidden="true">group_add</span>
-                        <h2 class="font-semibold">団体担当を追加</h2>
-                    </div>
-                    <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
-                        <label class="block">
-                        <span class="text-xs text-gray-500">団体</span>
-                        <select class="mt-1 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
-                            <option value="">団体を選択してください</option>
-                            <option value="org-1">産業能率大学</option>
-                            <option value="org-2">JMAM</option>
-                            <option value="org-3">JTEX</option>
-                        </select>
-                        </label>
-                        <label class="block">
-                        <span class="text-xs text-gray-500">担当</span>
-                        <select class="mt-1 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
-                            <option value="">担当を選択してください</option>
-                            <option value="org-1">高橋</option>
-                            <option value="org-2">佐藤</option>
-                            <option value="org-3">田中</option>
-                        </select>
-                        </label>
-                        <div class="flex items-end">
-                        <button class="w-full md:w-auto rounded-lg bg-blue-600 px-5 py-2.5 text-white font-medium hover:bg-blue-700 active:scale-[0.99] transition">
-                            追加
-                        </button>
-                        </div>
-                    </div>
-                    </div>
-                </section>
-
-                <!-- テーブル（カード風の行） -->
-                <section class="bg-white rounded-2xl shadow-sm border border-gray-200/60">
-                    <div class="p-5">
-                        <div class="flex items-center gap-2 mb-3">
-                        <span class="material-symbols-outlined text-gray-500" aria-hidden="true">playlist_add_check</span>
-                        <h2 class="font-semibold">登録済み</h2>
-                        </div>
-
-                        <div class="space-y-3">
-                        <!-- カード1 -->
-                        <div class="flex items-center gap-4 rounded-xl bg-white border border-gray-200 shadow-sm px-4 py-3 hover:shadow-md transition">
-                            <div class="shrink-0">
-                            <span class="inline-grid place-items-center size-9 rounded-full bg-blue-50 text-blue-600 font-semibold">I</span>
-                            </div>
-                            <div class="min-w-0 flex-1">
-                                <p class="font-medium text-gray-900">産業能率大学：鈴木 一朗</p>
-                                <p class="font-medium text-gray-900"></p>
-                                <p class="text-gray-500 text-sm">ichiro.suzuki@sannou.ac.jp</p>
-                                <div class="text-sm text-gray-600 flex items-center gap-2 mt-2">
-                                <label class="cursor-pointer">
-                                    <input type="checkbox" class="peer sr-only" checked/>
-                                    
-                                    <span class="
-                                    px-2 py-1 rounded-full border border-gray-300 text-gray-500
-                                    transition-colors duration-200 ease-in-out select-none
-                                    hover:bg-gray-100
-                                    
-                                    /* チェック時のスタイル */
-                                    peer-checked:bg-blue-600 
-                                    peer-checked:text-white
-                                    peer-checked:border-blue-600
-                                    ">
-                                    営業担当
-                                    </span>
-                                </label>
-                                <label class="cursor-pointer">
-                                    <input type="checkbox" class="peer sr-only"/>
-                                    
-                                    <span class="
-                                    px-2 py-1 rounded-full border border-gray-300 text-gray-500
-                                    transition-colors duration-200 ease-in-out select-none
-                                    hover:bg-gray-100
-                                    
-                                    /* チェック時のスタイル */
-                                    peer-checked:bg-blue-600 
-                                    peer-checked:text-white
-                                    peer-checked:border-blue-600
-                                    ">
-                                    申込担当
-                                    </span>
-                                </label>
-                                <label class="cursor-pointer">
-                                    <input type="checkbox" class="peer sr-only"/>
-                                    
-                                    <span class="
-                                    px-2 py-1 rounded-full border border-gray-300 text-gray-500
-                                    transition-colors duration-200 ease-in-out select-none
-                                    hover:bg-gray-100
-                                    
-                                    /* チェック時のスタイル */
-                                    peer-checked:bg-blue-600 
-                                    peer-checked:text-white
-                                    peer-checked:border-blue-600
-                                    ">
-                                    請求担当
-                                    </span>
-                                </label>
-                            </div>
-                            </div>
-                            <button class="ml-auto inline-flex items-center gap-1 text-gray-400 hover:text-red-600 transition">
-                                <span class="material-symbols-outlined text-[20px]" aria-hidden="true">do_not_disturb_on</span>
-                                <span class="text-xs">削除</span>
-                            </button>
-                        </div>
-                        <!-- カード2 -->
-                        <div class="flex items-center gap-4 rounded-xl bg-white border border-gray-200 shadow-sm px-4 py-3 hover:shadow-md transition">
-                            <div class="shrink-0">
-                            <span class="inline-grid place-items-center size-9 rounded-full bg-blue-50 text-blue-600 font-semibold">H</span>
-                            </div>
-                            <div class="min-w-0 flex-1">
-                            <p class="font-medium text-gray-900">産業能率大学：高橋 花子</p>
-                            <p class="font-medium text-gray-900"></p>
-                            <p class="text-gray-500 text-sm">hanako.takahashi@sannou.ac.jp</p>
-                            <div class="text-sm text-gray-600 flex items-center gap-2 mt-2">
-                                <label class="cursor-pointer">
-                                    <input type="checkbox" class="peer sr-only" />
-                                    
-                                    <span class="
-                                    px-2 py-1 rounded-full border border-gray-300 text-gray-500
-                                    transition-colors duration-200 ease-in-out select-none
-                                    hover:bg-gray-100
-                                    
-                                    /* チェック時のスタイル */
-                                    peer-checked:bg-blue-600 
-                                    peer-checked:text-white
-                                    peer-checked:border-blue-600
-                                    ">
-                                    営業担当
-                                    </span>
-                                </label>
-                                <label class="cursor-pointer">
-                                    <input type="checkbox" class="peer sr-only" checked/>
-                                    
-                                    <span class="
-                                    px-2 py-1 rounded-full border border-gray-300 text-gray-500
-                                    transition-colors duration-200 ease-in-out select-none
-                                    hover:bg-gray-100
-                                    
-                                    /* チェック時のスタイル */
-                                    peer-checked:bg-blue-600 
-                                    peer-checked:text-white
-                                    peer-checked:border-blue-600
-                                    ">
-                                    申込担当
-                                    </span>
-                                </label>
-                                <label class="cursor-pointer">
-                                    <input type="checkbox" class="peer sr-only" />
-                                    
-                                    <span class="
-                                    px-2 py-1 rounded-full border border-gray-300 text-gray-500
-                                    transition-colors duration-200 ease-in-out select-none
-                                    hover:bg-gray-100
-                                    
-                                    /* チェック時のスタイル */
-                                    peer-checked:bg-blue-600 
-                                    peer-checked:text-white
-                                    peer-checked:border-blue-600
-                                    ">
-                                    請求担当
-                                    </span>
-                                </label>
-                            </div>
-                            </div>
-                            <button class="ml-auto inline-flex items-center gap-1 text-gray-400 hover:text-red-600 transition">
-                            <span class="material-symbols-outlined text-[20px]" aria-hidden="true">do_not_disturb_on</span>
-                            <span class="text-xs">削除</span>
-                            </button>
-                        </div>
-                        <!-- カード3 -->
-                        <div class="flex items-center gap-4 rounded-xl bg-white border border-gray-200 shadow-sm px-4 py-3 hover:shadow-md transition">
-                            <div class="shrink-0">
-                            <span class="inline-grid place-items-center size-9 rounded-full bg-blue-50 text-blue-600 font-semibold">T</span>
-                            </div>
-                            <div class="min-w-0 flex-1">
-                            <p class="font-medium text-gray-900">日本能率協会マネジメントセンター：田中 太郎</p>
-                            <p class="font-medium text-gray-900"></p>
-                            <p class="text-gray-500 text-sm">taro.tanaka@jmam.co.jp</p>
-                            <div class="text-sm text-gray-600 flex items-center gap-2 mt-2">
-                                <label class="cursor-pointer">
-                                    <input type="checkbox" class="peer sr-only" checked/>
-                                    
-                                    <span class="
-                                    px-2 py-1 rounded-full border border-gray-300 text-gray-500
-                                    transition-colors duration-200 ease-in-out select-none
-                                    hover:bg-gray-100
-                                    
-                                    /* チェック時のスタイル */
-                                    peer-checked:bg-blue-600 
-                                    peer-checked:text-white
-                                    peer-checked:border-blue-600
-                                    ">
-                                    営業担当
-                                    </span>
-                                </label>
-                                <label class="cursor-pointer">
-                                    <input type="checkbox" class="peer sr-only" checked/>
-                                    
-                                    <span class="
-                                    px-2 py-1 rounded-full border border-gray-300 text-gray-500
-                                    transition-colors duration-200 ease-in-out select-none
-                                    hover:bg-gray-100
-                                    
-                                    /* チェック時のスタイル */
-                                    peer-checked:bg-blue-600 
-                                    peer-checked:text-white
-                                    peer-checked:border-blue-600
-                                    ">
-                                    申込担当
-                                    </span>
-                                </label>
-                                <label class="cursor-pointer">
-                                    <input type="checkbox" class="peer sr-only" checked/>
-                                    
-                                    <span class="
-                                    px-2 py-1 rounded-full border border-gray-300 text-gray-500
-                                    transition-colors duration-200 ease-in-out select-none
-                                    hover:bg-gray-100
-                                    
-                                    /* チェック時のスタイル */
-                                    peer-checked:bg-blue-600 
-                                    peer-checked:text-white
-                                    peer-checked:border-blue-600
-                                    ">
-                                    請求担当
-                                    </span>
-                                </label>
-                            </div>
-                            </div>
-                            <button class="ml-auto inline-flex items-center gap-1 text-gray-400 hover:text-red-600 transition">
-                            <span class="material-symbols-outlined text-[20px]" aria-hidden="true">do_not_disturb_on</span>
-                            <span class="text-xs">削除</span>
-                            </button>
-                        </div>
-                        <!-- カード3 -->
-                        <div class="flex items-center gap-4 rounded-xl bg-white border border-gray-200 shadow-sm px-4 py-3 hover:shadow-md transition">
-                            <div class="shrink-0">
-                            <span class="inline-grid place-items-center size-9 rounded-full bg-blue-50 text-blue-600 font-semibold">K</span>
-                            </div>
-                            <div class="min-w-0 flex-1">
-                            <p class="font-medium text-gray-900">JTEX：佐藤 恵子</p>
-                            <p class="font-medium text-gray-900"></p>
-                            <p class="text-gray-500 text-sm">keiko.sato@jtex.co.jp</p>
-                            <div class="text-sm text-gray-600 flex items-center gap-2 mt-2">
-                                <label class="cursor-pointer">
-                                    <input type="checkbox" class="peer sr-only" checked/>
-                                    
-                                    <span class="
-                                    px-2 py-1 rounded-full border border-gray-300 text-gray-500
-                                    transition-colors duration-200 ease-in-out select-none
-                                    hover:bg-gray-100
-                                    
-                                    /* チェック時のスタイル */
-                                    peer-checked:bg-blue-600 
-                                    peer-checked:text-white
-                                    peer-checked:border-blue-600
-                                    ">
-                                    営業担当
-                                    </span>
-                                </label>
-                                <label class="cursor-pointer">
-                                    <input type="checkbox" class="peer sr-only" checked/>
-                                    
-                                    <span class="
-                                    px-2 py-1 rounded-full border border-gray-300 text-gray-500
-                                    transition-colors duration-200 ease-in-out select-none
-                                    hover:bg-gray-100
-                                    
-                                    /* チェック時のスタイル */
-                                    peer-checked:bg-blue-600 
-                                    peer-checked:text-white
-                                    peer-checked:border-blue-600
-                                    ">
-                                    申込担当
-                                    </span>
-                                </label>
-                                <label class="cursor-pointer">
-                                    <input type="checkbox" class="peer sr-only" checked/>
-                                    
-                                    <span class="
-                                    px-2 py-1 rounded-full border border-gray-300 text-gray-500
-                                    transition-colors duration-200 ease-in-out select-none
-                                    hover:bg-gray-100
-                                    
-                                    /* チェック時のスタイル */
-                                    peer-checked:bg-blue-600 
-                                    peer-checked:text-white
-                                    peer-checked:border-blue-600
-                                    ">
-                                    請求担当
-                                    </span>
-                                </label>
-                            </div>
-                            </div>
-                            <button class="ml-auto inline-flex items-center gap-1 text-gray-400 hover:text-red-600 transition">
-                            <span class="material-symbols-outlined text-[20px]" aria-hidden="true">do_not_disturb_on</span>
-                            <span class="text-xs">削除</span>
-                            </button>
-                        </div>
-
-                       
-                        </div>
-                    </div>
-                    <div class="rounded-xl border border-dashed border-gray-300 bg-gray-50/60 py-10 m-4 grid place-items-center text-center">
-                        <div>
-                            <span class="material-symbols-outlined text-4xl text-gray-400 mb-2">group</span>
-                            <p class="text-gray-600 font-medium">まだ登録がありません</p>
-                            <p class="text-gray-500 text-sm mt-1">上のフォームから参加団体の担当者を追加してください。</p>
-                        </div>
-                    </div>
-                </section>
-            </main>
-
-            <!-- 固定アクションバー -->
-            <div class="fixed bottom-0 inset-x-0 z-50">
-                <div class="mx-auto max-w-5xl px-6 pb-[calc(12px+var(--safe-bottom))]">
-                    <div class="rounded-2xl bg-white/95 backdrop-blur shadow-[0_-6px_24px_-8px_rgba(0,0,0,0.18)] border border-gray-200">
-                        <div class="flex items-center justify-end gap-3 p-4">
-                            <button class="h-10 px-4 rounded-lg border border-gray-300 bg-white text-gray-600 hover:bg-gray-50">キャンセル</button>
-                            <button class="h-10 px-5 rounded-lg bg-blue-600 text-white font-medium hover:bg-blue-700 active:scale-[0.99] transition">登録する</button>
-                        </div>
-                    </div>
-                </div>
+      <main class="px-6 space-y-6 pb-40">
+        <!-- 入力カード -->
+        <section class="bg-white rounded-2xl shadow-sm border border-gray-200/60">
+          <div class="p-5">
+            <div class="flex items-center gap-2 mb-3">
+              <span class="material-symbols-outlined text-gray-500" aria-hidden="true">group_add</span>
+              <h2 class="font-semibold">団体担当を追加</h2>
             </div>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
+              <label class="block">
+                <span class="text-xs text-gray-500">団体</span>
+                <select id="org-select" class="mt-1 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
+                  <option value="">団体を選択してください</option>
+                </select>
+              </label>
+              <label class="block">
+                <span class="text-xs text-gray-500">担当者</span>
+                <select id="contact-select" class="mt-1 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
+                  <option value="">担当者を選択してください</option>
+                </select>
+              </label>
+              <div class="flex items-end">
+                <button id="add" class="w-full md:w-auto rounded-lg bg-blue-600 px-5 py-2.5 text-white font-medium hover:bg-blue-700 active:scale-[0.99] transition">
+                  追加
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 登録済みリスト -->
+        <section class="bg-white rounded-2xl shadow-sm border border-gray-200/60">
+          <div class="p-5">
+            <div class="flex items-center gap-2 mb-3">
+              <span class="material-symbols-outlined text-gray-500" aria-hidden="true">playlist_add_check</span>
+              <h2 class="font-semibold">登録済み</h2>
+            </div>
+
+            <div id="cards" class="space-y-3"></div>
+
+            <div id="empty" class="rounded-xl border border-dashed border-gray-300 bg-gray-50/60 py-10 mt-4 grid place-items-center text-center hidden">
+              <div>
+                <span class="material-symbols-outlined text-4xl text-gray-400 mb-2">group</span>
+                <p class="text-gray-600 font-medium">まだ登録がありません</p>
+                <p class="text-gray-500 text-sm mt-1">上のフォームから参加団体と担当者を追加してください。</p>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <!-- 固定アクションバー -->
+      <div class="fixed bottom-0 inset-x-0 z-50">
+        <div class="mx-auto max-w-5xl px-6 pb-[calc(12px+var(--safe-bottom))]">
+          <div class="rounded-2xl bg-white/95 backdrop-blur shadow-[0_-6px_24px_-8px_rgba(0,0,0,0.18)] border border-gray-200">
+            <div class="flex items-center justify-end gap-3 p-4">
+              <button class="h-10 px-4 rounded-lg border border-gray-300 bg-white text-gray-600 hover:bg-gray-50">キャンセル</button>
+              <button class="h-10 px-5 rounded-lg bg-blue-600 text-white font-medium hover:bg-blue-700 active:scale-[0.99] transition">登録する</button>
+            </div>
+          </div>
         </div>
-    </body>
+      </div>
+    </div>
+
+    <template id="card-tpl">
+      <div class="flex items-center gap-4 rounded-xl bg-white border border-gray-200 shadow-sm px-4 py-3 hover:shadow-md transition">
+        <div class="shrink-0">
+          <span class="avatar inline-grid place-items-center size-9 rounded-full bg-blue-50 text-blue-600 font-semibold">A</span>
+        </div>
+        <div class="min-w-0 flex-1">
+          <p class="name font-medium text-gray-900">氏名</p>
+          <p class="org text-sm text-gray-600"></p>
+          <p class="email text-gray-500 text-sm">user@example.com</p>
+          <div class="text-sm text-gray-600 flex items-center gap-2 mt-2 flex-wrap">
+            <label class="cursor-pointer">
+              <input type="checkbox" class="peer sr-only role-sales" />
+              <span class="px-2 py-1 rounded-full border border-gray-300 text-gray-500 transition-colors duration-200 ease-in-out select-none hover:bg-gray-100 peer-checked:bg-blue-600 peer-checked:text-white peer-checked:border-blue-600">
+                営業担当
+              </span>
+            </label>
+            <label class="cursor-pointer">
+              <input type="checkbox" class="peer sr-only role-apply" />
+              <span class="px-2 py-1 rounded-full border border-gray-300 text-gray-500 transition-colors duration-200 ease-in-out select-none hover:bg-gray-100 peer-checked:bg-blue-600 peer-checked:text-white peer-checked:border-blue-600">
+                申込担当
+              </span>
+            </label>
+            <label class="cursor-pointer">
+              <input type="checkbox" class="peer sr-only role-billing" />
+              <span class="px-2 py-1 rounded-full border border-gray-300 text-gray-500 transition-colors duration-200 ease-in-out select-none hover:bg-gray-100 peer-checked:bg-blue-600 peer-checked:text-white peer-checked:border-blue-600">
+                請求担当
+              </span>
+            </label>
+          </div>
+        </div>
+        <button class="remove ml-auto inline-flex items-center gap-1 text-gray-400 hover:text-red-600 transition">
+          <span class="material-symbols-outlined text-[20px]" aria-hidden="true">do_not_disturb_on</span>
+          <span class="text-xs">削除</span>
+        </button>
+      </div>
+    </template>
+
+    <script src="../js/modals/supplier-modal.js"></script>
+  </body>
 </html>
