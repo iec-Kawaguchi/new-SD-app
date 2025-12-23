@@ -94,7 +94,9 @@
 
                             <!-- スティッキーヘッダー -->
                             <div class="grid grid-cols-[2rem_5rem_1fr_8rem_6rem_9rem_11rem] text-xs uppercase tracking-wide text-gray-500 px-4 py-2 bg-white z-[1]">
-                                <div></div>
+                                <div class="flex items-center justify-center">
+                                    <input id="selectAll" type="checkbox" class="accent-blue-600" title="すべて選択">
+                                </div>
                                 <div data-col="order"class="">並び順</div>
                                 <div>コース名</div>
                                 <div data-col="org">団体</div>
@@ -140,7 +142,7 @@
                                             id="markDeleteRequest"
                                             class="h-9 px-3 rounded-md bg-red-50 text-red-700 border border-red-200 hover:bg-red-600 hover:text-white"
                                             >
-                                            削除希望にする
+                                            削除希望切替
                                         </button>
                                         <button
                                             id=""

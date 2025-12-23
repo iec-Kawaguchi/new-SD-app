@@ -15,6 +15,7 @@ window.addEventListener('DOMContentLoaded', () => {
     const skeletonEl = document.getElementById('skeleton');
     const listEl = document.getElementById('list');
     const preview = document.getElementById('preview');
+    const selectAllCheckbox = document.getElementById('selectAll');
 
     // コース別コメント保存用（モック：メモリ上だけ）
     const commentMap = new Map(); // key: course id, value: comment string
@@ -216,6 +217,7 @@ window.addEventListener('DOMContentLoaded', () => {
                         row.dataset.custom).toLowerCase();
             row.style.display = (hay.includes(text) && matchFilter(row)) ? '' : 'none';
         });
+        updateSelectAllState();
     }
 
     q.addEventListener('input', updateFilter);
@@ -252,6 +254,7 @@ window.addEventListener('DOMContentLoaded', () => {
             if (window.RoleMock) RoleMock.applyRoleVisibility(); // 新規行にも適用
             updateFilter();
             updateOrderLabels(); // ★ 行追加後に並び順ラベルを更新
+            updateSelectAllState();
         }, 120);
     }
 
@@ -277,12 +280,41 @@ window.addEventListener('DOMContentLoaded', () => {
         bulkbar.classList.toggle('hidden', n === 0);
         defbar.classList.toggle('hidden', n > 0);
     }
+    function getVisibleCheckboxes(){
+        return Array.from(document.querySelectorAll('#rows .sel')).filter(c => {
+            const row = c.closest('.row');
+            return row && row.style.display !== 'none';
+        });
+    }
+    function updateSelectAllState(){
+        if(!selectAllCheckbox) return;
+        const visible = getVisibleCheckboxes();
+        if(!visible.length){
+            selectAllCheckbox.indeterminate = false;
+            selectAllCheckbox.checked = false;
+            return;
+        }
+        const checkedCount = visible.filter(c => c.checked).length;
+        selectAllCheckbox.indeterminate = checkedCount > 0 && checkedCount < visible.length;
+        selectAllCheckbox.checked = checkedCount > 0 && checkedCount === visible.length;
+    }
     listEl.addEventListener('change', e=>{
-        if(e.target.classList.contains('sel')) refreshBulkbar();
+        if(e.target.classList.contains('sel')){
+            refreshBulkbar();
+            updateSelectAllState();
+        }
     });
+    selectAllCheckbox?.addEventListener('change', () => {
+        const targets = getVisibleCheckboxes();
+        targets.forEach(c => c.checked = selectAllCheckbox.checked);
+        refreshBulkbar();
+        updateSelectAllState();
+    });
+
     document.getElementById('clearSelection').addEventListener('click', ()=>{
         document.querySelectorAll('#rows .sel:checked').forEach(c=> c.checked=false);
         refreshBulkbar();
+        updateSelectAllState();
     });
 
     // ★ 一括：選択行を先頭へ移動
@@ -303,6 +335,7 @@ window.addEventListener('DOMContentLoaded', () => {
         reorderAllDataByDom();
         updateOrderLabels();
         refreshBulkbar();
+        updateSelectAllState();
     });
 
     // ★ 一括：選択行を末尾へ移動
@@ -323,6 +356,7 @@ window.addEventListener('DOMContentLoaded', () => {
         reorderAllDataByDom();
         updateOrderLabels();
         refreshBulkbar();
+        updateSelectAllState();
     });
 
     // ===== 並び順の上下ボタンによる行入れ替え =====
@@ -411,6 +445,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
             checked.forEach(c => (c.checked = false));
             refreshBulkbar();
+            updateSelectAllState();
         });
     }
 
@@ -616,6 +651,7 @@ window.addEventListener('DOMContentLoaded', () => {
             // フィルタ＆並び順を更新
             updateFilter();
             updateOrderLabels();
+            updateSelectAllState();
         }
 
         closeCourseModal();
@@ -775,6 +811,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
         // 一括バーの件数更新
         refreshBulkbar();
+        updateSelectAllState();
     });
 
 });
