@@ -55,6 +55,8 @@
       filter: blur(60px); /* 少し弱めて負荷軽減 */
       opacity: 0.15; /* 背景画像が見えるよう少し濃いめに調整 */
       animation: float 10s infinite alternate;
+      transform: translate3d(0, 0, 0);
+      will-change: transform;
     }
     .blob-1 {
       top: -10%;
@@ -90,6 +92,8 @@
       transition: background 0.5s ease;
       /* スマホで見切れを防ぐ */
       width: 100%; 
+      transform: translate3d(0, 0, 0); 
+      will-change: transform; /* ブラウザに変化を予告 */
     }
 
     /* フェードアニメーション */
