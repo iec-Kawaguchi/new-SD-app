@@ -68,6 +68,39 @@
     }
     .btn-ghost:hover { background: rgba(255, 255, 255, 0.9); color: #1e293b; }
 
+    /* styleタグ内に追加 */
+.blob {
+  position: absolute;
+  filter: blur(80px); /* 強くぼかす */
+  z-index: -1; /* カードの後ろへ */
+  opacity: 0.15;
+  animation: float 10s infinite alternate;
+}
+.blob-1 {
+  top: -10%;
+  left: -10%;
+  width: 50vw;
+  height: 50vw;
+  background: #a5b4fc; /* indigo-300 */
+}
+.blob-2 {
+  bottom: -10%;
+  right: -10%;
+  width: 50vw;
+  height: 50vw;
+  background: #f9a8d4; /* pink-300 */
+  animation-delay: -5s; /* 動きをずらす */
+}
+/* styleタグ内に追加 */
+.rank-card {
+  /* ...既存のクラス... */
+  touch-action: pan-y; /* 縦スクロールは許可しつつ、横の干渉を防ぐ */
+  -webkit-tap-highlight-color: transparent; /* タップ時の青い背景を消す */
+}
+@keyframes float {
+  0% { transform: translate(0, 0) scale(1); }
+  100% { transform: translate(30px, 50px) scale(1.1); }
+}
     ::-webkit-scrollbar { width: 8px; }
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }

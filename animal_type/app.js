@@ -22,7 +22,7 @@ const count = document.getElementById("count");
 const qwrap = document.getElementById("qwrap");
 const result = document.getElementById("result");
 const header = document.querySelector("header");
-const mainCard = document.getElementById("main-card"); // ★追加：メインカード取得
+const mainCard = document.getElementById("main-card"); // メインカード取得
 
 // スマホ用：タップ順序を記録する配列
 let tapOrder = [];
@@ -296,7 +296,7 @@ function showResult() {
 
     document.body.style.backgroundColor = "transparent"; 
     
-    // ★変更：背景ボックス（main-card）自体の色を変えるための定義
+    // 背景ボックス（main-card）自体の色を変えるための定義
     // 元の色より少し白を混ぜて、文字が読みやすい背景色（グラデーション）にします
     const bgColors = {
         'A': 'linear-gradient(135deg, rgba(255, 240, 240, 0.95), rgba(255, 220, 220, 0.9))', // 赤系
@@ -305,14 +305,22 @@ function showResult() {
         'D': 'linear-gradient(135deg, rgba(240, 255, 245, 0.95), rgba(220, 255, 230, 0.9))'  // 緑系
     };
 
+    // タイプごとのバーの色定義（Tailwindのクラス）
+    const barColors = {
+        'A': 'from-rose-400 to-rose-600',       // 赤系
+        'B': 'from-blue-400 to-blue-600',       // 青系
+        'C': 'from-amber-400 to-amber-500',     // 黄・オレンジ系
+        'D': 'from-emerald-400 to-emerald-600'  // 緑系
+    };
+
     const selectedBg = bgColors[topKey] || 'rgba(255, 255, 255, 0.9)';
     
-    // ★実行：メインカードの背景を変更
+    // メインカードの背景を変更
     if(mainCard) {
         mainCard.style.background = selectedBg;
     }
 
-    // ★変更：HTML構造をシンプル化（result-card-bgラッパーを削除し、直接コンテンツを配置）
+    // HTML構造（統合・シンプル化済）
     result.innerHTML = `
       <div class="relative z-10 text-center animate-fade-in pt-4">
         <div class="inline-flex items-center gap-2 px-4 py-2 bg-white/40 backdrop-blur-sm rounded-full shadow-sm border border-white/50 mb-4 animate-bounce">
@@ -326,7 +334,7 @@ function showResult() {
         
         <div class="flex flex-wrap gap-2 justify-center my-4">
             ${entries.map((e,i) => `
-                <span class="px-3 py-1 rounded-lg text-xs font-bold border ${i<2 ? 'bg-white/60 text-indigo-700 border-indigo-200 shadow-sm':'bg-white/30 text-slate-500 border-slate-200'}">
+                <span class="px-3 py-1 rounded-lg text-xs font-bold border ${i<2 ? 'bg-white/60 text-slate-700 border-slate-400 shadow-sm':'bg-white/30 text-slate-500 border-slate-200'}">
                     ${i+1}位: ${TYPE_META[e[0]].short} (${e[1]})
                 </span>
             `).join('')}
@@ -342,7 +350,7 @@ function showResult() {
           </div>
 
           <div class="flex flex-col gap-6">
-              <div class="bg-white/70 backdrop-blur-sm p-6 rounded-2xl border border-white shadow-sm">
+              <div class="bg-white/60 backdrop-blur-sm p-6 rounded-2xl border border-white shadow-sm">
                   <h3 class="font-bold text-slate-800 mb-4 flex items-center gap-2">
                       <svg class="w-5 h-5 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z" /></svg>
                       タイプ分析
@@ -351,14 +359,22 @@ function showResult() {
                      ${["A","B","C","D"].map(k => {
                          const max = Math.max(...Object.values(totals));
                          const p = Math.round((totals[k]/max)*100);
+                         
+                         // タイプ別カラーの取得
+                         const barColorClass = barColors[k] || 'from-indigo-400 to-indigo-600';
+                         
+                         // 1位の項目強調
+                         const isTop = (totals[k] === entries[0][1]);
+                         const textClass = isTop ? "text-slate-800 font-black scale-105 origin-left" : "text-slate-600";
+
                          return `
                          <div>
-                            <div class="flex justify-between text-xs font-bold mb-1">
-                                <span class="text-slate-600">${TYPE_META[k].name}</span>
-                                <span class="text-indigo-600">${totals[k]} pt</span>
+                            <div class="flex justify-between text-xs font-bold mb-1 ${textClass} transition-transform">
+                                <span>${TYPE_META[k].name}</span>
+                                <span>${totals[k]} pt</span>
                             </div>
-                            <div class="h-2 bg-slate-100/50 rounded-full overflow-hidden">
-                                <div class="h-full bg-gradient-to-r from-indigo-400 to-indigo-600 rounded-full" style="width:${p}%"></div>
+                            <div class="h-3 bg-slate-100/50 rounded-full overflow-hidden shadow-inner">
+                                <div class="h-full bg-gradient-to-r ${barColorClass} rounded-full transition-all duration-1000 ease-out" style="width:${p}%"></div>
                             </div>
                          </div>
                          `;
@@ -366,7 +382,7 @@ function showResult() {
                   </div>
               </div>
 
-              <div class="bg-white/70 backdrop-blur-sm p-6 rounded-2xl border border-white shadow-sm">
+              <div class="bg-white/60 backdrop-blur-sm p-6 rounded-2xl border border-white shadow-sm">
                   <h3 class="font-bold text-indigo-900 mb-3">あなたってこんな人</h3>
                   <ul class="space-y-2">
                       ${(pair?.bullets || []).map(b => `<li class="flex items-start gap-2 text-indigo-900 text-sm"><span class="mt-1 text-indigo-500">✔</span>${b}</li>`).join('')}
@@ -376,9 +392,9 @@ function showResult() {
       </div>
 
       <div class="grid md:grid-cols-3 gap-6 mb-10">
-          ${renderCard("あなたの武器", pair?.strengths, "bg-white border-blue-100 text-blue-800", "blue")}
-          ${renderCard("やりがちな失敗", pair?.risks, "bg-amber-50/80 border-amber-100 text-amber-800", "amber")}
-          ${renderCard("もっと活躍するには？", pair?.plays, "bg-emerald-50/80 border-emerald-100 text-emerald-800", "emerald")}
+          ${renderCard("あなたの武器", pair?.strengths, "bg-white border-blue-100", "blue")}
+          ${renderCard("やりがちな失敗", pair?.risks, "bg-white border-amber-100", "amber")}
+          ${renderCard("もっと活躍するには？", pair?.plays, "bg-white border-emerald-100", "emerald")}
       </div>
 
       <div class="bg-white/70 backdrop-blur border border-white p-6 sm:p-8 rounded-2xl shadow-sm mb-8">
@@ -431,10 +447,10 @@ function showResult() {
     function renderCard(title, items, colorClass, colorName) {
         return `
         <div class="backdrop-blur-sm p-5 rounded-2xl border shadow-sm hover:shadow-md transition ${colorClass}">
-            <h4 class="font-bold mb-3">${title}</h4>
+            <h4 class="font-bold mb-3 text-${colorName}-800">${title}</h4>
             <ul class="space-y-2">
                 ${(items||[]).map(t => `
-                    <li class="text-sm flex items-start gap-2">
+                    <li class="text-sm text-slate-700 flex items-start gap-2">
                         <span class="mt-1.5 w-1.5 h-1.5 rounded-full bg-${colorName}-500 flex-shrink-0"></span>
                         <span class="leading-relaxed opacity-90">${t}</span>
                     </li>
