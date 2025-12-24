@@ -365,7 +365,7 @@ function showResult() {
                          
                          // 1位の項目強調
                          const isTop = (totals[k] === entries[0][1]);
-                         const textClass = isTop ? "text-slate-800 font-black scale-105 origin-left" : "text-slate-600";
+                         const textClass = isTop ? "text-slate-800 font-black" : "text-slate-600";
 
                          return `
                          <div>
