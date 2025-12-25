@@ -6,6 +6,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <script src="https://cdn.tailwindcss.com"></script>
         <script src="https://ajaxzip3.github.io/ajaxzip3.js" charset="UTF-8"></script>
+        <script src="js/header.js"></script>
         <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
         <style>
             body {
@@ -25,23 +26,7 @@
         </style>
     </head>
     <body class="bg-gray-100 min-h-screen flex flex-col">
-                <header class="sticky top-0 z-40 border-b border-gray-200/70 bg-white/85 backdrop-blur">
-            <div class="max-w-6xl mx-auto h-14 flex items-center px-4 sm:px-6">
-                <a href="top.html" class="font-bold text-lg tracking-tight text-slate-900 flex items-center gap-2">
-                    <span class="material-symbols-outlined text-sky-600 text-[22px]">school</span>
-                    Course Catalog
-                </a>
-                <nav class="ml-auto flex items-center gap-1.5 sm:gap-2">
-                    <a href="cart.html" class="relative p-2 rounded-full hover:bg-gray-100 active:scale-95 transition" aria-label="Cart">
-                        <span class="material-symbols-outlined align-middle text-[22px]">shopping_cart</span>
-                        <span class="absolute -top-1 -right-1 text-[10px] h-4 w-4 grid place-items-center rounded-full bg-rose-500 text-white">1</span>
-                    </a>
-                    <button class="p-2 rounded-full hover:bg-gray-100 active:scale-95 transition" aria-label="Profile">
-                        <span class="material-symbols-outlined align-middle text-[22px]">account_circle</span>
-                    </button>
-                </nav>
-            </div>
-        </header>
+        <div id="global-header"></div>
 
         <main class="flex-1">
             <div class="max-w-6xl w-full mx-auto p-4 md:p-6">
