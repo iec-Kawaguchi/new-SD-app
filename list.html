@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <title>全タイプ図鑑 | ビジネスアニマル診断</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+  
+  <style>
+    /* index.htmlと同じ基本設定 */
+    :root {
+      --glass-bg: rgba(255, 255, 255, 0.6);
+      --glass-border: rgba(255, 255, 255, 0.8);
+      --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+    }
+    html, body {
+      width: 100%; overflow-x: hidden; min-height: 100vh;
+      font-family: "Inter", "Noto Sans JP", sans-serif;
+      color: #1e293b; background-color: transparent;
+    }
+    #bg-layer {
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: -10;
+      background-image: url('image/background.png'); background-size: cover; background-position: center;
+    }
+    .glass-card {
+      background: var(--glass-bg); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--glass-border); box-shadow: var(--glass-shadow); border-radius: 1.5rem;
+      transform: translate3d(0, 0, 0); will-change: transform;
+    }
+    /* モーダル用 */
+    .modal-overlay {
+        background: rgba(30, 41, 59, 0.7);
+        backdrop-filter: blur(4px);
+    }
+    /* リストカードのアニメーション */
+    .type-card {
+        transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    }
+    .type-card:hover {
+        transform: translateY(-5px) scale(1.02);
+        box-shadow: 0 15px 30px -5px rgba(0, 0, 0, 0.1);
+        z-index: 10;
+    }
+    /* スクロールバー */
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+  </style>
+</head>
+<body class="p-4 sm:p-6">
+  
+  <div id="bg-layer"></div>
+
+  <nav class="max-w-7xl mx-auto mb-8 flex items-center justify-between relative z-10">
+      <a href="index.html" class="inline-flex items-center gap-2 px-4 py-2 bg-white/80 backdrop-blur rounded-full shadow-sm font-bold text-slate-600 hover:bg-white transition">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+          TOPに戻る
+      </a>
+      <h1 class="text-xl font-black text-slate-800 hidden sm:block">BUSINESS ANIMAL TYPE LIST</h1>
+  </nav>
+
+  <main class="max-w-7xl mx-auto relative z-10 pb-20">
+      <div class="text-center mb-10">
+          <h2 class="text-3xl sm:text-4xl font-black text-slate-800 mb-2">全12タイプ図鑑</h2>
+          <p class="text-slate-600 font-medium">それぞれの強みを知って、チームの連携を深めよう</p>
+      </div>
+
+      <div id="grid-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          </div>
+  </main>
+
+  <div id="modal" class="fixed inset-0 z-50 hidden modal-overlay flex items-center justify-center p-4 opacity-0 transition-opacity duration-300">
+      <div class="glass-card w-full max-w-4xl max-h-[90vh] overflow-y-auto relative bg-white/90 transform scale-95 transition-transform duration-300" id="modal-content">
+          <button id="close-modal" class="absolute top-4 right-4 p-2 bg-slate-100 rounded-full text-slate-500 hover:bg-slate-200 transition z-50">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+          </button>
+          
+          <div id="modal-body" class="p-6 sm:p-10">
+              </div>
+      </div>
+  </div>
+
+<script src="./types-data.js"></script>
+<script>
+    // 色設定（app.jsと共通）
+    const COLORS = {
+        'A': { bg: 'bg-rose-50', border: 'border-rose-200', text: 'text-rose-600', badge: 'bg-rose-100 text-rose-700' },
+        'B': { bg: 'bg-blue-50', border: 'border-blue-200', text: 'text-blue-600', badge: 'bg-blue-100 text-blue-700' },
+        'C': { bg: 'bg-amber-50', border: 'border-amber-200', text: 'text-amber-600', badge: 'bg-amber-100 text-amber-700' },
+        'D': { bg: 'bg-emerald-50', border: 'border-emerald-200', text: 'text-emerald-600', badge: 'bg-emerald-100 text-emerald-700' }
+    };
+
+    const container = document.getElementById('grid-container');
+    const modal = document.getElementById('modal');
+    const modalContent = document.getElementById('modal-content');
+    const modalBody = document.getElementById('modal-body');
+    const closeModal = document.getElementById('close-modal');
+
+    // 12タイプを生成
+    Object.keys(window.PAIR_MAP).forEach(key => {
+        const data = window.PAIR_MAP[key];
+        const mainType = key.charAt(0); // 1文字目(A,B,C,D)で色を決定
+        const subType = key.charAt(1);
+        const color = COLORS[mainType];
+        
+        // 画像パス解決
+        let imgSrc = window.PAIR_IMAGE && window.PAIR_IMAGE[key] ? window.PAIR_IMAGE[key] : window.FALLBACK_IMAGE;
+        const fallbackSvg = "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='800' height='450' viewBox='0 0 800 450'%3e%3crect fill='%23f1f5f9' width='800' height='450'/%3e%3ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='24' fill='%2394a3b8' font-weight='bold' letter-spacing='0.1em'%3eNO IMAGE%3c/text%3e%3c/svg%3e";
+
+        // カードHTML生成
+        const card = document.createElement('div');
+        card.className = `type-card glass-card relative overflow-hidden cursor-pointer group flex flex-col h-full bg-white/40`;
+        card.onclick = () => openModal(key);
+
+        card.innerHTML = `
+            <div class="absolute top-0 left-0 w-full h-1.5 ${color.badge.replace('text','bg').replace('100','500')}"></div>
+            <div class="p-5 flex flex-col h-full">
+                <div class="flex justify-between items-start mb-4">
+                    <span class="px-2 py-1 rounded-md text-xs font-black tracking-widest uppercase border ${color.border} ${color.badge}">
+                        TYPE ${key}
+                    </span>
+                    <span class="text-xs font-bold text-slate-400">${window.TYPE_META[mainType].short}×${window.TYPE_META[subType].short}</span>
+                </div>
+                
+                <h3 class="text-xl font-black text-slate-800 mb-2 group-hover:text-indigo-600 transition-colors">${data.title}</h3>
+                <p class="text-xs text-slate-500 font-bold mb-4 line-clamp-2 min-h-[2.5em]">${data.lead}</p>
+                
+                <div class="mt-auto w-full aspect-video rounded-xl overflow-hidden bg-slate-100 border border-slate-200 relative">
+                    <img src="${imgSrc}" class="w-full h-full object-cover transform group-hover:scale-110 transition duration-700"
+                         onerror="this.onerror=null; this.src='${fallbackSvg}';">
+                    <div class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition duration-300 flex items-center justify-center">
+                        <span class="bg-white/90 px-4 py-2 rounded-full text-xs font-bold shadow-sm opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 transition duration-300">
+                            詳しく見る
+                        </span>
+                    </div>
+                </div>
+            </div>
+        `;
+        container.appendChild(card);
+    });
+
+    // モーダル制御
+    function openModal(key) {
+        const pair = window.PAIR_MAP[key];
+        const mainType = key.charAt(0);
+        const color = COLORS[mainType];
+        let imgSrc = window.PAIR_IMAGE && window.PAIR_IMAGE[key] ? window.PAIR_IMAGE[key] : window.FALLBACK_IMAGE;
+        const fallbackSvg = "data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='800' height='450' viewBox='0 0 800 450'%3e%3crect fill='%23f1f5f9' width='800' height='450'/%3e%3ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='24' fill='%2394a3b8' font-weight='bold' letter-spacing='0.1em'%3eNO IMAGE%3c/text%3e%3c/svg%3e";
+
+        // モーダルの中身を作成（result画面のレイアウトを再利用・簡略化）
+        modalBody.innerHTML = `
+            <div class="text-center mb-8">
+                <div class="inline-block px-3 py-1 mb-3 text-xs font-bold tracking-wider rounded-full border ${color.border} ${color.badge}">TYPE ${key}</div>
+                <h2 class="text-3xl sm:text-4xl font-black text-slate-800 mb-4">${pair.title}</h2>
+                <p class="text-lg text-slate-600 font-medium leading-relaxed">${pair.lead}</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-8 mb-8">
+                <div class="rounded-2xl overflow-hidden shadow-lg border border-slate-100">
+                     <img src="${imgSrc}" class="w-full h-full object-cover" onerror="this.onerror=null; this.src='${fallbackSvg}';">
+                </div>
+                <div class="bg-indigo-50/50 p-6 rounded-2xl border border-indigo-100">
+                    <h3 class="font-bold text-indigo-900 mb-4">特徴</h3>
+                    <ul class="space-y-3">
+                        ${(pair.bullets || []).map(b => `<li class="flex items-start gap-2 text-indigo-800 text-sm"><span class="mt-1 text-indigo-500">✔</span>${b}</li>`).join('')}
+                    </ul>
+                </div>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-4 mb-8">
+                 ${renderMiniCard("武器", pair.strengths, "bg-blue-50 text-blue-800 border-blue-100", "blue")}
+                 ${renderMiniCard("失敗", pair.risks, "bg-amber-50 text-amber-800 border-amber-100", "amber")}
+                 ${renderMiniCard("活躍", pair.plays, "bg-emerald-50 text-emerald-800 border-emerald-100", "emerald")}
+            </div>
+
+            <div class="bg-slate-50 p-6 rounded-2xl border border-slate-200">
+                <h3 class="font-bold text-slate-700 mb-4 text-center">🤝 チームでの相性とコツ</h3>
+                <div class="grid sm:grid-cols-2 gap-6">
+                    <div>
+                        <h4 class="text-xs font-bold text-indigo-500 uppercase tracking-widest mb-2">COLLABORATION</h4>
+                        <ul class="text-sm text-slate-600 list-disc list-inside space-y-1 marker:text-indigo-300">
+                             ${(pair.collab||[]).map(t=>`<li>${t}</li>`).join('')}
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="text-xs font-bold text-pink-500 uppercase tracking-widest mb-2">COMMUNICATION</h4>
+                         <ul class="text-sm text-slate-600 list-disc list-inside space-y-1 marker:text-pink-300">
+                             ${(pair.comm||[]).map(t=>`<li>${t}</li>`).join('')}
+                        </ul>
+                    </div>
+                </div>
+                <div class="mt-4 pt-4 border-t border-slate-200 flex flex-wrap gap-4 text-sm">
+                     <div class="flex items-center gap-2"><span class="font-bold text-slate-500">相性◎</span>
+                        ${(pair.compatible||[]).map(c=>`<span class="px-2 py-1 bg-white border border-slate-200 rounded text-slate-600 text-xs font-bold">${c}</span>`).join('')}
+                     </div>
+                     <div class="flex items-center gap-2"><span class="font-bold text-slate-500">注意△</span>
+                        ${(pair.caution||[]).map(c=>`<span class="px-2 py-1 bg-white border border-slate-200 rounded text-slate-600 text-xs font-bold">${c}</span>`).join('')}
+                     </div>
+                </div>
+            </div>
+        `;
+
+        modal.classList.remove('hidden');
+        // アニメーション用
+        setTimeout(() => {
+            modal.classList.remove('opacity-0');
+            modalContent.classList.remove('scale-95');
+            modalContent.classList.add('scale-100');
+        }, 10);
+        document.body.style.overflow = 'hidden'; // 背景スクロール固定
+    }
+
+    function closeModalFunc() {
+        modal.classList.add('opacity-0');
+        modalContent.classList.remove('scale-100');
+        modalContent.classList.add('scale-95');
+        setTimeout(() => {
+            modal.classList.add('hidden');
+            document.body.style.overflow = '';
+        }, 300);
+    }
+
+    closeModal.onclick = closeModalFunc;
+    modal.onclick = (e) => {
+        if (e.target === modal) closeModalFunc();
+    }
+
+    // ヘルパー関数
+    function renderMiniCard(title, items, colorClass, colorName) {
+        return `
+        <div class="p-4 rounded-xl border ${colorClass}">
+            <h4 class="font-bold mb-2 text-xs opacity-80 uppercase">${title}</h4>
+            <ul class="space-y-1">
+                ${(items||[]).map(t => `<li class="text-sm flex gap-2"><span class="opacity-50">•</span>${t}</li>`).join('')}
+            </ul>
+        </div>`;
+    }
+
+</script>
+</body>
+</html>
