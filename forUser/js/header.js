@@ -26,9 +26,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 <a href="cart.html" class="relative p-2 rounded-full hover:bg-gray-100 active:scale-95 transition" aria-label="Cart">
                     <span class="material-symbols-outlined align-middle text-[22px] text-gray-600">shopping_cart</span>
-                    <span id="header-cart-badge" class="absolute -top-1 -right-1 text-[10px] h-4 w-4 grid place-items-center rounded-full bg-rose-500 text-white">1</span>
-                </a>
+                    <span class="absolute top-2 right-2 h-2 w-2 rounded-full bg-rose-500 ring-2 ring-white"></span>
 
+                </a>
                 <button class="p-2 rounded-full hover:bg-gray-100 active:scale-95 transition" aria-label="Profile">
                     <span class="material-symbols-outlined align-middle text-[22px] text-gray-600">account_circle</span>
                 </button>
@@ -61,8 +61,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         </p>
                     </div>
                 </div>
-                <div class="p-3 border-t border-gray-100 bg-gray-50/50 rounded-b-2xl text-center">
-                    <a href="#" class="text-xs font-semibold text-sky-600 hover:underline">すべてのお知らせを見る</a>
+                <div class="p-3 bg-gray-50/50 rounded-b-2xl text-center">
                 </div>
             </div>
         </div>
@@ -90,8 +89,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 <div id="fav-list-container" class="max-h-[60vh] overflow-y-auto p-0">
                     </div>
 
-                <div class="p-3 border-t border-gray-100 bg-gray-50/50 rounded-b-2xl text-center">
-                    <a href="top.html" class="text-xs font-semibold text-sky-600 hover:underline">コース一覧に戻る</a>
+                <div class="p-3 bg-gray-50/50 rounded-b-2xl text-center">
                 </div>
             </div>
         </div>
@@ -269,9 +267,6 @@ function initFavoritesLogic() {
         if (active) {
             // クラスをつけると top.html の CSSアニメーションが発火
             btn.classList.add('heart-active');
-            // アイコンを「塗りつぶしハート」に変更
-            // (Material Symbolsの設定によっては icon.textContent = 'favorite' に変える必要もありますが
-            //  今回はCSSの font-variation-settings で制御します)
         } else {
             btn.classList.remove('heart-active');
         }

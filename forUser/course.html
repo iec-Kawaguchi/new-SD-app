@@ -20,6 +20,22 @@
         }
         /* Safe area padding for devices with a bottom inset */
         .safe-bottom { padding-bottom: max(env(safe-area-inset-bottom), 12px); }
+        /* ハートのアニメーション設定 */
+    @keyframes heart-pop {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.4); }
+        100% { transform: scale(1); }
+    }
+    .heart-active .material-symbols-outlined {
+        animation: heart-pop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        color: #ef4444 !important; /* text-rose-500 */
+        font-variation-settings: 'FILL' 1; /* 塗りつぶし */
+    }
+    /* デフォルトのアイコン設定（塗りつぶしなし） */
+    .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        transition: color 0.3s ease, font-variation-settings 0.3s ease;
+    }
     </style>
 </head>
 <body class="bg-gray-200 min-h-screen flex flex-col">
@@ -43,9 +59,21 @@
                 </div>
                 <div class="flex flex-wrap sm:flex-nowrap sm:items-center gap-3 sm:ml-auto">
                     <a href="./top.html" 
-                        class="flex-1 sm:flex-none text-center text-slate-700 px-4 py-3 rounded-xl border border-slate-200 hover:bg-slate-50 flex justify-center items-center gap-2 text-sm sm:text-base font-medium transition">
-                        <span class="material-symbols-outlined text-lg">arrow_back</span><span>戻る</span>
+                        class="flex-none text-slate-700 px-4 py-3 rounded-xl border border-slate-200 hover:bg-slate-50 flex justify-center items-center gap-2 transition"
+                        aria-label="戻る">
+                        <span class="material-symbols-outlined text-2xl">arrow_back</span>
+                        
+                        <span class="hidden sm:inline text-sm sm:text-base font-medium">戻る</span>
                     </a>
+                    <button type="button" 
+                    class="btn-fav flex-none px-4 py-3 rounded-xl border border-slate-200 text-slate-400 hover:text-rose-500 hover:bg-slate-50 flex justify-center items-center transition"
+                    data-id="excel-vba-001" 
+                    data-title="Excel マクロ・VBA入門" 
+                    data-img="" 
+                    data-link="./course.html"
+                    aria-label="お気に入りに追加">
+                    <span class="material-symbols-outlined text-2xl">favorite</span>
+                </button>
                     <button id="btnOpenModal" class="flex-1 sm:flex-none sm:min-w-[200px] px-4 py-3 rounded-xl bg-gradient-to-r from-sky-500 to-indigo-500 hover:from-sky-600 hover:to-indigo-600 text-white hover:-translate-y-[1px] duration-200 hover:shadow-lg active:scale-[0.99] flex justify-center items-center gap-2 text-sm sm:text-base font-bold focus:outline-none focus:ring-2 focus:ring-sky-300">
                         <span class="material-symbols-outlined text-lg">add_shopping_cart</span>
                         <span>カートに追加</span>
