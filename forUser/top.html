@@ -55,7 +55,7 @@
         </style>
     </head>
     <body class="bg-gray-100 text-gray-800">
-        <div id="global-header" class="sticky top-0 z-40 w-full"></div>
+        <div id="global-header" class="sticky top-0 z-[60] w-full"></div>
 
         <section class="relative">
             <div class="mx-auto max-w-6xl px-4">
@@ -288,7 +288,6 @@
 </html>
 
 <script src="js/course-data.js"></script>
-<script src="js/course-data.js"></script>
 
 <script>
     // ==========================================
@@ -306,43 +305,35 @@
         const container = document.getElementById('course-panel');
         const sentinel = document.getElementById('loading-sentinel');
         
-        // コンテナがない、読み込み中、またはデータ定義がない場合は中断
         if (!container || isLoading) return;
         if (typeof courseList === 'undefined') {
-            console.error('Error: courseList is undefined. js/course-data.js loaded?');
+            console.error('Error: courseList is undefined.');
             return;
         }
         
-        // 全件表示済みならローディングを隠して終了（監視も解除）
+        // 全件表示済みならローディングを隠して終了
         if (currentOffset >= courseList.length) {
             sentinel.classList.add('hidden');
             return;
         }
 
         isLoading = true;
-        sentinel.classList.remove('opacity-0'); // ローディング表示ON
+        sentinel.classList.remove('opacity-0');
 
-        // UXのために少しだけ遅延させる（0.6秒）
         setTimeout(() => {
+            // ★重要: 現在の offset から BATCH_SIZE 分だけ取得
             const nextBatch = courseList.slice(currentOffset, currentOffset + BATCH_SIZE);
             let html = '';
 
             nextBatch.forEach(course => {
-                // --- データ準備 ---
-                
-                // 1. タグ生成
+                // --- データ準備 (タグ生成など) ---
                 const tagsHtml = course.tags.map(tag => 
                     `<span class="px-2.5 py-0.5 rounded-md ${tag.color} text-white text-[11px] font-bold tracking-wide">${tag.text}</span>`
                 ).join('');
 
-                // 2. お気に入り用の画像パス抽出
-                // (header.jsに渡す用。画像タイプ以外は空文字にしておきます)
-                let favImgSrc = "";
-                if (course.thumbnail.type === "image") {
-                    favImgSrc = course.thumbnail.src;
-                }
+                let favImgSrc = (course.thumbnail.type === "image") ? course.thumbnail.src : "";
 
-                // 3. サムネイルHTML生成
+                // サムネイル生成
                 let thumbHtml = '';
                 let newBadgeHtml = course.thumbnail.isNew 
                     ? `<div class="absolute top-3 left-3 z-10"><span class="px-2.5 py-1 rounded-lg bg-amber-400/90 backdrop-blur text-white text-[10px] font-bold shadow-sm">NEW</span></div>` 
@@ -374,21 +365,13 @@
                         </div>`;
                 }
 
-                // 4. カードHTML組み立て
-                // ★修正点: buttonタグに data-title, data-img, data-link を追加しました
                 html += `
                     <a href="${course.url}" class="course-card group flex flex-col bg-white rounded-3xl overflow-hidden ring-1 ring-slate-200 hover:ring-sky-500/30 shadow-sm hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 relative">
                         ${thumbHtml}
-                        
                         <button type="button" class="btn-fav flex absolute top-3 right-3 p-2 rounded-full bg-white/80 hover:bg-white text-gray-400 hover:text-rose-500 shadow-sm transition-colors z-10" 
-                            data-id="${course.id}" 
-                            data-title="${course.title}" 
-                            data-img="${favImgSrc}" 
-                            data-link="${course.url}" 
-                            aria-label="お気に入り">
+                            data-id="${course.id}" data-title="${course.title}" data-img="${favImgSrc}" data-link="${course.url}" aria-label="お気に入り">
                             <span class="material-symbols-outlined text-[22px]">favorite</span>
                         </button>
-
                         <div class="flex flex-col flex-1 p-5">
                             <div class="flex gap-2 mb-2">${tagsHtml}</div>
                             <h3 class="text-lg font-bold text-slate-900 line-clamp-2 mb-1 group-hover:text-sky-600 transition-colors">${course.title}</h3>
@@ -405,20 +388,12 @@
                     </a>`;
             });
 
-            // HTMLをDOMに追加
             container.insertAdjacentHTML('beforeend', html);
-            
-            // 現在の表示件数を更新
             currentOffset += nextBatch.length;
-
-            // レイアウト（Grid/List）を再適用
             applyLayoutMode();
             
-            // ハートボタンの状態を同期（header.jsの関数があれば呼ぶ）
-            // ※header.jsはdefer読み込みなので、関数が存在する場合のみ実行
+            // ハートボタンの状態同期
             if (typeof initFavoritesLogic === 'function') {
-                // すでに読み込まれているheader.js内のロジックで初期化済みのボタン表示を更新するため
-                // DOMに追加されたボタンに対して再度ステータスチェックを行う簡易的な方法
                 const btns = container.querySelectorAll('.btn-fav');
                 const favs = JSON.parse(localStorage.getItem('my_favorites') || '[]');
                 btns.forEach(btn => {
@@ -428,41 +403,36 @@
                 });
             }
 
-            // 読み込み完了処理
             isLoading = false;
             
-            // データがなくなった場合はSentinelを隠す
+            // 全件読み込んだら監視終了
             if (currentOffset >= courseList.length) {
                 sentinel.classList.add('hidden');
-                observer.disconnect(); // 監視終了
+                // observer.disconnect(); // ※ソートで再利用するため切断しないほうが良い
             } else {
-                sentinel.classList.add('opacity-0'); // 表示だけ消す（監視は継続）
+                sentinel.classList.add('opacity-0');
             }
-
-        }, 600); // 0.6秒遅延
+        }, 400); // 待ち時間を少し短縮
     }
 
     // ==========================================
-    // 3. Intersection Observer (Scroll Trigger)
+    // 3. Intersection Observer
     // ==========================================
     const observer = new IntersectionObserver((entries) => {
-        // 画面内に入り、かつまだデータが残っている場合
         if (entries[0].isIntersecting && typeof courseList !== 'undefined' && currentOffset < courseList.length) {
             loadMoreCourses();
         }
-    }, { rootMargin: '100px' }); // 画面下部100px手前で読み込み開始
+    }, { rootMargin: '100px' });
 
     // ==========================================
-    // 4. View Mode Toggle (Grid / List)
+    // 4. View Mode Toggle
     // ==========================================
     function initViewToggle() {
         const btnGrid = document.getElementById('view-toggle-grid');
         const btnList = document.getElementById('view-toggle-list');
-
         if(btnGrid) btnGrid.onclick = () => { isListMode = false; updateToggleButtons(); applyLayoutMode(); };
         if(btnList) btnList.onclick = () => { isListMode = true; updateToggleButtons(); applyLayoutMode(); };
     }
-
     function updateToggleButtons() {
         const btnGrid = document.getElementById('view-toggle-grid');
         const btnList = document.getElementById('view-toggle-list');
@@ -474,12 +444,10 @@
             btnList.className = "flex p-2 rounded-full text-gray-400 hover:bg-gray-100 transition";
         }
     }
-
     function applyLayoutMode() {
         const container = document.getElementById('course-panel');
         if (!container) return;
         const cards = Array.from(container.children);
-        
         const GRID_CONTAINER = ['md:grid-cols-2', 'lg:grid-cols-3'];
         const LIST_CONTAINER = ['grid-cols-1', 'max-w-6xl', 'mx-auto'];
 
@@ -490,7 +458,6 @@
             container.classList.remove(...LIST_CONTAINER);
             container.classList.add(...GRID_CONTAINER);
         }
-
         cards.forEach(card => {
             const imgWrapper = card.querySelector('.course-img-wrapper');
             if (isListMode) {
@@ -510,27 +477,107 @@
     }
 
     // ==========================================
+    // ★追加: 並び替えロジック
+    // ==========================================
+    function sortCourses(type) {
+        if (typeof courseList === 'undefined') return;
+
+        // 配列をソート（破壊的変更でOK）
+        courseList.sort((a, b) => {
+            if (type === 'recommend') {
+                // UI上の表記「期間が短い順」に合わせます
+                return a.period - b.period;
+            } else if (type === 'new') {
+                // UI上の表記「期間が長い順」に合わせます
+                return b.period - a.period;
+            } else if (type === 'price_asc') {
+                return a.price - b.price;
+            } else if (type === 'price_desc') {
+                return b.price - a.price;
+            }
+            return 0;
+        });
+
+        // 画面リセット
+        const container = document.getElementById('course-panel');
+        container.innerHTML = ''; // クリア
+        currentOffset = 0;        // カウントリセット
+        
+        // Sentinelを再表示してローディング可能にする
+        const sentinel = document.getElementById('loading-sentinel');
+        sentinel.classList.remove('hidden');
+
+        // 再読み込み
+        loadMoreCourses();
+    }
+
+
+    // ==========================================
     // 5. Main Initialization
     // ==========================================
     document.addEventListener('DOMContentLoaded', () => {
-        // ビュー切り替えボタンの初期化
         initViewToggle();
         
-        // 最初のロード監視開始
+        // --- ★SP検索 UX改善: スマホではinputをボタン化 ---
+        const searchInput = document.getElementById('search-input');
+        const filterBtn = document.getElementById('btn-filter');
+        
+        if (searchInput && filterBtn) {
+            // SPサイズかどうか判定して挙動を変える関数
+            const handleInputBehavior = () => {
+                if (window.matchMedia("(max-width: 768px)").matches) {
+                    // スマホ: 読み取り専用にして、クリックでフィルタボタンを発火
+                    searchInput.setAttribute('readonly', 'true');
+                    searchInput.style.cursor = 'pointer';
+                    // プレースホルダーも変更するとより親切
+                    searchInput.setAttribute('placeholder', 'タップして検索・絞り込み');
+                } else {
+                    // PC: 通常の入力
+                    searchInput.removeAttribute('readonly');
+                    searchInput.style.cursor = 'text';
+                    searchInput.setAttribute('placeholder', 'コース名やキーワードで検索');
+                }
+            };
+
+            // 初回実行
+            handleInputBehavior();
+            // リサイズ時にも実行
+            window.addEventListener('resize', handleInputBehavior);
+
+            // クリックイベント
+            searchInput.addEventListener('click', (e) => {
+                if (window.matchMedia("(max-width: 768px)").matches) {
+                    e.preventDefault();
+                    // フィルタモーダルを開くボタンをクリックしたことにする
+                    filterBtn.click();
+                    // モーダル内のキーワード入力にフォーカスを当てる（少し遅延させる）
+                    setTimeout(() => {
+                        const modalInput = document.getElementById('filter-keyword');
+                        if(modalInput) modalInput.focus();
+                    }, 100);
+                }
+            });
+        }
+        // ---------------------------------------------------
+
+        // Sentinelの監視開始
         const sentinel = document.getElementById('loading-sentinel');
         if (sentinel) {
             observer.observe(sentinel);
         } else {
-            // Sentinelがない場合（安全策）は一括ロード
             loadMoreCourses(); 
         }
+
+        // 初回ロード（HTMLの定義順を考慮し、デフォルトソートを実行してから表示）
+        // ここではデフォルト 'recommend' (期間短い順) で一度ソートしておきます
+        sortCourses('recommend');
     });
 
     // ==========================================
     // 6. Existing Features (Carousel, Modals)
     // ==========================================
     
-    // --- Carousel Logic ---
+    // --- Carousel Logic (省略なし) ---
     (() => {
         const root = document.getElementById('hero');
         if (!root) return;
@@ -538,7 +585,6 @@
         const prev = document.querySelector('[data-prev]');
         const next = document.querySelector('[data-next]');
         const dotsWrap = document.getElementById('hero-dots');
-
         function buildDots() {
             if (!dotsWrap) return;
             dotsWrap.innerHTML = '';
@@ -576,7 +622,7 @@
         updateIndicator(current());
     })();
 
-    // --- Sort Modal Logic ---
+    // --- Sort Modal Logic (★修正: ソート実行を追加) ---
     (() => {
         const dialog = document.getElementById('sort-dialog');
         const backdrop = document.getElementById('sort-backdrop');
@@ -597,18 +643,15 @@
             });
             updateCheckmarks();
         }
-
         function closeSort() {
             backdrop.style.opacity = '0';
             panel.style.transform = 'translateY(100%)';
             setTimeout(() => dialog.classList.add('hidden'), 200);
         }
-
         function updateCheckmarks() {
             options.forEach(btn => {
                 const isSelected = btn.dataset.val === currentSort;
                 const check = btn.querySelector('.material-symbols-outlined');
-                
                 if (isSelected) {
                     btn.classList.add('text-sky-700', 'bg-sky-50');
                     btn.classList.remove('text-gray-600');
@@ -631,12 +674,16 @@
             btn.addEventListener('click', () => {
                 currentSort = btn.dataset.val;
                 updateCheckmarks();
+                
+                // ★追加: 実際にソートを実行
+                sortCourses(currentSort);
+
                 setTimeout(closeSort, 150); 
             });
         });
     })();
 
-    // --- Filter Modal & UI Logic ---
+    // --- Filter Modal & UI Logic (★省略なし) ---
     (() => {
         const dialog   = document.getElementById('filter-dialog');
         if(!dialog) return;
@@ -681,6 +728,7 @@
             last?.focus();
         }
 
+        // btnOpenクリック時は通常通り開く（SP時のFake Inputからのトリガーもこれを叩く）
         btnOpen?.addEventListener('click', openDlg);
         btnClose?.addEventListener('click', closeDlg);
         backdrop?.addEventListener('click', (e) => { if (e.target === backdrop) closeDlg(); });
