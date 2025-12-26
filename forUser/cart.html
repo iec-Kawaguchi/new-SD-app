@@ -86,6 +86,7 @@
                                     <p class="text-sm text-red-600 mt-1 hidden" data-error-for="prevEnrollNo">前回の受講番号を入力してください。</p>
                                 </div>
 
+                                <!-- 氏名 -->
                                 <div class="grid grid-cols-2 sm:grid-cols-2 gap-4">
                                     <div class="flex flex-col">
                                         <label for="name_sei" class="font-medium">姓 <span class="text-red-500">*</span></label>
@@ -106,7 +107,46 @@
                                         <p class="text-xs text-gray-500 mt-1">全角カタカナ</p>
                                     </div>
                                 </div>
-
+                                <!-- 性別 -->
+                                <div class="flex flex-col space-y-2">
+                                    <span class="font-medium">性別<span class="text-red-500"> *</span></span>
+                                    <div class="mt-2 flex flex-wrap gap-4">
+                                        <label class="inline-flex items-center gap-2">
+                                            <input id="gender_male" type="radio" name="gender" value="male" class="accent-blue-600" checked>
+                                            <span>男性</span>
+                                        </label>
+                                        <label class="inline-flex items-center gap-2">
+                                            <input id="gender_female" type="radio" name="gender" value="female" class="accent-blue-600">
+                                            <span>女性</span>
+                                        </label>
+                                        <label class="inline-flex items-center gap-2">
+                                            <input id="gender_other" type="radio" name="gender" value="other" class="accent-blue-600">
+                                            <span>その他</span>
+                                        </label>
+                                    </div>
+                                    <p class="text-sm text-red-600 mt-1 hidden" data-error-for="gender">性別を選択してください。</p>
+                                </div>
+                                <!-- 所属組織 -->
+                                <div class="flex flex-col space-y-2">
+                                    <label for="org_display" class="font-medium">所属組織 <span class="text-red-500">*</span></label>
+                                    
+                                    <div class="relative mt-1 cursor-pointer group">
+                                        <input id="org_display" type="text" class="w-full border rounded-lg p-2 pr-10 focus:outline-none focus:ring-2 focus:ring-blue-400 cursor-pointer caret-transparent bg-white" placeholder="組織を選択してください" readonly required />
+                                        <input id="org_value" name="org_value" type="hidden" /> <span class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 group-hover:text-blue-600 pointer-events-none">
+                                            <span class="material-symbols-outlined">apartment</span>
+                                        </span>
+                                    </div>
+                                    <p class="text-sm text-red-600 mt-1 hidden" data-error-for="org_display">所属組織を選択してください。</p>
+                                </div>
+                                
+                                <div class="flex flex-col space-y-2">
+                                    <label for="employee_number" class="font-medium">社員番号 <span class="text-red-500">*</span></label>
+                                    
+                                        <input id="employee_number" type="text" class="w-1/2 border rounded-lg p-2 pr-10 focus:outline-none focus:ring-2 focus:ring-blue-400 bg-white" placeholder="社員番号を入力してください" required />
+                                    
+                                    <p class="text-sm text-red-600 mt-1 hidden" data-error-for="employee_number">社員番号を入力してください。</p>
+                                </div>
+                                <!-- メールアドレス -->
                                 <div class="flex flex-col space-y-2">
                                     <div class="flex flex-col">
                                         <label for="email" class="font-medium">
@@ -224,6 +264,52 @@
             </div>
         </main>
 
+        <div id="org-modal" class="fixed inset-0 z-50 hidden" aria-modal="true" role="dialog">
+            <div class="absolute inset-0 bg-black/30 backdrop-blur-sm" id="org-backdrop"></div>
+            <div class="relative z-10 w-full max-w-4xl mx-auto mt-10 md:mt-20 bg-white md:rounded-xl shadow-2xl flex flex-col max-h-[85vh]">
+                
+                <div class="flex items-center justify-between px-6 py-4 border-b">
+                    <h3 class="font-bold text-lg text-gray-800">所属組織を選択</h3>
+                    <button type="button" id="org-close" class="p-2 hover:bg-gray-100 rounded-full text-gray-500">
+                        <span class="material-symbols-outlined">close</span>
+                    </button>
+                </div>
+
+                <div class="flex-1 overflow-hidden flex flex-col md:flex-row bg-gray-50 min-h-[300px]">
+                    
+                    <div class="flex-1 border-r border-gray-200 flex flex-col h-1/2 md:h-auto">
+                        <div class="px-4 py-2 bg-gray-100 border-b text-xs font-bold text-gray-500">事業部・本部 (Level 1)</div>
+                        <div id="col-1" class="flex-1 overflow-y-auto p-2 space-y-1 bg-white">
+                            </div>
+                    </div>
+
+                    <div class="flex-1 border-r border-gray-200 flex flex-col h-1/2 md:h-auto">
+                        <div class="px-4 py-2 bg-gray-100 border-b text-xs font-bold text-gray-500">部・支店 (Level 2)</div>
+                        <div id="col-2" class="flex-1 overflow-y-auto p-2 space-y-1 bg-white">
+                            <div class="text-gray-400 text-sm p-4 text-center">左の項目を選択してください</div>
+                        </div>
+                    </div>
+
+                    <div class="flex-1 flex flex-col h-1/2 md:h-auto">
+                        <div class="px-4 py-2 bg-gray-100 border-b text-xs font-bold text-gray-500">課・チーム (Level 3)</div>
+                        <div id="col-3" class="flex-1 overflow-y-auto p-2 space-y-1 bg-white">
+                            <div class="text-gray-400 text-sm p-4 text-center">左の項目を選択してください</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="px-6 py-4 border-t bg-white rounded-b-xl flex flex-col sm:flex-row justify-between items-center gap-4">
+                    <div class="text-sm text-gray-600 flex-1 truncate">
+                        選択中: <span id="org-temp-display" class="font-bold text-blue-700">未選択</span>
+                    </div>
+                    <div class="flex gap-3">
+                        <button type="button" id="org-cancel" class="px-4 py-2 border rounded-lg hover:bg-gray-50 text-gray-700">キャンセル</button>
+                        <button type="button" id="org-confirm" class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg disabled:opacity-50 disabled:cursor-not-allowed" disabled>決定</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div id="privacy-modal" class="fixed inset-0 z-50 hidden" aria-modal="true" role="dialog" aria-labelledby="privacy-modal-title">
             <div id="privacy-backdrop" class="absolute inset-0 bg-black/30"></div>
             <div class="relative z-10 max-w-2xl mx-auto mt-16 bg-white rounded-2xl shadow-xl border border-gray-200">
@@ -312,7 +398,7 @@
                 "name_sei", "name_mei", 
                 "kana_sei", "kana_mei", 
                 "email", "tel", 
-                "zip", "pref", "city"
+                "zip", "pref", "city","org_display", "employee_number","gender"
             ];
 
             function setError(id, hasError) {
@@ -567,6 +653,186 @@
                 });
             }
 
+            // ---- Organization Logic (Miller Columns)
+            
+            // ダミーデータ定義（実際はAPI等から取得）
+            const orgStructure = [
+                {
+                    id: "1", name: "営業本部", children: [
+                        { id: "1-1", name: "第一営業部", children: [
+                            { id: "1-1-1", name: "営業一課" },
+                            { id: "1-1-2", name: "営業二課" },
+                            { id: "1-1-3", name: "CS推進チーム" }
+                        ]},
+                        { id: "1-2", name: "第二営業部", children: [
+                            { id: "1-2-1", name: "関西営業課" },
+                            { id: "1-2-2", name: "九州営業課" }
+                        ]}
+                    ]
+                },
+                {
+                    id: "2", name: "開発本部", children: [
+                        { id: "2-1", name: "プロダクト開発部", children: [
+                            { id: "2-1-1", name: "フロントエンド課" },
+                            { id: "2-1-2", name: "バックエンド課" },
+                            { id: "2-1-3", name: "SREチーム" }
+                        ]},
+                        { id: "2-2", name: "研究開発部", children: [
+                            { id: "2-2-1", name: "AI研究室" },
+                            { id: "2-2-2", name: "ブロックチェーン研究室" }
+                        ]}
+                    ]
+                },
+                {
+                    id: "3", name: "管理本部", children: [
+                        { id: "3-1", name: "人事総務部", children: [
+                            { id: "3-1-1", name: "採用チーム" },
+                            { id: "3-1-2", name: "労務チーム" }
+                        ]},
+                        { id: "3-2", name: "経理財務部", children: [
+                            { id: "3-2-1", name: "経理課" },
+                            { id: "3-2-2", name: "財務課" }
+                        ]}
+                    ]
+                }
+            ];
+
+            function bindOrgPicker() {
+                const modal = document.getElementById("org-modal");
+                const openInput = document.getElementById("org_display");
+                const hiddenInput = document.getElementById("org_value");
+                const closeBtns = [
+                    document.getElementById("org-close"),
+                    document.getElementById("org-cancel"),
+                    document.getElementById("org-backdrop")
+                ];
+                const confirmBtn = document.getElementById("org-confirm");
+                const tempDisplay = document.getElementById("org-temp-display");
+
+                const col1 = document.getElementById("col-1");
+                const col2 = document.getElementById("col-2");
+                const col3 = document.getElementById("col-3");
+
+                // 選択状態管理
+                let selection = { l1: null, l2: null, l3: null };
+
+                // リセット & 再描画
+                function render() {
+                    // Col 1 Render
+                    col1.innerHTML = "";
+                    orgStructure.forEach(item => {
+                        const el = createItem(item, selection.l1?.id === item.id, () => {
+                            selection.l1 = item;
+                            selection.l2 = null;
+                            selection.l3 = null;
+                            render();
+                        });
+                        col1.appendChild(el);
+                    });
+
+                    // Col 2 Render
+                    col2.innerHTML = "";
+                    if (selection.l1) {
+                        selection.l1.children.forEach(item => {
+                            const el = createItem(item, selection.l2?.id === item.id, () => {
+                                selection.l2 = item;
+                                selection.l3 = null;
+                                render();
+                            });
+                            col2.appendChild(el);
+                        });
+                    } else {
+                        col2.innerHTML = `<div class="text-gray-400 text-sm p-4 text-center">左の項目を選択してください</div>`;
+                    }
+
+                    // Col 3 Render
+                    col3.innerHTML = "";
+                    if (selection.l2) {
+                        selection.l2.children.forEach(item => {
+                            const el = createItem(item, selection.l3?.id === item.id, () => {
+                                selection.l3 = item;
+                                render();
+                            });
+                            col3.appendChild(el);
+                        });
+                    } else {
+                        const msg = selection.l1 ? "中央の項目を選択してください" : "左の項目を選択してください";
+                        col3.innerHTML = `<div class="text-gray-400 text-sm p-4 text-center">${msg}</div>`;
+                    }
+
+                    updateStatus();
+                }
+
+                function createItem(item, isSelected, onClick) {
+                    const div = document.createElement("button");
+                    div.type = "button";
+                    div.className = `w-full text-left px-3 py-2 rounded text-sm mb-1 transition-colors flex justify-between items-center ${
+                        isSelected 
+                        ? "bg-blue-600 text-white font-medium shadow-sm" 
+                        : "hover:bg-gray-200 text-gray-700"
+                    }`;
+                    
+                    const spanName = document.createElement("span");
+                    spanName.textContent = item.name;
+                    div.appendChild(spanName);
+
+                    // 子階層がある場合は矢印を表示
+                    if (item.children) {
+                        const arrow = document.createElement("span");
+                        arrow.className = "material-symbols-outlined text-[16px]";
+                        arrow.textContent = "chevron_right";
+                        div.appendChild(arrow);
+                    }
+
+                    div.addEventListener("click", onClick);
+                    return div;
+                }
+
+                function updateStatus() {
+                    const parts = [];
+                    if (selection.l1) parts.push(selection.l1.name);
+                    if (selection.l2) parts.push(selection.l2.name);
+                    if (selection.l3) parts.push(selection.l3.name);
+                    
+                    if (parts.length > 0) {
+                        tempDisplay.textContent = parts.join(" > ");
+                        // 第3階層まで選ばれていれば決定ボタン有効化
+                        // ※要件により「第2階層まででもOK」なら条件を変える
+                        confirmBtn.disabled = !selection.l3; 
+                    } else {
+                        tempDisplay.textContent = "未選択";
+                        confirmBtn.disabled = true;
+                    }
+                }
+
+                // イベント設定
+                openInput.addEventListener("click", () => {
+                    modal.classList.remove("hidden");
+                    // すでに選択済みならその状態を復元してもよいが、ここではリセットするか維持するか
+                    // 今回は維持したまま描画
+                    render();
+                });
+
+                closeBtns.forEach(btn => btn?.addEventListener("click", () => modal.classList.add("hidden")));
+
+                confirmBtn.addEventListener("click", () => {
+                    if (selection.l1 && selection.l2 && selection.l3) {
+                        const fullName = `${selection.l1.name} / ${selection.l2.name} / ${selection.l3.name}`;
+                        openInput.value = fullName;
+                        hiddenInput.value = selection.l3.id; // IDを送信
+                        
+                        // バリデーション実行
+                        touchedFields.add("org_display");
+                        validate(false);
+
+                        modal.classList.add("hidden");
+                    }
+                });
+
+                // 初期化
+                render();
+            }
+
             // ---- Init
             document.addEventListener("DOMContentLoaded", () => {
                 bindCart();
@@ -575,6 +841,7 @@
                 bindInputHelpers();
                 bindEnrollTypeUI();
                 bindPrivacyModal();
+                bindOrgPicker();
 
                 // 全入力フィールドに対し、Blur(フォーカス外れ)で「触った」とマークする
                 document.querySelectorAll("input, select").forEach(el => {
@@ -599,6 +866,8 @@
                     }
                 });
             });
+
+            
         </script>
     </body>
 </html>
