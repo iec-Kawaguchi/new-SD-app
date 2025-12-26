@@ -231,7 +231,7 @@ function sortCourses(type) {
 
 /**
  * ==========================================
- * 5. Carousel Logic (修正版)
+ * 5. Carousel Logic
  * ==========================================
  */
 function initCarousel() {
@@ -296,14 +296,11 @@ function initCarousel() {
         prev.addEventListener('click', () => {
             const heroRect = hero.getBoundingClientRect();
             // 現在左端にあるとみなせるインデックスを探す
-            // （少し右にあっても左端とみなす閾値を設ける）
             const currentIndex = slides.findIndex(slide => {
                 const rect = slide.getBoundingClientRect();
-                // コンテナ左端との差が小さい、かつマイナス（左に隠れている）ではない
                 return Math.abs(rect.left - heroRect.left) < 50; 
             });
             
-            // もし完全一致が見つからない場合は、最も近いものを探すか、単純スクロール
             if(currentIndex > 0) {
                 hero.scrollTo({ left: slides[currentIndex - 1].offsetLeft, behavior: 'smooth' });
             } else {
@@ -355,7 +352,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const sentinel = document.getElementById('loading-sentinel');
     if (sentinel) observer.observe(sentinel);
     
-    // Mobile Search Input Focus UI
+    // Mobile Search Input Focus UI (optional)
     const searchInput = document.getElementById('search-input');
     if(searchInput) {
         searchInput.addEventListener('focus', () => {
@@ -539,6 +536,27 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Init Range UI
     updateRange();
+
+    // ▼▼▼ 追加: スマホ検索UX (メイン検索バータップでモーダルを開く) ▼▼▼
+    const mainSearchInput = document.getElementById('search-input');
+    if(mainSearchInput) {
+        mainSearchInput.addEventListener('focus', (e) => {
+            // 画面幅がスマホサイズ (768px未満) の場合のみ実行
+            if(window.innerWidth < 768) {
+                // 1. メイン検索バーのフォーカスを外す（一旦キーボードを閉じる）
+                e.preventDefault();
+                mainSearchInput.blur();
+                
+                // 2. フィルタモーダルを開く
+                openFilter();
+
+                // 3. 少し待ってからモーダル内の入力欄にフォーカスを移す
+                setTimeout(() => {
+                    if(keywordInput) keywordInput.focus();
+                }, 50);
+            }
+        });
+    }
 
 })();
 
