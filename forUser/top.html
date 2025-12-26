@@ -17,7 +17,8 @@
             .no-scrollbar::-webkit-scrollbar { display: none; }
             .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
             .glass { backdrop-filter: blur(10px); background-color: rgba(255, 255, 255, 0.6); }
-            /* ハートのアニメーション用 */
+            
+            /* ハートアニメーション */
             @keyframes heart-pop {
                 0% { transform: scale(1); }
                 50% { transform: scale(1.4); }
@@ -25,15 +26,15 @@
             }
             .heart-active .material-symbols-outlined {
                 animation: heart-pop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-                color: #ef4444 !important; /* text-rose-500 */
-                font-variation-settings: 'FILL' 1; /* 塗りつぶし */
+                color: #ef4444 !important;
+                font-variation-settings: 'FILL' 1;
             }
-            /* デフォルトのアイコン設定（塗りつぶしなし） */
             .material-symbols-outlined {
                 font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
                 transition: color 0.3s ease, font-variation-settings 0.3s ease;
             }
-            /* Range Slider */
+            
+            /* Range Slider Styles */
             .range-vis {
                 -webkit-appearance: none; appearance: none;
                 position: absolute; left: 0; right: 0; top: 0; bottom: 0; width: 100%;
@@ -42,15 +43,37 @@
             .range-vis::-webkit-slider-thumb {
                 -webkit-appearance: none; appearance: none;
                 height: 18px; width: 18px; border-radius: 9999px;
-                background: white; border: 2px solid rgb(2,132,199); /* sky-600 */
+                background: white; border: 2px solid rgb(2,132,199);
                 box-shadow: 0 1px 2px rgba(0,0,0,.12);
                 cursor: pointer;
+                pointer-events: auto;
             }
             .range-vis::-moz-range-thumb {
                 height: 18px; width: 18px; border-radius: 9999px;
                 background: white; border: 2px solid rgb(2,132,199);
                 box-shadow: 0 1px 2px rgba(0,0,0,.12);
                 cursor: pointer;
+                pointer-events: auto;
+            }
+            /* Pill Checkbox UI */
+            .pill-ui {
+                display: inline-block;
+            }
+            input:checked + .pill-ui {
+                color: #0284c7; /* sky-600 */
+                font-weight: bold;
+            }
+            input:checked + .pill-ui::before {
+                content: 'check';
+                font-family: 'Material Symbols Outlined';
+                font-size: 14px;
+                vertical-align: middle;
+                margin-right: 2px;
+            }
+            /* 親ラベルのスタイル変更用JS連携クラス */
+            .pill-active {
+                background-color: #e0f2fe !important; /* sky-100 */
+                border-color: #7dd3fc !important; /* sky-300 */
             }
         </style>
     </head>
@@ -64,51 +87,52 @@
                     <div class="pointer-events-none absolute inset-y-0 right-0 w-16 bg-gradient-to-l from-gray-50 to-transparent z-10"></div>
 
                     <div id="hero" class="no-scrollbar flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth pb-2">
-                    <a href="guidelines.html" class="group relative snap-start shrink-0 basis-[85%] md:basis-[70%] lg:basis-[60%] rounded-2xl overflow-hidden shadow-lg">
-                        <div class="absolute inset-0 bg-gradient-to-r from-indigo-600 via-sky-500 to-emerald-500"></div>
-                        <div class="relative h-64 md:h-80 grid place-items-center text-white text-center">
-                        <div class="px-6">
-                            <div class="text-sm/5 md:text-base/6 opacity-90">2026年度 自己啓発制度</div>
-                            <h2 class="mt-2 text-3xl md:text-5xl font-black tracking-tight drop-shadow">募集要項</h2>
-                            <p class="mt-3 text-white/90">申込前に必ずご確認ください</p>
-                            <span class="inline-flex items-center gap-1 rounded-full bg-white/20 px-3 py-1 text-sm mt-4">
-                            <span class="material-symbols-outlined text-base">open_in_new</span> 詳細を見る
-                            </span>
+                        <a href="guidelines.html" class="group relative snap-start shrink-0 basis-[85%] md:basis-[70%] lg:basis-[60%] rounded-2xl overflow-hidden shadow-lg">
+                            <div class="absolute inset-0 bg-gradient-to-r from-indigo-600 via-sky-500 to-emerald-500"></div>
+                            <div class="relative h-64 md:h-80 grid place-items-center text-white text-center">
+                            <div class="px-6">
+                                <div class="text-sm/5 md:text-base/6 opacity-90">2026年度 自己啓発制度</div>
+                                <h2 class="mt-2 text-3xl md:text-5xl font-black tracking-tight drop-shadow">募集要項</h2>
+                                <p class="mt-3 text-white/90">申込前に必ずご確認ください</p>
+                                <span class="inline-flex items-center gap-1 rounded-full bg-white/20 px-3 py-1 text-sm mt-4">
+                                <span class="material-symbols-outlined text-base">open_in_new</span> 詳細を見る
+                                </span>
+                            </div>
+                            </div>
+                        </a>
+                        <a href="../animal_type/index.html" class="relative snap-start shrink-0 basis-[85%] md:basis-[70%] lg:basis-[60%] rounded-2xl overflow-hidden shadow-lg">
+                            <img src="image/start.png" alt="Trend" class="h-64 md:h-80 w-full object-cover" loading="lazy" />
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
+                            <div class="absolute bottom-3 left-4 text-white font-medium"></div>
+                        </a>
+                        <a href="#" class="relative snap-start shrink-0 basis-[85%] md:basis-[70%] lg:basis-[60%] rounded-2xl overflow-hidden shadow-lg">
+                            <img src="../img/slide1.webp" alt="Learning slide" class="h-64 md:h-80 w-full object-cover" loading="lazy" />
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
+                            <div class="absolute bottom-3 left-4 text-white font-medium">絶妙なライン、これってセクハラ？</div>
+                        </a>
+                        <a href="#" class="relative snap-start shrink-0 basis-[85%] md:basis-[70%] lg:basis-[60%] rounded-2xl overflow-hidden shadow-lg">
+                            <img src="../img/slide2.webp" alt="Trend" class="h-64 md:h-80 w-full object-cover" loading="lazy" />
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
+                            <div class="absolute bottom-3 left-4 text-white font-medium">BitコインでFIREだ！</div>
+                        </a>
+                        <div class="relative snap-start shrink-0 basis-[85%] md:basis-[70%] lg:basis-[60%] rounded-2xl overflow-hidden shadow-lg bg-gradient-to-br from-amber-200 via-pink-200 to-cyan-200 h-64 md:h-80 grid place-items-center">
+                            <div class="text-center">
+                            <div class="text-2xl md:text-3xl font-bold">社内おすすめ</div>
+                            <div class="text-gray-700 mt-1">新着コースをチェック</div>
+                            </div>
                         </div>
-                        </div>
-                    </a>
-                    <a href="../animal_type/index.html" class="relative snap-start shrink-0 basis-[85%] md:basis-[70%] lg:basis-[60%] rounded-2xl overflow-hidden shadow-lg">
-                        <img src="image/start.png" alt="Trend" class="h-64 md:h-80 w-full object-cover" loading="lazy" />
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
-                        <div class="absolute bottom-3 left-4 text-white font-medium"></div>
-                    </a>
-                    <a href="#" class="relative snap-start shrink-0 basis-[85%] md:basis-[70%] lg:basis-[60%] rounded-2xl overflow-hidden shadow-lg">
-                        <img src="../img/slide1.webp" alt="Learning slide" class="h-64 md:h-80 w-full object-cover" loading="lazy" />
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
-                        <div class="absolute bottom-3 left-4 text-white font-medium">絶妙なライン、これってセクハラ？</div>
-                    </a>
-                    <a href="#" class="relative snap-start shrink-0 basis-[85%] md:basis-[70%] lg:basis-[60%] rounded-2xl overflow-hidden shadow-lg">
-                        <img src="../img/slide2.webp" alt="Trend" class="h-64 md:h-80 w-full object-cover" loading="lazy" />
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
-                        <div class="absolute bottom-3 left-4 text-white font-medium">BitコインでFIREだ！</div>
-                    </a>
-                    <div class="relative snap-start shrink-0 basis-[85%] md:basis-[70%] lg:basis-[60%] rounded-2xl overflow-hidden shadow-lg bg-gradient-to-br from-amber-200 via-pink-200 to-cyan-200 h-64 md:h-80 grid place-items-center">
-                        <div class="text-center">
-                        <div class="text-2xl md:text-3xl font-bold">社内おすすめ</div>
-                        <div class="text-gray-700 mt-1">新着コースをチェック</div>
-                        </div>
-                    </div>
                     </div>
 
-                    <button data-prev class="absolute left-1 top-1/2 -translate-y-1/2 rounded-full bg-white/80 hover:bg-white p-2 shadow flex z-20">
+                    <button data-prev class="absolute left-1 top-1/2 -translate-y-1/2 rounded-full bg-white/80 hover:bg-white p-2 shadow flex z-20 transition">
                         <span class="material-symbols-outlined">chevron_left</span>
                     </button>
-                    <button data-next class="absolute right-1 top-1/2 -translate-y-1/2 rounded-full bg-white/80 hover:bg-white p-2 shadow flex z-20">
+                    <button data-next class="absolute right-1 top-1/2 -translate-y-1/2 rounded-full bg-white/80 hover:bg-white p-2 shadow flex z-20 transition">
                         <span class="material-symbols-outlined">chevron_right</span>
                     </button>
                 </div>
             </div>
         </section>
+        
         <div class="mx-auto max-w-6xl px-4 mt-3 flex items-center justify-center gap-3 text-xs text-gray-600" id="hero-indicator">
             <div class="flex items-center gap-2" id="hero-dots"></div>
         </div>
@@ -143,7 +167,7 @@
 
         <section class="mx-auto max-w-6xl px-4 mt-8 mb-16" aria-label="コース一覧">
             <div id="course-panel" role="list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 transition-all duration-300">
-            </div>
+                </div>
             <div id="loading-sentinel" class="mt-12 flex justify-center py-4 opacity-0 transition-opacity duration-300">
                 <div class="flex flex-col items-center gap-2">
                     <div class="h-8 w-8 animate-spin rounded-full border-4 border-slate-200 border-t-sky-500"></div>
@@ -208,7 +232,7 @@
                         <span class="material-symbols-outlined">close</span>
                         </button>
                     </div>
-                    <div class="px-6 py-5 space-y-6">
+                    <div class="px-6 py-5 space-y-6 max-h-[70vh] overflow-y-auto no-scrollbar">
                         <div>
                             <label class="block text-sm text-gray-600 mb-2">キーワード</label>
                             <div class="flex items-center rounded-xl border border-gray-200 focus-within:ring-2 focus-within:ring-sky-500 bg-white px-3">
@@ -216,6 +240,7 @@
                                 <input id="filter-keyword" type="search" class="bg-white w-full rounded-xl py-2.5 px-2 outline-none" placeholder="例）マネジメント / VBA など" />
                             </div>
                         </div>
+
                         <div class="flex items-center justify-between border-b border-gray-50 pb-4 mb-4">
                             <div>
                                 <label class="block text-sm font-bold text-gray-700" for="filter-new-only">新着コースのみ</label>
@@ -226,6 +251,7 @@
                                 <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-sky-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-sky-600"></div>
                             </label>
                         </div>
+
                         <div>
                         <label class="block text-sm text-gray-600 mb-2">タグ</label>
                         <div class="flex flex-wrap gap-2">
@@ -236,6 +262,7 @@
                             <button class="rounded-full px-3 py-1.5 text-sm border border-gray-200 bg-white text-gray-700 hover:bg-gray-50 transition" data-chip aria-pressed="false">推奨</button>
                         </div>
                         </div>
+
                         <div>
                         <label class="block text-sm text-gray-600 mb-2">受講期間</label>
                             <div class="flex flex-wrap gap-2">
@@ -253,6 +280,7 @@
                                 </label>
                             </div>
                         </div>
+
                         <div>
                         <div class="flex items-center justify-between mb-2">
                             <label class="block text-sm text-gray-600">受講料レンジ</label>
@@ -266,10 +294,11 @@
                         </div>
                         </div>
                     </div>
+                    
                     <div class="px-6 py-4 border-t border-gray-100 bg-white md:rounded-b-3xl rounded-b-3xl flex items-center justify-between gap-3">
                         <button id="filter-reset" class="text-sm text-gray-600 hover:text-gray-800 underline">リセット</button>
                         <div class="flex items-center gap-2">
-                            <button class="px-4 py-2 rounded-xl border border-gray-300 hover:bg-gray-50">キャンセル</button>
+                            <button id="filter-cancel" class="px-4 py-2 rounded-xl border border-gray-300 hover:bg-gray-50">キャンセル</button>
                             <button id="filter-apply" class="px-4 py-2 rounded-xl bg-sky-600 text-white hover:bg-sky-700 shadow-sm">適用</button>
                         </div>
                     </div>
@@ -298,383 +327,4 @@
 </html>
 
 <script src="js/course-data.js"></script>
-
-<script>
-    // ==========================================
-    // 1. Global State & Settings
-    // ==========================================
-    // courseList は course-data.js から読み込まれる全データ（イミュータブルとして扱う）
-    let filteredList = [];     // ★追加: フィルタリング・ソート済みの表示用リスト
-    let currentOffset = 0;
-    const BATCH_SIZE = 6;
-    let isListMode = false;
-    let isLoading = false;
-
-    // ==========================================
-    // 2. Infinite Scroll & Rendering Logic
-    // ==========================================
-    function loadMoreCourses() {
-        const container = document.getElementById('course-panel');
-        const sentinel = document.getElementById('loading-sentinel');
-        
-        if (!container || isLoading) return;
-        if (typeof courseList === 'undefined') return;
-        
-        // ★修正: courseList ではなく filteredList を使用
-        if (currentOffset >= filteredList.length) {
-            sentinel.classList.add('hidden');
-            return;
-        }
-
-        isLoading = true;
-        sentinel.classList.remove('opacity-0');
-
-        setTimeout(() => {
-            // ★修正: filteredList から取得
-            const nextBatch = filteredList.slice(currentOffset, currentOffset + BATCH_SIZE);
-            let html = '';
-
-            nextBatch.forEach(course => {
-                // (既存のレンダリング処理と同じ)
-                const tagsHtml = course.tags.map(tag => 
-                    `<span class="px-2.5 py-0.5 rounded-md ${tag.color} text-white text-[11px] font-bold tracking-wide">${tag.text}</span>`
-                ).join('');
-
-                let favImgSrc = (course.thumbnail.type === "image") ? course.thumbnail.src : "";
-                
-                // NEWバッジの処理
-                let newBadgeHtml = course.thumbnail.isNew 
-                    ? `<div class="absolute top-3 left-3 z-10"><span class="px-2.5 py-1 rounded-lg bg-amber-400/90 backdrop-blur text-white text-[10px] font-bold shadow-sm">NEW</span></div>` 
-                    : '';
-
-                // サムネイル生成 (省略せずに既存ロジックを使用)
-                let thumbHtml = '';
-                if (course.thumbnail.type === 'image') {
-                    thumbHtml = `
-                        <div class="course-img-wrapper relative aspect-[16/10] overflow-hidden bg-gray-100">
-                            <img src="${course.thumbnail.src}" alt="${course.thumbnail.alt}" class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" loading="lazy" />
-                            <div class="absolute inset-0 bg-gradient-to-t from-slate-900/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                            ${newBadgeHtml}
-                        </div>`;
-                } else if (course.thumbnail.type === 'icon') {
-                    thumbHtml = `
-                        <div class="course-img-wrapper relative aspect-[16/10] overflow-hidden ${course.thumbnail.bgClass} grid place-items-center transition-colors">
-                            <div class="text-center p-6">
-                                <div class="h-12 w-12 mx-auto bg-white rounded-2xl shadow-sm grid place-items-center mb-3 ${course.thumbnail.iconColor} group-hover:scale-110 transition-transform">
-                                    <span class="material-symbols-outlined text-2xl">${course.thumbnail.iconName}</span>
-                                </div>
-                                <h3 class="text-lg font-bold text-slate-700">${course.title}</h3>
-                            </div>
-                            ${newBadgeHtml}
-                        </div>`;
-                } else if (course.thumbnail.type === 'text-overlay') {
-                    thumbHtml = `
-                        <div class="course-img-wrapper relative aspect-[16/10] overflow-hidden ${course.thumbnail.bgClass} grid place-items-center">
-                            <h3 class="font-bold text-2xl text-slate-700 px-6 text-center group-hover:scale-105 transition-transform">${course.thumbnail.overlayText}</h3>
-                            ${newBadgeHtml}
-                        </div>`;
-                }
-
-                html += `
-                    <a href="${course.url}" class="course-card group flex flex-col bg-white rounded-3xl overflow-hidden ring-1 ring-slate-200 hover:ring-sky-500/30 shadow-sm hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 relative">
-                        ${thumbHtml}
-                        <button type="button" class="btn-fav flex absolute top-3 right-3 p-2 rounded-full bg-white/80 hover:bg-white text-gray-400 hover:text-rose-500 shadow-sm transition-colors z-10" 
-                            data-id="${course.id}" data-title="${course.title}" data-img="${favImgSrc}" data-link="${course.url}" aria-label="お気に入り">
-                            <span class="material-symbols-outlined text-[22px]">favorite</span>
-                        </button>
-                        <div class="flex flex-col flex-1 p-5">
-                            <div class="flex gap-2 mb-2">${tagsHtml}</div>
-                            <h3 class="text-lg font-bold text-slate-900 line-clamp-2 mb-1 group-hover:text-sky-600 transition-colors">${course.title}</h3>
-                            <p class="text-sm text-slate-500 line-clamp-2 mb-3 leading-normal">${course.desc}</p>
-                            <div class="mt-auto pt-3 border-t border-slate-100 flex items-center justify-between">
-                                <div>
-                                    <span class="text-lg font-bold text-slate-900">${course.price.toLocaleString()}<span class="text-xs font-normal text-slate-500 ml-0.5">円</span></span>
-                                </div>
-                                <div class="flex items-center text-xs font-bold text-slate-500 bg-slate-50 px-3 py-1 rounded-full border border-slate-100">
-                                    <span class="material-symbols-outlined text-sm mr-1.5">schedule</span> ${course.period}ヶ月
-                                </div>
-                            </div>
-                        </div>
-                    </a>`;
-            });
-
-            container.insertAdjacentHTML('beforeend', html);
-            currentOffset += nextBatch.length;
-            applyLayoutMode();
-            
-            // ハートボタンの状態同期
-            if (typeof initFavoritesLogic === 'function') {
-                const btns = container.querySelectorAll('.btn-fav');
-                const favs = JSON.parse(localStorage.getItem('my_favorites') || '[]');
-                btns.forEach(btn => {
-                    if(favs.some(i => i.id === btn.dataset.id)) {
-                        btn.classList.add('heart-active');
-                    }
-                });
-            }
-
-            isLoading = false;
-            
-            // ★修正: filteredList で判定
-            if (currentOffset >= filteredList.length) {
-                sentinel.classList.add('hidden');
-            } else {
-                sentinel.classList.add('opacity-0');
-            }
-        }, 400); 
-    }
-
-    // ==========================================
-    // 3. Intersection Observer (変更なし)
-    // ==========================================
-    const observer = new IntersectionObserver((entries) => {
-        // ★修正: filteredList で判定
-        if (entries[0].isIntersecting && typeof filteredList !== 'undefined' && currentOffset < filteredList.length) {
-            loadMoreCourses();
-        }
-    }, { rootMargin: '100px' });
-
-    // ==========================================
-    // 4. View Mode Toggle (変更なし)
-    // ==========================================
-    // (省略: 元のコードの initViewToggle などをそのまま使用)
-    function initViewToggle() { /* ... */ }
-    function updateToggleButtons() { /* ... */ }
-    function applyLayoutMode() {
-        const container = document.getElementById('course-panel');
-        if (!container) return;
-        const cards = Array.from(container.children);
-        const GRID_CONTAINER = ['md:grid-cols-2', 'lg:grid-cols-3'];
-        const LIST_CONTAINER = ['grid-cols-1', 'max-w-6xl', 'mx-auto'];
-
-        if (isListMode) {
-            container.classList.remove(...GRID_CONTAINER);
-            container.classList.add(...LIST_CONTAINER);
-        } else {
-            container.classList.remove(...LIST_CONTAINER);
-            container.classList.add(...GRID_CONTAINER);
-        }
-        cards.forEach(card => {
-            const imgWrapper = card.querySelector('.course-img-wrapper');
-            if (isListMode) {
-                card.classList.add('md:flex-row');
-                if(imgWrapper) {
-                    imgWrapper.classList.remove('aspect-[16/10]');
-                    imgWrapper.classList.add('md:w-72', 'md:aspect-video', 'shrink-0');
-                }
-            } else {
-                card.classList.remove('md:flex-row');
-                if(imgWrapper) {
-                    imgWrapper.classList.add('aspect-[16/10]');
-                    imgWrapper.classList.remove('md:w-72', 'md:aspect-video', 'shrink-0');
-                }
-            }
-        });
-    }
-
-    // ==========================================
-    // 5. Sort & Filter Logic (★重要修正エリア)
-    // ==========================================
-    
-    // 現在のソート順を保持
-    let currentSortType = 'recommend'; 
-
-    function sortCourses(type) {
-        if (!filteredList) return;
-        currentSortType = type; // ソートタイプを記憶
-
-        filteredList.sort((a, b) => {
-            if (type === 'recommend') return a.period - b.period;
-            if (type === 'new') return b.period - a.period;
-            if (type === 'price_asc') return a.price - b.price;
-            if (type === 'price_desc') return b.price - a.price;
-            return 0;
-        });
-
-        // リセット処理
-        const container = document.getElementById('course-panel');
-        container.innerHTML = ''; 
-        currentOffset = 0;        
-        document.getElementById('loading-sentinel').classList.remove('hidden');
-        loadMoreCourses();
-    }
-
-    // ==========================================
-    // 6. Main Initialization
-    // ==========================================
-    document.addEventListener('DOMContentLoaded', () => {
-        // ★初期化: 全データを filteredList にコピー
-        if (typeof courseList !== 'undefined') {
-            filteredList = [...courseList];
-        }
-
-        initViewToggle();
-        // (SP検索UX改善コードはそのまま使用)
-        // ...
-
-        // Sentinel
-        const sentinel = document.getElementById('loading-sentinel');
-        if (sentinel) observer.observe(sentinel);
-
-        // 初回ロード
-        sortCourses('recommend');
-    });
-
-    // ==========================================
-    // 7. Modals (Carousel, Sort, Filter)
-    // ==========================================
-    
-    // (Carousel, Sort Modal のコードは元のまま)
-    // ...
-
-    // --- Filter Modal & UI Logic (★ここでNEW絞り込みを実装) ---
-    (() => {
-        const dialog   = document.getElementById('filter-dialog');
-        if(!dialog) return;
-
-        const backdrop = document.getElementById('filter-backdrop');
-        const panel    = document.getElementById('filter-panel');
-        const btnOpen  = document.getElementById('btn-filter');
-        const btnClose = document.getElementById('filter-close');
-        const btnApply = document.getElementById('filter-apply'); // 適用ボタン
-        const btnReset = document.getElementById('filter-reset');
-        
-        // Inputs
-        const keywordInput = document.getElementById('filter-keyword');
-        const chips    = Array.from(dialog.querySelectorAll('[data-chip]'));
-        const durationChecks = Array.from(dialog.querySelectorAll('input[type="checkbox"]:not(#filter-new-only)'));
-        const rMin = document.getElementById('range-min');
-        const rMax = document.getElementById('range-max');
-        const filterNewOnly = document.getElementById('filter-new-only'); // ★追加
-
-        // Modal Open/Close Logic (既存と同様)
-        // ... (animateIn, animateOut, openDlg, closeDlg 関数は変更なし)
-        function animateIn(){
-            dialog.classList.remove('hidden');
-            requestAnimationFrame(() => {
-                backdrop.style.opacity = '1';
-                panel.style.opacity = '1';
-                panel.style.transform = 'translateY(0) scale(1)';
-            });
-        }
-        function animateOut(){
-            backdrop.style.opacity = '0';
-            panel.style.opacity = '0';
-            panel.style.transform = 'translateY(1.5rem) scale(0.97)';
-            setTimeout(() => dialog.classList.add('hidden'), 180);
-        }
-        function openDlg(){
-            backdrop.style.opacity = '0';
-            panel.style.opacity = '0';
-            panel.style.transform = 'translateY(1.5rem) scale(0.97)';
-            animateIn();
-        }
-        function closeDlg(){
-            animateOut();
-        }
-
-        btnOpen?.addEventListener('click', openDlg);
-        btnClose?.addEventListener('click', closeDlg);
-        backdrop?.addEventListener('click', (e) => { if (e.target === backdrop) closeDlg(); });
-
-        // Range Slider Logic (既存)
-        const fill = document.getElementById('price-fill');
-        const lMin = document.getElementById('price-min');
-        const lMax = document.getElementById('price-max');
-        function updateRange(){
-            if(!rMin || !rMax) return;
-            let min = Math.min(+rMin.value, +rMax.value);
-            let max = Math.max(+rMin.value, +rMax.value);
-            const minPct = (min / (+rMin.max)) * 100;
-            const maxPct = (max / (+rMax.max)) * 100;
-            fill.style.left = minPct + '%';
-            fill.style.right = (100 - maxPct) + '%';
-            lMin.textContent = min.toLocaleString();
-            lMax.textContent = max.toLocaleString();
-        }
-        rMin?.addEventListener('input', updateRange);
-        rMax?.addEventListener('input', updateRange);
-        updateRange();
-
-        // Chips Logic (既存)
-        function setChipState(el, active){
-            el.setAttribute('aria-pressed', active ? 'true' : 'false');
-            el.classList.toggle('bg-sky-100', active);
-            el.classList.toggle('border-sky-300', active);
-            el.classList.toggle('text-sky-700', active);
-        }
-        chips.forEach((chip) => {
-            chip.addEventListener('click', () => {
-                const next = chip.getAttribute('aria-pressed') !== 'true';
-                setChipState(chip, next);
-            });
-        });
-
-        // ★★★ フィルタ適用ロジック (ここが実装の本体) ★★★
-        btnApply?.addEventListener('click', () => {
-            // 1. 各入力値を取得
-            const kw = keywordInput ? keywordInput.value.toLowerCase().trim() : '';
-            const activeTags = chips.filter(c => c.getAttribute('aria-pressed') === 'true').map(c => c.textContent.trim());
-            
-            // 期間: チェックボックスの並び順に依存 [1ヶ月, 3ヶ月, 6ヶ月] と仮定
-            // HTMLの並び順: 1ヶ月(idx0), 3ヶ月(idx1), 6ヶ月(idx2)
-            const selectedPeriods = [];
-            if(durationChecks[0] && durationChecks[0].checked) selectedPeriods.push(1);
-            if(durationChecks[1] && durationChecks[1].checked) selectedPeriods.push(3);
-            if(durationChecks[2] && durationChecks[2].checked) selectedPeriods.push(6); // ※データに6ヶ月があれば
-
-            const minPrice = Math.min(+rMin.value, +rMax.value);
-            const maxPrice = Math.max(+rMin.value, +rMax.value);
-            
-            // ★追加: NEWフラグ取得
-            const isNewOnly = filterNewOnly ? filterNewOnly.checked : false;
-
-            // 2. フィルタリング実行
-            filteredList = courseList.filter(course => {
-                // (A) NEWフィルタ
-                if (isNewOnly && !course.thumbnail.isNew) return false;
-
-                // (B) キーワード (タイトル or 説明 or タグ)
-                if (kw) {
-                    const textData = (course.title + course.desc + course.tags.map(t=>t.text).join('')).toLowerCase();
-                    if (!textData.includes(kw)) return false;
-                }
-
-                // (C) タグ (選択されたタグをすべて含んでいるか、あるいは少なくとも1つか。ここでは「少なくとも1つ(OR)」とします)
-                if (activeTags.length > 0) {
-                    const courseTagTexts = course.tags.map(t => t.text);
-                    const hasMatch = activeTags.some(tag => courseTagTexts.includes(tag));
-                    if (!hasMatch) return false;
-                }
-
-                // (D) 受講期間 (選択されていれば、そのいずれかに合致するか)
-                if (selectedPeriods.length > 0) {
-                    if (!selectedPeriods.includes(course.period)) return false;
-                }
-
-                // (E) 価格帯
-                if (course.price < minPrice || course.price > maxPrice) return false;
-
-                return true;
-            });
-
-            // 3. 適用後にソートをかけ直して再描画
-            sortCourses(currentSortType); // これが loadMoreCourses を呼びます
-            
-            closeDlg();
-        });
-
-        // リセットボタン
-        btnReset?.addEventListener('click', () => {
-            if(keywordInput) keywordInput.value = '';
-            durationChecks.forEach(c => c.checked = false);
-            chips.forEach(c => setChipState(c, false));
-            if(rMin) rMin.value = rMin.min || '0';
-            if(rMax) rMax.value = rMax.max || '50000';
-            if(filterNewOnly) filterNewOnly.checked = false; // ★追加
-            updateRange();
-        });
-
-    })();
-    // (Deadline Banner Logicなどはそのまま)
-</script>
+<script src="js/main.js" defer></script>
