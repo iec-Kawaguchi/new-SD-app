@@ -1,197 +1,225 @@
 <!DOCTYPE html>
 <html lang="ja">
-  <head>
-    <meta charset="UTF-8" />
-    <title>申込指示登録（名称入力あり）</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
-    <style>
-      body {
-        font-family: "游ゴシック体", "Yu Gothic", "游ゴシック", YuGothic, sans-serif;
-      }
-      :root { --safe-bottom: env(safe-area-inset-bottom); }
-    </style>
-  </head>
-  <body class="bg-gray-50 text-gray-800 min-h-dvh overflow-y-auto overflow-hidden flex flex-col">
-    
-    <header class="px-6 pt-8 pb-4">
-      <h1 class="text-2xl font-bold flex items-center gap-2">
-        <span class="material-symbols-outlined text-gray-500">fact_check</span>
-        申込指示登録
-      </h1>
-      <p class="mt-1 text-sm text-gray-600">対象に応じた申込指示パターンを登録してください。</p>
-    </header>
+	<head>
+		<meta charset="UTF-8" />
+		<title>申込指示登録（名称入力あり）</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<script src="https://cdn.tailwindcss.com"></script>
+		<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+		<style>
+		body {
+			font-family: "游ゴシック体", "Yu Gothic", "游ゴシック", YuGothic, sans-serif;
+		}
+		:root { --safe-bottom: env(safe-area-inset-bottom); }
+		</style>
+	</head>
+	<body class="bg-gray-50 text-gray-800 min-h-dvh overflow-y-auto overflow-hidden flex flex-col">
+		<header class="px-6 pt-8 pb-4">
+			<h1 class="text-2xl font-bold flex items-center gap-2">
+				<span class="material-symbols-outlined text-gray-500">fact_check</span>
+				申込指示登録
+			</h1>
+			<p class="mt-1 text-sm text-gray-600">対象に応じた申込指示パターンを登録してください。</p>
+		</header>
 
-    <main class="flex-1 min-h-0 px-6 pb-40">
-      
-      <div id="instructions-container" class="space-y-6">
-        </div>
+		<main class="flex-1 min-h-0 px-6 pb-40">
+			<div id="instructions-container" class="space-y-6"></div>
+			<div class="mt-6">
+				<button onclick="addInstruction()" 
+				class="w-full py-4 rounded-xl border-2 border-dashed border-gray-300 text-gray-500 hover:border-blue-400 hover:text-blue-600 hover:bg-blue-50 transition flex items-center justify-center gap-2 font-medium">
+				<span class="material-symbols-outlined">add_circle</span>
+				新しい指示パターンを追加
+				</button>
+			</div>
+		</main>
 
-      <div class="mt-6">
-        <button onclick="addInstruction()" 
-          class="w-full py-4 rounded-xl border-2 border-dashed border-gray-300 text-gray-500 hover:border-blue-400 hover:text-blue-600 hover:bg-blue-50 transition flex items-center justify-center gap-2 font-medium">
-          <span class="material-symbols-outlined">add_circle</span>
-          新しい指示パターンを追加
-        </button>
-      </div>
+		<template id="instruction-template">
+			<section class="instruction-card rounded-2xl bg-white border border-gray-200 shadow-sm p-6 flex flex-col animate-[fadeIn_0.3s_ease-out]">
+				<div class="flex items-center justify-between mb-5 border-b border-gray-100 pb-3">
+					<div class="flex items-center gap-2">
+						<span class="bg-blue-600 text-white text-xs font-bold px-2 py-1 rounded-md">指示 <span class="index-badge">1</span></span>
+						<span class="text-xs text-gray-400">設定パターン</span>
+					</div>
+					<button type="button" class="delete-btn text-gray-400 hover:text-red-500 hover:bg-red-50 p-1 rounded-full transition" title="削除">
+						<span class="material-symbols-outlined text-xl block">delete</span>
+					</button>
+				</div>
 
-    </main>
+				<div class="space-y-6">
+					<div>
+						<label class="block text-sm font-bold text-gray-800 mb-1">
+						指示パターン名称 <span class="text-red-500 font-normal text-xs ml-1">※必須</span>
+						</label>
+						<input type="text" 
+						class="w-full text-lg font-medium placeholder:text-gray-300 placeholder:font-normal rounded-lg border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" 
+						placeholder="例：新卒入社者向け、関東エリア配属者用 など">
+					</div>
 
-    <template id="instruction-template">
-      <section class="instruction-card rounded-2xl bg-white border border-gray-200 shadow-sm p-6 flex flex-col animate-[fadeIn_0.3s_ease-out]">
-        <div class="flex items-center justify-between mb-5 border-b border-gray-100 pb-3">
-          <div class="flex items-center gap-2">
-            <span class="bg-blue-600 text-white text-xs font-bold px-2 py-1 rounded-md">指示 <span class="index-badge">1</span></span>
-            <span class="text-xs text-gray-400">設定パターン</span>
-          </div>
-          <button type="button" class="delete-btn text-gray-400 hover:text-red-500 hover:bg-red-50 p-1 rounded-full transition" title="削除">
-            <span class="material-symbols-outlined text-xl block">delete</span>
-          </button>
-        </div>
+					<div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-6 bg-gray-50 p-4 rounded-xl border border-gray-100">
+						<div class="flex flex-col">
+						<label class="text-xs font-medium text-gray-500 mb-1">[101]教材配送先</label>
+						<select class="rounded-lg border border-gray-300 px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-blue-400">
+							<option>受講生宛</option>
+							<option>企業担当者宛</option>
+							<option>各社担当者宛</option>
+						</select>
+						</div>
+						<div class="flex flex-col">
+						<label class="text-xs font-medium text-gray-500 mb-1">[106]レポート提出</label>
+						<select class="rounded-lg border border-gray-300 px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-blue-400">
+							<option>受講生→団体</option>
+							<option>企業担当者→団体</option>
+							<option>各社担当→団体</option>
+						</select>
+						</div>
+						<div class="flex flex-col">
+						<label class="text-xs font-medium text-gray-500 mb-1">[107]レポート返却</label>
+						<select class="rounded-lg border border-gray-300 px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-blue-400">
+							<option>団体→受講生</option>
+							<option>団体→企業担当者</option>
+							<option>団体→各社担当</option>
+						</select>
+						</div>
+						<div class="flex flex-col">
+						<label class="text-xs font-medium text-gray-500 mb-1">[201]請求区分</label>
+						<select class="rounded-lg border border-gray-300 px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-blue-400">
+							<option>会社請求</option>
+							<option>受講生請求</option>
+							<option>会社＆受講生請求</option>
+						</select>
+						</div>
+						<div class="flex flex-col">
+							<label class="text-xs font-medium text-gray-500 mb-1">[202]請求先</label>
+							<select class="rounded-lg border border-gray-300 px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-blue-400">
+								<option>企業担当者宛</option>
+								<option>各社担当者宛</option>
+								<option>受講生宛</option>
+							</select>
+						</div>
+						<div class="flex flex-col">
+							<label class="text-xs font-medium text-gray-500 mb-1">[203]請求送付先</label>
+							<select class="rounded-lg border border-gray-300 px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-blue-400">
+								<option>企業担当者宛</option>
+								<option>各社担当者宛</option>
+								<option>受講生宛</option>
+							</select>
+						</div>
+						<div class="flex flex-col">
+						<label class="text-xs font-medium text-gray-500 mb-1">[301,304]成績報告先</label>
+						<select class="rounded-lg border border-gray-300 px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-blue-400">
+							<option>企業担当者宛</option>
+							<option>各社担当者宛</option>
+							<option>不要</option>
+						</select>
+						</div>
+						<div class="flex flex-col">
+							<label class="text-xs font-medium text-gray-500 mb-1">[404]修了判定</label>
+							<select class="rounded-lg border border-gray-300 px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-blue-400">
+								<option>各団体基準</option>
+								<option>基準指定</option>
+							</select>
+						</div>
+						<!-- <div class="flex flex-col">
+							<label class="text-xs font-medium text-gray-500 mb-1">修了証送付先</label>
+							<select class="rounded-lg border border-gray-300 px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-blue-400">
+								<option>受講生宛</option>
+								<option>企業宛</option>
+							</select>
+						</div> -->
+						<div class="flex flex-col">
+							<label class="text-xs font-medium text-gray-500 mb-1">再受講可否</label>
+							<select class="rounded-lg border border-gray-300 px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-blue-400">
+								<option>可</option>
+								<option>不可</option>
+							</select>
+						</div>
+					</div>
+					<div>
+						<div class="flex justify-between items-end mb-1">
+						<label class="block text-sm font-medium text-gray-800">その他特記事項</label>
+						<div class="text-xs text-gray-400">
+							<span class="char-count">0</span>/500
+						</div>
+						</div>
+						<textarea rows="2" maxlength="500"
+						class="body-input w-full rounded-lg border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none text-sm"
+						placeholder="備考があれば記載してください"></textarea>
+					</div>
+				</div>
+			</section>
+		</template>
 
-        <div class="space-y-6">
-          
-          <div>
-            <label class="block text-sm font-bold text-gray-800 mb-1">
-              指示パターン名称 <span class="text-red-500 font-normal text-xs ml-1">※必須</span>
-            </label>
-            <input type="text" 
-              class="w-full text-lg font-medium placeholder:text-gray-300 placeholder:font-normal rounded-lg border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" 
-              placeholder="例：新卒入社者向け、関東エリア配属者用 など">
-          </div>
+		<div class="fixed bottom-0 inset-x-0 z-40">
+			<div class="mx-auto max-w-5xl px-6 pb-[calc(12px+var(--safe-bottom))]">
+				<div class="rounded-2xl bg-white/95 backdrop-blur shadow-[0_-6px_24px_-8px_rgba(0,0,0,0.18)] border border-gray-200">
+					<div class="flex items-center justify-between p-4">
+						<div class="text-sm text-gray-500 ml-2">
+							登録数: <span id="total-count" class="font-bold text-gray-800">0</span> 件
+						</div>
+						<div class="flex gap-3">
+							<button class="h-10 px-4 rounded-lg border border-gray-300 bg-white text-gray-600 hover:bg-gray-50">キャンセル</button>
+							<button class="h-10 px-5 rounded-lg bg-blue-600 text-white font-medium hover:bg-blue-700 active:scale-[.99] transition shadow-lg shadow-blue-500/30">登録する</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
 
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-6 bg-gray-50 p-4 rounded-xl border border-gray-100">
-            <div class="flex flex-col">
-              <label class="text-xs font-medium text-gray-500 mb-1">教材配送先指定</label>
-              <select class="rounded-lg border border-gray-300 px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-blue-400">
-                <option>受講生宛</option>
-                <option>企業宛</option>
-              </select>
-            </div>
-            <div class="flex flex-col">
-              <label class="text-xs font-medium text-gray-500 mb-1">成績報告先指定</label>
-              <select class="rounded-lg border border-gray-300 px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-blue-400">
-                <option>受講生宛</option>
-                <option>企業宛</option>
-              </select>
-            </div>
-            <div class="flex flex-col">
-              <label class="text-xs font-medium text-gray-500 mb-1">請求書送付先</label>
-              <select class="rounded-lg border border-gray-300 px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-blue-400">
-                <option>受講生宛</option>
-                <option>企業宛</option>
-              </select>
-            </div>
-            <div class="flex flex-col">
-              <label class="text-xs font-medium text-gray-500 mb-1">修了証送付先</label>
-              <select class="rounded-lg border border-gray-300 px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-blue-400">
-                <option>受講生宛</option>
-                <option>企業宛</option>
-              </select>
-            </div>
-            <div class="flex flex-col">
-              <label class="text-xs font-medium text-gray-500 mb-1">再受講可否</label>
-              <select class="rounded-lg border border-gray-300 px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-blue-400">
-                <option>可</option>
-                <option>不可</option>
-              </select>
-            </div>
-            <div class="flex flex-col">
-              <label class="text-xs font-medium text-gray-500 mb-1">報告フォーマット</label>
-              <select class="rounded-lg border border-gray-300 px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-blue-400">
-                <option>標準</option>
-                <option>カスタム</option>
-              </select>
-            </div>
-          </div>
+		<script>
+			const container = document.getElementById('instructions-container');
+			const template = document.getElementById('instruction-template');
+			const totalCountEl = document.getElementById('total-count');
 
-          <div>
-            <div class="flex justify-between items-end mb-1">
-              <label class="block text-sm font-medium text-gray-800">その他特記事項</label>
-              <div class="text-xs text-gray-400">
-                <span class="char-count">0</span>/500
-              </div>
-            </div>
-            <textarea rows="2" maxlength="500"
-              class="body-input w-full rounded-lg border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none text-sm"
-              placeholder="備考があれば記載してください"></textarea>
-          </div>
-        </div>
-      </section>
-    </template>
+			function addInstruction() {
+				const clone = template.content.cloneNode(true);
+				const card = clone.querySelector('.instruction-card');
+				
+				// 削除
+				card.querySelector('.delete-btn').addEventListener('click', () => {
+				if(confirm('この指示パターンを削除しますか？')) {
+					card.remove();
+					updateIndexes();
+				}
+				});
 
-    <div class="fixed bottom-0 inset-x-0 z-40">
-      <div class="mx-auto max-w-5xl px-6 pb-[calc(12px+var(--safe-bottom))]">
-        <div class="rounded-2xl bg-white/95 backdrop-blur shadow-[0_-6px_24px_-8px_rgba(0,0,0,0.18)] border border-gray-200">
-          <div class="flex items-center justify-between p-4">
-            <div class="text-sm text-gray-500 ml-2">
-              登録数: <span id="total-count" class="font-bold text-gray-800">0</span> 件
-            </div>
-            <div class="flex gap-3">
-              <button class="h-10 px-4 rounded-lg border border-gray-300 bg-white text-gray-600 hover:bg-gray-50">キャンセル</button>
-              <button class="h-10 px-5 rounded-lg bg-blue-600 text-white font-medium hover:bg-blue-700 active:scale-[.99] transition shadow-lg shadow-blue-500/30">登録する</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+				// 文字数カウント & 自動高さ調整
+				const textarea = card.querySelector('.body-input');
+				const countSpan = card.querySelector('.char-count');
+				
+				textarea.addEventListener('input', () => {
+				countSpan.textContent = textarea.value.length;
+				textarea.style.height = 'auto';
+				textarea.style.height = Math.min(textarea.scrollHeight, 300) + 'px';
+				});
 
-    <script>
-      const container = document.getElementById('instructions-container');
-      const template = document.getElementById('instruction-template');
-      const totalCountEl = document.getElementById('total-count');
+				container.appendChild(card);
+				updateIndexes();
+				
+				setTimeout(() => {
+					card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+					// 追加したカードの名称入力欄にフォーカスを当てる
+					card.querySelector('input[type="text"]').focus();
+				}, 100);
+			}
 
-      function addInstruction() {
-        const clone = template.content.cloneNode(true);
-        const card = clone.querySelector('.instruction-card');
-        
-        // 削除
-        card.querySelector('.delete-btn').addEventListener('click', () => {
-          if(confirm('この指示パターンを削除しますか？')) {
-            card.remove();
-            updateIndexes();
-          }
-        });
+			function updateIndexes() {
+				const cards = container.querySelectorAll('.instruction-card');
+				cards.forEach((card, index) => {
+				const badge = card.querySelector('.index-badge');
+				if(badge) badge.textContent = index + 1;
+				});
+				totalCountEl.textContent = cards.length;
+			}
 
-        // 文字数カウント & 自動高さ調整
-        const textarea = card.querySelector('.body-input');
-        const countSpan = card.querySelector('.char-count');
-        
-        textarea.addEventListener('input', () => {
-          countSpan.textContent = textarea.value.length;
-          textarea.style.height = 'auto';
-          textarea.style.height = Math.min(textarea.scrollHeight, 300) + 'px';
-        });
-
-        container.appendChild(card);
-        updateIndexes();
-        
-        setTimeout(() => {
-            card.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            // 追加したカードの名称入力欄にフォーカスを当てる
-            card.querySelector('input[type="text"]').focus();
-        }, 100);
-      }
-
-      function updateIndexes() {
-        const cards = container.querySelectorAll('.instruction-card');
-        cards.forEach((card, index) => {
-          const badge = card.querySelector('.index-badge');
-          if(badge) badge.textContent = index + 1;
-        });
-        totalCountEl.textContent = cards.length;
-      }
-
-      window.addEventListener('DOMContentLoaded', () => {
-        addInstruction();
-      });
-    </script>
-    <style>
-      @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(10px); }
-        to { opacity: 1; transform: translateY(0); }
-      }
-    </style>
-  </body>
+			window.addEventListener('DOMContentLoaded', () => {
+				addInstruction();
+			});
+		</script>
+		<style>
+		@keyframes fadeIn {
+			from { opacity: 0; transform: translateY(10px); }
+			to { opacity: 1; transform: translateY(0); }
+		}
+		</style>
+	</body>
 </html>
