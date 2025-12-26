@@ -27,10 +27,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 <a href="cart.html" class="relative p-2 rounded-full hover:bg-gray-100 active:scale-95 transition" aria-label="Cart">
                     <span class="material-symbols-outlined align-middle text-[22px] text-gray-600">shopping_cart</span>
                     <span class="absolute top-2 right-2 h-2 w-2 rounded-full bg-rose-500 ring-2 ring-white"></span>
-
                 </a>
-                <button class="p-2 rounded-full hover:bg-gray-100 active:scale-95 transition" aria-label="Profile">
-                    <span class="material-symbols-outlined align-middle text-[22px] text-gray-600">account_circle</span>
+
+                <button id="btn-menu" class="p-2 rounded-full hover:bg-gray-100 active:scale-95 transition" aria-label="Menu">
+                    <span class="material-symbols-outlined align-middle text-[22px] text-gray-600">menu</span>
                 </button>
             </nav>
         </div>
@@ -87,10 +87,53 @@ document.addEventListener("DOMContentLoaded", () => {
                 </div>
 
                 <div id="fav-list-container" class="max-h-[60vh] overflow-y-auto p-0">
-                    </div>
+                </div>
 
                 <div class="p-3 bg-gray-50/50 rounded-b-2xl text-center">
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="menu-dialog" class="fixed inset-0 z-50 hidden" role="dialog" aria-modal="true" aria-labelledby="menu-title">
+        <div id="menu-backdrop" class="absolute inset-0 bg-black/30 backdrop-blur-sm opacity-0 transition-opacity duration-200"></div>
+        <div class="pointer-events-none absolute inset-0 flex items-start justify-end p-4 mt-14">
+            <div id="menu-panel" class="pointer-events-auto relative w-full max-w-[280px] rounded-2xl bg-white shadow-2xl opacity-0 translate-y-4 transition-all duration-200">
+                <div class="p-5 border-b border-gray-100 bg-gray-50/50 rounded-t-2xl flex items-center gap-3">
+                    <div class="h-10 w-10 rounded-full bg-slate-200 grid place-items-center text-slate-500">
+                        <span class="material-symbols-outlined">menu</span>
+                    </div>
+                    <div>
+                        <div class="font-bold text-slate-800 text-sm">メニュー</div>
+                    </div>
+                    <button id="menu-close" class="ml-auto text-gray-400 hover:text-gray-600 p-1 rounded-full hover:bg-gray-200 transition">
+                        <span class="material-symbols-outlined text-[20px]">close</span>
+                    </button>
+                </div>
+                
+                <nav class="p-2">
+                    <a href="guidelines.html" class="flex items-center gap-3 px-4 py-3 text-sm font-medium text-slate-700 rounded-xl hover:bg-slate-50 transition">
+                        <span class="material-symbols-outlined text-slate-400">dashboard</span>
+                        募集要項
+                    </a>
+                    <a href="#" class="flex items-center gap-3 px-4 py-3 text-sm font-medium text-slate-700 rounded-xl hover:bg-slate-50 transition">
+                        <span class="material-symbols-outlined text-slate-400">apartment</span>
+                        教育団体一覧
+                    </a>
+                    <a href="#" class="flex items-center gap-3 px-4 py-3 text-sm font-medium text-slate-700 rounded-xl hover:bg-slate-50 transition">
+                        <span class="material-symbols-outlined text-slate-400">format_list_numbered</span>
+                        受講の進め方
+                    </a>
+                    <hr class="my-2 border-slate-100 mx-2">
+                    <a href="#" class="flex items-center gap-3 px-4 py-3 text-sm font-medium text-slate-700 rounded-xl hover:bg-slate-50 transition">
+                        <span class="material-symbols-outlined text-slate-400">help</span>
+                        ヘルプ・お問い合わせ
+                    </a>
+                    <a href="#" class="flex items-center gap-3 px-4 py-3 text-sm font-medium text-rose-600 rounded-xl hover:bg-rose-50 transition">
+                        <span class="material-symbols-outlined">logout</span>
+                        ログアウト
+                    </a>
+                </nav>
             </div>
         </div>
     </div>
@@ -101,6 +144,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // --- Initialize Logics ---
     initNoticeModal();
     initFavoritesLogic();
+    initMenuModal(); // 新規追加
 });
 
 // --- Notice Modal Logic ---
@@ -131,6 +175,36 @@ function initNoticeModal() {
     btnOpen.addEventListener('click', openNotice);
     btnClose.addEventListener('click', closeNotice);
     backdrop.addEventListener('click', closeNotice);
+}
+
+// --- Menu Modal Logic (新規追加) ---
+function initMenuModal() {
+    const dialog = document.getElementById('menu-dialog');
+    const backdrop = document.getElementById('menu-backdrop');
+    const panel = document.getElementById('menu-panel');
+    const btnOpen = document.getElementById('btn-menu');
+    const btnClose = document.getElementById('menu-close');
+
+    if (!btnOpen || !dialog) return;
+
+    function openMenu() {
+        dialog.classList.remove('hidden');
+        requestAnimationFrame(() => {
+            backdrop.style.opacity = '1';
+            panel.style.opacity = '1';
+            panel.style.transform = 'translateY(0)';
+        });
+    }
+    function closeMenu() {
+        backdrop.style.opacity = '0';
+        panel.style.opacity = '0';
+        panel.style.transform = 'translateY(1rem)';
+        setTimeout(() => dialog.classList.add('hidden'), 200);
+    }
+
+    btnOpen.addEventListener('click', openMenu);
+    btnClose.addEventListener('click', closeMenu);
+    backdrop.addEventListener('click', closeMenu);
 }
 
 // --- Favorites Logic (Main) ---
