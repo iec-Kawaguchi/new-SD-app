@@ -98,7 +98,7 @@ document.addEventListener("DOMContentLoaded", () => {
     <div id="menu-dialog" class="fixed inset-0 z-50 hidden" role="dialog" aria-modal="true" aria-labelledby="menu-title">
         <div id="menu-backdrop" class="absolute inset-0 bg-black/30 backdrop-blur-sm opacity-0 transition-opacity duration-200"></div>
         <div class="pointer-events-none absolute inset-0 flex items-center justify-center md:items-start md:justify-end md:p-4 md:mt-14">
-            <div id="menu-panel" class="pointer-events-auto relative w-full max-w-[280px] rounded-2xl bg-white shadow-2xl opacity-0 translate-y-4 transition-all duration-200 mx-4 md:mx-0">
+            <div id="menu-panel" class="pointer-events-auto relative w-full max-w-sm rounded-2xl bg-white shadow-2xl opacity-0 translate-y-4 transition-all duration-200 mx-4 md:mx-0">
                 <div class="px-5 py-4 border-b border-gray-100 flex items-center justify-between bg-gray-50/50 rounded-t-2xl">
                     <div class="flex items-center gap-2">
                         <span class="material-symbols-outlined text-slate-500">menu</span>
