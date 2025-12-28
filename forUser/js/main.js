@@ -411,24 +411,38 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnReset = document.getElementById('filter-reset');
 
     // Inputs
+    const mainSearchInput = document.getElementById('search-input');
     const keywordInput = document.getElementById('filter-keyword');
     const chips = Array.from(filterDlg.querySelectorAll('[data-chip]'));
-    const durationChecks = Array.from(filterDlg.querySelectorAll('input[type="checkbox"]:not(#filter-new-only)'));
-    const filterNewOnly = document.getElementById('filter-new-only'); // NEW
-    const rMin = document.getElementById('range-min');
-    const rMax = document.getElementById('range-max');
-    const lMin = document.getElementById('price-min');
-    const lMax = document.getElementById('price-max');
-    const fill = document.getElementById('price-fill');
+    
+    const filterNewOnly = document.getElementById('filter-new-only');
+
+    // ▼▼▼ Price Range Elements ▼▼▼
+    const priceRMin = document.getElementById('range-min');
+    const priceRMax = document.getElementById('range-max');
+    const priceLMin = document.getElementById('price-min');
+    const priceLMax = document.getElementById('price-max');
+    const priceFill = document.getElementById('price-fill');
+
+    // ▼▼▼ Period Range Elements (追加) ▼▼▼
+    const periodRMin = document.getElementById('period-range-min');
+    const periodRMax = document.getElementById('period-range-max');
+    const periodLMin = document.getElementById('period-min-label');
+    const periodLMax = document.getElementById('period-max-label');
+    const periodFill = document.getElementById('period-fill');
 
     function openFilter() {
         filterDlg.classList.remove('hidden');
+        if (mainSearchInput && keywordInput) {
+            keywordInput.value = mainSearchInput.value;
+        }
         requestAnimationFrame(() => {
             filterBackdrop.style.opacity = '1';
             filterPanel.style.opacity = '1';
             filterPanel.style.transform = 'translateY(0) scale(1)';
         });
     }
+
     function closeFilter() {
         filterBackdrop.style.opacity = '0';
         filterPanel.style.opacity = '0';
@@ -441,34 +455,63 @@ document.addEventListener('DOMContentLoaded', () => {
     btnFilterCancel?.addEventListener('click', closeFilter);
     filterBackdrop?.addEventListener('click', (e) => { if(e.target===filterBackdrop) closeFilter(); });
 
-    // Range Logic
-    function updateRange(){
-        if(!rMin || !rMax) return;
-        let min = Math.min(+rMin.value, +rMax.value);
-        let max = Math.max(+rMin.value, +rMax.value);
-        const minPct = (min / (+rMin.max)) * 100;
-        const maxPct = (max / (+rMax.max)) * 100;
-        fill.style.left = minPct + '%';
-        fill.style.right = (100 - maxPct) + '%';
-        lMin.textContent = min.toLocaleString();
-        lMax.textContent = max.toLocaleString();
+    // --- Price Range Logic ---
+    function updatePriceRange(){
+        if(!priceRMin || !priceRMax) return;
+        let min = Math.min(+priceRMin.value, +priceRMax.value);
+        let max = Math.max(+priceRMin.value, +priceRMax.value);
+        const minPct = (min / (+priceRMin.max)) * 100;
+        const maxPct = (max / (+priceRMax.max)) * 100;
+        
+        if(priceFill) {
+            priceFill.style.left = minPct + '%';
+            priceFill.style.right = (100 - maxPct) + '%';
+        }
+        if(priceLMin) priceLMin.textContent = min.toLocaleString();
+        if(priceLMax) priceLMax.textContent = max.toLocaleString();
     }
-    rMin?.addEventListener('input', updateRange);
-    rMax?.addEventListener('input', updateRange);
-    // Pill Checkbox Logic (parent style)
-    durationChecks.forEach(chk => {
-        chk.addEventListener('change', (e) => {
-            const parent = e.target.closest('label');
-            if(e.target.checked) parent.classList.add('pill-active');
-            else parent.classList.remove('pill-active');
-        });
-    });
+    priceRMin?.addEventListener('input', updatePriceRange);
+    priceRMax?.addEventListener('input', updatePriceRange);
+
+    // --- Period Range Logic (追加) ---
+    function updatePeriodRange(){
+        if(!periodRMin || !periodRMax) return;
+
+        // 現在の入力値を取得
+        let currentMinVal = Math.min(+periodRMin.value, +periodRMax.value);
+        let currentMaxVal = Math.max(+periodRMin.value, +periodRMax.value);
+
+        // スライダーの設定値（min="1", max="12"）を取得
+        const rangeMin = +periodRMin.min; 
+        const rangeMax = +periodRMax.max;
+
+        // 範囲の幅（1〜12なら 11）
+        const totalRange = rangeMax - rangeMin;
+
+        // 0%〜100% の位置を計算
+        // 式: ((現在値 - 最小設定値) / 全体の幅) * 100
+        const minPct = ((currentMinVal - rangeMin) / totalRange) * 100;
+        const maxPct = ((currentMaxVal - rangeMin) / totalRange) * 100;
+
+        if(periodFill) {
+            periodFill.style.left = minPct + '%';
+            periodFill.style.right = (100 - maxPct) + '%';
+        }
+        if(periodLMin) periodLMin.textContent = currentMinVal;
+        if(periodLMax) periodLMax.textContent = currentMaxVal;
+    }
+    periodRMin?.addEventListener('input', updatePeriodRange);
+    periodRMax?.addEventListener('input', updatePeriodRange);
+
+
     // Chip Logic
     function setChipState(el, active){
         el.setAttribute('aria-pressed', active ? 'true' : 'false');
-        el.classList.toggle('bg-sky-100', active);
+        el.classList.toggle('bg-sky-50', active);
+        el.classList.toggle('hover:bg-sky-100', active);
         el.classList.toggle('border-sky-300', active);
-        el.classList.toggle('text-sky-700', active);
+        el.classList.toggle('text-sky-600', active);
+        el.classList.toggle('font-bold', active);
     }
     chips.forEach((chip) => {
         chip.addEventListener('click', () => {
@@ -477,21 +520,24 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Apply Logic
-    btnApply?.addEventListener('click', () => {
+    /**
+     * 共通フィルタ処理関数
+     */
+    function applyFilter() {
         const kw = keywordInput ? keywordInput.value.toLowerCase().trim() : '';
         const activeTags = chips.filter(c => c.getAttribute('aria-pressed') === 'true').map(c => c.textContent.trim());
         
-        const selectedPeriods = [];
-        // HTML順序: 1ヶ月, 3ヶ月, 6ヶ月
-        if(durationChecks[0]?.checked) selectedPeriods.push(1);
-        if(durationChecks[1]?.checked) selectedPeriods.push(3);
-        if(durationChecks[2]?.checked) selectedPeriods.push(6);
+        // Price Values
+        const minPrice = Math.min(+priceRMin.value, +priceRMax.value);
+        const maxPrice = Math.max(+priceRMin.value, +priceRMax.value);
+        
+        // Period Values (追加)
+        const minPeriod = Math.min(+periodRMin.value, +periodRMax.value);
+        const maxPeriod = Math.max(+periodRMin.value, +periodRMax.value);
 
-        const minPrice = Math.min(+rMin.value, +rMax.value);
-        const maxPrice = Math.max(+rMin.value, +rMax.value);
         const isNewOnly = filterNewOnly ? filterNewOnly.checked : false;
 
+        // リストのフィルタリング
         filteredList = courseList.filter(course => {
             // (A) NEW
             if (isNewOnly && !course.thumbnail.isNew) return false;
@@ -500,57 +546,89 @@ document.addEventListener('DOMContentLoaded', () => {
                 const textData = (course.title + course.desc + course.tags.map(t=>t.text).join('')).toLowerCase();
                 if (!textData.includes(kw)) return false;
             }
-            // (C) Tags (OR match)
+            // (C) Tags
             if (activeTags.length > 0) {
                 const courseTagTexts = course.tags.map(t => t.text);
                 if (!activeTags.some(tag => courseTagTexts.includes(tag))) return false;
             }
-            // (D) Period
-            if (selectedPeriods.length > 0) {
-                if (!selectedPeriods.includes(course.period)) return false;
-            }
-            // (E) Price
+            // (D) Period Range (変更: 範囲判定)
+            if (course.period < minPeriod || course.period > maxPeriod) return false;
+
+            // (E) Price Range
             if (course.price < minPrice || course.price > maxPrice) return false;
 
             return true;
         });
 
         sortCourses(currentSortType);
+    }
+
+    // Apply Button
+    btnApply?.addEventListener('click', () => {
+        if (mainSearchInput && keywordInput) {
+            mainSearchInput.value = keywordInput.value;
+        }
+        applyFilter();
         closeFilter();
     });
+
+    // Enter Key Logic (Main)
+    if (mainSearchInput) {
+        mainSearchInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                if (keywordInput) keywordInput.value = mainSearchInput.value;
+                applyFilter();
+                mainSearchInput.blur();
+            }
+        });
+    }
+    
+    // Enter Key Logic (Modal)
+    if (keywordInput) {
+        keywordInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                if (mainSearchInput) mainSearchInput.value = keywordInput.value;
+                applyFilter();
+                closeFilter();
+            }
+        });
+    }
 
     // Reset Logic
     btnReset?.addEventListener('click', () => {
         if(keywordInput) keywordInput.value = '';
-        // Reset checkboxes
-        durationChecks.forEach(c => {
-            c.checked = false;
-            c.closest('label').classList.remove('pill-active');
-        });
+        if(mainSearchInput) mainSearchInput.value = '';
+
+        // Reset Chips
         chips.forEach(c => setChipState(c, false));
-        if(rMin) rMin.value = rMin.min || '0';
-        if(rMax) rMax.value = rMax.max || '50000';
+        
+        // Reset Price Range
+        if(priceRMin) priceRMin.value = priceRMin.min || '0';
+        if(priceRMax) priceRMax.value = priceRMax.max || '50000';
+        
+        // Reset Period Range (追加)
+        if(periodRMin) periodRMin.value = periodRMin.min || '1';
+        if(periodRMax) periodRMax.value = periodRMax.max || '12';
+
         if(filterNewOnly) filterNewOnly.checked = false;
-        updateRange();
+        
+        updatePriceRange();
+        updatePeriodRange();
     });
     
-    // Init Range UI
-    updateRange();
+    // Init UI
+    updatePriceRange();
+    updatePeriodRange();
 
-    // ▼▼▼ 追加: スマホ検索UX (メイン検索バータップでモーダルを開く) ▼▼▼
-    const mainSearchInput = document.getElementById('search-input');
+    // Mobile UX
     if(mainSearchInput) {
         mainSearchInput.addEventListener('focus', (e) => {
-            // 画面幅がスマホサイズ (768px未満) の場合のみ実行
             if(window.innerWidth < 768) {
-                // 1. メイン検索バーのフォーカスを外す（一旦キーボードを閉じる）
                 e.preventDefault();
                 mainSearchInput.blur();
-                
-                // 2. フィルタモーダルを開く
                 openFilter();
-
-                // 3. 少し待ってからモーダル内の入力欄にフォーカスを移す
                 setTimeout(() => {
                     if(keywordInput) keywordInput.focus();
                 }, 50);

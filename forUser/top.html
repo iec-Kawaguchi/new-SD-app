@@ -39,6 +39,7 @@
                 -webkit-appearance: none; appearance: none;
                 position: absolute; left: 0; right: 0; top: 0; bottom: 0; width: 100%;
                 background: transparent; pointer-events: auto;
+                pointer-events: none;
             }
             .range-vis::-webkit-slider-thumb {
                 -webkit-appearance: none; appearance: none;
@@ -47,6 +48,8 @@
                 box-shadow: 0 1px 2px rgba(0,0,0,.12);
                 cursor: pointer;
                 pointer-events: auto;
+                position: relative;   /* z-indexを効かせるために必要 */
+                z-index: 10;          /* つまみを最前面に */
             }
             .range-vis::-moz-range-thumb {
                 height: 18px; width: 18px; border-radius: 9999px;
@@ -54,6 +57,8 @@
                 box-shadow: 0 1px 2px rgba(0,0,0,.12);
                 cursor: pointer;
                 pointer-events: auto;
+                position: relative;   /* z-indexを効かせるために必要 */
+                z-index: 10;          /* つまみを最前面に */
             }
             /* Pill Checkbox UI */
             .pill-ui {
@@ -261,24 +266,20 @@
                                 <button class="rounded-full px-3 py-1.5 text-sm border border-gray-200 bg-white text-gray-700 hover:bg-gray-50 transition" data-chip aria-pressed="false">推奨</button>
                             </div>
                         </div>
+
                         <div>
-                            <label class="block text-sm text-gray-600 mb-2">受講期間</label>
-                            <div class="flex flex-wrap gap-2">
-                                <label class="inline-flex items-center px-3 py-1.5 rounded-full border border-gray-200 bg-white text-gray-700 text-sm transition">
-                                <input type="checkbox" class="peer hidden">
-                                <span class="pill-ui">1ヶ月</span>
-                                </label>
-                                <label class="inline-flex items-center px-3 py-1.5 rounded-full border border-gray-200 bg-white text-gray-700 text-sm transition">
-                                <input type="checkbox" class="peer hidden">
-                                <span class="pill-ui">3ヶ月</span>
-                                </label>
-                                <label class="inline-flex items-center px-3 py-1.5 rounded-full border border-gray-200 bg-white text-gray-700 text-sm transition">
-                                <input type="checkbox" class="peer hidden">
-                                <span class="pill-ui">6ヶ月</span>
-                                </label>
+                            <div class="flex items-center justify-between mb-2">
+                                <label class="block text-sm text-gray-600">受講期間</label>
+                                <div class="text-sm text-gray-500"><span id="period-min-label">1</span> ヶ月 〜 <span id="period-max-label">12</span> ヶ月</div>
+                            </div>
+                            <div class="relative h-10">
+                                <div class="absolute left-0 right-0 top-1/2 -translate-y-1/2 h-1.5 bg-gray-200 rounded-full"></div>
+                                <div id="period-fill" class="absolute top-1/2 -translate-y-1/2 h-1.5 bg-gradient-to-r from-sky-500 to-indigo-500 rounded-full"></div>
+                                
+                                <input id="period-range-min" type="range" min="1" max="12" step="1" value="1" class="range-vis">
+                                <input id="period-range-max" type="range" min="1" max="12" step="1" value="12" class="range-vis">
                             </div>
                         </div>
-
                         <div>
                         <div class="flex items-center justify-between mb-2">
                             <label class="block text-sm text-gray-600">受講料レンジ</label>
