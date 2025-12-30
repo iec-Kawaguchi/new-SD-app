@@ -1,5 +1,4 @@
 const courseList = [
-    // --- 既存データ (ID: 101 - 110) ---
     {
         id: "101",
         title: "Excel マクロ＆VBA入門",
@@ -7,17 +6,13 @@ const courseList = [
         price: 19910,
         period: 3,
         url: "course.html",
+        isNew: true,
+        image: "../img/course_c.webp",
         tags: [
-            { text: "資格", type: "level" },
+            { text: "資格", type: "genre" },
             { text: "業務効率", type: "genre" },
             { text: "推奨", type: "other" }
-        ],
-        thumbnail: {
-            type: "image",
-            src: "../img/course_c.webp",
-            alt: "Excel",
-            isNew: true
-        }
+        ]
     },
     {
         id: "102",
@@ -26,17 +21,13 @@ const courseList = [
         price: 19980,
         period: 3,
         url: "#",
+        isNew: false,
+        image: null,
         tags: [
             { text: "AI", type: "genre" },
             { text: "全社員", type: "target" },
             { text: "50%補助", type: "other" }
-        ],
-        thumbnail: {
-            type: "icon",
-            bgClass: "bg-gradient-to-br from-blue-50 via-indigo-50 to-white group-hover:bg-indigo-50",
-            iconName: "code",
-            iconColor: "text-indigo-500"
-        }
+        ]
     },
     {
         id: "103",
@@ -45,16 +36,13 @@ const courseList = [
         price: 14630,
         period: 3,
         url: "#",
+        isNew: false,
+        image: "../img/course_a.webp",
         tags: [
             { text: "マネジメント", type: "genre" },
             { text: "管理職", type: "target" },
-            { text: "全額補助", type: "other" }
-        ],
-        thumbnail: {
-            type: "image",
-            src: "../img/course_a.webp",
-            alt: "Psychological Safety"
-        }
+            { text: "100%補助", type: "other" }
+        ]
     },
     {
         id: "104",
@@ -63,16 +51,13 @@ const courseList = [
         price: 19910,
         period: 3,
         url: "#",
+        isNew: false,
+        image: "../img/course_b.webp",
         tags: [
-            { text: "資格", type: "level" },
+            { text: "資格", type: "genre" },
             { text: "IT", type: "genre" },
             { text: "若手", type: "target" }
-        ],
-        thumbnail: {
-            type: "image",
-            src: "../img/course_b.webp",
-            alt: "IT Passport"
-        }
+        ]
     },
     {
         id: "105",
@@ -81,15 +66,12 @@ const courseList = [
         price: 19980,
         period: 3,
         url: "#",
+        isNew: false,
+        image: null,
         tags: [
             { text: "マネジメント", type: "genre" },
             { text: "管理職", type: "target" }
-        ],
-        thumbnail: {
-            type: "text-overlay",
-            bgClass: "bg-gradient-to-tr from-rose-100 via-orange-50 to-amber-50",
-            overlayText: "Z世代向け<br>マネジメント"
-        }
+        ]
     },
     {
         id: "106",
@@ -98,16 +80,13 @@ const courseList = [
         price: 9800,
         period: 1,
         url: "#",
+        isNew: false,
+        image: null,
         tags: [
             { text: "基礎", type: "level" },
             { text: "若手", type: "target" },
             { text: "社内推薦", type: "other" }
-        ],
-        thumbnail: {
-            type: "text-overlay",
-            bgClass: "bg-gradient-to-tr from-sky-100 via-indigo-50 to-purple-100",
-            overlayText: "ビジネス<br>基礎スキル"
-        }
+        ]
     },
     {
         id: "107",
@@ -116,16 +95,12 @@ const courseList = [
         price: 15400,
         period: 2,
         url: "#",
+        isNew: false,
+        image: null,
         tags: [
             { text: "経理", type: "genre" },
             { text: "基礎", type: "level" }
-        ],
-        thumbnail: {
-            type: "icon",
-            bgClass: "bg-gradient-to-br from-emerald-50 via-teal-50 to-white group-hover:bg-teal-50",
-            iconName: "account_balance",
-            iconColor: "text-emerald-600"
-        }
+        ]
     },
     {
         id: "108",
@@ -134,17 +109,12 @@ const courseList = [
         price: 22000,
         period: 3,
         url: "#",
+        isNew: true,
+        image: null,
         tags: [
             { text: "マーケティング", type: "genre" },
             { text: "人気", type: "other" }
-        ],
-        thumbnail: {
-            type: "icon",
-            bgClass: "bg-gradient-to-br from-orange-50 via-amber-50 to-white group-hover:bg-orange-50",
-            iconName: "trending_up",
-            iconColor: "text-orange-500",
-            isNew: true
-        }
+        ]
     },
     {
         id: "109",
@@ -153,16 +123,13 @@ const courseList = [
         price: 8800,
         period: 1,
         url: "#",
+        isNew: false,
+        image: null,
         tags: [
             { text: "語学", type: "genre" },
             { text: "実践", type: "level" },
             { text: "グローバル", type: "genre" }
-        ],
-        thumbnail: {
-            type: "text-overlay",
-            bgClass: "bg-gradient-to-bl from-blue-100 via-cyan-50 to-slate-100",
-            overlayText: "English<br>Writing"
-        }
+        ]
     },
     {
         id: "110",
@@ -171,20 +138,14 @@ const courseList = [
         price: 12100,
         period: 2,
         url: "#",
+        isNew: false,
+        image: null,
         tags: [
             { text: "コミュニケーション", type: "genre" },
             { text: "メンタル", type: "genre" },
             { text: "全社員", type: "target" }
-        ],
-        thumbnail: {
-            type: "icon",
-            bgClass: "bg-gradient-to-br from-pink-50 via-rose-50 to-white group-hover:bg-pink-50",
-            iconName: "self_improvement",
-            iconColor: "text-rose-400"
-        }
+        ]
     },
-
-    // --- 追加データ (ID: 111 - 120) ---
     {
         id: "111",
         title: "人を動かすプレゼンテーション",
@@ -192,16 +153,12 @@ const courseList = [
         price: 16500,
         period: 2,
         url: "#",
+        isNew: false,
+        image: null,
         tags: [
             { text: "コミュニケーション", type: "genre" },
             { text: "実践", type: "level" }
-        ],
-        thumbnail: {
-            type: "icon",
-            bgClass: "bg-gradient-to-br from-amber-50 via-yellow-50 to-white group-hover:bg-yellow-50",
-            iconName: "co_present",
-            iconColor: "text-amber-500"
-        }
+        ]
     },
     {
         id: "112",
@@ -210,17 +167,13 @@ const courseList = [
         price: 24800,
         period: 4,
         url: "#",
+        isNew: false,
+        image: null,
         tags: [
             { text: "IT", type: "genre" },
             { text: "データ", type: "genre" },
             { text: "実践", type: "level" }
-        ],
-        thumbnail: {
-            type: "icon",
-            bgClass: "bg-gradient-to-br from-sky-50 via-blue-50 to-white group-hover:bg-blue-50",
-            iconName: "query_stats",
-            iconColor: "text-sky-600"
-        }
+        ]
     },
     {
         id: "113",
@@ -229,16 +182,13 @@ const courseList = [
         price: 13200,
         period: 2,
         url: "#",
+        isNew: false,
+        image: null,
         tags: [
-            { text: "資格", type: "level" },
+            { text: "資格", type: "genre" },
             { text: "経理", type: "genre" },
             { text: "入門", type: "level" }
-        ],
-        thumbnail: {
-            type: "text-overlay",
-            bgClass: "bg-gradient-to-tr from-slate-100 via-gray-100 to-zinc-200",
-            overlayText: "簿記3級<br>短期合格"
-        }
+        ]
     },
     {
         id: "114",
@@ -247,17 +197,13 @@ const courseList = [
         price: 5500,
         period: 1,
         url: "#",
+        isNew: false,
+        image: null,
         tags: [
             { text: "全社員", type: "target" },
-            { text: "必須", type: "other" }, 
+            { text: "100%補助", type: "other" }, 
             { text: "IT", type: "genre" }
-        ],
-        thumbnail: {
-            type: "icon",
-            bgClass: "bg-gradient-to-br from-red-50 via-rose-50 to-white group-hover:bg-rose-50",
-            iconName: "lock_person",
-            iconColor: "text-rose-600"
-        }
+        ]
     },
     {
         id: "115",
@@ -266,18 +212,13 @@ const courseList = [
         price: 18700,
         period: 3,
         url: "#",
+        isNew: true,
+        image: null,
         tags: [
             { text: "マネジメント", type: "genre" },
             { text: "組織", type: "genre" },
             { text: "管理職", type: "target" }
-        ],
-        thumbnail: {
-            type: "icon",
-            bgClass: "bg-gradient-to-br from-teal-50 via-cyan-50 to-white group-hover:bg-cyan-50",
-            iconName: "diversity_3",
-            iconColor: "text-teal-500",
-            isNew: true
-        }
+        ]
     },
     {
         id: "116",
@@ -286,15 +227,12 @@ const courseList = [
         price: 11000,
         period: 3,
         url: "#",
+        isNew: false,
+        image: null,
         tags: [
             { text: "語学", type: "genre" },
             { text: "入門", type: "level" }
-        ],
-        thumbnail: {
-            type: "text-overlay",
-            bgClass: "bg-gradient-to-bl from-red-100 via-orange-50 to-yellow-50",
-            overlayText: "中国語<br>入門"
-        }
+        ]
     },
     {
         id: "117",
@@ -303,17 +241,13 @@ const courseList = [
         price: 14300,
         period: 2,
         url: "#",
+        isNew: false,
+        image: null,
         tags: [
             { text: "思考法", type: "genre" },
             { text: "基礎", type: "level" },
             { text: "定番", type: "other" }
-        ],
-        thumbnail: {
-            type: "icon",
-            bgClass: "bg-gradient-to-br from-indigo-50 via-violet-50 to-white group-hover:bg-violet-50",
-            iconName: "psychology_alt",
-            iconColor: "text-indigo-600"
-        }
+        ]
     },
     {
         id: "118",
@@ -322,17 +256,13 @@ const courseList = [
         price: 21000,
         period: 3,
         url: "#",
+        isNew: false,
+        image: null,
         tags: [
             { text: "法務", type: "genre" },
             { text: "リスク管理", type: "genre" },
             { text: "管理職", type: "target" }
-        ],
-        thumbnail: {
-            type: "icon",
-            bgClass: "bg-gradient-to-br from-slate-50 via-gray-100 to-white group-hover:bg-gray-100",
-            iconName: "gavel",
-            iconColor: "text-gray-600"
-        }
+        ]
     },
     {
         id: "119",
@@ -341,16 +271,12 @@ const courseList = [
         price: 12800,
         period: 2,
         url: "#",
+        isNew: false,
+        image: null,
         tags: [
             { text: "メンタル", type: "genre" },
             { text: "セルフケア", type: "genre" }
-        ],
-        thumbnail: {
-            type: "icon",
-            bgClass: "bg-gradient-to-br from-lime-50 via-green-50 to-white group-hover:bg-green-50",
-            iconName: "spa",
-            iconColor: "text-lime-600"
-        }
+        ]
     },
     {
         id: "120",
@@ -359,15 +285,12 @@ const courseList = [
         price: 27500,
         period: 4,
         url: "#",
+        isNew: false,
+        image: null,
         tags: [
             { text: "マネジメント", type: "genre" },
             { text: "専門", type: "level" },
-            { text: "資格", type: "level" }
-        ],
-        thumbnail: {
-            type: "text-overlay",
-            bgClass: "bg-gradient-to-tr from-cyan-100 via-sky-50 to-blue-100",
-            overlayText: "PMBOK<br>基礎講座"
-        }
+            { text: "資格", type: "genre" }
+        ]
     }
 ];

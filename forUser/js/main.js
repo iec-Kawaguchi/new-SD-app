@@ -16,6 +16,16 @@ const CourseApp = (() => {
             level:  "bg-emerald-400",
             other:  "bg-rose-400"
         },
+        // 画像がない場合のランダム背景用パレット
+        BG_GRADIENTS: [
+            "bg-gradient-to-br from-rose-100 via-orange-50 to-amber-100",
+            "bg-gradient-to-tr from-emerald-100 via-teal-50 to-cyan-100",
+            "bg-gradient-to-bl from-indigo-100 via-purple-50 to-pink-100",
+            "bg-gradient-to-r from-sky-100 via-blue-50 to-indigo-100",
+            "bg-gradient-to-tl from-fuchsia-100 via-pink-50 to-rose-100",
+            "bg-gradient-to-br from-amber-100 via-yellow-50 to-lime-100",
+            "bg-gradient-to-tr from-slate-200 via-gray-100 to-zinc-200"
+        ],
         SELECTORS: {
             container: 'course-panel',
             sentinel: 'loading-sentinel',
@@ -56,33 +66,30 @@ const CourseApp = (() => {
                 : '';
         },
 
-        // サムネイル部分生成
+        // サムネイル部分生成 (画像 or グラデーション)
         thumbnail: (course) => {
-            const badge = Templates.newBadge(course.thumbnail.isNew);
-            const commonClasses = "course-img-wrapper relative aspect-[16/10] overflow-hidden transition-transform"; // レイアウト調整用の基本クラス
+            const badge = Templates.newBadge(course.isNew);
+            const commonClasses = "course-img-wrapper relative aspect-[16/10] overflow-hidden transition-transform"; 
 
-            if (course.thumbnail.type === 'image') {
+            if (course.image) {
+                // --- 画像がある場合 ---
                 return `
                     <div class="${commonClasses} bg-gray-100">
-                        <img src="${course.thumbnail.src}" alt="${course.thumbnail.alt}" class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" loading="lazy" />
+                        <img src="${course.image}" alt="${course.title}" class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" loading="lazy" />
                         <div class="absolute inset-0 bg-gradient-to-t from-slate-900/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                         ${badge}
                     </div>`;
-            } else if (course.thumbnail.type === 'icon') {
+            } else {
+                // --- 画像がない場合 (自動グラデーション + タイトル) ---
+                // IDに基づいて一意のグラデーションを選択（リロードしても色が変わらないようにする）
+                const idNum = course.id.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+                const bgClass = CONFIG.BG_GRADIENTS[idNum % CONFIG.BG_GRADIENTS.length];
+
                 return `
-                    <div class="${commonClasses} ${course.thumbnail.bgClass} grid place-items-center">
-                        <div class="text-center p-6">
-                            <div class="h-12 w-12 mx-auto bg-white rounded-2xl shadow-sm grid place-items-center mb-3 ${course.thumbnail.iconColor} group-hover:scale-110 transition-transform">
-                                <span class="material-symbols-outlined text-2xl">${course.thumbnail.iconName}</span>
-                            </div>
-                            <h3 class="text-lg font-bold text-slate-700">${course.title}</h3>
-                        </div>
-                        ${badge}
-                    </div>`;
-            } else { // text-overlay
-                return `
-                    <div class="${commonClasses} ${course.thumbnail.bgClass} grid place-items-center">
-                        <h3 class="font-bold text-2xl text-slate-700 px-6 text-center group-hover:scale-105 transition-transform">${course.thumbnail.overlayText}</h3>
+                    <div class="${commonClasses} ${bgClass} grid place-items-center p-6">
+                        <h3 class="font-bold text-lg md:text-xl text-slate-700 text-center leading-relaxed group-hover:scale-105 transition-transform duration-300 drop-shadow-sm">
+                            ${course.title}
+                        </h3>
                         ${badge}
                     </div>`;
             }
@@ -92,7 +99,7 @@ const CourseApp = (() => {
         card: (course) => {
             const tagsHtml = course.tags.map(Templates.tag).join('');
             const thumbHtml = Templates.thumbnail(course);
-            const favImgSrc = (course.thumbnail.type === "image") ? course.thumbnail.src : "";
+            const favImgSrc = course.image || ""; // お気に入り用画像（なければ空）
 
             return `
                 <a href="${course.url}" class="course-card group flex flex-col bg-white rounded-3xl overflow-hidden ring-1 ring-slate-200 hover:ring-sky-500/30 shadow-sm hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 relative">
@@ -249,7 +256,7 @@ const CourseApp = (() => {
 
             state.filteredList = state.fullList.filter(course => {
                 // (A) NEW
-                if (isNewOnly && !course.thumbnail.isNew) return false;
+                if (isNewOnly && !course.isNew) return false;
                 
                 // (B) Keyword
                 if (kw) {

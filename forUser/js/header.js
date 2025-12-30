@@ -114,11 +114,11 @@ document.addEventListener("DOMContentLoaded", () => {
                         <span class="material-symbols-outlined text-slate-400">dashboard</span>
                         募集要項
                     </a>
-                    <a href="#" class="flex items-center gap-3 px-4 py-3 text-sm font-medium text-slate-700 rounded-xl hover:bg-slate-50 transition">
+                    <a href="suppliers.html" class="flex items-center gap-3 px-4 py-3 text-sm font-medium text-slate-700 rounded-xl hover:bg-slate-50 transition">
                         <span class="material-symbols-outlined text-slate-400">apartment</span>
                         教育団体一覧
                     </a>
-                    <a href="#" class="flex items-center gap-3 px-4 py-3 text-sm font-medium text-slate-700 rounded-xl hover:bg-slate-50 transition">
+                    <a href="how-to-order.html" class="flex items-center gap-3 px-4 py-3 text-sm font-medium text-slate-700 rounded-xl hover:bg-slate-50 transition">
                         <span class="material-symbols-outlined text-slate-400">format_list_numbered</span>
                         受講の進め方
                     </a>
