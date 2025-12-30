@@ -51,7 +51,7 @@ const courseList = [
         price: 19910,
         period: 3,
         url: "#",
-        isNew: false,
+        isNew: true,
         image: "../img/course_b.webp",
         tags: [
             { text: "資格", type: "genre" },

@@ -144,6 +144,8 @@ const CourseApp = (() => {
             UI.ViewMode.init();
             UI.Carousel.init();
             UI.DeadlineBanner.init();
+            UI.SearchClear.init(); // ★ここに追加！
+
             Modals.Sort.init();
             Modals.Filter.init();
 
@@ -218,7 +220,6 @@ const CourseApp = (() => {
                 btn.addEventListener('click', (e) => {
                     e.preventDefault();
                     e.stopPropagation();
-                    // 将来的なトグル処理はここに記述
                     console.log('Toggle Favorite:', btn.dataset.id);
                 });
             });
@@ -449,6 +450,42 @@ const CourseApp = (() => {
                     });
                 }
             }
+        },  // ← ★ここにカンマ「,」を忘れずにつけてください
+
+        // ▼▼▼ ここに挿入 ▼▼▼
+        // --- Search Clear Button ---
+        SearchClear: {
+            init: () => {
+                const setup = (inputId, btnId) => {
+                    const input = document.getElementById(inputId);
+                    const btn = document.getElementById(btnId);
+                    if (!input || !btn) return;
+
+                    const toggle = () => {
+                        if (input.value.length > 0) {
+                            btn.classList.remove('hidden');
+                            btn.classList.add('flex');
+                        } else {
+                            btn.classList.add('hidden');
+                            btn.classList.remove('flex');
+                        }
+                    };
+
+                    input.addEventListener('input', toggle);
+                    toggle(); // 初期チェック
+
+                    btn.addEventListener('click', () => {
+                        input.value = '';
+                        input.focus();
+                        toggle();
+                        // 検索結果もリセットしたい場合はここでフィルタ実行などを呼ぶ
+                        // 例: Modals.Filter.apply() と同等の処理が必要なら追加検討
+                    });
+                };
+
+                setup('search-input', 'btn-clear-main');
+                setup('filter-keyword', 'btn-clear-filter');
+            }
         }
     };
 
@@ -597,6 +634,7 @@ const CourseApp = (() => {
                 const els = Modals.Filter.elements;
                 if (els.mainSearch && els.keyword) {
                     els.keyword.value = els.mainSearch.value;
+                    els.keyword.dispatchEvent(new Event('input'));
                 }
                 Modals.toggle('filter-dialog', true, 'filter-backdrop', 'filter-panel');
             },
@@ -640,7 +678,7 @@ const CourseApp = (() => {
                             Modals.Filter.setChipState(btn, !isActive);
                         });
                         wrapper.appendChild(btn);
-                    });
+                    }); 
                     
                     groupDiv.appendChild(wrapper);
                     container.appendChild(groupDiv);
@@ -649,6 +687,7 @@ const CourseApp = (() => {
 
             setChipState: (el, active) => {
                 el.setAttribute('aria-pressed', active ? 'true' : 'false');
+                el.classList.toggle('bg-white', !active);
                 el.classList.toggle('bg-sky-50', active);
                 el.classList.toggle('hover:bg-sky-100', active);
                 el.classList.toggle('border-sky-300', active);
@@ -694,6 +733,7 @@ const CourseApp = (() => {
                 // メイン検索窓にも反映
                 if (els.mainSearch && els.keyword) {
                     els.mainSearch.value = els.keyword.value;
+                    els.mainSearch.dispatchEvent(new Event('input'));
                 }
 
                 Core.filter(criteria);
