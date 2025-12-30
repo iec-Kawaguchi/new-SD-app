@@ -12,8 +12,8 @@ const CourseApp = (() => {
         BATCH_SIZE: 6,
         TAG_COLORS: {
             target: "bg-sky-400",
-            genre:  "bg-emerald-400",
-            level:  "bg-indigo-400",
+            genre:  "bg-slate-600",
+            level:  "bg-emerald-400",
             other:  "bg-rose-400"
         },
         SELECTORS: {
