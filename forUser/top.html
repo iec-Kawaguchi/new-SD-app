@@ -224,86 +224,89 @@
         </div>
 
         <div id="filter-dialog" class="fixed inset-0 z-50 hidden" role="dialog" aria-modal="true" aria-labelledby="filter-title">
-            <div id="filter-backdrop" class="absolute inset-0 bg-black/40 backdrop-blur opacity-0 transition-opacity duration-200"></div>
-            <div class="pointer-events-none flex items-end md:items-center justify-center min-h-full">
-                <div id="filter-panel" class="pointer-events-auto relative w-full md:w-[640px] max-w-2xl md:rounded-3xl rounded-t-3xl bg-white shadow-2xl translate-y-6 md:translate-y-0 md:scale-95 opacity-0 transition-all duration-200 ease-out md:my-16">
-                    <div class="px-6 py-5 border-b border-gray-100 flex items-center gap-3">
-                        <span class="material-symbols-outlined text-sky-600">tune</span>
-                        <div class="mr-auto">
-                        <h2 id="filter-title" class="text-lg font-semibold leading-tight">フィルタ</h2>
-                        <p class="text-sm text-gray-500">条件を選んでコースを絞り込み</p>
-                        </div>
-                        <button id="filter-close" class="p-2 rounded-full hover:bg-gray-100 flex" aria-label="Close">
-                        <span class="material-symbols-outlined">close</span>
-                        </button>
-                    </div>
-                    <div class="px-6 py-5 space-y-6 max-h-[70vh] overflow-y-auto no-scrollbar">
-                        <div>
-                            <label class="block text-sm text-gray-600 mb-2">キーワード</label>
-                            <div class="flex items-center rounded-xl border border-gray-200 focus-within:ring-2 focus-within:ring-sky-500 bg-white px-3">
-                                <span class="material-symbols-outlined text-gray-400 mr-1">search</span>
-                                <input id="filter-keyword" type="search" class="bg-white w-full rounded-xl py-2.5 px-2 outline-none text-base md:text-sm" placeholder="例）マネジメント / VBA など" />
-                            </div>
-                        </div>
+    <div id="filter-backdrop" class="absolute inset-0 bg-black/40 backdrop-blur opacity-0 transition-opacity duration-200"></div>
+    
+    <div class="pointer-events-none fixed inset-0 flex items-end md:items-center justify-center p-0 md:p-4">
+        
+        <div id="filter-panel" class="pointer-events-auto flex flex-col w-full md:w-[640px] max-w-2xl bg-white shadow-2xl rounded-t-3xl md:rounded-3xl transform translate-y-full md:translate-y-0 opacity-0 transition-all duration-200 ease-out max-h-[85vh] md:max-h-[80vh]">
+            
+            <div class="flex-none px-6 py-4 border-b border-gray-100 flex items-center gap-3">
+                <span class="material-symbols-outlined text-sky-600">tune</span>
+                <div class="mr-auto">
+                    <h2 id="filter-title" class="text-lg font-semibold leading-tight">フィルタ</h2>
+                </div>
+                <button id="filter-close" class="p-2 rounded-full hover:bg-gray-100 flex transition" aria-label="Close">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
 
-                        <div class="flex items-center justify-between border-b border-gray-50 pb-4 mb-4">
-                            <div>
-                                <label class="block text-sm font-bold text-gray-700" for="filter-new-only">新着コースのみ</label>
-                                <p class="text-xs text-gray-400 mt-0.5">"NEW" マークがついたコースを表示</p>
-                            </div>
-                            <label class="relative inline-flex items-center cursor-pointer">
-                                <input type="checkbox" id="filter-new-only" class="sr-only peer">
-                                <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-sky-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-sky-600"></div>
-                            </label>
-                        </div>
-                        <div>
-                            <label class="block text-sm text-gray-600 mb-2">タグ</label>
-                            <div class="flex flex-wrap gap-2">
-                                <button class="rounded-full px-3 py-1.5 text-sm border border-gray-200 bg-white text-gray-700 hover:bg-gray-50 transition" data-chip aria-pressed="false">生成AI</button>
-                                <button class="rounded-full px-3 py-1.5 text-sm border border-gray-200 bg-white text-gray-700 hover:bg-gray-50 transition" data-chip aria-pressed="false">マネジメント</button>
-                                <button class="rounded-full px-3 py-1.5 text-sm border border-gray-200 bg-white text-gray-700 hover:bg-gray-50 transition" data-chip aria-pressed="false">基礎</button>
-                                <button class="rounded-full px-3 py-1.5 text-sm border border-gray-200 bg-white text-gray-700 hover:bg-gray-50 transition" data-chip aria-pressed="false">資格</button>
-                                <button class="rounded-full px-3 py-1.5 text-sm border border-gray-200 bg-white text-gray-700 hover:bg-gray-50 transition" data-chip aria-pressed="false">推奨</button>
-                            </div>
-                        </div>
-
-                        <div>
-                            <div class="flex items-center justify-between mb-2">
-                                <label class="block text-sm text-gray-600">受講期間</label>
-                                <div class="text-sm text-gray-500"><span id="period-min-label">1</span> ヶ月 〜 <span id="period-max-label">12</span> ヶ月</div>
-                            </div>
-                            <div class="relative h-10">
-                                <div class="absolute left-0 right-0 top-1/2 -translate-y-1/2 h-1.5 bg-gray-200 rounded-full"></div>
-                                <div id="period-fill" class="absolute top-1/2 -translate-y-1/2 h-1.5 bg-gradient-to-r from-sky-500 to-indigo-500 rounded-full"></div>
-                                
-                                <input id="period-range-min" type="range" min="1" max="12" step="1" value="1" class="range-vis">
-                                <input id="period-range-max" type="range" min="1" max="12" step="1" value="12" class="range-vis">
-                            </div>
-                        </div>
-                        <div>
-                        <div class="flex items-center justify-between mb-2">
-                            <label class="block text-sm text-gray-600">受講料レンジ</label>
-                            <div class="text-sm text-gray-500"><span id="price-min">0</span> 円 〜 <span id="price-max">30,000</span> 円</div>
-                        </div>
-                        <div class="relative h-10">
-                            <div class="absolute left-0 right-0 top-1/2 -translate-y-1/2 h-1.5 bg-gray-200 rounded-full"></div>
-                            <div id="price-fill" class="absolute top-1/2 -translate-y-1/2 h-1.5 bg-gradient-to-r from-sky-500 to-indigo-500 rounded-full"></div>
-                            <input id="range-min" type="range" min="0" max="50000" value="0" class="range-vis">
-                            <input id="range-max" type="range" min="0" max="50000" value="30000" class="range-vis">
-                        </div>
-                        </div>
-                    </div>
-                    
-                    <div class="px-6 py-4 border-t border-gray-100 bg-white md:rounded-b-3xl rounded-b-3xl flex items-center justify-between gap-3">
-                        <button id="filter-reset" class="text-sm text-gray-600 hover:text-gray-800 underline">リセット</button>
-                        <div class="flex items-center gap-2">
-                            <button id="filter-cancel" class="px-4 py-2 rounded-xl border border-gray-300 hover:bg-gray-50">キャンセル</button>
-                            <button id="filter-apply" class="px-4 py-2 rounded-xl bg-sky-600 text-white hover:bg-sky-700 shadow-sm">適用</button>
-                        </div>
+            <div class="flex-1 overflow-y-auto p-6 space-y-8 no-scrollbar">
+                
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-2">キーワード</label>
+                    <div class="flex items-center rounded-xl border border-gray-200 focus-within:ring-2 focus-within:ring-sky-500 bg-white px-3 shadow-sm">
+                        <span class="material-symbols-outlined text-gray-400 mr-1">search</span>
+                        <input id="filter-keyword" type="search" class="bg-white w-full rounded-xl py-3 px-2 outline-none text-base" placeholder="例）マネジメント / VBA など" />
                     </div>
                 </div>
+
+                <div class="flex items-center justify-between py-2">
+                    <div>
+                        <label class="block text-sm font-bold text-gray-700" for="filter-new-only">新着コースのみ</label>
+                        <p class="text-xs text-gray-400 mt-0.5">"NEW" マークがついたコースを表示</p>
+                    </div>
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" id="filter-new-only" class="sr-only peer">
+                        <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-sky-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-sky-600"></div>
+                    </label>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-3">タグで絞り込む</label>
+                    <div id="filter-tag-container" class="space-y-6"></div>
+                </div>
+
+                <div>
+                    <div class="flex items-center justify-between mb-4">
+                        <label class="block text-sm font-bold text-gray-700">受講期間</label>
+                        <div class="text-sm font-medium text-sky-600 bg-sky-50 px-3 py-1 rounded-lg border border-sky-100">
+                            <span id="period-min-label">1</span> ヶ月 〜 <span id="period-max-label">12</span> ヶ月
+                        </div>
+                    </div>
+                    <div class="relative h-6 mx-2"> <div class="absolute left-0 right-0 top-1/2 -translate-y-1/2 h-1.5 bg-gray-100 rounded-full"></div>
+                        <div id="period-fill" class="absolute top-1/2 -translate-y-1/2 h-1.5 bg-sky-500 rounded-full"></div>
+                        <input id="period-range-min" type="range" min="1" max="12" step="1" value="1" class="range-vis">
+                        <input id="period-range-max" type="range" min="1" max="12" step="1" value="12" class="range-vis">
+                    </div>
+                </div>
+
+                <div class="pb-4"> <div class="flex items-center justify-between mb-4">
+                        <label class="block text-sm font-bold text-gray-700">受講料</label>
+                        <div class="text-sm font-medium text-sky-600 bg-sky-50 px-3 py-1 rounded-lg border border-sky-100">
+                            <span id="price-min">0</span> 円 〜 <span id="price-max">30,000</span> 円
+                        </div>
+                    </div>
+                    <div class="relative h-6 mx-2">
+                        <div class="absolute left-0 right-0 top-1/2 -translate-y-1/2 h-1.5 bg-gray-100 rounded-full"></div>
+                        <div id="price-fill" class="absolute top-1/2 -translate-y-1/2 h-1.5 bg-sky-500 rounded-full"></div>
+                        <input id="range-min" type="range" min="0" max="50000" value="0" class="range-vis">
+                        <input id="range-max" type="range" min="0" max="50000" value="30000" class="range-vis">
+                    </div>
+                </div>
+
             </div>
+            
+            <div class="flex-none px-6 py-4 border-t border-gray-100 bg-gray-50/80 backdrop-blur rounded-b-none md:rounded-b-3xl flex items-center justify-between gap-4 z-10">
+                <button id="filter-reset" class="text-sm text-gray-500 hover:text-gray-800 underline underline-offset-4 transition">リセット</button>
+                <div class="flex items-center gap-3">
+                    <button id="filter-cancel" class="px-5 py-2.5 rounded-xl border border-gray-300 text-gray-600 bg-white hover:bg-gray-50 font-medium transition shadow-sm">キャンセル</button>
+                    <button id="filter-apply" class="px-8 py-2.5 rounded-xl bg-sky-600 text-white hover:bg-sky-700 font-bold shadow-md hover:shadow-lg transform active:scale-95 transition">適用する</button>
+                </div>
+            </div>
+
         </div>
+    </div>
+</div>
         
         <div id="deadline-banner" class="fixed inset-x-3 bottom-3 md:inset-x-auto md:right-6 md:bottom-6 z-40 md:z-50">
             <div class="max-w-xl md:max-w-sm mx-auto md:mx-0 rounded-2xl shadow-xl border border-sky-100 bg-white/95 backdrop-blur px-4 py-3 flex items-start gap-3">

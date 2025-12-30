@@ -8,8 +8,9 @@ const courseList = [
         period: 3,
         url: "course.html",
         tags: [
-            { text: "資格", color: "bg-gray-700" },
-            { text: "推奨", color: "bg-gray-700" }
+            { text: "資格", type: "level" },
+            { text: "業務効率", type: "genre" },
+            { text: "推奨", type: "other" }
         ],
         thumbnail: {
             type: "image",
@@ -26,8 +27,9 @@ const courseList = [
         period: 3,
         url: "#",
         tags: [
-            { text: "AI", color: "bg-gray-700" },
-            { text: "50%補助", color: "bg-gray-700" }
+            { text: "AI", type: "genre" },
+            { text: "全社員", type: "target" },
+            { text: "50%補助", type: "other" }
         ],
         thumbnail: {
             type: "icon",
@@ -44,8 +46,9 @@ const courseList = [
         period: 3,
         url: "#",
         tags: [
-            { text: "マネジメント", color: "bg-gray-700" },
-            { text: "全額補助", color: "bg-gray-700" }
+            { text: "マネジメント", type: "genre" },
+            { text: "管理職", type: "target" },
+            { text: "全額補助", type: "other" }
         ],
         thumbnail: {
             type: "image",
@@ -61,8 +64,9 @@ const courseList = [
         period: 3,
         url: "#",
         tags: [
-            { text: "資格", color: "bg-gray-700" },
-            { text: "推奨", color: "bg-gray-700" }
+            { text: "資格", type: "level" },
+            { text: "IT", type: "genre" },
+            { text: "若手", type: "target" }
         ],
         thumbnail: {
             type: "image",
@@ -78,7 +82,8 @@ const courseList = [
         period: 3,
         url: "#",
         tags: [
-            { text: "マネジメント", color: "bg-gray-700" }
+            { text: "マネジメント", type: "genre" },
+            { text: "管理職", type: "target" }
         ],
         thumbnail: {
             type: "text-overlay",
@@ -94,8 +99,9 @@ const courseList = [
         period: 1,
         url: "#",
         tags: [
-            { text: "基礎", color: "bg-gray-700" },
-            { text: "社内推薦", color: "bg-gray-700" }
+            { text: "基礎", type: "level" },
+            { text: "若手", type: "target" },
+            { text: "社内推薦", type: "other" }
         ],
         thumbnail: {
             type: "text-overlay",
@@ -111,8 +117,8 @@ const courseList = [
         period: 2,
         url: "#",
         tags: [
-            { text: "経理", color: "bg-gray-700" },
-            { text: "基礎", color: "bg-gray-700" }
+            { text: "経理", type: "genre" },
+            { text: "基礎", type: "level" }
         ],
         thumbnail: {
             type: "icon",
@@ -129,8 +135,8 @@ const courseList = [
         period: 3,
         url: "#",
         tags: [
-            { text: "マーケティング", color: "bg-gray-700" },
-            { text: "人気", color: "bg-gray-700" }
+            { text: "マーケティング", type: "genre" },
+            { text: "人気", type: "other" }
         ],
         thumbnail: {
             type: "icon",
@@ -148,8 +154,9 @@ const courseList = [
         period: 1,
         url: "#",
         tags: [
-            { text: "語学", color: "bg-gray-700" },
-            { text: "グローバル", color: "bg-gray-700" }
+            { text: "語学", type: "genre" },
+            { text: "実践", type: "level" },
+            { text: "グローバル", type: "genre" }
         ],
         thumbnail: {
             type: "text-overlay",
@@ -165,8 +172,9 @@ const courseList = [
         period: 2,
         url: "#",
         tags: [
-            { text: "コミュニケーション", color: "bg-gray-700" },
-            { text: "メンタル", color: "bg-gray-700" }
+            { text: "コミュニケーション", type: "genre" },
+            { text: "メンタル", type: "genre" },
+            { text: "全社員", type: "target" }
         ],
         thumbnail: {
             type: "icon",
@@ -185,8 +193,8 @@ const courseList = [
         period: 2,
         url: "#",
         tags: [
-            { text: "スキル", color: "bg-gray-700" },
-            { text: "実践", color: "bg-gray-700" }
+            { text: "コミュニケーション", type: "genre" },
+            { text: "実践", type: "level" }
         ],
         thumbnail: {
             type: "icon",
@@ -203,8 +211,9 @@ const courseList = [
         period: 4,
         url: "#",
         tags: [
-            { text: "IT", color: "bg-gray-700" },
-            { text: "データ", color: "bg-gray-700" }
+            { text: "IT", type: "genre" },
+            { text: "データ", type: "genre" },
+            { text: "実践", type: "level" }
         ],
         thumbnail: {
             type: "icon",
@@ -221,8 +230,9 @@ const courseList = [
         period: 2,
         url: "#",
         tags: [
-            { text: "資格", color: "bg-gray-700" },
-            { text: "経理", color: "bg-gray-700" }
+            { text: "資格", type: "level" },
+            { text: "経理", type: "genre" },
+            { text: "入門", type: "level" }
         ],
         thumbnail: {
             type: "text-overlay",
@@ -238,8 +248,9 @@ const courseList = [
         period: 1,
         url: "#",
         tags: [
-            { text: "必須", color: "bg-gray-700" }, 
-            { text: "IT", color: "bg-gray-700" }
+            { text: "全社員", type: "target" },
+            { text: "必須", type: "other" }, 
+            { text: "IT", type: "genre" }
         ],
         thumbnail: {
             type: "icon",
@@ -256,8 +267,9 @@ const courseList = [
         period: 3,
         url: "#",
         tags: [
-            { text: "マネジメント", color: "bg-gray-700" },
-            { text: "組織", color: "bg-gray-700" }
+            { text: "マネジメント", type: "genre" },
+            { text: "組織", type: "genre" },
+            { text: "管理職", type: "target" }
         ],
         thumbnail: {
             type: "icon",
@@ -275,8 +287,8 @@ const courseList = [
         period: 3,
         url: "#",
         tags: [
-            { text: "語学", color: "bg-gray-700" },
-            { text: "入門", color: "bg-gray-700" }
+            { text: "語学", type: "genre" },
+            { text: "入門", type: "level" }
         ],
         thumbnail: {
             type: "text-overlay",
@@ -292,8 +304,9 @@ const courseList = [
         period: 2,
         url: "#",
         tags: [
-            { text: "思考法", color: "bg-gray-700" },
-            { text: "定番", color: "bg-gray-700" }
+            { text: "思考法", type: "genre" },
+            { text: "基礎", type: "level" },
+            { text: "定番", type: "other" }
         ],
         thumbnail: {
             type: "icon",
@@ -310,8 +323,9 @@ const courseList = [
         period: 3,
         url: "#",
         tags: [
-            { text: "法務", color: "bg-gray-700" },
-            { text: "リスク管理", color: "bg-gray-700" }
+            { text: "法務", type: "genre" },
+            { text: "リスク管理", type: "genre" },
+            { text: "管理職", type: "target" }
         ],
         thumbnail: {
             type: "icon",
@@ -328,8 +342,8 @@ const courseList = [
         period: 2,
         url: "#",
         tags: [
-            { text: "メンタル", color: "bg-gray-700" },
-            { text: "セルフケア", color: "bg-gray-700" }
+            { text: "メンタル", type: "genre" },
+            { text: "セルフケア", type: "genre" }
         ],
         thumbnail: {
             type: "icon",
@@ -346,8 +360,9 @@ const courseList = [
         period: 4,
         url: "#",
         tags: [
-            { text: "マネジメント", color: "bg-gray-700" },
-            { text: "専門", color: "bg-gray-700" }
+            { text: "マネジメント", type: "genre" },
+            { text: "専門", type: "level" },
+            { text: "資格", type: "level" }
         ],
         thumbnail: {
             type: "text-overlay",
