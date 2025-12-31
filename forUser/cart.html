@@ -22,117 +22,127 @@
             .input-error {
                 border-color: #ef4444 !important; /* red-500 */
                 background-color: #fef2f2 !important; /* red-50 */
+                box-shadow: 0 0 0 1px #ef4444 !important;
             }
+
+            /* アイコン設定 */
+            .material-symbols-outlined {
+                font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            }
+            
+            /* スクロールバー非表示 */
+            .no-scrollbar::-webkit-scrollbar { display: none; }
+            .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         </style>
     </head>
-    <body class="bg-gray-100 min-h-screen flex flex-col">
+    <body class="bg-gray-100 text-gray-800 min-h-screen flex flex-col">
         <div id="global-header" class="sticky top-0 z-40 w-full"></div>
 
         <main class="flex-1">
-            <div class="max-w-6xl w-full mx-auto p-4 md:p-6">
-                <!-- <ol class="flex items-center gap-2 text-sm text-gray-600 mb-4" aria-label="進行状況">
-                    <li class="flex items-center gap-2"><span class="w-6 h-6 rounded-full bg-gray-800 text-white grid place-items-center text-xs font-">1</span><span>カート</span></li>
-                    <li class="text-gray-400">—</li>
-                    <li class="flex items-center gap-2"><span class="w-6 h-6 rounded-full bg-gray-800 text-white grid place-items-center text-xs">2</span><span>情報入力</span></li>
-                    <li class="text-gray-400">—</li>
-                    <li class="flex items-center gap-2"><span class="w-6 h-6 rounded-full bg-gray-300 text-gray-700 grid place-items-center text-xs">3</span><span>確認・確定</span></li>
-                </ol> -->
+            <div class="max-w-6xl w-full mx-auto p-4 md:p-6 mt-4">
+                
+                <h1 class="text-2xl md:text-3xl font-black text-gray-800 mb-8 tracking-tight">
+                    ご注文手続き
+                </h1>
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div class="md:col-span-2 space-y-8">
-                        <section class="bg-white rounded-xl shadow p-5">
-                            <h2 class="text-xl font-bold border-l-4 border-gray-700 pl-2 mb-4">カート</h2>
+                        <section class="bg-white rounded-2xl shadow-sm border border-gray-200/60 p-6 md:p-8">
+                            <div class="flex items-center gap-2 mb-6 border-b border-gray-100 pb-4">
+                                <span class="material-symbols-outlined text-sky-600">shopping_cart</span>
+                                <h2 class="text-xl font-bold text-gray-800">カート</h2>
+                            </div>
                             <ul id="cart-list" class="space-y-4">
-                                <li class="flex items-center gap-4">
+                                <li class="flex items-center gap-4 p-3 rounded-xl hover:bg-gray-50 transition-colors">
                                     <div class="flex-1 min-w-0">
-                                        <p class="font-medium truncate">Excel マクロ＆VBA入門</p>
+                                        <p class="font-bold text-gray-800 truncate">Excel マクロ＆VBA入門</p>
                                         <p class="text-sm text-gray-500">コースNo: 101</p>
-                                        <button type="button" class="text-sm text-gray-500 hover:text-red-600 underline mt-1" data-remove>削除</button>
+                                        <button type="button" class="text-sm text-gray-400 hover:text-red-500 underline mt-1 transition-colors" data-remove>削除</button>
                                     </div>
                                     <div class="flex items-center gap-2">
                                         <div class="hidden">
                                             <input class="w-12 text-center outline-none" type="number" min="1" value="1" data-qty />
                                         </div>
                                         <div class="w-24 text-right">
-                                            <span class="font-semibold" data-price="19910" data-line-total>¥19,910</span>
+                                            <span class="font-bold text-lg text-gray-800" data-price="19910" data-line-total>¥19,910</span>
                                         </div>
                                     </div>
                                 </li>
                             </ul>
                         </section>
 
-                        <section class="bg-white rounded-xl shadow p-5">
-                            <h2 class="text-xl font-bold border-l-4 border-gray-700 pl-2 mb-4">基本情報</h2>
+                        <section class="bg-white rounded-2xl shadow-sm border border-gray-200/60 p-6 md:p-8">
+                            <div class="flex items-center gap-2 mb-6 border-b border-gray-100 pb-4">
+                                <span class="material-symbols-outlined text-sky-600">badge</span>
+                                <h2 class="text-xl font-bold text-gray-800">基本情報</h2>
+                            </div>
                             <form id="checkout-form" class="space-y-6" novalidate>
                                 <div class="flex flex-col">
-                                    <span class="font-medium">受講区分 <span class="text-red-500">*</span></span>
-                                    <div class="mt-2 flex flex-wrap gap-4">
-                                        <label class="inline-flex items-center gap-2">
-                                            <input id="enrollType" type="radio" name="enrollType" value="new" class="accent-blue-600" checked>
+                                    <span class="font-bold text-sm text-gray-700 mb-2">受講区分 <span class="text-red-500">*</span></span>
+                                    <div class="flex flex-wrap gap-4">
+                                        <label class="inline-flex items-center gap-2 cursor-pointer p-2 rounded-lg hover:bg-gray-50 transition">
+                                            <input id="enrollType" type="radio" name="enrollType" value="new" class="accent-sky-600 w-5 h-5" checked>
                                             <span>新規受講</span>
                                         </label>
-                                        <label class="inline-flex items-center gap-2">
-                                            <input type="radio" name="enrollType" value="re" class="accent-blue-600">
+                                        <label class="inline-flex items-center gap-2 cursor-pointer p-2 rounded-lg hover:bg-gray-50 transition">
+                                            <input type="radio" name="enrollType" value="re" class="accent-sky-600 w-5 h-5">
                                             <span>再受講</span>
                                         </label>
                                     </div>
                                     <p class="text-sm text-red-600 mt-1 hidden" data-error-for="enrollType">受講区分を選択してください。</p>
                                 </div>
 
-                                <div id="re-enroll-block" class="flex flex-col sm:w-1/2 hidden">
-                                    <label for="prevEnrollNo" class="font-medium">前回の受講番号 <span class="text-red-500">*</span></label>
-                                    <input id="prevEnrollNo" name="prevEnrollNo" type="text" class="border rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-400" autocomplete="off" />
-                                    <p class="text-sm text-gray-500 mt-1">受講証やメールに記載の「受講番号」を入力してください。</p>
+                                <div id="re-enroll-block" class="flex flex-col sm:w-1/2 hidden bg-sky-50/50 p-4 rounded-xl border border-sky-100">
+                                    <label for="prevEnrollNo" class="font-bold text-sm text-gray-700 mb-1">前回の受講番号 <span class="text-red-500">*</span></label>
+                                    <input id="prevEnrollNo" name="prevEnrollNo" type="text" class="border border-gray-300 rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500 bg-white" autocomplete="off" />
+                                    <p class="text-xs text-gray-500 mt-1">受講証やメールに記載の「受講番号」を入力してください。</p>
                                     <p class="text-sm text-red-600 mt-1 hidden" data-error-for="prevEnrollNo">前回の受講番号を入力してください。</p>
                                 </div>
 
-                                <!-- 氏名 -->
                                 <div class="grid grid-cols-2 sm:grid-cols-2 gap-4">
                                     <div class="flex flex-col">
-                                        <label for="name_sei" class="font-medium">姓 <span class="text-red-500">*</span></label>
-                                        <input id="name_sei" name="name_sei" type="text" class="border rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-400" autocomplete="family-name" required />
+                                        <label for="name_sei" class="font-bold text-sm text-gray-700 mb-1">姓 <span class="text-red-500">*</span></label>
+                                        <input id="name_sei" name="name_sei" type="text" class="border border-gray-300 rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500" autocomplete="family-name" required />
                                     </div>
                                     <div class="flex flex-col">
-                                        <label for="kana_sei" class="font-medium">セイ <span class="text-red-500">*</span></label>
-                                        <input id="kana_sei" name="kana_sei" type="text" class="border rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-400" placeholder="" pattern="^[\u30A0-\u30FF\sー－]+$" required />
+                                        <label for="kana_sei" class="font-bold text-sm text-gray-700 mb-1">セイ <span class="text-red-500">*</span></label>
+                                        <input id="kana_sei" name="kana_sei" type="text" class="border border-gray-300 rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500" placeholder="" pattern="^[\u30A0-\u30FF\sー－]+$" required />
                                         <p class="text-xs text-gray-500 mt-1">全角カタカナ</p>
                                     </div>
                                     <div class="flex flex-col">
-                                        <label for="name_mei" class="font-medium">名 <span class="text-red-500">*</span></label>
-                                        <input id="name_mei" name="name_mei" type="text" class="border rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-400" autocomplete="given-name" required />
+                                        <label for="name_mei" class="font-bold text-sm text-gray-700 mb-1">名 <span class="text-red-500">*</span></label>
+                                        <input id="name_mei" name="name_mei" type="text" class="border border-gray-300 rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500" autocomplete="given-name" required />
                                     </div>
                                     <div class="flex flex-col">
-                                        <label for="kana_mei" class="font-medium">メイ <span class="text-red-500">*</span></label>
-                                        <input id="kana_mei" name="kana_mei" type="text" class="border rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-400" placeholder="" pattern="^[\u30A0-\u30FF\sー－]+$" required />
+                                        <label for="kana_mei" class="font-bold text-sm text-gray-700 mb-1">メイ <span class="text-red-500">*</span></label>
+                                        <input id="kana_mei" name="kana_mei" type="text" class="border border-gray-300 rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500" placeholder="" pattern="^[\u30A0-\u30FF\sー－]+$" required />
                                         <p class="text-xs text-gray-500 mt-1">全角カタカナ</p>
                                     </div>
                                 </div>
-                                <!-- 性別 -->
                                 <div class="flex flex-col space-y-2">
-                                    <span class="font-medium">性別<span class="text-red-500"> *</span></span>
-                                    <div class="mt-2 flex flex-wrap gap-4">
-                                        <label class="inline-flex items-center gap-2">
-                                            <input id="gender_male" type="radio" name="gender" value="male" class="accent-blue-600" checked>
+                                    <span class="font-bold text-sm text-gray-700">性別<span class="text-red-500"> *</span></span>
+                                    <div class="flex flex-wrap gap-4">
+                                        <label class="inline-flex items-center gap-2 cursor-pointer p-2 rounded-lg hover:bg-gray-50 transition">
+                                            <input id="gender_male" type="radio" name="gender" value="male" class="accent-sky-600 w-5 h-5" checked>
                                             <span>男性</span>
                                         </label>
-                                        <label class="inline-flex items-center gap-2">
-                                            <input id="gender_female" type="radio" name="gender" value="female" class="accent-blue-600">
+                                        <label class="inline-flex items-center gap-2 cursor-pointer p-2 rounded-lg hover:bg-gray-50 transition">
+                                            <input id="gender_female" type="radio" name="gender" value="female" class="accent-sky-600 w-5 h-5">
                                             <span>女性</span>
                                         </label>
-                                        <label class="inline-flex items-center gap-2">
-                                            <input id="gender_other" type="radio" name="gender" value="other" class="accent-blue-600">
+                                        <label class="inline-flex items-center gap-2 cursor-pointer p-2 rounded-lg hover:bg-gray-50 transition">
+                                            <input id="gender_other" type="radio" name="gender" value="other" class="accent-sky-600 w-5 h-5">
                                             <span>その他</span>
                                         </label>
                                     </div>
                                     <p class="text-sm text-red-600 mt-1 hidden" data-error-for="gender">性別を選択してください。</p>
                                 </div>
-                                <!-- 所属組織 -->
                                 <div class="flex flex-col space-y-2">
-                                    <label for="org_display" class="font-medium">所属組織 <span class="text-red-500">*</span></label>
+                                    <label for="org_display" class="font-bold text-sm text-gray-700">所属組織 <span class="text-red-500">*</span></label>
                                     
                                     <div class="relative mt-1 cursor-pointer group">
-                                        <input id="org_display" type="text" class="w-full border rounded-lg p-2 pr-10 focus:outline-none focus:ring-2 focus:ring-blue-400 cursor-pointer caret-transparent bg-white" placeholder="組織を選択してください" readonly required />
-                                        <input id="org_value" name="org_value" type="hidden" /> <span class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 group-hover:text-blue-600 pointer-events-none">
+                                        <input id="org_display" type="text" class="w-full border border-gray-300 rounded-xl p-3 pr-10 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500 cursor-pointer caret-transparent bg-white shadow-sm" placeholder="組織を選択してください" readonly required />
+                                        <input id="org_value" name="org_value" type="hidden" /> <span class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 group-hover:text-sky-600 pointer-events-none transition-colors">
                                             <span class="material-symbols-outlined">apartment</span>
                                         </span>
                                     </div>
@@ -140,38 +150,35 @@
                                 </div>
                                 
                                 <div class="flex flex-col space-y-2">
-                                    <label for="employee_number" class="font-medium">社員番号 <span class="text-red-500">*</span></label>
-                                    
-                                        <input id="employee_number" type="text" class="w-1/2 border rounded-lg p-2 pr-10 focus:outline-none focus:ring-2 focus:ring-blue-400 bg-white" placeholder="社員番号を入力してください" required />
-                                    
+                                    <label for="employee_number" class="font-bold text-sm text-gray-700">社員番号 <span class="text-red-500">*</span></label>
+                                    <input id="employee_number" type="text" class="w-1/2 border border-gray-300 rounded-xl p-3 pr-10 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500 bg-white" placeholder="社員番号を入力してください" required />
                                     <p class="text-sm text-red-600 mt-1 hidden" data-error-for="employee_number">社員番号を入力してください。</p>
                                 </div>
-                                <!-- メールアドレス -->
-                                <div class="flex flex-col space-y-2">
+                                <div class="flex flex-col space-y-2 bg-gray-50/50 p-4 rounded-xl border border-gray-100">
                                     <div class="flex flex-col">
-                                        <label for="email" class="font-medium">
+                                        <label for="email" class="font-bold text-sm text-gray-700">
                                             メールアドレス <span class="text-red-500">*</span>
                                         </label>
-                                        <div class="flex flex-col sm:flex-row sm:items-center gap-2 mt-1">
-                                            <input id="email" name="email" type="email" class="border rounded-lg p-2 flex-1 focus:outline-none focus:ring-2 focus:ring-blue-400" autocomplete="email" required />
-                                            <button type="button" id="send-otp" class="px-3 py-2 text-sm rounded-lg border border-blue-600 text-blue-600 hover:bg-blue-50 whitespace-nowrap">
+                                        <div class="flex flex-col sm:flex-row sm:items-center gap-2 mt-2">
+                                            <input id="email" name="email" type="email" class="border border-gray-300 rounded-xl p-3 flex-1 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500 bg-white" autocomplete="email" required />
+                                            <button type="button" id="send-otp" class="px-4 py-3 text-sm rounded-xl border border-sky-600 text-sky-700 bg-sky-50 hover:bg-sky-100 font-bold whitespace-nowrap transition shadow-sm">
                                                 認証コードを送信
                                             </button>
                                         </div>
-                                        <p class="text-xs text-gray-500 mt-1">入力したメールアドレス宛にワンタイム認証コードを送信します。</p>
+                                        <p class="text-xs text-gray-500 mt-2 ml-1">入力したメールアドレス宛にワンタイム認証コードを送信します。</p>
                                         <p class="text-sm text-red-600 mt-1 hidden" data-error-for="email">有効なメールアドレスを入力してください。</p>
                                     </div>
 
-                                    <div class="flex flex-col sm:flex-row sm:items-center gap-2">
+                                    <div class="flex flex-col sm:flex-row sm:items-center gap-2 mt-2">
                                         <div class="flex flex-col sm:flex-row sm:items-center gap-2 flex-1">
-                                            <input id="emailOtp" name="emailOtp" type="text" class="border rounded-lg p-2 flex-1 disabled:bg-gray-100 disabled:text-gray-400" placeholder="6桁の認証コード" maxlength="6" inputmode="numeric" data-numeric disabled />
-                                            <button type="button" id="verify-otp" class="px-3 py-2 text-sm rounded-lg border border-gray-400 text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+                                            <input id="emailOtp" name="emailOtp" type="text" class="border border-gray-300 rounded-xl p-3 flex-1 disabled:bg-gray-100 disabled:text-gray-400 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500 bg-white" placeholder="6桁の認証コード" maxlength="6" inputmode="numeric" data-numeric disabled />
+                                            <button type="button" id="verify-otp" class="px-6 py-3 text-sm rounded-xl border border-gray-300 text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed font-medium shadow-sm transition" disabled>
                                                 認証
                                             </button>
                                         </div>
                                     </div>
 
-                                    <div class="text-xs mt-1">
+                                    <div class="text-xs mt-1 ml-1">
                                         <span id="otp-status" class="text-gray-500">認証コード未送信</span>
                                         <span id="otp-demo" class="ml-2 text-[11px] text-gray-400"></span>
                                     </div>
@@ -179,85 +186,97 @@
                                 </div>
 
                                 <div class="flex flex-col sm:w-1/2">
-                                    <label for="tel" class="font-medium">電話番号 <span class="text-red-500">*</span></label>
-                                    <input id="tel" name="tel" type="tel" class="border rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-400" inputmode="numeric" data-numeric autocomplete="tel" placeholder="09012345678" pattern="^[0-9\-]+$" required />
+                                    <label for="tel" class="font-bold text-sm text-gray-700 mb-1">電話番号 <span class="text-red-500">*</span></label>
+                                    <input id="tel" name="tel" type="tel" class="border border-gray-300 rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500" inputmode="numeric" data-numeric autocomplete="tel" placeholder="09012345678" pattern="^[0-9\-]+$" required />
                                     <p class="text-sm text-red-600 mt-1 hidden" data-error-for="tel">電話番号を正しく入力してください。</p>
                                 </div>
 
-                                <div class="pt-2">
-                                    <label class="inline-flex items-start gap-2">
-                                        <input id="agree" type="checkbox" class="mt-1" disabled>
-                                        <span class="text-sm text-gray-700">
-                                            <button type="button" id="open-privacy" class="underline text-blue-700 hover:text-blue-900">
+                                <div class="pt-4 border-t border-gray-100">
+                                    <label class="inline-flex items-start gap-3 cursor-pointer">
+                                        <input id="agree" type="checkbox" class="mt-1 accent-sky-600 w-5 h-5 rounded" disabled>
+                                        <span class="text-sm text-gray-700 leading-relaxed">
+                                            <button type="button" id="open-privacy" class="underline text-sky-700 hover:text-sky-900 font-medium">
                                                 プライバシーポリシー
                                             </button>
                                             を確認のうえ、内容に同意します
                                         </span>
                                     </label>
-                                    <p class="text-xs text-gray-500 mt-1">ポリシーを確認し「同意する」ボタンを押すとチェックが付きます。</p>
-                                    <p class="text-sm text-red-600 mt-1 hidden" data-error-for="agree">プライバシーポリシーへの同意が必要です。</p>
+                                    <p class="text-xs text-gray-500 mt-2 ml-8">ポリシーを確認し「同意する」ボタンを押すとチェックが付きます。</p>
+                                    <p class="text-sm text-red-600 mt-1 hidden ml-8" data-error-for="agree">プライバシーポリシーへの同意が必要です。</p>
                                 </div>
                             </form>
                         </section>
 
-                        <section class="bg-white rounded-xl shadow p-5">
-                            <h2 class="text-xl font-bold border-l-4 border-gray-700 pl-2 mb-4">配送先</h2>
+                        <section class="bg-white rounded-2xl shadow-sm border border-gray-200/60 p-6 md:p-8">
+                            <div class="flex items-center gap-2 mb-6 border-b border-gray-100 pb-4">
+                                <span class="material-symbols-outlined text-sky-600">local_shipping</span>
+                                <h2 class="text-xl font-bold text-gray-800">配送先</h2>
+                            </div>
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <div class="flex flex-col">
-                                    <label for="zip" class="font-medium">郵便番号 <span class="text-red-500">*</span></label>
-                                    <input id="zip" name="zip" type="text" class="border rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-400" inputmode="numeric" data-numeric placeholder="123-4567" pattern="^\d{3}-?\d{4}$" maxlength="8" required />
+                                    <label for="zip" class="font-bold text-sm text-gray-700 mb-1">郵便番号 <span class="text-red-500">*</span></label>
+                                    <input id="zip" name="zip" type="text" class="border border-gray-300 rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500" inputmode="numeric" data-numeric placeholder="123-4567" pattern="^\d{3}-?\d{4}$" maxlength="8" required />
                                     <p class="text-xs text-gray-500 mt-1">半角数字（自動でハイフンが入ります）</p>
                                     <p class="text-sm text-red-600 mt-1 hidden" data-error-for="zip">郵便番号を正しく入力してください。</p>
                                 </div>
                                 <div class="flex flex-col">
-                                    <label for="pref" class="font-medium">都道府県 <span class="text-red-500">*</span></label>
-                                    <input id="pref" name="pref" type="text" class="border rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-400" autocomplete="address-level1" required />
+                                    <label for="pref" class="font-bold text-sm text-gray-700 mb-1">都道府県 <span class="text-red-500">*</span></label>
+                                    <input id="pref" name="pref" type="text" class="border border-gray-300 rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500" autocomplete="address-level1" required />
                                     <p class="text-sm text-red-600 mt-1 hidden" data-error-for="pref">都道府県を入力してください。</p>
                                 </div>
                                 <div class="flex flex-col sm:col-span-2">
-                                    <label for="city" class="font-medium">市区町村・番地 <span class="text-red-500">*</span></label>
-                                    <input id="city" name="city" type="text" class="border rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-400" autocomplete="address-line1" required />
+                                    <label for="city" class="font-bold text-sm text-gray-700 mb-1">市区町村・番地 <span class="text-red-500">*</span></label>
+                                    <input id="city" name="city" type="text" class="border border-gray-300 rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500" autocomplete="address-line1" required />
                                     <p class="text-sm text-red-600 mt-1 hidden" data-error-for="city">市区町村・番地を入力してください。</p>
                                 </div>
                                 <div class="flex flex-col sm:col-span-2">
-                                    <label for="addr2" class="font-medium">建物名・部屋番号（任意）</label>
-                                    <input id="addr2" name="addr2" type="text" class="border rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-400" autocomplete="address-line2" />
+                                    <label for="addr2" class="font-bold text-sm text-gray-700 mb-1">建物名・部屋番号（任意）</label>
+                                    <input id="addr2" name="addr2" type="text" class="border border-gray-300 rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500" autocomplete="address-line2" />
                                 </div>
                             </div>
                         </section>
                     </div>
 
                     <aside class="md:col-span-1">
-                        <div class="md:sticky md:top-[5rem]">
-                            <section class="bg-white rounded-xl shadow p-5">
-                                <h2 class="text-lg font-bold border-l-4 border-gray-700 pl-2 mb-4">注文サマリー</h2>
-                                <dl class="text-sm space-y-2">
+                        <div class="md:sticky md:top-[6rem]">
+                            <section class="bg-white rounded-2xl shadow-lg border border-gray-100 p-6">
+                                <h2 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+                                    <span class="material-symbols-outlined text-gray-400">receipt_long</span>
+                                    注文サマリー
+                                </h2>
+                                <dl class="text-sm space-y-3">
                                     <div class="flex items-center justify-between">
-                                        <dt>受講区分</dt>
-                                        <dd id="enrollTypeLabel" class="font-medium">新規受講</dd>
+                                        <dt class="text-gray-600">受講区分</dt>
+                                        <dd id="enrollTypeLabel" class="font-medium text-gray-900">新規受講</dd>
                                     </div>
                                     <div class="flex items-center justify-between">
-                                        <dt>小計</dt>
-                                        <dd id="subtotal" class="font-medium">¥19,910</dd>
+                                        <dt class="text-gray-600">小計</dt>
+                                        <dd id="subtotal" class="font-medium text-gray-900">¥19,910</dd>
                                     </div>
                                     <div class="flex items-center justify-between">
-                                        <dt>送料</dt>
-                                        <dd id="shipping" class="font-medium">¥0</dd>
+                                        <dt class="text-gray-600">送料</dt>
+                                        <dd id="shipping" class="font-medium text-gray-900">¥0</dd>
                                     </div>
-                                    <hr class="my-2">
+                                    <hr class="my-3 border-dashed border-gray-300">
                                     <div class="flex items-center justify-between text-base">
-                                        <dt class="font-bold">合計</dt>
-                                        <dd id="grandTotal" class="font-bold">¥19,910</dd>
+                                        <dt class="font-bold text-gray-800">合計</dt>
+                                        <dd id="grandTotal" class="font-bold text-2xl text-sky-700">¥19,910</dd>
                                     </div>
                                 </dl>
 
-                                <button id="place-order" class="w-full bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold py-3 rounded-xl mt-4">
+                                <button id="place-order" class="w-full bg-sky-600 hover:bg-sky-700 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold py-3.5 rounded-xl mt-6 shadow-md hover:shadow-lg transform active:scale-95 transition-all">
                                     注文を確定する
                                 </button>
                                 
-                                <div id="form-alert" class="mt-3 text-sm font-medium text-red-600 hidden bg-red-50 p-2 rounded border border-red-200" aria-live="polite">
-                                    </div>
+                                <div id="form-alert" class="mt-4 text-sm font-bold text-red-600 hidden bg-red-50 p-3 rounded-xl border border-red-200 flex items-start gap-2" aria-live="polite">
+                                    <span class="material-symbols-outlined text-[20px] shrink-0">error</span>
+                                    <span>入力内容に不備があります。赤枠の項目を確認してください。</span>
+                                </div>
                             </section>
+                            
+                            <p class="text-xs text-gray-400 mt-4 text-center">
+                                キャンセルポリシー等の注意事項を必ずご確認ください。
+                            </p>
                         </div>
                     </aside>
                 </div>
@@ -265,12 +284,15 @@
         </main>
 
         <div id="org-modal" class="fixed inset-0 z-50 hidden" aria-modal="true" role="dialog">
-            <div class="absolute inset-0 bg-black/30 backdrop-blur-sm" id="org-backdrop"></div>
-            <div class="relative z-10 w-full max-w-4xl mx-auto mt-10 md:mt-20 bg-white md:rounded-xl shadow-2xl flex flex-col max-h-[85vh]">
+            <div class="absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity" id="org-backdrop"></div>
+            <div class="relative z-10 w-full max-w-4xl mx-auto mt-10 md:mt-20 bg-white md:rounded-2xl shadow-2xl flex flex-col max-h-[85vh] overflow-hidden">
                 
-                <div class="flex items-center justify-between px-6 py-4 border-b">
-                    <h3 class="font-bold text-lg text-gray-800">所属組織を選択</h3>
-                    <button type="button" id="org-close" class="p-2 hover:bg-gray-100 rounded-full text-gray-500">
+                <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100">
+                    <h3 class="font-bold text-lg text-gray-800 flex items-center gap-2">
+                        <span class="material-symbols-outlined text-sky-600">apartment</span>
+                        所属組織を選択
+                    </h3>
+                    <button type="button" id="org-close" class="p-2 hover:bg-gray-100 rounded-full text-gray-500 transition-colors">
                         <span class="material-symbols-outlined">close</span>
                     </button>
                 </div>
@@ -278,596 +300,78 @@
                 <div class="flex-1 overflow-hidden flex flex-col md:flex-row bg-gray-50 min-h-[300px]">
                     
                     <div class="flex-1 border-r border-gray-200 flex flex-col h-1/2 md:h-auto">
-                        <div class="px-4 py-2 bg-gray-100 border-b text-xs font-bold text-gray-500">事業部・本部 (Level 1)</div>
+                        <div class="px-4 py-2 bg-gray-100/50 border-b text-xs font-bold text-gray-500 uppercase tracking-wider">事業部・本部 (Level 1)</div>
                         <div id="col-1" class="flex-1 overflow-y-auto p-2 space-y-1 bg-white">
                             </div>
                     </div>
 
                     <div class="flex-1 border-r border-gray-200 flex flex-col h-1/2 md:h-auto">
-                        <div class="px-4 py-2 bg-gray-100 border-b text-xs font-bold text-gray-500">部・支店 (Level 2)</div>
+                        <div class="px-4 py-2 bg-gray-100/50 border-b text-xs font-bold text-gray-500 uppercase tracking-wider">部・支店 (Level 2)</div>
                         <div id="col-2" class="flex-1 overflow-y-auto p-2 space-y-1 bg-white">
                             <div class="text-gray-400 text-sm p-4 text-center">左の項目を選択してください</div>
                         </div>
                     </div>
 
                     <div class="flex-1 flex flex-col h-1/2 md:h-auto">
-                        <div class="px-4 py-2 bg-gray-100 border-b text-xs font-bold text-gray-500">課・チーム (Level 3)</div>
+                        <div class="px-4 py-2 bg-gray-100/50 border-b text-xs font-bold text-gray-500 uppercase tracking-wider">課・チーム (Level 3)</div>
                         <div id="col-3" class="flex-1 overflow-y-auto p-2 space-y-1 bg-white">
                             <div class="text-gray-400 text-sm p-4 text-center">左の項目を選択してください</div>
                         </div>
                     </div>
                 </div>
 
-                <div class="px-6 py-4 border-t bg-white rounded-b-xl flex flex-col sm:flex-row justify-between items-center gap-4">
+                <div class="px-6 py-4 border-t border-gray-100 bg-white md:rounded-b-2xl flex flex-col sm:flex-row justify-between items-center gap-4">
                     <div class="text-sm text-gray-600 flex-1 truncate">
-                        選択中: <span id="org-temp-display" class="font-bold text-blue-700">未選択</span>
+                        選択中: <span id="org-temp-display" class="font-bold text-sky-700">未選択</span>
                     </div>
                     <div class="flex gap-3">
-                        <button type="button" id="org-cancel" class="px-4 py-2 border rounded-lg hover:bg-gray-50 text-gray-700">キャンセル</button>
-                        <button type="button" id="org-confirm" class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg disabled:opacity-50 disabled:cursor-not-allowed" disabled>決定</button>
+                        <button type="button" id="org-cancel" class="px-5 py-2 border border-gray-300 rounded-xl hover:bg-gray-50 text-gray-700 font-medium transition shadow-sm">キャンセル</button>
+                        <button type="button" id="org-confirm" class="px-6 py-2 bg-sky-600 hover:bg-sky-700 text-white font-bold rounded-xl disabled:opacity-50 disabled:cursor-not-allowed shadow-md transition" disabled>決定</button>
                     </div>
                 </div>
             </div>
         </div>
 
         <div id="privacy-modal" class="fixed inset-0 z-50 hidden" aria-modal="true" role="dialog" aria-labelledby="privacy-modal-title">
-            <div id="privacy-backdrop" class="absolute inset-0 bg-black/30"></div>
-            <div class="relative z-10 max-w-2xl mx-auto mt-16 bg-white rounded-2xl shadow-xl border border-gray-200">
-                <div class="flex items-center justify-between px-5 py-3 border-b border-gray-100">
-                    <h2 id="privacy-modal-title" class="text-base font-semibold">プライバシーポリシー</h2>
-                    <button type="button" id="privacy-close" class="p-1 rounded-full hover:bg-gray-100" aria-label="閉じる">
+            <div id="privacy-backdrop" class="absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity"></div>
+            <div class="relative z-10 max-w-2xl mx-auto mt-16 bg-white rounded-2xl shadow-2xl border border-gray-200/60 overflow-hidden">
+                <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100 bg-gray-50/50">
+                    <h2 id="privacy-modal-title" class="text-lg font-bold text-gray-800 flex items-center gap-2">
+                        <span class="material-symbols-outlined text-sky-600">policy</span>
+                        プライバシーポリシー
+                    </h2>
+                    <button type="button" id="privacy-close" class="p-1 rounded-full hover:bg-gray-200 transition" aria-label="閉じる">
                         <span class="material-symbols-outlined text-gray-500 text-xl">close</span>
                     </button>
                 </div>
-                <div class="px-5 pt-4 pb-3 max-h-[60vh] overflow-y-auto text-sm leading-relaxed text-gray-700">
-                    <p class="mb-3">本サービスでは、お申込みおよび受講に必要な範囲で、お客様の氏名・メールアドレス・住所・電話番号等の個人情報を取得・利用します。</p>
-                    <p class="mb-3">取得した個人情報は、受講に関するご連絡、教材発送等の目的のみに利用し、法令に基づく場合を除き、ご本人の同意なく第三者に提供することはありません。</p>
-                    <p>（デモ用のダミーテキストです）</p>
+                <div class="px-6 py-6 max-h-[60vh] overflow-y-auto text-sm leading-relaxed text-gray-700 space-y-4">
+                    <p>本サービスでは、お申込みおよび受講に必要な範囲で、お客様の氏名・メールアドレス・住所・電話番号等の個人情報を取得・利用します。</p>
+                    <p>取得した個人情報は、受講に関するご連絡、教材発送等の目的のみに利用し、法令に基づく場合を除き、ご本人の同意なく第三者に提供することはありません。</p>
+                    <div class="p-4 bg-gray-50 rounded-xl border border-gray-100 text-xs text-gray-500">
+                        （デモ用のダミーテキストです。実際にはここに詳細な条文が入ります。）
+                    </div>
                 </div>
-                <div class="px-5 py-3 border-t border-gray-100 space-y-3">
-                    <label class="flex items-start gap-2 text-sm">
-                        <input id="modal-agree" type="checkbox" class="mt-1">
-                        <span>上記の内容を読み、同意します。</span>
+                <div class="px-6 py-4 border-t border-gray-100 bg-white space-y-4">
+                    <label class="flex items-start gap-3 text-sm p-3 rounded-xl hover:bg-sky-50 transition cursor-pointer border border-transparent hover:border-sky-100">
+                        <input id="modal-agree" type="checkbox" class="mt-1 accent-sky-600 w-4 h-4">
+                        <span class="font-medium text-gray-800">上記の内容を読み、同意します。</span>
                     </label>
-                    <div class="flex justify-end gap-2">
-                        <button type="button" id="privacy-cancel" class="px-4 py-2 rounded-lg border border-gray-300 text-sm text-gray-700 hover:bg-gray-50">同意せず閉じる</button>
-                        <button type="button" id="privacy-confirm" class="px-4 py-2 rounded-lg bg-blue-600 text-sm text-white font-semibold disabled:opacity-50 disabled:cursor-not-allowed hover:bg-blue-700" disabled>同意する</button>
+                    <div class="flex justify-end gap-3">
+                        <button type="button" id="privacy-cancel" class="px-5 py-2.5 rounded-xl border border-gray-300 text-sm text-gray-700 font-medium hover:bg-gray-50 transition shadow-sm">同意せず閉じる</button>
+                        <button type="button" id="privacy-confirm" class="px-6 py-2.5 rounded-xl bg-sky-600 text-sm text-white font-bold disabled:opacity-50 disabled:cursor-not-allowed hover:bg-sky-700 shadow-md transition" disabled>同意する</button>
                     </div>
                 </div>
             </div>
         </div>
 
-        <footer class="text-xs text-gray-500 px-4 py-8 text-center">
-            © IEC — プライバシーポリシー / 利用規約
+        <footer class="text-xs text-gray-500 px-4 py-8 text-center border-t border-gray-200 mt-8 bg-white">
+            <div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+                <span>© IEC — プライバシーポリシー / 利用規約</span>
+                <span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">help</span> ヘルプ</span>
+            </div>
             <div style="height: var(--safe-bottom)"></div>
         </footer>
 
-        <script>
-            // ---- Utils & State
-            const fmtJPY = (n) => "¥" + n.toLocaleString("ja-JP");
-            const clampQty = (v) => Math.max(1, Math.min(999, Number(v) || 1));
-            
-            // 一度フォーカスが当たった要素のIDを記録するSet
-            // 「未入力時に赤くなるのは一度でもフォーカスが当たってから」を実現するため
-            const touchedFields = new Set();
-            
-            // OTP認証完了フラグ
-            let isOtpVerified = false;
-
-            // ---- Cart Logic
-            function recalcTotals() {
-                const list = document.querySelectorAll("#cart-list [data-line-total]");
-                let subtotal = 0;
-                list.forEach((el) => {
-                    const line = Number((el.getAttribute("data-line-total-raw")) || el.textContent.replace(/[^\d]/g, ""));
-                    subtotal += line;
-                });
-                const tax = 0;
-                const shipping = 0; 
-                const grand = subtotal + tax + shipping;
-
-                document.getElementById("subtotal").textContent = fmtJPY(subtotal);
-                document.getElementById("shipping").textContent = fmtJPY(shipping);
-                document.getElementById("grandTotal").textContent = fmtJPY(grand);
-
-                // バッジ
-                const totalQty = [...document.querySelectorAll("[data-qty]")].reduce((a, i) => a + clampQty(i.value), 0);
-                const badge = document.getElementById("cart-badge");
-                if (badge) badge.textContent = Math.min(totalQty, 99);
-            }
-
-            function bindCart() {
-                const root = document.getElementById("cart-list");
-                if (!root) return;
-
-                root.addEventListener("click", (e) => {
-                    const li = e.target.closest("li");
-                    if (!li) return;
-                    if (e.target.matches("[data-remove]")) {
-                        li.remove();
-                        if (!root.querySelector("li")) {
-                            root.innerHTML = `<li class="text-gray-500 text-sm">カートに商品はありません。</li>`;
-                        }
-                        recalcTotals();
-                    }
-                });
-            }
-
-            // ---- Validation System
-            const requiredIds = [
-                "name_sei", "name_mei", 
-                "kana_sei", "kana_mei", 
-                "email", "tel", 
-                "zip", "pref", "city","org_display", "employee_number","gender"
-            ];
-
-            function setError(id, hasError) {
-                const input = document.getElementById(id);
-                if (!input) return;
-
-                // メッセージの表示制御
-                const msg = document.querySelector(`[data-error-for="${id}"]`);
-                
-                // 「エラーがある」かつ「ユーザーが一度触った(touched) or 送信しようとした」場合のみ赤くする
-                const shouldShowError = hasError && touchedFields.has(id);
-
-                if (shouldShowError) {
-                    input.classList.add("input-error");
-                    if(msg) msg.classList.remove("hidden");
-                } else {
-                    input.classList.remove("input-error");
-                    if(msg) msg.classList.add("hidden");
-                }
-            }
-
-            function getEnrollType() {
-                const checked = document.querySelector('input[name="enrollType"]:checked');
-                return checked ? checked.value : null;
-            }
-
-            function validate(isSubmit = false) {
-                let isAllValid = true;
-
-                // 1. 基本必須チェック
-                requiredIds.forEach((id) => {
-                    const el = document.getElementById(id);
-                    if (!el) return;
-                    
-                    // 送信時は全フィールドを「触った」扱いにすることで、未入力箇所を一斉に赤くする
-                    if (isSubmit) touchedFields.add(id);
-
-                    const valid = el.checkValidity();
-                    setError(id, !valid);
-                    if (!valid) isAllValid = false;
-                });
-
-                // 2. 受講区分
-                const enrollType = getEnrollType();
-                if (isSubmit) touchedFields.add("enrollType");
-                if (!enrollType) {
-                    setError("enrollType", true);
-                    isAllValid = false;
-                } else {
-                    setError("enrollType", false);
-                }
-
-                // 3. 再受講番号
-                if (enrollType === "re") {
-                    const prevNo = document.getElementById("prevEnrollNo");
-                    if (isSubmit) touchedFields.add("prevEnrollNo");
-                    const has = prevNo.value.trim().length > 0;
-                    setError("prevEnrollNo", !has);
-                    if (!has) isAllValid = false;
-                } else {
-                    // 新規の場合はエラー解除
-                    setError("prevEnrollNo", false);
-                }
-
-                // 4. カタカナチェック
-                ["kana_sei", "kana_mei"].forEach(id => {
-                    const el = document.getElementById(id);
-                    if (isSubmit) touchedFields.add(id);
-                    if (el && el.value && !el.value.match(/^[\u30A0-\u30FF\sー－]+$/)) {
-                        setError(id, true);
-                        isAllValid = false;
-                    }
-                });
-
-                // 5. 郵便番号形式
-                const zip = document.getElementById("zip");
-                if (isSubmit) touchedFields.add("zip");
-                // 3桁-4桁 or 7桁数字
-                if (zip && zip.value && !zip.value.match(/^\d{3}-?\d{4}$/)) { 
-                    setError("zip", true); 
-                    isAllValid = false; 
-                }
-
-                // 6. OTP認証チェック
-                const emailEl = document.getElementById("email");
-                if (emailEl && emailEl.value && !isOtpVerified) {
-                    // メール入力済みなのに認証未完の場合
-                    if (isSubmit) {
-                        touchedFields.add("emailOtp");
-                        setError("emailOtp", true);
-                    }
-                    isAllValid = false;
-                } else {
-                    setError("emailOtp", false);
-                }
-
-                // 7. 同意チェック
-                const agree = document.getElementById("agree");
-                if (isSubmit) touchedFields.add("agree");
-                if (!agree.checked) {
-                    if (isSubmit) setError("agree", true);
-                    isAllValid = false;
-                } else {
-                    setError("agree", false);
-                }
-
-                // アラート制御
-                const alertBox = document.getElementById("form-alert");
-                if (isSubmit && !isAllValid) {
-                    alertBox.classList.remove("hidden");
-                    alertBox.textContent = "入力内容に不備があります。赤枠の項目を確認してください。";
-                } else if (isAllValid) {
-                    alertBox.classList.add("hidden");
-                }
-
-                return isAllValid;
-            }
-
-            // ---- OTP Logic (Demo)
-            function bindOtpLogic() {
-                const sendBtn = document.getElementById("send-otp");
-                const verifyBtn = document.getElementById("verify-otp");
-                const emailInput = document.getElementById("email");
-                const otpInput = document.getElementById("emailOtp");
-                const statusText = document.getElementById("otp-status");
-                const demoText = document.getElementById("otp-demo");
-
-                sendBtn.addEventListener("click", () => {
-                    touchedFields.add("email");
-                    if (!emailInput.value || !emailInput.checkValidity()) {
-                        setError("email", true);
-                        return;
-                    }
-                    setError("email", false);
-                    alert("認証コードを送信しました。\nデモコード: 123456");
-                    otpInput.disabled = false;
-                    verifyBtn.disabled = false;
-                    otpInput.focus();
-                    statusText.textContent = "入力待ち";
-                    statusText.className = "text-blue-600 font-bold ml-2";
-                    demoText.textContent = "コード: 123456";
-                });
-
-                verifyBtn.addEventListener("click", () => {
-                    if (otpInput.value === "123456") {
-                        isOtpVerified = true;
-                        statusText.textContent = "認証完了";
-                        statusText.className = "text-green-600 font-bold ml-2";
-                        otpInput.disabled = true;
-                        verifyBtn.disabled = true;
-                        sendBtn.disabled = true;
-                        emailInput.readOnly = true;
-                        emailInput.classList.add("bg-gray-100", "text-gray-500");
-                        setError("emailOtp", false);
-                        validate(false);
-                    } else {
-                        alert("コードが間違っています。");
-                        isOtpVerified = false;
-                        setError("emailOtp", true);
-                    }
-                });
-            }
-
-            // ---- Input Helpers & Zip Logic
-            function bindInputHelpers() {
-                // 1. 郵便番号＆住所反映ロジック
-                const zipInput = document.getElementById("zip");
-                if (zipInput) {
-                    zipInput.addEventListener("keyup", (e) => {
-                        // 数字以外除去
-                        let val = zipInput.value.replace(/[^\d\-]/g, "");
-                        
-                        // ハイフン自動挿入 (3桁超えたら入れる)
-                        const nums = val.replace(/-/g, "");
-                        if (nums.length > 3) {
-                            val = nums.slice(0, 3) + "-" + nums.slice(3, 7);
-                        }
-                        zipInput.value = val;
-
-                        // 住所検索実行 (AjaxZip3)
-                        // 7桁以上(ハイフン込みで8文字など)になったら検索を試みる
-                        if (nums.length >= 7) {
-                            // AjaxZip3はグローバル関数。name属性をターゲットにする。
-                            // 第1引数:this, 第2:建物名(空), 第3:都道府県name, 第4:市区町村name
-                            if (typeof AjaxZip3 !== 'undefined') {
-                                AjaxZip3.zip2addr(zipInput, '', 'pref', 'city');
-                                
-                                // AjaxZip3が値を埋めた瞬間はinputイベントが発火しないことがあるため
-                                // 少し待ってからpref/cityをvalid判定させる
-                                setTimeout(() => {
-                                    touchedFields.add("pref");
-                                    touchedFields.add("city");
-                                    validate(false);
-                                }, 500);
-                            }
-                        }
-                    });
-                }
-
-                // 2. 電話番号 (数字のみ)
-                const telInput = document.getElementById("tel");
-                if (telInput) {
-                    telInput.addEventListener("input", (e) => {
-                        e.target.value = e.target.value.replace(/[^\d\-]/g, "");
-                    });
-                }
-            }
-
-            // ---- UI Bindings
-            function bindEnrollTypeUI() {
-                const radios = document.querySelectorAll('input[name="enrollType"]');
-                const block = document.getElementById("re-enroll-block");
-                const label = document.getElementById("enrollTypeLabel");
-                
-                const refresh = () => {
-                    const t = getEnrollType();
-                    if (t === "re") {
-                        block.classList.remove("hidden");
-                        label.textContent = "再受講";
-                    } else {
-                        block.classList.add("hidden");
-                        label.textContent = "新規受講";
-                    }
-                };
-                radios.forEach(r => r.addEventListener("change", refresh));
-                refresh();
-            }
-
-            function bindPrivacyModal() {
-                const modal = document.getElementById("privacy-modal");
-                const openBtn = document.getElementById("open-privacy");
-                const closeBtns = [
-                    document.getElementById("privacy-close"),
-                    document.getElementById("privacy-cancel"),
-                    document.getElementById("privacy-backdrop")
-                ];
-                const agreeCheck = document.getElementById("agree");
-                const modalAgree = document.getElementById("modal-agree");
-                const confirmBtn = document.getElementById("privacy-confirm");
-
-                openBtn.addEventListener("click", () => modal.classList.remove("hidden"));
-                closeBtns.forEach(btn => btn?.addEventListener("click", () => modal.classList.add("hidden")));
-
-                modalAgree.addEventListener("change", () => confirmBtn.disabled = !modalAgree.checked);
-                
-                confirmBtn.addEventListener("click", () => {
-                    if(!modalAgree.checked) return;
-                    modal.classList.add("hidden");
-                    agreeCheck.checked = true;
-                    // 同意チェックがついたので即座にエラー消去確認
-                    validate(false);
-                });
-            }
-
-            // ---- Organization Logic (Miller Columns)
-            
-            // ダミーデータ定義（実際はAPI等から取得）
-            const orgStructure = [
-                {
-                    id: "1", name: "営業本部", children: [
-                        { id: "1-1", name: "第一営業部", children: [
-                            { id: "1-1-1", name: "営業一課" },
-                            { id: "1-1-2", name: "営業二課" },
-                            { id: "1-1-3", name: "CS推進チーム" }
-                        ]},
-                        { id: "1-2", name: "第二営業部", children: [
-                            { id: "1-2-1", name: "関西営業課" },
-                            { id: "1-2-2", name: "九州営業課" }
-                        ]}
-                    ]
-                },
-                {
-                    id: "2", name: "開発本部", children: [
-                        { id: "2-1", name: "プロダクト開発部", children: [
-                            { id: "2-1-1", name: "フロントエンド課" },
-                            { id: "2-1-2", name: "バックエンド課" },
-                            { id: "2-1-3", name: "SREチーム" }
-                        ]},
-                        { id: "2-2", name: "研究開発部", children: [
-                            { id: "2-2-1", name: "AI研究室" },
-                            { id: "2-2-2", name: "ブロックチェーン研究室" }
-                        ]}
-                    ]
-                },
-                {
-                    id: "3", name: "管理本部", children: [
-                        { id: "3-1", name: "人事総務部", children: [
-                            { id: "3-1-1", name: "採用チーム" },
-                            { id: "3-1-2", name: "労務チーム" }
-                        ]},
-                        { id: "3-2", name: "経理財務部", children: [
-                            { id: "3-2-1", name: "経理課" },
-                            { id: "3-2-2", name: "財務課" }
-                        ]}
-                    ]
-                }
-            ];
-
-            function bindOrgPicker() {
-                const modal = document.getElementById("org-modal");
-                const openInput = document.getElementById("org_display");
-                const hiddenInput = document.getElementById("org_value");
-                const closeBtns = [
-                    document.getElementById("org-close"),
-                    document.getElementById("org-cancel"),
-                    document.getElementById("org-backdrop")
-                ];
-                const confirmBtn = document.getElementById("org-confirm");
-                const tempDisplay = document.getElementById("org-temp-display");
-
-                const col1 = document.getElementById("col-1");
-                const col2 = document.getElementById("col-2");
-                const col3 = document.getElementById("col-3");
-
-                // 選択状態管理
-                let selection = { l1: null, l2: null, l3: null };
-
-                // リセット & 再描画
-                function render() {
-                    // Col 1 Render
-                    col1.innerHTML = "";
-                    orgStructure.forEach(item => {
-                        const el = createItem(item, selection.l1?.id === item.id, () => {
-                            selection.l1 = item;
-                            selection.l2 = null;
-                            selection.l3 = null;
-                            render();
-                        });
-                        col1.appendChild(el);
-                    });
-
-                    // Col 2 Render
-                    col2.innerHTML = "";
-                    if (selection.l1) {
-                        selection.l1.children.forEach(item => {
-                            const el = createItem(item, selection.l2?.id === item.id, () => {
-                                selection.l2 = item;
-                                selection.l3 = null;
-                                render();
-                            });
-                            col2.appendChild(el);
-                        });
-                    } else {
-                        col2.innerHTML = `<div class="text-gray-400 text-sm p-4 text-center">左の項目を選択してください</div>`;
-                    }
-
-                    // Col 3 Render
-                    col3.innerHTML = "";
-                    if (selection.l2) {
-                        selection.l2.children.forEach(item => {
-                            const el = createItem(item, selection.l3?.id === item.id, () => {
-                                selection.l3 = item;
-                                render();
-                            });
-                            col3.appendChild(el);
-                        });
-                    } else {
-                        const msg = selection.l1 ? "中央の項目を選択してください" : "左の項目を選択してください";
-                        col3.innerHTML = `<div class="text-gray-400 text-sm p-4 text-center">${msg}</div>`;
-                    }
-
-                    updateStatus();
-                }
-
-                function createItem(item, isSelected, onClick) {
-                    const div = document.createElement("button");
-                    div.type = "button";
-                    div.className = `w-full text-left px-3 py-2 rounded text-sm mb-1 transition-colors flex justify-between items-center ${
-                        isSelected 
-                        ? "bg-blue-600 text-white font-medium shadow-sm" 
-                        : "hover:bg-gray-200 text-gray-700"
-                    }`;
-                    
-                    const spanName = document.createElement("span");
-                    spanName.textContent = item.name;
-                    div.appendChild(spanName);
-
-                    // 子階層がある場合は矢印を表示
-                    if (item.children) {
-                        const arrow = document.createElement("span");
-                        arrow.className = "material-symbols-outlined text-[16px]";
-                        arrow.textContent = "chevron_right";
-                        div.appendChild(arrow);
-                    }
-
-                    div.addEventListener("click", onClick);
-                    return div;
-                }
-
-                function updateStatus() {
-                    const parts = [];
-                    if (selection.l1) parts.push(selection.l1.name);
-                    if (selection.l2) parts.push(selection.l2.name);
-                    if (selection.l3) parts.push(selection.l3.name);
-                    
-                    if (parts.length > 0) {
-                        tempDisplay.textContent = parts.join(" > ");
-                        // 第3階層まで選ばれていれば決定ボタン有効化
-                        // ※要件により「第2階層まででもOK」なら条件を変える
-                        confirmBtn.disabled = !selection.l3; 
-                    } else {
-                        tempDisplay.textContent = "未選択";
-                        confirmBtn.disabled = true;
-                    }
-                }
-
-                // イベント設定
-                openInput.addEventListener("click", () => {
-                    modal.classList.remove("hidden");
-                    // すでに選択済みならその状態を復元してもよいが、ここではリセットするか維持するか
-                    // 今回は維持したまま描画
-                    render();
-                });
-
-                closeBtns.forEach(btn => btn?.addEventListener("click", () => modal.classList.add("hidden")));
-
-                confirmBtn.addEventListener("click", () => {
-                    if (selection.l1 && selection.l2 && selection.l3) {
-                        const fullName = `${selection.l1.name} / ${selection.l2.name} / ${selection.l3.name}`;
-                        openInput.value = fullName;
-                        hiddenInput.value = selection.l3.id; // IDを送信
-                        
-                        // バリデーション実行
-                        touchedFields.add("org_display");
-                        validate(false);
-
-                        modal.classList.add("hidden");
-                    }
-                });
-
-                // 初期化
-                render();
-            }
-
-            // ---- Init
-            document.addEventListener("DOMContentLoaded", () => {
-                bindCart();
-                recalcTotals();
-                bindOtpLogic();
-                bindInputHelpers();
-                bindEnrollTypeUI();
-                bindPrivacyModal();
-                bindOrgPicker();
-
-                // 全入力フィールドに対し、Blur(フォーカス外れ)で「触った」とマークする
-                document.querySelectorAll("input, select").forEach(el => {
-                    // Blur時: touchedに追加して検証
-                    el.addEventListener("blur", () => {
-                        touchedFields.add(el.id);
-                        validate(false);
-                    });
-                    // Input時: 即座に検証（エラー解消のため）。ただしtouchedには追加しない。
-                    el.addEventListener("input", () => {
-                        validate(false);
-                    });
-                });
-
-                // 送信ボタン
-                const placeBtn = document.getElementById("place-order");
-                placeBtn.addEventListener("click", (e) => {
-                    e.preventDefault();
-                    // 送信時はフラグをtrueにして強制的に全フィールド赤くする
-                    if (validate(true)) {
-                        alert("注文内容を送信しました。（デモ）");
-                    }
-                });
-            });
-
-            
-        </script>
+        <script src="js/cart.js" defer></script>
     </body>
 </html>

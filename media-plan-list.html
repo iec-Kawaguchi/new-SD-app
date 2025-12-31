@@ -16,619 +16,439 @@
             body {
                 font-family: "游ゴシック体", "Yu Gothic", "游ゴシック", YuGothic, sans-serif;
             }
-            /* スクロール可能だがスクロールバーを非表示 */
-            .no-scrollbar {
-              scrollbar-width: none; /* Firefox */
-              -ms-overflow-style: none; /* IE/Edge */
+            /* UX改善: スクロールバー */
+            .custom-scrollbar::-webkit-scrollbar {
+                width: 6px;
+                height: 6px;
             }
-            .no-scrollbar::-webkit-scrollbar {
-              display: none; /* Chrome/Safari */
+            .custom-scrollbar::-webkit-scrollbar-track {
+                background: transparent;
+            }
+            .custom-scrollbar::-webkit-scrollbar-thumb {
+                background-color: #cbd5e1; /* gray-300 */
+                border-radius: 20px;
+            }
+            .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+                background-color: #94a3b8; /* gray-400 */
+            }
+            
+            /* 通知消去時のアニメーション */
+            .fade-out-up {
+                animation: fadeOutUp 0.3s forwards ease-in-out;
+            }
+            @keyframes fadeOutUp {
+                from { opacity: 1; transform: translateY(0); margin-top: 1.25rem; }
+                to { opacity: 0; transform: translateY(-10px); margin-top: -50px; padding: 0; height: 0; }
             }
         </style>
     </head>
     <body class="bg-gray-100 h-screen overflow-hidden flex flex-col">
-        <div id="app-header" class="sticky"></div>
+        <div id="app-header" class="sticky top-0 z-50 shadow-sm"></div>
         <main class="flex flex-1 min-h-0">
             <div id="app-sidebar"></div>
-            <!-- メイン背景 -->
-            <div class="flex-1 bg-gray-200 flex gap-6">
-                <!-- サイドメニュー -->
-                <div class="flex">
-                    <aside class="w-[20rem] my-6 ml-6">
-                        <div class="bg-white rounded-xl overflow-hidden max-h-[calc(100vh-7.5rem)] flex flex-col">
-                            <!-- ヘッダー（sticky） -->
-                            <div class="sticky top-0 z-10 px-5 pt-5 pb-3 ">
-                                <div class="flex">
-                                    <span class="material-symbols-outlined text-2xl text-gray-800 mr-2">dashboard</span>
-                                    <h2 class="text-2xl font-bold text-gray-800">募集一覧</h2>
-
+            <div class="flex-1 bg-gray-200 flex gap-6 overflow-hidden">
+                <div class="flex flex-shrink-0">
+                    <aside class="w-[22rem] my-6 ml-6 flex flex-col">
+                        <div class="bg-white rounded-xl overflow-hidden flex flex-col h-full shadow-sm border border-gray-200">
+                            <div class="sticky top-0 z-20 px-5 pt-5 pb-3 bg-white/95 backdrop-blur-sm border-b border-gray-100">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center">
+                                        <span class="material-symbols-outlined text-2xl text-gray-700 mr-2">dashboard</span>
+                                        <h2 class="text-xl font-bold text-gray-800">募集一覧</h2>
+                                    </div>
                                 </div>
-                                <div class="mt-3 flex">
+                                <div class="mt-3 flex relative">
                                     <input
+                                    id="search-input" 
                                     type="text"
-                                    class="w-full rounded-full border border-gray-300 px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 mr-2"
-                                    placeholder="フリーワード検索…">
-                                    <button id="btn-filter" class="hover:bg-gray-100 text-gray-800 rounded-full flex w-[2.8rem] flex justify-center items-center">
+                                    class="w-full rounded-full border border-gray-300 px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 mr-2 bg-gray-50 placeholder-gray-400"
+                                    placeholder="キーワード検索…">
+                                    
+                                    <button id="btn-filter" class="flex items-center py-1 px-2.5 rounded-full hover:bg-gray-100 text-gray-500 hover:text-gray-800 transition" title="絞り込み">
                                         <span class="material-symbols-outlined text-base">filter_list</span>
                                     </button>
-                                    
+                                </div>
+
+                                <div id="filter-panel" class="hidden mt-3 pt-3 border-t border-gray-100">
+                                    <div class="space-y-4">
+                                        <div>
+                                            <label class="block text-xs font-bold text-gray-500 mb-2">ステータス（複数選択可）</label>
+                                            <div id="status-filter-container" class="flex flex-wrap gap-1.5">
+                                                <button type="button" data-val="募集中" class="filter-status-btn text-xs px-2 py-1 rounded border border-gray-200 bg-white text-gray-600 hover:bg-gray-50 transition-colors">募集中</button>
+                                                <button type="button" data-val="基本情報入力" class="filter-status-btn text-xs px-2 py-1 rounded border border-gray-200 bg-white text-gray-600 hover:bg-gray-50 transition-colors">基本情報入力</button>
+                                                <button type="button" data-val="コース提案" class="filter-status-btn text-xs px-2 py-1 rounded border border-gray-200 bg-white text-gray-600 hover:bg-gray-50 transition-colors">コース提案</button>
+                                                <button type="button" data-val="サイト作成" class="filter-status-btn text-xs px-2 py-1 rounded border border-gray-200 bg-white text-gray-600 hover:bg-gray-50 transition-colors">サイト作成</button>
+                                                <button type="button" data-val="募集終了" class="filter-status-btn text-xs px-2 py-1 rounded border border-gray-200 bg-white text-gray-600 hover:bg-gray-50 transition-colors">募集終了</button>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs font-bold text-gray-500 mb-2">日付（期間内）</label>
+                                            <div class="flex items-center gap-1">
+                                                <input id="date-filter-input" type="date" class="w-full text-xs border rounded p-1 text-gray-600">
+                                            </div>
+                                        </div>
+                                        <div class="flex justify-end pt-2">
+                                            <button id="filter-reset" class="text-xs text-gray-500 underline mr-3 hover:text-gray-800">クリア</button>
+                                            <button id="filter-close-btn" class="text-xs bg-gray-800 text-white px-3 py-1 rounded hover:bg-gray-700">閉じる</button>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                            <!-- スクロール領域 -->
-                            <div class="scroll-area relative max-h-[calc(100vh-10rem)] overflow-y-auto px-4 py-4 space-y-3 no-scrollbar">
-                                <!-- item-1 -->
-                                <button type="button"
-                                        class="block w-full text-left bg-white border border-gray-100 rounded-xl p-4 shadow-md hover:shadow-lg hover:-translate-y-[1px] transition
-                                        focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-blue-50"
-                                        data-visible-for="iec,supplier,customer">
-                                    <div class="flex items-start justify-between gap-3">
-                                        <div>
-                                            <div class="text-lg font-semibold text-gray-800">FY26 SD募集</div>
-                                            <div class="mt-1 text-sm text-gray-500">●●食品株式会社</div>
-                                            <div class="mt-1 text-sm text-gray-500">2026/04/01 - 2027/03/31</div>
-                                            <div class="mt-2">
-                                                <span class="inline-block bg-blue-100 text-blue-600 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded-full">基本情報入力</span>
-                                            </div>
-                                        </div>
-                                        <span class="material-symbols-outlined text-gray-400">chevron_right</span>
-                                    </div>
-                                </button>
-                                <!-- item-2 -->
-                                <button type="button"
-                                        class="block w-full text-left bg-white border border-gray-100 rounded-xl p-4 shadow-md hover:shadow-lg hover:-translate-y-[1px] transition
-                                        focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-blue-50"
-                                        data-visible-for="iec,supplier,customer">
-                                    <div class="flex items-start justify-between gap-3">
-                                        <div>
-                                            <div class="text-lg font-semibold text-gray-800">FY25 SD募集</div>
-                                            <div class="mt-1 text-sm text-gray-500">●●食品株式会社</div>
-                                            <div class="mt-1 text-sm text-gray-500">2025/04/01 - 2026/03/31</div>
-                                            <div class="mt-2">
-                                                <span class="inline-block bg-gray-100 text-gray-600 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded-full">募集終了</span>
-                                            </div>
-                                        </div>
-                                        <span class="material-symbols-outlined text-gray-400">chevron_right</span>
-                                    </div>
-                                </button>
-                                <!-- item-3 -->
-                                <button type="button"
-                                class="block w-full text-left bg-white border border-gray-100 rounded-xl p-4 shadow-md hover:shadow-lg hover:-translate-y-[1px] transition
-                                        focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-blue-50"
-                                        data-visible-for="iec,supplier">
-                                    <div class="flex items-start justify-between gap-3">
-                                        <div>
-                                        <div class="text-lg font-semibold text-gray-800">FY26 SD募集</div>
-                                        <div class="mt-1 text-sm text-gray-500">▲▲工業株式会社</div>
-                                        <div class="mt-1 text-sm text-gray-500">2026/04/01 - 2026/05/15</div>
-                                        <div class="mt-2">
-                                            <span class="inline-block bg-lime-100 text-lime-600 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded-full">コース提案</span>
-                                        </div>
-                                        </div>
-                                        <span class="material-symbols-outlined text-gray-400">chevron_right</span>
-                                    </div>
-                                </button>
-                                <!-- item-4 -->
-                                <button type="button"
-                                class="block w-full text-left bg-white border border-gray-100 rounded-xl p-4 shadow-md hover:shadow-lg hover:-translate-y-[1px] transition
-                                        focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-blue-50"
-                                        data-visible-for="iec">
-                                    <div class="flex items-start justify-between gap-3">
-                                        <div>
-                                        <div class="text-lg font-semibold text-gray-800">FY26 SD募集</div>
-                                        <div class="mt-1 text-sm text-gray-500">株式会社■■サービス</div>
-                                        <div class="mt-1 text-sm text-gray-500">2026/04/01 - 2026/05/15</div>
-                                        <div class="mt-2">
-                                            <span class="inline-block bg-fuchsia-100 text-fuchsia-600 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded-full">サイト作成</span>
-                                        </div>
-                                        </div>
-                                        <span class="material-symbols-outlined text-gray-400">chevron_right</span>
-                                    </div>
-                                </button>
-                                <!-- item-5 -->
-                                <button type="button"
-                                class="block w-full text-left bg-white border border-gray-100 rounded-xl p-4 shadow-md hover:shadow-lg hover:-translate-y-[1px] transition
-                                        focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-blue-50"
-                                        data-visible-for="iec">
-                                    <div class="flex items-start justify-between gap-3">
-                                        <div>
-                                        <div class="text-lg font-semibold text-gray-800">FY26 SD募集</div>
-                                        <div class="mt-1 text-sm text-gray-500">セカンドリテーリング株式会社</div>
-                                        <div class="mt-1 text-sm text-gray-500">2026/04/01 - 2026/05/15</div>
-                                        <div class="mt-2">
-                                            <span class="inline-block bg-blue-600 text-white text-xs font-semibold mr-2 px-2.5 py-0.5 rounded-full">募集中</span>
-                                        </div>
-                                        </div>
-                                        <span class="material-symbols-outlined text-gray-400">chevron_right</span>
-                                    </div>
-                                </button>
-                                <!-- item-6 -->
-                                <button type="button"
-                                class="block w-full text-left bg-white border border-gray-100 rounded-xl p-4 shadow-md hover:shadow-lg hover:-translate-y-[1px] transition
-                                        focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-blue-50"
-                                        data-visible-for="iec">
-                                    <div class="flex items-start justify-between gap-3">
-                                        <div>
-                                        <div class="text-lg font-semibold text-gray-800">FY26 SD募集</div>
-                                        <div class="mt-1 text-sm text-gray-500">東京都新宿区</div>
-                                        <div class="mt-1 text-sm text-gray-500">2026/04/01 - 2026/05/15</div>
-                                        <div class="mt-2">
-                                            <span class="inline-block bg-gray-100 text-gray-600 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded-full">募集終了</span>
-                                        </div>
-                                        </div>
-                                        <span class="material-symbols-outlined text-gray-400">chevron_right</span>
-                                    </div>
-                                </button>
-                            </div>
+
+                            <div id="plan-list-container" class="scroll-area flex-1 overflow-y-auto px-3 py-3 space-y-3 custom-scrollbar bg-gray-50/50">
+                                </div>
                         </div>
                     </aside>
                 </div>
-                <!-- filter -->
-                <div class="bg-black/50 backdrop-blur-sm fixed inset-0 z-20 hidden flex justify-center items-start p-20" id="filter-menu">
-                    <div class=" bg-white shadow-xl z-10 rounded-2xl" >
-                    <!-- ヘッダー -->
-                    <div class="px-6 pt-8 pb-4">
-                        <!-- Header -->
-                        <div class="pb-4  border-b border-gray-100 flex items-center gap-3">
-                            <span class="material-symbols-outlined text-sky-600">tune</span>
-                            <div class="mr-auto">
-                            <h2 id="filter-title" class="text-lg font-semibold leading-tight">フィルタ</h2>
-                            <p class="text-sm text-gray-500">条件を選んで募集を絞り込み</p>
-                            </div>
-                            <button id="filter-close" class="p-2 rounded-full hover:bg-gray-100 flex" aria-label="Close">
-                                <span class="material-symbols-outlined">close</span>
-                            </button>
-                        </div>
-                        <div class="flex flex-col">
-                                <div class="px-6 pb-40 text-sm space-y-6">
-
-                                <!-- Status -->
-                                <div>
-                                    <label class="block text-sm text-gray-600 mb-2">ステータス</label>
-                                    <div class="flex flex-wrap gap-2">
-                                        <!-- aria-pressedでトグル表現 -->
-                                        <button class="rounded-full px-3 py-1.5 text-sm border border-gray-200 bg-white text-gray-700 hover:bg-gray-50 transition" data-chip aria-pressed="false">基本情報入力</button>
-                                        <button class="rounded-full px-3 py-1.5 text-sm border border-gray-200 bg-white text-gray-700 hover:bg-gray-50 transition" data-chip aria-pressed="false">コースリスト作成</button>
-                                        <button class="rounded-full px-3 py-1.5 text-sm border border-gray-200 bg-white text-gray-700 hover:bg-gray-50 transition" data-chip aria-pressed="false">料金確認</button>
-                                        <button class="rounded-full px-3 py-1.5 text-sm border border-gray-200 bg-white text-gray-700 hover:bg-gray-50 transition" data-chip aria-pressed="false">サイト準備</button>
-                                        <button class="rounded-full px-3 py-1.5 text-sm border border-gray-200 bg-white text-gray-700 hover:bg-gray-50 transition" data-chip aria-pressed="false">募集中</button>
-                                        <button class="rounded-full px-3 py-1.5 text-sm border border-gray-200 bg-white text-gray-700 hover:bg-gray-50 transition" data-chip aria-pressed="false">募集終了</button>
-                                    </div>
-                                </div>
-                                <!-- 募集期間 -->
-                                <div>
-                                    <label class="block text-sm text-gray-600 mb-2">募集期間</label>
-                                    <div class="flex flex-wrap gap-2 justify-start items-center">
-                                        <input type="date" name="" id="" class="rounded-md border p-2">～
-                                        <input type="date" name="" id="" class="rounded-md border p-2">
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- Footer (sticky) -->
-                    <div class="px-6 py-4 border-t border-gray-100 bg-white md:rounded-b-3xl rounded-b-3xl flex items-center justify-between gap-3">
-                        <button id="filter-reset" class="text-sm text-gray-600 hover:text-gray-800 underline">リセット</button>
-                        <div class="flex items-center gap-2">
-                            <button class="px-4 py-2 rounded-xl border border-gray-300 hover:bg-gray-50">キャンセル</button>
-                            <button id="filter-apply" class="px-4 py-2 rounded-xl bg-sky-600 text-white hover:bg-sky-700 shadow-sm">適用</button>
-                        </div>
-                    </div>
-                        </div>
-                    </div>
-                </div>
-                </div>
                 
-                <!-- 詳細ビュー -->
-                <div class="flex justify-between flex-1 overflow-y-auto">
-                    <div class="w-full my-6 mr-6">
-                        <div class="flex flex-col ">
-                            <!-- ヘッダー -->
-                            <div class=" bg-white pb-3 p-4 rounded-xl">
-                                <div class="flex items-center justify-between  border-gray-200 pb-3">
-                                    <h2 class="text-2xl font-bold text-gray-800">
-                                        <span class="mr-2" data-visible-for="iec, supplier">●●食品株式会社</span>
+                <div class="flex-1 overflow-y-auto custom-scrollbar p-6 pl-0">
+                    <div class="w-full flex flex-col gap-6">
+                        <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                            <div class="flex items-start justify-between border-b border-gray-100 pb-4">
+                                <div>
+                                    <div class="flex items-center gap-3 mb-1">
+                                        <span class="inline-block bg-blue-100 text-blue-700 text-sm font-bold px-3 py-0.5 rounded-full border border-blue-200">基本情報入力</span>
+                                        <span class="text-gray-400 text-sm">ID: 2026-0012</span>
+                                    </div>
+                                    <h2 class="text-2xl font-bold text-gray-800 flex items-center">
+                                        <span class="mr-3 text-gray-600" data-visible-for="iec, supplier">●●食品株式会社</span>
                                         <span class="">FY26 SD募集</span>
                                     </h2>
-                                    <span class="inline-block bg-blue-100 text-blue-600 text-base font-semibold mr-2 px-2.5 py-0.5 rounded-full ">基本情報入力</span>
                                 </div>
-
-                                <!-- <div class="mt-4 bg-gray-50 rounded-lg border grid grid-cols-3 text-gray-800 gap-4">
-                                    <div class="bg-gray-50 p-4">
-                                        <h3 class="mb-2 text-gray-500">企業</h3>
-                                        <div class="font-semibold">●●食品株式会社</div>
-                                    </div>
-                                    <div class="bg-gray-50 p-4">
-                                        <h3 class="mb-2 text-gray-500">募集期間</h3>
-                                        <div class="font-semibold">2026/04/01 - 2027/03/31</div>
-                                    </div>
-                                    <div class="bg-gray-50 p-4">
-                                        <h3 class="mb-2 text-gray-500">募集タイプ</h3>
-                                        <div class="font-semibold">WEB</div>
-                                    </div>
-                                </div> -->
-
-                                <!-- タスク通知 -->
-                                <div id="notifications" class="mt-5">
-                                    <div class="relative overflow-hidden rounded-2xl border border-blue-200 bg-blue-50/70 shadow-md">
-                                        
-                                        <div class="px-4 py-3 sm:px-5 sm:py-4 flex gap-3">
-                                            <!-- アイコンエリア -->
-                                            <div class="mt-0.5 flex h-9 w-9 items-center justify-center rounded-full bg-white shadow-sm">
-                                                <span class="material-symbols-outlined text-blue-600 text-xl">task_alt</span>
-                                            </div>
-
-                                            <!-- テキストエリア -->
-                                            <div class="flex-1 min-w-0">
-                                                <!-- ヘッダー行 -->
-                                                <div class="flex items-start gap-2">
-                                                    <div class="flex-1 min-w-0">
-                                                        <div class="flex items-center gap-2">
-                                                            <h3 class="text-sm sm:text-base font-semibold text-gray-900 flex items-center gap-1.5">
-                                                                タスク通知
-                                                            </h3>
-                                                            <span class="inline-flex items-center rounded-full bg-blue-600/90 px-2 py-0.5 text-[11px] font-medium text-white">
-                                                                要対応
-                                                            </span>
-                                                        </div>
-                                                        <p class="mt-1 text-xs sm:text-sm text-gray-700/80">
-                                                            現在の募集に対して、あなたが対応すべきアクションがあります。
-                                                        </p>
-                                                    </div>
-
-                                                    <!-- 閉じるボタン -->
-                                                    <button
-                                                        id="notificationCloseButton"
-                                                        class="ml-2 inline-flex h-8 w-8 items-center justify-center rounded-full text-gray-500 hover:bg-white/70 hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-200"
-                                                        aria-label="通知を閉じる"
-                                                    >
-                                                        <span class="material-symbols-outlined text-base">close</span>
-                                                    </button>
-                                                </div>
-
-                                                <!-- 本文（ロール別メッセージ） -->
-                                                <div class="mt-3 space-y-1.5 text-sm leading-relaxed">
-                                                    <div class="flex items-center gap-2" data-visible-for="iec">
-                                                        <span class="h-1.5 w-1.5 rounded-full bg-blue-500"></span>
-                                                        <p class="text-gray-900">
-                                                            他団体からの提案がすべてそろいました。
-                                                            <strong class="font-semibold">「コーリスト確認依頼」</strong>
-                                                            を実行してください。
-                                                        </p>
-                                                    </div>
-                                                    <div class="flex items-center gap-2" data-visible-for="supplier">
-                                                        <span class="h-1.5 w-1.5 rounded-full bg-blue-500"></span>
-                                                        <p class="text-gray-900">
-                                                            コースリストをお客様が承認完了しました。
-                                                            <strong class="font-semibold">コースの料金確認</strong>
-                                                            を行ってください。
-                                                        </p>
-                                                    </div>
-                                                    <div class="flex items-center gap-2" data-visible-for="customer">
-                                                        <span class="h-1.5 w-1.5 rounded-full bg-blue-500"></span>
-                                                        <p class="text-gray-900">
-                                                            IECからのコースリスト提案を確認のうえ、
-                                                            <strong class="font-semibold">承認</strong>
-                                                            を行ってください。
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-
-
-                                 <!-- タスクリスト -->
-                                <div class="rounded-xl mt-6 grid grid-cols-3 gap-4">
-                                    <!-- 基本情報カード -->
-                                    <div class="w-full rounded-xl border bg-white text-gray-700 p-4 font-bold flex flex-col items-center gap-2">
-                                        <h3 class="text-xl flex items-center p-1"><span class="material-symbols-outlined mr-2 text-blue-800">chat_info</span>基本情報</h3>
-                                        <p class="text-sm text-gray-500 font-normal">本募集の基本情報について登録します。</p>
-                                        <div class="w-full font-medium gap-2 flex flex-col border-t border-gray-100 pt-3">
-                                            <div class="flex items-center gap-1 justify-between  hover:shadow-md hover:bg-gray-100 rounded-lg cursor-pointer group duration-200">
-                                                <div class="flex m-3">
-                                                    <span class="material-symbols-outlined text-orange-400 mr-1" data-visible-for="iec">exclamation</span>
-                                                    <span class="material-symbols-outlined text-gray-600 mr-1" data-visible-for="supplier,customer">arrow_right</span>
-                                                    顧客担当
-                                                </div>
-                                                <button
-                                                    data-modal-src="./partials/tanto-modal.html"
-                                                    class="flex opacity-0 group-hover:opacity-100 transition-opacity 
-                                                    rounded px-2 py-1 mr-2 cursor-pointer hover:bg-blue-500 hover:shadow hover:text-white
-                                                    text-sm text-gray-700" data-visible-for="iec">
-                                                    <span class="material-symbols-outlined text-sm mr-1">edit</span>編集する
-                                                </button>
-                                            </div>
-                                            <div class="flex items-center gap-1 justify-between  hover:shadow-md hover:bg-gray-100 rounded-lg cursor-pointer group duration-200">
-                                                <div class="flex m-3">
-                                                    <span class="material-symbols-outlined text-green-400 mr-1" data-visible-for="iec">check_small</span>
-                                                    <span class="material-symbols-outlined text-gray-600 mr-1" data-visible-for="supplier,customer">arrow_right</span>
-                                                    参加団体
-                                                </div>
-                                                <button
-                                                    data-modal-src="./partials/supplier-modal.html"
-                                                    class="flex opacity-0 group-hover:opacity-100 transition-opacity 
-                                                    rounded px-2 py-1 mr-2 cursor-pointer hover:bg-blue-500 hover:shadow hover:text-white 
-                                                    text-sm text-gray-700" data-visible-for="iec">
-                                                    <span class="material-symbols-outlined text-sm mr-1">edit</span>編集する
-                                                </button>
-                                            </div>
-                                            <div class="flex items-center gap-1 justify-between  hover:shadow-md hover:bg-gray-100 rounded-lg cursor-pointer group duration-200">
-                                                <div class="flex m-3">
-                                                    <span class="material-symbols-outlined text-green-400 mr-1" data-visible-for="iec">check_small</span>
-                                                    <span class="material-symbols-outlined text-gray-600 mr-1" data-visible-for="supplier ,customer">arrow_right</span>
-                                                    申込期間
-                                                </div>
-                                                <button
-                                                    data-modal-src="./partials/application-modal.html"
-                                                    class="flex opacity-0 group-hover:opacity-100 transition-opacity 
-                                                    rounded px-2 py-1 mr-2 cursor-pointer hover:bg-blue-500 hover:shadow hover:text-white 
-                                                    text-sm text-gray-700" data-visible-for="iec">
-                                                    <span class="material-symbols-outlined text-sm mr-1">edit</span>編集する
-                                                </button>
-                                            </div>
-                                            <div class="flex items-center gap-1 justify-between  hover:shadow-md hover:bg-gray-100 rounded-lg cursor-pointer group duration-200"
-                                                    data-visible-for="iec,supplier, customer">
-                                                <div class="flex m-3">
-                                                    <span class="material-symbols-outlined text-green-400 mr-1" data-visible-for="iec,customer">check_small</span>
-                                                    <span class="material-symbols-outlined text-gray-600 mr-1" data-visible-for="supplier">arrow_right</span>
-                                                    申込指示
-                                                </div>
-                                                <button
-                                                    data-modal-src="./partials/application-instructions-modal.html"
-                                                    class="flex opacity-0 group-hover:opacity-100 transition-opacity 
-                                                    rounded px-2 py-1 mr-2 cursor-pointer hover:bg-blue-500 hover:shadow hover:text-white 
-                                                    text-sm text-gray-700" data-visible-for="iec, customer">
-                                                    <span class="material-symbols-outlined text-sm mr-1">edit</span>編集する
-                                                </button>
-                                            </div>
-                            
-                                        </div>
-                                    </div>
-                                    <!-- コースリストカード -->
-                                    <div class="w-full rounded-xl border bg-white text-gray-700 p-4 font-bold flex flex-col items-center gap-2">
-                                        <h3 class="text-xl flex items-center p-1"><span class="material-symbols-outlined mr-2 text-blue-800">book_ribbon</span>コースリスト</h3>
-                                        <p class="text-sm text-gray-500 font-normal">本募集のコースリストを登録します。</p>
-                                        <div class="w-full font-medium gap-2 flex flex-col border-t border-gray-100 pt-3">
-                                            <div class="flex items-center gap-1 justify-between  hover:shadow-md hover:bg-gray-100 rounded-lg cursor-pointer group duration-200"
-                                                data-visible-for="iec">
-                                                <div class="flex m-3">
-                                                    <span class="material-symbols-outlined text-orange-400 mr-1" data-visible-for="iec">exclamation</span>
-                                                    <span class="material-symbols-outlined text-gray-600 mr-1" data-visible-for="customer">arrow_right</span>
-                                                    コースリスト作成
-                                                </div>
-                                                <a href="media-plan-course-proposal-list.html?role=iec"
-                                                    class="flex opacity-0 group-hover:opacity-100 transition-opacity 
-                                                    rounded px-2 py-1 mr-2 cursor-pointer hover:bg-blue-500 hover:shadow hover:text-white 
-                                                    text-sm text-gray-700" data-visible-for="iec, supplier">
-                                                    <span class="material-symbols-outlined text-sm mr-1">edit</span>編集する
-                                                </a>
-                                            </div>
-                                            <div class="flex items-center gap-1 justify-between  hover:shadow-md hover:bg-gray-100 rounded-lg cursor-pointer group duration-200"
-                                                data-visible-for="supplier">
-                                                <div class="flex m-3">
-                                                    <span class="material-symbols-outlined text-orange-400 mr-1" data-visible-for="supplier">exclamation</span>
-                                                    <span class="material-symbols-outlined text-gray-600 mr-1" data-visible-for="iec">arrow_right</span>
-                                                    コース提案
-                                                </div>
-                                                <a href="media-plan-course-proposal-list.html?role=supplier"
-                                                    class="flex opacity-0 group-hover:opacity-100 transition-opacity 
-                                                    rounded px-2 py-1 mr-2 cursor-pointer hover:bg-blue-500 hover:shadow hover:text-white 
-                                                    text-sm text-gray-700" data-visible-for="supplier">
-                                                    <span class="material-symbols-outlined text-sm mr-1">edit</span>編集する
-                                                </a>
-                                            </div>
-                                            <div class="flex items-center gap-1 justify-between  hover:shadow-md hover:bg-gray-100 rounded-lg cursor-pointer group duration-200"
-                                                data-visible-for="iec">
-                                                <div class="flex m-3">
-                                                    <span class="material-symbols-outlined text-gray-400 mr-1" data-visible-for="iec">pause_circle</span>
-                                                    <span class="material-symbols-outlined text-gray-600 mr-1" data-visible-for="supplier, customer">arrow_right</span>
-                                                    コース提案依頼
-                                                </div>
-                                                <button
-                                                    data-modal-src="./partials/req-course-proposal-modal.html"
-                                                    class="flex opacity-0 group-hover:opacity-100 transition-opacity 
-                                                    rounded px-2 py-1 mr-2 cursor-pointer hover:bg-blue-500 hover:shadow hover:text-white 
-                                                    text-sm text-gray-700" data-visible-for="iec">
-                                                    <span class="material-symbols-outlined text-sm mr-1">edit</span>編集する
-                                                </button>
-                                            </div>
-                                            <div class="flex items-center gap-1 justify-between hover:shadow-md hover:bg-gray-100 rounded-lg cursor-pointer group duration-200"
-                                                data-visible-for="iec">
-                                                <div class="flex m-3">
-                                                    <span class="material-symbols-outlined text-gray-400 mr-1" data-visible-for="iec">pause_circle</span>
-                                                    <span class="material-symbols-outlined text-gray-600 mr-1" data-visible-for="supplier, customer">arrow_right</span>
-                                                    コースリスト確認依頼
-                                                </div>
-                                                <button
-                                                    data-modal-src="./partials/req-course-list-confirm-modal.html"
-                                                    class="flex opacity-0 group-hover:opacity-100 transition-opacity 
-                                                    rounded px-2 py-1 mr-2 cursor-pointer hover:bg-blue-500 hover:shadow hover:text-white 
-                                                    text-sm text-gray-700" data-visible-for="iec">
-                                                    <span class="material-symbols-outlined text-sm mr-1">edit</span>編集する
-                                                </button>
-                                            </div>
-                                            <div class="flex items-center gap-1 justify-between hover:shadow-md hover:bg-gray-100 rounded-lg cursor-pointer group duration-200"
-                                                data-visible-for="customer">
-                                                <div class="flex m-3">
-                                                    <span class="material-symbols-outlined text-gray-400 mr-1">pause_circle</span>
-                                                    コースリスト確認
-                                                </div>
-                                                <a href="media-plan-course-proposal-list.html?role=customer"
-                                                    class="flex opacity-0 group-hover:opacity-100 transition-opacity 
-                                                    rounded px-2 py-1 mr-2 cursor-pointer hover:bg-blue-500 hover:shadow hover:text-white 
-                                                    text-sm text-gray-700" data-visible-for="customer">
-                                                    <span class="material-symbols-outlined text-sm mr-1">edit</span>編集する
-                                                </a>
-                                            </div>
-                                            <div class="flex items-center gap-1 justify-between hover:shadow-md hover:bg-gray-100 rounded-lg cursor-pointer group duration-200"
-                                                data-visible-for="iec">
-                                                <div class="flex m-3">
-                                                    <span class="material-symbols-outlined text-gray-400 mr-1" data-visible-for="iec">pause_circle</span>
-                                                    <span class="material-symbols-outlined text-gray-600 mr-1" data-visible-for="supplier, customer">arrow_right</span>
-                                                    料金確認依頼
-                                                </div>
-                                                <button
-                                                    data-modal-src="./partials/req-course-price-confirm-modal.html"
-                                                    class="flex opacity-0 group-hover:opacity-100 transition-opacity 
-                                                    rounded px-2 py-1 mr-2 cursor-pointer hover:bg-blue-500 hover:shadow hover:text-white 
-                                                    text-sm text-gray-700" data-visible-for="iec">
-                                                    <span class="material-symbols-outlined text-sm mr-1">edit</span>編集する
-                                                </button>
-                                            </div>
-                                            
-                                            <a href="media-plan-course-price-confirm-list.html?role=iec"
-                                            class="flex items-center gap-1 justify-between hover:shadow-md hover:bg-gray-100 rounded-lg cursor-pointer group duration-200"
-                                                data-visible-for="iec">
-                                                <div class="flex m-3">
-                                                    <span class="material-symbols-outlined text-gray-600 mr-1" data-visible-for="iec">arrow_right</span>
-                                                    料金確認結果確認
-                                                </div>
-                                                <!-- <a href="media-plan-course-price-confirm-list.html?role=iec"
-                                                    class="flex opacity-0 group-hover:opacity-100 transition-opacity 
-                                                    rounded px-2 py-1 mr-2 cursor-pointer hover:bg-blue-500 hover:shadow hover:text-white 
-                                                    text-sm text-gray-700" data-visible-for="iec">
-                                                    <span class="material-symbols-outlined text-sm mr-1">edit</span>編集する
-                                                </a> -->
-                                            </a>
-                                            <div class="flex items-center gap-1 justify-between hover:shadow-md hover:bg-gray-100 rounded-lg cursor-pointer group duration-200"
-                                                data-visible-for="supplier">
-                                                <div class="flex m-3">
-                                                    <span class="material-symbols-outlined text-orange-400 mr-1">exclamation</span>
-                                                    料金確認
-                                                </div>
-                                                <a href="media-plan-course-price-confirm-list.html"
-                                                    class="flex opacity-0 group-hover:opacity-100 transition-opacity 
-                                                    rounded px-2 py-1 mr-2 cursor-pointer hover:bg-blue-500 hover:shadow hover:text-white 
-                                                    text-sm text-gray-700" data-visible-for="supplier">
-                                                    <span class="material-symbols-outlined text-sm mr-1">edit</span>編集する
-                                                </a>
-                                            </div>
-                            
-                                        </div>
-                                    </div>
-                                    <!-- 募集サイト設定カード -->
-                                    <div class="w-full rounded-xl border bg-white text-gray-700 p-4 font-bold flex flex-col items-center gap-2">
-                                        <h3 class="text-xl flex items-center p-1"><span class="material-symbols-outlined mr-2 text-blue-800">devices</span>募集サイト</h3>
-                                        <p class="text-sm text-gray-500 font-normal">本募集のWEBサイト関連の登録をします。</p>
-                                        <div class="w-full font-medium gap-2 flex flex-col border-t border-gray-100 pt-3">
-                                            <div class="flex items-center gap-1 justify-between  hover:shadow-md hover:bg-gray-100 rounded-lg cursor-pointer group duration-200"
-                                                data-visible-for="iec, supplier, customer">
-                                                <div class="flex m-3">
-                                                    <span class="material-symbols-outlined text-green-400 mr-1" data-visible-for="iec, customer">check_small</span>
-                                                    <span class="material-symbols-outlined text-gray-600 mr-1" data-visible-for="supplier">arrow_right</span>
-                                                    募集要項
-                                                </div>
-                                                <button
-                                                    data-modal-src="./partials/guideline-modal.html"
-                                                    class="flex opacity-0 group-hover:opacity-100 transition-opacity 
-                                                    rounded px-2 py-1 mr-2 cursor-pointer hover:bg-blue-500 hover:shadow hover:text-white 
-                                                    text-sm text-gray-700" data-visible-for="iec, customer">
-                                                    <span class="material-symbols-outlined text-sm mr-1">edit</span>編集する
-                                                </button>
-                                            </div>
-                                            <div class="flex items-center gap-1 justify-between  hover:shadow-md hover:bg-gray-100 rounded-lg cursor-pointer group duration-200"
-                                                data-visible-for="iec, customer">
-                                                <div class="flex m-3">
-                                                    <span class="material-symbols-outlined text-green-400 mr-1" data-visible-for="iec, customer">check_small</span>
-                                                    <span class="material-symbols-outlined text-gray-600 mr-1" data-visible-for="supplier">arrow_right</span>
-                                                    サイトユーザー
-                                                </div>
-                                                <button
-                                                    data-modal-src="./partials/site-user-modal.html"
-                                                    class="flex opacity-0 group-hover:opacity-100 transition-opacity 
-                                                    rounded px-2 py-1 mr-2 cursor-pointer hover:bg-blue-500 hover:shadow hover:text-white 
-                                                    text-sm text-gray-700" data-visible-for="iec, customer">
-                                                    <span class="material-symbols-outlined text-sm mr-1">edit</span>編集する
-                                                </button>
-                                            </div>
-                                            <div class="flex items-center gap-1 justify-between  hover:shadow-md hover:bg-gray-100 rounded-lg cursor-pointer group duration-200"
-                                                data-visible-for="iec, customer">
-                                                <div class="flex m-3">
-                                                    <span class="material-symbols-outlined text-green-400 mr-1">check_small</span>
-                                                    特集ぺージ
-                                                </div>
-                                                <button
-                                                    data-modal-src="./partials/topics-modal.html"
-                                                    class="flex opacity-0 group-hover:opacity-100 transition-opacity 
-                                                    rounded px-2 py-1 mr-2 cursor-pointer hover:bg-blue-500 hover:shadow hover:text-white 
-                                                    text-sm text-gray-700" data-visible-for="iec, customer">
-                                                    <span class="material-symbols-outlined text-sm mr-1">edit</span>編集する
-                                                </button>
-                                            </div>
-                                            <div class="flex items-center gap-1 justify-between  hover:shadow-md hover:bg-gray-100 rounded-lg cursor-pointer group duration-200"
-                                                data-visible-for="iec">
-                                                <div class="flex m-3">
-                                                    <span class="material-symbols-outlined text-green-400 mr-1">check_small</span>
-                                                    申込フォーム
-                                                </div>
-                                                <button
-                                                    data-modal-src="./partials/application-form-modal.html"
-                                                    class="flex opacity-0 group-hover:opacity-100 transition-opacity 
-                                                    rounded px-2 py-1 mr-2 cursor-pointer hover:bg-blue-500 hover:shadow hover:text-white 
-                                                    text-sm text-gray-700" data-visible-for="iec">
-                                                    <span class="material-symbols-outlined text-sm mr-1">edit</span>編集する
-                                                </button>
-                                            </div>
-                                            <div class="flex items-center gap-1 justify-between  hover:shadow-md hover:bg-gray-100 rounded-lg cursor-pointer group duration-200"
-                                                data-visible-for="iec">
-                                                <div class="flex m-3">
-                                                    <span class="material-symbols-outlined text-green-400 mr-1">check_small</span>
-                                                    サイト確認依頼
-                                                </div>
-                                                <button
-                                                    data-modal-src="./partials/req-site-confirm-modal.html"
-                                                    class="flex opacity-0 group-hover:opacity-100 transition-opacity 
-                                                    rounded px-2 py-1 mr-2 cursor-pointer hover:bg-blue-500 hover:shadow hover:text-white 
-                                                    text-sm text-gray-700" data-visible-for="iec">
-                                                    <span class="material-symbols-outlined text-sm mr-1">edit</span>編集する
-                                                </button>
-                                            </div>
-                                            <div class="flex items-center gap-1 justify-between  hover:shadow-md hover:bg-gray-100 rounded-lg cursor-pointer group duration-200"
-                                                data-visible-for="customer">
-                                                <div class="flex m-3">
-                                                    <span class="material-symbols-outlined text-green-400 mr-1">check_small</span>
-                                                    サイト確認
-                                                </div>
-                                                <button
-                                                    data-modal-src="./partials/res-site-confirm-modal.html"
-                                                    class="flex opacity-0 group-hover:opacity-100 transition-opacity 
-                                                    rounded px-2 py-1 mr-2 cursor-pointer hover:bg-blue-500 hover:shadow hover:text-white 
-                                                    text-sm text-gray-700" data-visible-for="customer">
-                                                    <span class="material-symbols-outlined text-sm mr-1">edit</span>編集する
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!-- アクションボタン -->
-                                <div class="flex mt-4 justify-end gap-4">
-                                    <a href="#" target="_blank" rel="noopener noreferrer" class="rounded-lg font-semibold bg-blue-700 py-3 px-4 text-white flex hover:bg-blue-600"
-                                    data-visible-for="iec,customer">
-                                        お知らせを登録する
-                                        <span class="material-symbols-outlined ml-2">campaign</span>
-                                    </a>
-                                    <a class="rounded-lg font-semibold bg-gray-300 py-3 px-4 text-white flex cursor-pointer"
-                                    data-visible-for="iec">
-                                        募集サイトをオープンする
-                                        <span class="material-symbols-outlined ml-2">power_settings_new</span>
-                                    </a>
-                                    <a class="rounded-lg font-semibold bg-gray-300 py-3 px-4 text-white flex cursor-pointer"
-                                    data-visible-for="iec">
-                                        募集サイトをプレビューする
-                                        <span class="material-symbols-outlined ml-2">open_in_new</span>
-                                    </a>
-                                    <a href="./forUser/top.html" target="_blank" rel="noopener noreferrer" class="rounded-lg font-semibold bg-blue-700 py-3 px-4 text-white flex hover:bg-blue-600"
-                                    data-visible-for="customer">
-                                        募集サイトをプレビューする
-                                        <span class="material-symbols-outlined ml-2">open_in_new</span>
-                                    </a>
+                                <div class="flex gap-2">
+                                     <button class="flex p-2 rounded-lg hover:bg-gray-100 text-gray-500 hover:text-gray-800" title="お気に入り">
+                                        <span class="material-symbols-outlined">star</span>
+                                     </button>
+                                     <button class="flex p-2 rounded-lg hover:bg-gray-100 text-gray-500 hover:text-gray-800" title="メニュー">
+                                        <span class="material-symbols-outlined">more_vert</span>
+                                     </button>
                                 </div>
                             </div>
-                            
-                           
-                            <!-- 申込状況 IFRAME 埋め込み -->
-                            <div class="bg-white rounded-xl mt-6 p-4">
-                                <h3 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
+
+                            <div id="notifications" class="mt-5 transition-all duration-300">
+                                <div class="relative overflow-hidden rounded-xl border border-blue-200 bg-blue-50 shadow-sm">
+                                    <div class="px-4 py-3 flex gap-4 items-start">
+                                        <div class="flex-shrink-0 mt-1">
+                                            <span class="material-symbols-outlined text-blue-600 text-2xl">task_alt</span>
+                                        </div>
+
+                                        <div class="flex-1 min-w-0">
+                                            <div class="flex items-center justify-between">
+                                                <h3 class="text-sm font-bold text-blue-900">タスク通知：要対応</h3>
+                                                <button
+                                                    id="notificationCloseButton"
+                                                    class="text-gray-400 hover:text-blue-700 hover:bg-blue-100 rounded-full py-1 px-2 transition-colors"
+                                                    aria-label="通知を閉じる"
+                                                >
+                                                    <span class="material-symbols-outlined text-lg block">close</span>
+                                                </button>
+                                            </div>
+
+                                            <div class="mt-1 text-sm text-gray-700 leading-relaxed">
+                                                <div data-visible-for="iec">
+                                                    他団体からの提案がすべてそろいました。<strong class="font-bold text-blue-800">「コースリスト確認依頼」</strong>を実行してください。
+                                                </div>
+                                                <div data-visible-for="supplier">
+                                                    コースリストをお客様が承認完了しました。<strong class="font-bold text-blue-800">コースの料金確認</strong>を行ってください。
+                                                </div>
+                                                <div data-visible-for="customer">
+                                                    IECからのコースリスト提案を確認のうえ、<strong class="font-bold text-blue-800">承認</strong>を行ってください。
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                             <div class="mt-8 grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-5">
+                                
+                                <div class="w-full rounded-xl border border-gray-200 bg-white shadow-[0_2px_8px_rgba(0,0,0,0.04)] hover:shadow-md transition-shadow duration-300 flex flex-col overflow-hidden">
+                                    <div class="p-5 border-b border-gray-100 bg-gray-50/50">
+                                        <h3 class="text-lg font-bold text-gray-800 flex items-center">
+                                            <span class="material-symbols-outlined mr-2 text-blue-700">chat_info</span>基本情報
+                                        </h3>
+                                        <p class="text-xs text-gray-500 mt-1 ml-8">募集の基本情報設定</p>
+                                    </div>
+                                    <div class="p-2 flex flex-col gap-1">
+                                        <div class="flex items-center justify-between p-2 rounded-lg hover:bg-gray-50 group transition-colors">
+                                            <div class="flex items-center text-sm font-medium text-gray-700">
+                                                <span class="material-symbols-outlined text-orange-400 mr-2 text-lg" data-visible-for="iec">error</span>
+                                                <span class="material-symbols-outlined text-gray-400 mr-2 text-lg" data-visible-for="supplier,customer">check_circle</span>
+                                                顧客担当
+                                            </div>
+                                            <button
+                                                data-modal-src="./partials/tanto-modal.html"
+                                                class="flex items-center text-gray-400 hover:text-blue-600 hover:bg-blue-50 px-2 py-1.5 rounded transition-all" 
+                                                data-visible-for="iec">
+                                                <span class="material-symbols-outlined text-lg">edit</span>
+                                                <span class="text-xs ml-1 font-medium hidden group-hover:inline-block">編集</span>
+                                            </button>
+                                        </div>
+                                        <div class="flex items-center justify-between p-2 rounded-lg hover:bg-gray-50 group transition-colors">
+                                            <div class="flex items-center text-sm font-medium text-gray-700">
+                                                <span class="material-symbols-outlined text-green-500 mr-2 text-lg" data-visible-for="iec">check_circle</span>
+                                                <span class="material-symbols-outlined text-gray-400 mr-2 text-lg" data-visible-for="supplier,customer">check_circle</span>
+                                                参加団体
+                                            </div>
+                                            <button
+                                                data-modal-src="./partials/supplier-modal.html"
+                                                class="flex items-center text-gray-400 hover:text-blue-600 hover:bg-blue-50 px-2 py-1.5 rounded transition-all" 
+                                                data-visible-for="iec">
+                                                <span class="material-symbols-outlined text-lg">edit</span>
+                                                <span class="text-xs ml-1 font-medium hidden group-hover:inline-block">編集</span>
+                                            </button>
+                                        </div>
+                                        <div class="flex items-center justify-between p-2 rounded-lg hover:bg-gray-50 group transition-colors">
+                                            <div class="flex items-center text-sm font-medium text-gray-700">
+                                                <span class="material-symbols-outlined text-green-500 mr-2 text-lg" data-visible-for="iec">check_circle</span>
+                                                <span class="material-symbols-outlined text-gray-400 mr-2 text-lg" data-visible-for="supplier,customer">check_circle</span>
+                                                申込期間
+                                            </div>
+                                            <button
+                                                data-modal-src="./partials/application-modal.html"
+                                                class="flex items-center text-gray-400 hover:text-blue-600 hover:bg-blue-50 px-2 py-1.5 rounded transition-all" 
+                                                data-visible-for="iec">
+                                                <span class="material-symbols-outlined text-lg">edit</span>
+                                                <span class="text-xs ml-1 font-medium hidden group-hover:inline-block">編集</span>
+                                            </button>
+                                        </div>
+                                        <div class="flex items-center justify-between p-2 rounded-lg hover:bg-gray-50 group transition-colors"
+                                            data-visible-for="iec,supplier, customer">
+                                            <div class="flex items-center text-sm font-medium text-gray-700">
+                                                <span class="material-symbols-outlined text-green-500 mr-2 text-lg" data-visible-for="iec,customer">check_circle</span>
+                                                <span class="material-symbols-outlined text-gray-400 mr-2 text-lg" data-visible-for="supplier">check_circle</span>
+                                                申込指示
+                                            </div>
+                                            <button
+                                                data-modal-src="./partials/application-instructions-modal.html"
+                                                class="flex items-center text-gray-400 hover:text-blue-600 hover:bg-blue-50 px-2 py-1.5 rounded transition-all" 
+                                                data-visible-for="iec, customer">
+                                                <span class="material-symbols-outlined text-lg">edit</span>
+                                                <span class="text-xs ml-1 font-medium hidden group-hover:inline-block">編集</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="w-full rounded-xl border border-gray-200 bg-white shadow-[0_2px_8px_rgba(0,0,0,0.04)] hover:shadow-md transition-shadow duration-300 flex flex-col overflow-hidden">
+                                    <div class="p-5 border-b border-gray-100 bg-gray-50/50">
+                                        <h3 class="text-lg font-bold text-gray-800 flex items-center">
+                                            <span class="material-symbols-outlined mr-2 text-blue-700">book_ribbon</span>コースリスト
+                                        </h3>
+                                        <p class="text-xs text-gray-500 mt-1 ml-8">コース提案・料金確認プロセス</p>
+                                    </div>
+                                    <div class="p-2 flex flex-col gap-1">
+                                        <div class="flex items-center justify-between p-2 rounded-lg hover:bg-gray-50 group transition-colors" data-visible-for="iec">
+                                            <div class="flex items-center text-sm font-medium text-gray-700">
+                                                <span class="material-symbols-outlined text-orange-400 mr-2 text-lg" data-visible-for="iec">error</span>
+                                                <span class="material-symbols-outlined text-gray-400 mr-2 text-lg" data-visible-for="customer">check_circle</span>
+                                                コースリスト作成
+                                            </div>
+                                            <a href="media-plan-course-proposal-list.html?role=iec"
+                                                class="flex items-center text-gray-400 hover:text-blue-600 hover:bg-blue-50 px-2 py-1.5 rounded transition-all" 
+                                                data-visible-for="iec, supplier">
+                                                <span class="material-symbols-outlined text-lg">edit</span>
+                                                <span class="text-xs ml-1 font-medium hidden group-hover:inline-block">編集</span>
+                                            </a>
+                                        </div>
+                                        
+                                        <div class="flex items-center justify-between p-2 rounded-lg hover:bg-gray-50 group transition-colors" data-visible-for="supplier">
+                                            <div class="flex items-center text-sm font-medium text-gray-700">
+                                                <span class="material-symbols-outlined text-orange-400 mr-2 text-lg">error</span>
+                                                コース提案
+                                            </div>
+                                            <a href="media-plan-course-proposal-list.html?role=supplier"
+                                                class="flex items-center text-gray-400 hover:text-blue-600 hover:bg-blue-50 px-2 py-1.5 rounded transition-all" 
+                                                data-visible-for="supplier">
+                                                <span class="material-symbols-outlined text-lg">edit</span>
+                                                <span class="text-xs ml-1 font-medium hidden group-hover:inline-block">編集</span>
+                                            </a>
+                                        </div>
+
+                                        <div class="flex items-center justify-between p-2 rounded-lg hover:bg-gray-50 group transition-colors" data-visible-for="iec">
+                                            <div class="flex items-center text-sm font-medium text-gray-700">
+                                                <span class="material-symbols-outlined text-gray-400 mr-2 text-lg">pause_circle</span>
+                                                コース提案依頼
+                                            </div>
+                                            <button data-modal-src="./partials/req-course-proposal-modal.html"
+                                                class="flex items-center text-gray-400 hover:text-blue-600 hover:bg-blue-50 px-2 py-1.5 rounded transition-all">
+                                                <span class="material-symbols-outlined text-lg">send</span>
+                                                <span class="text-xs ml-1 font-medium hidden group-hover:inline-block">依頼</span>
+                                            </button>
+                                        </div>
+
+                                        <div class="flex items-center justify-between p-2 rounded-lg hover:bg-gray-50 group transition-colors" data-visible-for="iec">
+                                            <div class="flex items-center text-sm font-medium text-gray-700">
+                                                <span class="material-symbols-outlined text-gray-400 mr-2 text-lg">pause_circle</span>
+                                                リスト確認依頼
+                                            </div>
+                                            <button data-modal-src="./partials/req-course-list-confirm-modal.html"
+                                                class="flex items-center text-gray-400 hover:text-blue-600 hover:bg-blue-50 px-2 py-1.5 rounded transition-all">
+                                                <span class="material-symbols-outlined text-lg">send</span>
+                                                <span class="text-xs ml-1 font-medium hidden group-hover:inline-block">依頼</span>
+                                            </button>
+                                        </div>
+
+                                        <div class="flex items-center justify-between p-2 rounded-lg hover:bg-gray-50 group transition-colors" data-visible-for="customer">
+                                            <div class="flex items-center text-sm font-medium text-gray-700">
+                                                <span class="material-symbols-outlined text-gray-400 mr-2 text-lg">pause_circle</span>
+                                                コースリスト確認
+                                            </div>
+                                            <a href="media-plan-course-proposal-list.html?role=customer"
+                                                class="flex items-center text-gray-400 hover:text-blue-600 hover:bg-blue-50 px-2 py-1.5 rounded transition-all">
+                                                <span class="material-symbols-outlined text-lg">visibility</span>
+                                                <span class="text-xs ml-1 font-medium hidden group-hover:inline-block">確認</span>
+                                            </a>
+                                        </div>
+
+                                        <div class="flex items-center justify-between p-2 rounded-lg hover:bg-gray-50 group transition-colors" data-visible-for="iec">
+                                            <div class="flex items-center text-sm font-medium text-gray-700">
+                                                <span class="material-symbols-outlined text-gray-400 mr-2 text-lg">pause_circle</span>
+                                                料金確認依頼
+                                            </div>
+                                            <button data-modal-src="./partials/req-course-price-confirm-modal.html"
+                                                class="flex items-center text-gray-400 hover:text-blue-600 hover:bg-blue-50 px-2 py-1.5 rounded transition-all">
+                                                <span class="material-symbols-outlined text-lg">send</span>
+                                                <span class="text-xs ml-1 font-medium hidden group-hover:inline-block">依頼</span>
+                                            </button>
+                                        </div>
+
+                                        <div class="flex items-center justify-between p-2 rounded-lg hover:bg-gray-50 group transition-colors" data-visible-for="supplier">
+                                            <div class="flex items-center text-sm font-medium text-gray-700">
+                                                <span class="material-symbols-outlined text-orange-400 mr-2 text-lg">error</span>
+                                                料金確認
+                                            </div>
+                                            <a href="media-plan-course-price-confirm-list.html"
+                                                class="flex items-center text-gray-400 hover:text-blue-600 hover:bg-blue-50 px-2 py-1.5 rounded transition-all">
+                                                <span class="material-symbols-outlined text-lg">edit</span>
+                                                <span class="text-xs ml-1 font-medium hidden group-hover:inline-block">編集</span>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="w-full rounded-xl border border-gray-200 bg-white shadow-[0_2px_8px_rgba(0,0,0,0.04)] hover:shadow-md transition-shadow duration-300 flex flex-col overflow-hidden">
+                                    <div class="p-5 border-b border-gray-100 bg-gray-50/50">
+                                        <h3 class="text-lg font-bold text-gray-800 flex items-center">
+                                            <span class="material-symbols-outlined mr-2 text-blue-700">devices</span>募集サイト
+                                        </h3>
+                                        <p class="text-xs text-gray-500 mt-1 ml-8">WEBサイト・ユーザー管理</p>
+                                    </div>
+                                    <div class="p-2 flex flex-col gap-1">
+                                        <div class="flex items-center justify-between p-2 rounded-lg hover:bg-gray-50 group transition-colors"
+                                            data-visible-for="iec, supplier, customer">
+                                            <div class="flex items-center text-sm font-medium text-gray-700">
+                                                <span class="material-symbols-outlined text-green-500 mr-2 text-lg" data-visible-for="iec, customer">check_circle</span>
+                                                <span class="material-symbols-outlined text-gray-400 mr-2 text-lg" data-visible-for="supplier">check_circle</span>
+                                                募集要項
+                                            </div>
+                                            <button
+                                                data-modal-src="./partials/guideline-modal.html"
+                                                class="flex items-center text-gray-400 hover:text-blue-600 hover:bg-blue-50 px-2 py-1.5 rounded transition-all" 
+                                                data-visible-for="iec, customer">
+                                                <span class="material-symbols-outlined text-lg">edit</span>
+                                                <span class="text-xs ml-1 font-medium hidden group-hover:inline-block">編集</span>
+                                            </button>
+                                        </div>
+                                        
+                                        <div class="flex items-center justify-between p-2 rounded-lg hover:bg-gray-50 group transition-colors"
+                                            data-visible-for="iec, customer">
+                                            <div class="flex items-center text-sm font-medium text-gray-700">
+                                                <span class="material-symbols-outlined text-green-500 mr-2 text-lg">check_circle</span>
+                                                サイトユーザー
+                                            </div>
+                                            <button
+                                                data-modal-src="./partials/site-user-modal.html"
+                                                class="flex items-center text-gray-400 hover:text-blue-600 hover:bg-blue-50 px-2 py-1.5 rounded transition-all">
+                                                <span class="material-symbols-outlined text-lg">edit</span>
+                                                <span class="text-xs ml-1 font-medium hidden group-hover:inline-block">編集</span>
+                                            </button>
+                                        </div>
+
+                                        <div class="flex items-center justify-between p-2 rounded-lg hover:bg-gray-50 group transition-colors"
+                                            data-visible-for="iec, customer">
+                                            <div class="flex items-center text-sm font-medium text-gray-700">
+                                                <span class="material-symbols-outlined text-green-500 mr-2 text-lg">check_circle</span>
+                                                特集ぺージ
+                                            </div>
+                                            <button
+                                                data-modal-src="./partials/topics-modal.html"
+                                                class="flex items-center text-gray-400 hover:text-blue-600 hover:bg-blue-50 px-2 py-1.5 rounded transition-all">
+                                                <span class="material-symbols-outlined text-lg">edit</span>
+                                                <span class="text-xs ml-1 font-medium hidden group-hover:inline-block">編集</span>
+                                            </button>
+                                        </div>
+
+                                        <div class="flex items-center justify-between p-2 rounded-lg hover:bg-gray-50 group transition-colors"
+                                            data-visible-for="iec">
+                                            <div class="flex items-center text-sm font-medium text-gray-700">
+                                                <span class="material-symbols-outlined text-green-500 mr-2 text-lg">check_circle</span>
+                                                申込フォーム
+                                            </div>
+                                            <button
+                                                data-modal-src="./partials/application-form-modal.html"
+                                                class="flex items-center text-gray-400 hover:text-blue-600 hover:bg-blue-50 px-2 py-1.5 rounded transition-all">
+                                                <span class="material-symbols-outlined text-lg">edit</span>
+                                                <span class="text-xs ml-1 font-medium hidden group-hover:inline-block">編集</span>
+                                            </button>
+                                        </div>
+
+                                        <div class="flex items-center justify-between p-2 rounded-lg hover:bg-gray-50 group transition-colors"
+                                            data-visible-for="iec">
+                                            <div class="flex items-center text-sm font-medium text-gray-700">
+                                                <span class="material-symbols-outlined text-green-500 mr-2 text-lg">check_circle</span>
+                                                サイト確認依頼
+                                            </div>
+                                            <button
+                                                data-modal-src="./partials/req-site-confirm-modal.html"
+                                                class="flex items-center text-gray-400 hover:text-blue-600 hover:bg-blue-50 px-2 py-1.5 rounded transition-all">
+                                                <span class="material-symbols-outlined text-lg">send</span>
+                                                <span class="text-xs ml-1 font-medium hidden group-hover:inline-block">依頼</span>
+                                            </button>
+                                        </div>
+
+                                        <div class="flex items-center justify-between p-2 rounded-lg hover:bg-gray-50 group transition-colors"
+                                            data-visible-for="customer">
+                                            <div class="flex items-center text-sm font-medium text-gray-700">
+                                                <span class="material-symbols-outlined text-green-500 mr-2 text-lg">check_circle</span>
+                                                サイト確認
+                                            </div>
+                                            <button
+                                                data-modal-src="./partials/res-site-confirm-modal.html"
+                                                class="flex items-center text-gray-400 hover:text-blue-600 hover:bg-blue-50 px-2 py-1.5 rounded transition-all">
+                                                <span class="material-symbols-outlined text-lg">visibility</span>
+                                                <span class="text-xs ml-1 font-medium hidden group-hover:inline-block">確認</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mt-4 flex flex-wrap justify-end gap-3 mb-6">
+                                <a href="#" class="rounded-lg font-bold bg-blue-700 hover:bg-blue-800 transition-colors py-3 px-6 text-white flex items-center shadow-sm"
+                                data-visible-for="iec,customer">
+                                    <span class="material-symbols-outlined mr-2">campaign</span>
+                                    お知らせ登録
+                                </a>
+                                <button class="rounded-lg font-bold bg-gray-200 hover:bg-gray-300 text-gray-700 transition-colors py-3 px-6 flex items-center"
+                                data-visible-for="iec">
+                                    <span class="material-symbols-outlined mr-2">power_settings_new</span>
+                                    サイト公開
+                                </button>
+                                <button class="rounded-lg font-bold bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 transition-colors py-3 px-6 flex items-center"
+                                data-visible-for="iec">
+                                    <span class="material-symbols-outlined mr-2">open_in_new</span>
+                                    プレビュー
+                                </button>
+                                <a href="./forUser/top.html" target="_blank" class="rounded-lg font-bold bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 transition-colors py-3 px-6 flex items-center"
+                                data-visible-for="customer">
+                                    <span class="material-symbols-outlined mr-2">open_in_new</span>
+                                    サイト確認
+                                </a>
+                            </div>
+ 
+                            <div class="bg-white rounded-xl mt-6  border-t border-gray-200">
+                                <h3 class="text-xl font-bold text-gray-800 my-6 flex items-center">
                                     <span class="material-symbols-outlined text-blue-700 mr-2">insights</span>
                                     申込状況ダッシュボード
                                 </h3>
@@ -649,44 +469,396 @@
     </body>
 </html>
 
-<script>
-    window.addEventListener('DOMContentLoaded', () => {
-    // 初期ロールやブランド名・ユーザー名は自由に
-    MockUI.injectHeader('#app-header', {
-        userName: 'Test User',
-        brand: 'New SD App',
-        initialRole: 'iec', // 初回roleが未指定ならiecをセット
-    });
-    MockUI.injectSidebar('#app-sidebar');
+<!-- <script type="module">
+    // 切り出したデータと設定をインポート
+    import { planData } from './js/data/plan-data.js';
 
-    // サイドバー挿入直後に data-visible-for を反映
-    RoleMock.applyRoleVisibility();
-
-    // モーダル初期化（1回だけ）
-    ModalIframe.init();
-  });
-
-  document.getElementById("notificationCloseButton").addEventListener("click", function() {
-        var notifications = document.getElementById("notifications");
-        notifications.style.display = "none";
-    });
-
-    document.getElementById("btn-filter").addEventListener("click", function() {
-        var filterMenu = document.getElementById("filter-menu");
-        if (filterMenu.classList.contains("hidden")) {
-            filterMenu.classList.remove("hidden");
-        } else {
-            filterMenu.classList.add("hidden");
+    // -----------------------------------------------------------------
+    // 2. 描画設定・ロジック
+    // -----------------------------------------------------------------
+    
+    // カラーテーマ設定
+    const themeConfig = {
+        blue: {
+            hoverBorder: "hover:border-blue-300",
+            strip: "bg-blue-500",
+            arrow: "group-hover:text-blue-500",
+            badge: "bg-blue-100 text-blue-700 border-blue-200"
+        },
+        lime: {
+            hoverBorder: "hover:border-lime-300",
+            strip: "bg-lime-500",
+            arrow: "group-hover:text-lime-600",
+            badge: "bg-lime-100 text-lime-700 border-lime-200"
+        },
+        fuchsia: {
+            hoverBorder: "hover:border-fuchsia-300",
+            strip: "bg-fuchsia-500",
+            arrow: "group-hover:text-fuchsia-600",
+            badge: "bg-fuchsia-100 text-fuchsia-700 border-fuchsia-200"
+        },
+        gray: {
+            hoverBorder: "hover:border-blue-300", // Hoverは青系にする（元のUIに合わせる）
+            strip: "bg-gray-400", // 未使用だが一応定義
+            arrow: "group-hover:text-gray-500",
+            badge: "bg-gray-100 text-gray-600 border-gray-200"
+        },
+        blueSolid: {
+            hoverBorder: "hover:border-blue-300",
+            strip: "bg-blue-500",
+            arrow: "group-hover:text-blue-500",
+            badge: "bg-blue-600 text-white border-blue-600"
         }
+    };
+
+    // -----------------------------------------------------------------
+    // 描画ロジック (Render Logic)
+    // -----------------------------------------------------------------
+    function renderPlanList(data) {
+        const container = document.getElementById('plan-list-container');
+        const countBadge = document.getElementById('list-count');
+        
+        if(!container) return;
+
+        // リスト生成
+        const html = data.map(item => {
+            // themeConfigを参照
+            const t = themeConfig[item.theme] || themeConfig.gray;
+            const visibleAttr = item.visibleFor ? `data-visible-for="${item.visibleFor.join(',')}"` : '';
+            
+            // 左側のアクセントバー（Gray以外の場合に表示）
+            const stripHtml = (item.theme !== 'gray') 
+                ? `<div class="absolute left-0 top-0 bottom-0 w-1 ${t.strip} opacity-0 group-hover:opacity-100 transition-opacity"></div>`
+                : '';
+            
+            // タイトル色
+            const titleColorClass = (item.theme === 'gray')
+                ? 'text-gray-800'
+                : 'text-gray-800 group-hover:text-blue-700 transition-colors';
+
+            return `
+            <button type="button"
+                    class="group block w-full text-left bg-white border border-gray-200 rounded-xl p-4 shadow-sm
+                    hover:shadow-md ${t.hoverBorder} hover:-translate-y-[1px] transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 relative overflow-hidden"
+                    ${visibleAttr}>
+                ${stripHtml}
+                <div class="flex items-start justify-between gap-3">
+                    <div>
+                        <div class="text-base font-bold ${titleColorClass}">${item.title}</div>
+                        <div class="mt-1 text-xs text-gray-600 font-medium">${item.company}</div>
+                        <div class="mt-0.5 text-xs text-gray-500">${item.period}</div>
+                        <div class="mt-2">
+                            <span class="inline-block text-[10px] font-bold px-2 py-0.5 rounded-full border ${t.badge}">${item.statusLabel}</span>
+                        </div>
+                    </div>
+                    <span class="material-symbols-outlined text-gray-300 ${t.arrow} transition-colors">chevron_right</span>
+                </div>
+            </button>
+            `;
+        }).join('');
+
+        container.innerHTML = html;
+        if(countBadge) countBadge.textContent = `${data.length}件`;
+
+        // Role Visibilityを再適用（DOMが増えたため）
+        if (window.RoleMock) RoleMock.applyRoleVisibility();
+    }
+
+    // -----------------------------------------------------------------
+    // 初期化とイベント定義
+    // -----------------------------------------------------------------
+    window.addEventListener('DOMContentLoaded', () => {
+        // UI初期化
+        MockUI.injectHeader('#app-header', {
+            userName: 'Test User',
+            brand: 'New SD App',
+            initialRole: 'iec',
+        });
+        MockUI.injectSidebar('#app-sidebar');
+        
+        // ★インポートしたデータを使って描画実行
+        renderPlanList(planData);
+
+        // Role/Modal初期化
+        RoleMock.applyRoleVisibility();
+        ModalIframe.init();
     });
 
-    document.getElementById("filter-apply").addEventListener("click", function() {
-        var filterMenu = document.getElementById("filter-menu");
-        filterMenu.classList.add("hidden");
+    // 通知のイベントリスナー
+    const notifyCloseBtn = document.getElementById("notificationCloseButton");
+    if(notifyCloseBtn) {
+        notifyCloseBtn.addEventListener("click", function() {
+            var notifications = document.getElementById("notifications");
+            notifications.classList.add("fade-out-up");
+            setTimeout(() => { notifications.style.display = "none"; }, 300);
+        });
+    }
+
+    // フィルタメニューの開閉
+    const btnFilter = document.getElementById("btn-filter");
+    const filterPanel = document.getElementById("filter-panel");
+    const filterCloseBtn = document.getElementById("filter-close-btn");
+
+    function toggleFilter() {
+        if (filterPanel.classList.contains("hidden")) {
+            filterPanel.classList.remove("hidden");
+            btnFilter.classList.add("bg-blue-50", "text-blue-600", "border-blue-200");
+            btnFilter.classList.remove("border-transparent");
+        } else {
+            filterPanel.classList.add("hidden");
+            btnFilter.classList.remove("bg-blue-50", "text-blue-600", "border-blue-200");
+            btnFilter.classList.add("border-transparent");
+        }
+    }
+
+    if(btnFilter) btnFilter.addEventListener("click", toggleFilter);
+    if(filterCloseBtn) filterCloseBtn.addEventListener("click", toggleFilter);
+</script> -->
+
+<script type="module">
+    import { planData } from './js/data/plan-data.js';
+
+        // カラーテーマ設定
+    const themeConfig = {
+        blue: {
+            hoverBorder: "hover:border-blue-300",
+            strip: "bg-blue-500",
+            arrow: "group-hover:text-blue-500",
+            badge: "bg-blue-100 text-blue-700 border-blue-200"
+        },
+        lime: {
+            hoverBorder: "hover:border-lime-300",
+            strip: "bg-lime-500",
+            arrow: "group-hover:text-lime-600",
+            badge: "bg-lime-100 text-lime-700 border-lime-200"
+        },
+        fuchsia: {
+            hoverBorder: "hover:border-fuchsia-300",
+            strip: "bg-fuchsia-500",
+            arrow: "group-hover:text-fuchsia-600",
+            badge: "bg-fuchsia-100 text-fuchsia-700 border-fuchsia-200"
+        },
+        gray: {
+            hoverBorder: "hover:border-blue-300", // Hoverは青系にする（元のUIに合わせる）
+            strip: "bg-gray-400", // 未使用だが一応定義
+            arrow: "group-hover:text-gray-500",
+            badge: "bg-gray-100 text-gray-600 border-gray-200"
+        },
+        blueSolid: {
+            hoverBorder: "hover:border-blue-300",
+            strip: "bg-blue-500",
+            arrow: "group-hover:text-blue-500",
+            badge: "bg-blue-600 text-white border-blue-600"
+        }
+    };
+    // -----------------------------------------------------------------
+    // 状態管理 (State)
+    // -----------------------------------------------------------------
+    const state = {
+        keyword: "",
+        selectedStatuses: new Set(), // 選択されたステータスの集合
+        targetDate: null             // 選択された日付 (文字列 YYYY-MM-DD)
+    };
+
+    // -----------------------------------------------------------------
+    // 描画ロジック (Render Logic)
+    // -----------------------------------------------------------------
+    function renderPlanList(data) {
+        const container = document.getElementById('plan-list-container');
+        
+        if(!container) return;
+
+        if (data.length === 0) {
+            container.innerHTML = `
+                <div class="flex flex-col items-center justify-center py-10 text-gray-400">
+                    <span class="material-symbols-outlined text-4xl mb-2">search_off</span>
+                    <p class="text-sm">条件に一致する募集はありません</p>
+                </div>`;
+            return;
+        }
+
+        const html = data.map(item => {
+            const t = themeConfig[item.theme] || themeConfig.gray;
+            const visibleAttr = item.visibleFor ? `data-visible-for="${item.visibleFor.join(',')}"` : '';
+            
+            const stripHtml = (item.theme !== 'gray') 
+                ? `<div class="absolute left-0 top-0 bottom-0 w-1 ${t.strip} opacity-0 group-hover:opacity-100 transition-opacity"></div>`
+                : '';
+            
+            const titleColorClass = (item.theme === 'gray')
+                ? 'text-gray-800'
+                : 'text-gray-800 group-hover:text-blue-700 transition-colors';
+
+            return `
+            <button type="button"
+                    class="group block w-full text-left bg-white border border-gray-200 rounded-xl p-4 shadow-sm
+                    hover:shadow-md ${t.hoverBorder} hover:-translate-y-[1px] transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 relative overflow-hidden"
+                    ${visibleAttr}>
+                ${stripHtml}
+                <div class="flex items-start justify-between gap-3">
+                    <div>
+                        <div class="text-base font-bold ${titleColorClass}">${item.title}</div>
+                        <div class="mt-1 text-xs text-gray-600 font-medium">${item.company}</div>
+                        <div class="mt-0.5 text-xs text-gray-500">${item.period}</div>
+                        <div class="mt-2">
+                            <span class="inline-block text-[10px] font-bold px-2 py-0.5 rounded-full border ${t.badge}">${item.statusLabel}</span>
+                        </div>
+                    </div>
+                    <span class="material-symbols-outlined text-gray-300 ${t.arrow} transition-colors">chevron_right</span>
+                </div>
+            </button>
+            `;
+        }).join('');
+
+        container.innerHTML = html;
+
+        // Role Visibility再適用
+        if (window.RoleMock) RoleMock.applyRoleVisibility();
+    }
+
+    // -----------------------------------------------------------------
+    // フィルタリングロジック (Core Logic)
+    // -----------------------------------------------------------------
+    
+    // 日付文字列 "YYYY/MM/DD - YYYY/MM/DD" を解析して範囲内か判定
+    function isDateInPeriod(targetDateStr, periodStr) {
+        if (!targetDateStr || !periodStr) return true;
+        
+        // 期間文字列を分割 ("2026/04/01 - 2027/03/31")
+        const parts = periodStr.split(' - ');
+        if (parts.length !== 2) return false;
+
+        // 文字列比較ができるようにフォーマットを統一 (YYYY-MM-DD -> YYYY/MM/DD)
+        const target = targetDateStr.replace(/-/g, '/');
+        const start = parts[0];
+        const end = parts[1];
+
+        return target >= start && target <= end;
+    }
+
+    function applyFilters() {
+        const filtered = planData.filter(item => {
+            // 1. キーワード検索 (タイトル or 企業名)
+            if (state.keyword) {
+                const kw = state.keyword.toLowerCase();
+                const text = (item.title + item.company).toLowerCase();
+                if (!text.includes(kw)) return false;
+            }
+
+            // 2. ステータスフィルタ (選択されている場合のみ)
+            if (state.selectedStatuses.size > 0) {
+                if (!state.selectedStatuses.has(item.statusLabel)) return false;
+            }
+
+            // 3. 日付フィルタ (期間内判定)
+            if (state.targetDate) {
+                if (!isDateInPeriod(state.targetDate, item.period)) return false;
+            }
+
+            return true;
+        });
+
+        renderPlanList(filtered);
+    }
+
+    // -----------------------------------------------------------------
+    // UIイベントハンドラ
+    // -----------------------------------------------------------------
+    window.addEventListener('DOMContentLoaded', () => {
+        // UI初期化
+        MockUI.injectHeader('#app-header', { userName: 'Test User', brand: 'New SD App', initialRole: 'iec' });
+        MockUI.injectSidebar('#app-sidebar');
+        
+        // 初回描画
+        renderPlanList(planData);
+        RoleMock.applyRoleVisibility();
+        ModalIframe.init();
+        setupFilterEvents();
     });
 
-    document.getElementById("filter-close").addEventListener("click", function() {
-        var filterMenu = document.getElementById("filter-menu");
-        filterMenu.classList.add("hidden");
-    });
+    function setupFilterEvents() {
+        // A. キーワード検索
+        const searchInput = document.getElementById('search-input');
+        searchInput.addEventListener('input', (e) => {
+            state.keyword = e.target.value.trim();
+            applyFilters();
+        });
+
+        // B. ステータスボタン (トグル動作)
+        const statusBtns = document.querySelectorAll('.filter-status-btn');
+        statusBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const val = btn.getAttribute('data-val');
+                
+                if (state.selectedStatuses.has(val)) {
+                    // 解除
+                    state.selectedStatuses.delete(val);
+                    // スタイルを非アクティブに戻す
+                    btn.className = "filter-status-btn text-xs px-2 py-1 rounded border border-gray-200 bg-white text-gray-600 hover:bg-gray-50 transition-colors";
+                } else {
+                    // 選択
+                    state.selectedStatuses.add(val);
+                    // スタイルをアクティブに変更 (青色)
+                    btn.className = "filter-status-btn text-xs px-2 py-1 rounded border border-blue-500 bg-blue-50 text-blue-700 font-bold transition-colors shadow-sm";
+                }
+                applyFilters();
+            });
+        });
+
+        // C. 日付入力
+        const dateInput = document.getElementById('date-filter-input');
+        dateInput.addEventListener('change', (e) => {
+            state.targetDate = e.target.value; // YYYY-MM-DD
+            applyFilters();
+        });
+
+        // D. クリアボタン
+        const resetBtn = document.getElementById('filter-reset');
+        resetBtn.addEventListener('click', () => {
+            // Stateリセット
+            state.keyword = "";
+            state.selectedStatuses.clear();
+            state.targetDate = null;
+
+            // UIリセット
+            searchInput.value = "";
+            dateInput.value = "";
+            statusBtns.forEach(btn => {
+                btn.className = "filter-status-btn text-xs px-2 py-1 rounded border border-gray-200 bg-white text-gray-600 hover:bg-gray-50 transition-colors";
+            });
+
+            applyFilters();
+        });
+
+        // E. パネル開閉 (既存ロジック)
+        const btnFilter = document.getElementById("btn-filter");
+        const filterPanel = document.getElementById("filter-panel");
+        const filterCloseBtn = document.getElementById("filter-close-btn");
+
+        function toggleFilter() {
+            const isHidden = filterPanel.classList.contains("hidden");
+            filterPanel.classList.toggle("hidden");
+            
+            if (isHidden) {
+                btnFilter.classList.add("bg-blue-50", "text-blue-600", "border-blue-200");
+                btnFilter.classList.remove("border-transparent");
+            } else {
+                btnFilter.classList.remove("bg-blue-50", "text-blue-600", "border-blue-200");
+                btnFilter.classList.add("border-transparent");
+            }
+        }
+
+        btnFilter.addEventListener("click", toggleFilter);
+        filterCloseBtn.addEventListener("click", toggleFilter);
+        
+        // 通知閉じるボタン
+        const notifyClose = document.getElementById("notificationCloseButton");
+        if(notifyClose) {
+            notifyClose.addEventListener("click", function() {
+                const n = document.getElementById("notifications");
+                n.classList.add("fade-out-up");
+                setTimeout(() => { n.style.display = "none"; }, 300);
+            });
+        }
+    }
 </script>
