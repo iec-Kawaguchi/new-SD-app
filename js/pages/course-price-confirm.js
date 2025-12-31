@@ -22,6 +22,7 @@ window.addEventListener('DOMContentLoaded', () => {
     const preview    = document.getElementById('preview');
 
     const bulkbar       = document.getElementById('bulkbar');
+    const bulkPlaceholder = document.getElementById('bulk-placeholder');
     const selCountSpan  = document.getElementById('selCount');
     const clearSelectionBtn = document.getElementById('clearSelection');
     const markOKBtn     = document.getElementById('markOK');
@@ -34,7 +35,7 @@ window.addEventListener('DOMContentLoaded', () => {
     const closeCourseModalBtn  = document.getElementById('close-course-modal');
     const cancelCourseModalBtn = document.getElementById('cancel-course-modal');
     const addSelectedBtn       = document.getElementById('add-selected-courses');
-    const modalSelectedCount   = document.getElementById('modal-selected-count');
+    const modalSelectedCount   = document.getElementById('modal-selected-count'); // 追加・修正
     const modalRows            = document.getElementById('modal-rows');
     const modalQ               = document.getElementById('modal-q');
 
@@ -47,7 +48,7 @@ window.addEventListener('DOMContentLoaded', () => {
     let currentReplaceTargetRow = null;
 
     // ---- グリッド（ヘッダー／行） ----
-    const GRID_COLS = 'grid-cols-[2rem_1fr_6rem_1fr]'; // チェック / コース / 判定 / 差し替え
+    const GRID_COLS = 'grid-cols-[3rem_1fr_6rem_1fr]'; // チェック / コース / 判定 / 差し替え
 
     // ヘッダーのグリッドを書き換え
     const headerEl = document.querySelector('#list')?.previousElementSibling;
@@ -71,11 +72,15 @@ window.addEventListener('DOMContentLoaded', () => {
     function refreshBulkbar() {
         const selected = getSelectedRows();
         const count = selected.length;
-        selCountSpan.textContent = count;
+        if(selCountSpan) selCountSpan.textContent = count;
+        
+        // デザインに合わせた表示切り替え
         if (count > 0) {
-            bulkbar.classList.remove('hidden');
+            if(bulkbar) bulkbar.classList.remove('hidden');
+            if(bulkPlaceholder) bulkPlaceholder.classList.add('hidden');
         } else {
-            bulkbar.classList.add('hidden');
+            if(bulkbar) bulkbar.classList.add('hidden');
+            if(bulkPlaceholder) bulkPlaceholder.classList.remove('hidden');
         }
     }
 
@@ -109,8 +114,8 @@ window.addEventListener('DOMContentLoaded', () => {
     function buildOptionsHtml(course) {
         if (!course || !Array.isArray(course.options) || course.options.length === 0) {
             return `
-                <div class="mt-4 text-sm text-gray-500">
-                    オプション情報が未登録です。
+                <div class="mt-6 p-4 bg-gray-50 rounded-lg border border-gray-100 text-sm text-gray-500 text-center">
+                    オプション情報はありません
                 </div>
             `;
         }
@@ -118,24 +123,36 @@ window.addEventListener('DOMContentLoaded', () => {
         const nf = new Intl.NumberFormat('ja-JP');
 
         return `
-            <div class="mt-4 flex flex-col gap-2">
-                ${course.options.map(o => {
-                    const name = (o.name && o.name.trim()) ? o.name : `オプション${o.id}`;
-                    const length = o.length || "";
-                    const priceText = (typeof o.price === "number")
-                        ? nf.format(o.price)
-                        : (o.price || "");
+            <div class="mt-6">
+                <h4 class="text-xs font-bold text-gray-700 mb-3 flex items-center gap-1">
+                    <span class="material-symbols-outlined icon-sm text-gray-400">layers</span>
+                    オプション講座
+                </h4>
+                <div class="flex flex-col gap-2">
+                    ${course.options.map(o => {
+                        const name = (o.name && o.name.trim()) ? o.name : `オプション${o.id}`;
+                        const length = o.length || "-";
+                        const priceText = (typeof o.price === "number")
+                            ? nf.format(o.price)
+                            : (o.price || "-");
 
-                    return `
-                        <div>
-                            <div>${name}</div>
-                            <div class="m-2 text-gray-700 text-sm flex gap-4">
-                                <div>受講期間：${length}</div>
-                                <div>受講料：${priceText}</div>
+                        return `
+                            <div class="p-3 bg-gray-50 rounded-md border border-gray-100 hover:border-blue-200 transition-colors">
+                                <div class="text-sm font-bold text-gray-800">${name}</div>
+                                <div class="mt-2 flex items-center gap-4 text-xs text-gray-600">
+                                    <div class="flex items-center gap-1">
+                                        <span class="material-symbols-outlined text-[14px] text-gray-400">schedule</span>
+                                        ${length}
+                                    </div>
+                                    <div class="flex items-center gap-1">
+                                        <span class="material-symbols-outlined text-[14px] text-gray-400">payments</span>
+                                        ¥${priceText}
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    `;
-                }).join("")}
+                        `;
+                    }).join("")}
+                </div>
             </div>
         `;
     }
@@ -150,13 +167,13 @@ window.addEventListener('DOMContentLoaded', () => {
         cell.innerHTML = '';
         if (value === 'ok') {
             const span = document.createElement('span');
-            span.className = 'judge-badge inline-flex items-center px-2 py-0.5 rounded-full bg-green-200 text-green-700 border border-green-300 text-xs';
-            span.textContent = '判定OK';
+            span.className = 'judge-badge inline-flex items-center px-2 py-0.5 rounded-full bg-green-50 text-green-700 border border-green-200 text-xs font-bold';
+            span.textContent = 'OK';
             cell.appendChild(span);
         } else if (value === 'ng') {
             const span = document.createElement('span');
-            span.className = 'judge-badge inline-flex items-center px-2 py-0.5 rounded-full bg-red-200 text-red-700 border border-red-300 text-xs';
-            span.textContent = '判定NG';
+            span.className = 'judge-badge inline-flex items-center px-2 py-0.5 rounded-full bg-red-50 text-red-700 border border-red-200 text-xs font-bold';
+            span.textContent = 'NG';
             cell.appendChild(span);
         }
     }
@@ -169,10 +186,10 @@ window.addEventListener('DOMContentLoaded', () => {
 
         const btn = document.createElement('button');
         btn.type = 'button';
-        btn.className = 'replace-btn inline-flex items-center gap-1 text-xs text-gray-600 hover:text-blue-600 ';
+        btn.className = 'replace-btn inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-blue-50 text-blue-600 text-xs font-bold hover:bg-blue-100 transition-colors';
         btn.innerHTML = `
-            <span class="material-symbols-outlined text-sm">swap_horiz</span>
-            <span>差し替えコースを登録する</span>
+            <span class="material-symbols-outlined icon-sm">swap_horiz</span>
+            <span>差し替え登録</span>
         `;
         container.appendChild(btn);
     }
@@ -208,23 +225,19 @@ window.addEventListener('DOMContentLoaded', () => {
         container.innerHTML = '';
 
         const wrapper = document.createElement('div');
-        wrapper.className = 'replace-slot flex items-center gap-3 text-xs text-gray-700';
+        wrapper.className = 'flex items-center gap-2 w-full p-2 bg-yellow-50 rounded border border-yellow-200';
         wrapper.innerHTML = `
-        <div class="flex-1 min-w-0">
-            <!-- ★ 差し替えコースのタイトルをクリック可能にする -->
-            <button
-                type="button"
-                class="open-preview-replace text-sm font-medium truncate text-left hover:underline text-gray-900"
-            >
-                ${course.title || ''}
-            </button>
-            <div class="text-xs text-gray-400 truncate">
-                ${(course.code || '')}
-              
+            <span class="material-symbols-outlined text-yellow-600 icon-sm shrink-0">arrow_forward</span>
+            <div class="min-w-0 flex-1">
+                <button type="button" class="open-preview-replace text-xs font-bold text-gray-900 truncate hover:text-blue-600 hover:underline text-left block w-full">
+                    ${course.title || ''}
+                </button>
+                <div class="text-[10px] text-gray-500 truncate">${course.code || ''}</div>
             </div>
-        </div>
-        <button type="button" class="change-replace text-blue-600 hover:underline">変更</button>
-        <button type="button" class="clear-replace text-gray-400 hover:underline">クリア</button>
+            <div class="flex flex-col gap-1 shrink-0">
+                <button type="button" class="change-replace text-[10px] text-blue-600 hover:underline">変更</button>
+                <button type="button" class="clear-replace text-[10px] text-gray-400 hover:text-red-500 hover:underline">削除</button>
+            </div>
         `;
         container.appendChild(wrapper);
     }
@@ -236,7 +249,7 @@ window.addEventListener('DOMContentLoaded', () => {
             : String(d.custom || '').split(',').filter(x => x);
 
         return `
-        <div class="row grid ${GRID_COLS} items-center text-sm gap-4 py-3 px-4 border-b border-gray-100 hover:bg-gray-50 transition"
+        <div class="row grid ${GRID_COLS} items-center gap-4 py-3 px-4 border-b border-gray-50 hover:bg-blue-50/30 transition-colors group"
             data-id="${d.id}"
             data-title="${d.title || ''}"
             data-code="${d.code || ''}"
@@ -246,24 +259,23 @@ window.addEventListener('DOMContentLoaded', () => {
             data-judge=""
             data-visible-for="iec,customer,supplier"
         >
-            <!-- チェックボックス -->
-            <label class="inline-flex items-center justify-center">
-                <input type="checkbox" class="sel accent-blue-600">
-            </label>
-
-            <!-- コース名+コード -->
-            <div class="flex flex-col min-w-0">
-                <button type="button" class="flex text-left truncate hover:underline text-gray-900 font-medium open-preview">
-                    ${d.title || ''}
-                </button>
-                <div class="text-gray-400 text-xs" data-col="code">${d.code || ''}</div>
+            <div class="flex items-center justify-center">
+                <input type="checkbox" class="sel rounded border-gray-300 text-blue-600 focus:ring-blue-500 h-4 w-4 cursor-pointer">
             </div>
 
-            <!-- 判定 -->
-            <div class="judge-mark"></div>
+            <div class="flex flex-col min-w-0 pr-2">
+                <button type="button" class="text-left text-sm font-bold text-gray-800 hover:text-blue-600 hover:underline truncate transition-colors open-preview">
+                    ${d.title || ''}
+                </button>
+                <div class="flex items-center gap-2 mt-0.5">
+                    <span class="text-xs text-gray-400 font-mono" data-col="code">${d.code || ''}</span>
+                    <span class="text-[10px] bg-gray-100 text-gray-500 px-1.5 rounded">${d.org || ''}</span>
+                </div>
+            </div>
 
-            <!-- 差し替えコース -->
-            <div class="replace-course"></div>
+            <div class="judge-mark flex justify-center"></div>
+
+            <div class="replace-course pr-2"></div>
         </div>
         `;
     }
@@ -310,7 +322,6 @@ window.addEventListener('DOMContentLoaded', () => {
 
         if (row) {
             if (e.target.closest('.replace-btn') || e.target.closest('.change-replace')) {
-                // 差し替えモーダルを開く
                 openCourseModal(row);
                 return;
             }
@@ -320,51 +331,136 @@ window.addEventListener('DOMContentLoaded', () => {
             }
         }
 
-        // 2) 差し替え後コースのプレビュー（★ 新規追加）
-    const replacePreviewBtn = e.target.closest('.open-preview-replace');
-    if (replacePreviewBtn && row) {
-        const rowId = row.dataset.id;
-        const replaceId = row.dataset.replaceCourseId;
-        if (!replaceId) return;
+        // 2) 差し替え後コースのプレビュー
+        const replacePreviewBtn = e.target.closest('.open-preview-replace');
+        if (replacePreviewBtn && row) {
+            const rowId = row.dataset.id;
+            const replaceId = row.dataset.replaceCourseId;
+            if (!replaceId) return;
 
-        // 差し替えコースは modalData 側から取得
-        const course = modalData.find(d => String(d.id) === String(replaceId));
-        if (!course) return;
+            const course = modalData.find(d => String(d.id) === String(replaceId));
+            if (!course) return;
 
-        const title  = course.title || '';
-        const code   = course.code || '';
-        const org    = course.org  || '';
-        const std    = course.stdTag || '';
-        const custom = row.dataset.custom || '';
+            const title  = course.title || '';
+            const code   = course.code || '';
+            const org    = course.org  || '';
+            const std    = course.stdTag || '';
+            const custom = row.dataset.custom || '';
 
-        renderPreviewPanel(rowId, title, code, org, std, custom, course);
-        return;
-    }
+            renderPreviewPanel(rowId, title, code, org, std, custom, course, true);
+            return;
+        }
 
-    // 3) 元コースのプレビュー
-    const originalPreviewBtn = e.target.closest('.open-preview');
-    if (!originalPreviewBtn || !row) return;
+        // 3) 元コースのプレビュー
+        const originalPreviewBtn = e.target.closest('.open-preview');
+        if (originalPreviewBtn && row) {
+             // 差し替え済みなら無視
+            if (row.dataset.replaceCourseId) return;
 
-    // ★ 差し替え済みなら「元コースのプレビューは出さない」
-    if (row.dataset.replaceCourseId) {
-        return;
-    }
+            const { id, title, code, org, std, custom } = row.dataset;
+            const originalCourse = findCourseByRowId(id);
 
-    const { id, title, code, org, std, custom } = row.dataset;
-
-    // 元コースのデータは selected-list-sample.json 側から取得
-    const originalCourse = findCourseByRowId(id);
-
-    renderPreviewPanel(id, title, code, org, std, custom, originalCourse);
-    });
-
-    // ---- チェックボックス変更で一括バー更新 ----
-    listEl.addEventListener('change', (e) => {
-        if (e.target.classList.contains('sel')) {
-            refreshBulkbar();
-            updateSelectAllState();
+            renderPreviewPanel(id, title, code, org, std, custom, originalCourse, false);
         }
     });
+
+    // ---- ★ 復元：チェックボックス変更（Shift+Click対応） ----
+    let lastChecked = null; // 最後に操作したチェックボックス
+
+    listEl.addEventListener('click', (e) => {
+        // .sel クラスのクリックのみ対象
+        if (!e.target.classList.contains('sel')) return;
+
+        const checkboxes = getVisibleCheckboxes();
+        const current = e.target;
+        
+        // Shiftキーが押されていて、かつ前回チェックしたものがある場合
+        if (e.shiftKey && lastChecked) {
+            const start = checkboxes.indexOf(lastChecked);
+            const end = checkboxes.indexOf(current);
+
+            if (start !== -1 && end !== -1) {
+                const low = Math.min(start, end);
+                const high = Math.max(start, end);
+
+                for (let i = low; i <= high; i++) {
+                    checkboxes[i].checked = current.checked; // 最後の操作（ON/OFF）に合わせる
+                }
+            }
+        }
+
+        lastChecked = current;
+        refreshBulkbar();
+        updateSelectAllState();
+    });
+
+    // ---- ★ 復元：Shift+矢印キーでの範囲選択 ----
+    let anchorIndex = null;
+    let focusIndex = null;
+    
+    function getRowElements() { 
+        // 表示されている行のみ取得
+        return Array.from(rowsEl.querySelectorAll('.row')).filter(r => r.style.display !== 'none');
+    }
+
+    // 行クリックで起点をセット
+    rowsEl.addEventListener('click', (e) => {
+        const row = e.target.closest('.row');
+        if (!row) return;
+        const rows = getRowElements();
+        const idx = rows.indexOf(row);
+        if (idx !== -1) {
+            anchorIndex = idx;
+            focusIndex = idx;
+        }
+    });
+
+    // キーボード操作
+    window.addEventListener('keydown', (e) => {
+        // 入力フォーム等では無効化
+        const tag = (e.target.tagName || '').toLowerCase();
+        if (['input', 'textarea', 'select'].includes(tag)) return;
+        
+        if (!e.shiftKey) return;
+
+        const rows = getRowElements();
+        if (!rows.length) return;
+
+        // 起点がなければ現在のチェック状態から推測、または先頭
+        if (anchorIndex === null) {
+             const firstChecked = rows.findIndex(r => r.querySelector('.sel:checked'));
+             anchorIndex = firstChecked !== -1 ? firstChecked : 0;
+        }
+        if (focusIndex === null) focusIndex = anchorIndex;
+
+        let newFocus = focusIndex;
+        if (e.key === 'ArrowDown') {
+            if (newFocus < rows.length - 1) newFocus++; else return;
+        } else if (e.key === 'ArrowUp') {
+            if (newFocus > 0) newFocus--; else return;
+        } else {
+            return;
+        }
+
+        e.preventDefault();
+        focusIndex = newFocus;
+
+        const start = Math.min(anchorIndex, focusIndex);
+        const end   = Math.max(anchorIndex, focusIndex);
+
+        rows.forEach((row, idx) => {
+            const sel = row.querySelector('.sel');
+            if (sel) sel.checked = (idx >= start && idx <= end);
+        });
+
+        refreshBulkbar();
+        updateSelectAllState();
+        
+        // フォーカス位置へスクロール（簡易）
+        rows[focusIndex].scrollIntoView({ block: 'nearest' });
+    });
+
+    // ---- 既存イベントハンドラ ----
 
     selectAllCheckbox?.addEventListener('change', () => {
         const targets = getVisibleCheckboxes();
@@ -387,12 +483,10 @@ window.addEventListener('DOMContentLoaded', () => {
         rows.forEach(row => {
             const current = row.dataset.judge;
             if (current === 'ok') {
-                // トグル解除
                 setJudge(row, null);
             } else {
                 setJudge(row, 'ok');
             }
-            // OKになったら差し替え情報はクリア
             if (row.dataset.judge === 'ok' || !row.dataset.judge) {
                 clearReplace(row);
             }
@@ -411,12 +505,10 @@ window.addEventListener('DOMContentLoaded', () => {
         rows.forEach(row => {
             const current = row.dataset.judge;
             if (current === 'ng') {
-                // NG解除
                 setJudge(row, null);
                 clearReplace(row);
             } else {
                 setJudge(row, 'ng');
-                // まだ差し替えコースが無ければ＋ボタンを出す
                 if (!row.dataset.replaceCourseId) {
                     createReplaceButton(row);
                 }
@@ -440,20 +532,23 @@ window.addEventListener('DOMContentLoaded', () => {
                 (d.stdTag || '')
             ).toLowerCase().includes(v))
             .map(d => `
-                <label class="grid grid-cols-[1.5rem_1fr_10rem] items-center px-4 py-2 border-b hover:bg-gray-50 cursor-pointer">
-                    <input type="radio"
-                        name="modalCourse"
-                        class="modal-sel accent-blue-600"
-                        data-id="${d.id}">
+                <label class="grid grid-cols-[3rem_1fr_10rem] items-center px-6 py-3 border-b border-gray-50 hover:bg-blue-50 cursor-pointer transition-colors">
+                    <div class="flex justify-center">
+                        <input type="radio"
+                            name="modalCourse"
+                            class="modal-sel accent-blue-600"
+                            data-id="${d.id}">
+                    </div>
                     <div class="min-w-0">
                         <div class="text-sm font-medium text-gray-900 truncate">${d.title || ''}</div>
-                        <div class="text-xs text-gray-500 truncate">${d.code || ''}</div>
+                        <div class="text-xs text-gray-500 font-mono truncate">${d.code || ''}</div>
                     </div>
                     <div class="text-xs text-gray-500 truncate">${d.org || ''}</div>
                 </label>
             `).join('');
-
-        modalSelectedCount.textContent = document.querySelectorAll('.modal-sel:checked').length;
+            
+         // モーダル内のラジオボタン変更検知
+        if(modalSelectedCount) modalSelectedCount.textContent = document.querySelectorAll('.modal-sel:checked').length;
     }
 
     function openCourseModal(targetRow) {
@@ -474,50 +569,59 @@ window.addEventListener('DOMContentLoaded', () => {
         currentReplaceTargetRow = null;
         // 選択状態もリセット
         document.querySelectorAll('.modal-sel:checked').forEach(c => c.checked = false);
-        modalSelectedCount.textContent = '0';
+        if(modalSelectedCount) modalSelectedCount.textContent = '0';
     }
 
-    function renderPreviewPanel(rowId, title, code, org, std, custom, course) {
+    function renderPreviewPanel(rowId, title, code, org, std, custom, course, isReplace) {
         // options は「course.json 側のデータ」を使う
         const optionsHtml = buildOptionsHtml(course);
         const savedComment = commentMap.get(rowId) || '';
 
+        // プレースホルダー画像
+        const randomColor = ['bg-blue-100', 'bg-green-100', 'bg-orange-100'][Math.floor(Math.random()*3)];
+        const randomIcon = isReplace ? 'swap_horiz' : 'school';
+
         preview.innerHTML = `
-            <div class="text-xs text-gray-500 mb-1">コース詳細</div>
-            <h2 class="text-lg font-semibold text-gray-900 mb-1">${title}</h2>
-            <div class="text-sm text-gray-600 mb-4">${code || ''} / ${org || ''}</div>
-
-            <div class="flex flex-wrap gap-1 text-[11px] mb-4">
-                ${(std || '').split(',').filter(t => t).map(t =>
-                    `<span class="rounded-full bg-blue-50 text-blue-700 px-2 py-0.5 border border-blue-100">${t}</span>`
-                ).join('')}
-
-                ${(custom || '').split(',').filter(t => t).map(t =>
-                    `<span class="rounded-full bg-gray-800 text-white px-2 py-0.5" data-visible-for="iec,customer">${t}</span>`
-                ).join('')}
+            <div class="relative">
+                <div class="h-32 w-full ${randomColor} flex items-center justify-center text-blue-900/20">
+                    <span class="material-symbols-outlined text-5xl">${randomIcon}</span>
+                </div>
+                ${isReplace ? '<div class="absolute top-2 left-2 bg-yellow-400 text-white text-xs font-bold px-2 py-1 rounded shadow">差し替え候補</div>' : ''}
             </div>
 
-            ${optionsHtml}
+            <div class="p-6">
+                <h2 class="text-lg font-bold text-gray-800 leading-snug mb-1">${title}</h2>
+                <div class="text-xs text-gray-500 font-mono mb-4">${code || ''} / ${org || ''}</div>
 
-            <div class="mt-4">
-                <a href="#" class="inline-flex text-sm items-center gap-1 text-blue-600 hover:underline">
-                    HTMLを開く <span class="material-symbols-outlined text-sm">open_in_new</span>
-                </a>
-            </div>
+                <div class="flex flex-wrap gap-1 mb-6">
+                     ${(std||'').split(',').filter(t=>t).map(t=>`<span class="rounded-full bg-blue-50 text-blue-700 px-2 py-0.5 border border-blue-100 text-[10px]">${t}</span>`).join('')}
+                     ${(custom||'').split(',').filter(t=>t).map(t=>`<span class="rounded-full bg-gray-800 text-white px-2 py-0.5 text-[10px]" data-visible-for="iec,customer">${t}</span>`).join('')}
+                </div>
 
-            <div class="mt-6 border-t pt-4">
-                <label class="block text-sm font-medium text-gray-700 mb-1">
-                    コースに関するコメント
-                </label>
-                <textarea
-                    id="course-comment"
-                    class="w-full min-h-[80px] rounded-md border border-gray-300 text-sm px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 resize-y"
-                    placeholder="修了判定条件などがお客様希望に沿えない場合、その理由などを記載してください。"
-                ></textarea>
-            </div>
+                ${optionsHtml}
 
-            <div class="mt-6 flex justify-end">
-                <button class="py-1 px-4 rounded-md bg-blue-500 hover:bg-blue-600 text-white">更新する</button>
+                <div class="mt-8 pt-6 border-t border-gray-100 bg-gray-50 -mx-6 -mb-6 px-6 pb-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <label class="block text-sm font-bold text-gray-700">コースに関するコメント</label>
+                         <a href="#" class="inline-flex text-xs items-center gap-0.5 text-blue-600 hover:underline">
+                            プレビュー <span class="material-symbols-outlined text-[12px]">open_in_new</span>
+                        </a>
+                    </div>
+                    <textarea
+                        id="course-comment"
+                        class="w-full min-h-[80px] rounded-md border border-gray-300 text-sm px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-y bg-white"
+                        placeholder="修了判定条件などがお客様希望に沿えない場合、その理由などを記載してください。"
+                    ></textarea>
+                    
+                    <div class="mt-4 flex justify-end gap-2">
+                         <button class="px-4 py-2 rounded-md bg-white border border-gray-300 text-gray-700 text-sm hover:bg-gray-50 transition-colors shadow-sm">
+                            リセット
+                        </button>
+                        <button class="px-4 py-2 rounded-md bg-blue-600 text-white text-sm font-bold hover:bg-blue-700 shadow-sm hover:shadow transition-all">
+                            保存する
+                        </button>
+                    </div>
+                </div>
             </div>
         `;
 
@@ -541,7 +645,7 @@ window.addEventListener('DOMContentLoaded', () => {
     modalQ?.addEventListener('input', renderModalList);
     modalRows?.addEventListener('change', (e) => {
         if (e.target.classList.contains('modal-sel')) {
-            modalSelectedCount.textContent = document.querySelectorAll('.modal-sel:checked').length;
+            if(modalSelectedCount) modalSelectedCount.textContent = document.querySelectorAll('.modal-sel:checked').length;
         }
     });
 

@@ -1,230 +1,255 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="ja" class="h-full bg-gray-50">
     <head>
         <meta charset="UTF-8" />
-        <title>New SD App</title>
+        <title>コース提案 - New SD App</title>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <script src="https://cdn.tailwindcss.com"></script>
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-        <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nouislider@15.7.0/dist/nouislider.min.css">
         <script src="https://cdn.jsdelivr.net/npm/nouislider@15.7.0/dist/nouislider.min.js"></script>
+        
         <script src="./js/role-visibility.js" defer></script>
         <script src="./js/mock-ui.js" defer></script>
         <script src="./js/pages/media-plan-course.js" defer></script>
 
         <style>
-        body { font-family: "游ゴシック体","Yu Gothic","游ゴシック",YuGothic,sans-serif; }
-        :root { --safe-bottom: env(safe-area-inset-bottom); }
+            /* 全体のフォント設定 */
+            body {
+                font-family: 'Noto Sans JP', sans-serif;
+            }
+            /* アイコン設定 */
+            .material-symbols-outlined {
+                font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            }
+            .icon-sm { font-size: 1.125rem !important; } /* 18px */
+            .icon-md { font-size: 1.25rem !important; }  /* 20px */
+
+            /* UX改善: スクロールバー */
+            .custom-scrollbar::-webkit-scrollbar {
+                width: 6px;
+                height: 6px;
+            }
+            .custom-scrollbar::-webkit-scrollbar-track {
+                background: transparent;
+            }
+            .custom-scrollbar::-webkit-scrollbar-thumb {
+                background-color: #cbd5e1; /* slate-300 */
+                border-radius: 20px;
+            }
+            .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+                background-color: #94a3b8; /* slate-400 */
+            }
         </style>
     </head>
-    <body class="bg-gray-100 h-screen overflow-hidden flex flex-col">
-        <!-- ヘッダー -->
-        <div id="app-header" class="sticky top-0 z-50"></div>
+    <body class="bg-gray-50 h-screen overflow-hidden flex flex-col text-gray-900 antialiased">
+        <div id="app-header" class="sticky top-0 z-50 bg-white shadow-sm"></div>
 
-        <main class="flex flex-1 min-h-0">
-        <!-- サイドバー -->
-        <div id="app-sidebar" class="shrink-0"></div>
+        <main class="flex flex-1 min-h-0 overflow-hidden">
+            <div id="app-sidebar" class="shrink-0"></div>
 
-        <!-- コンテンツ -->
-        <main class="p-6 md:p-6 flex-1 bg-gray-200 min-w-0">
-            <div class="flex flex-col h-full min-h-[32rem]">
-                            <div class="flex justify-between items-center mb-4">
-                <h1 class="text-2xl font-bold text-gray-700 truncate">●●食品株式会社様 FY26SD募集　コース提案</h1>
-            </div>
-
-            <div class=" w-full  rounded-xl flex flex-col mx-auto flex-1 min-h-0">
-                <!-- 通知 -->
-                <div id="notifications" class="pb-4" data-visible-for="supplier">
-                    <div class="flex flex-col gap-2 bg-blue-50 text-blue-800 rounded-2xl shadow p-4 hover:shadow-md transition">
-                    <div class="flex justify-between items-center pb-2">
-                        <h3 class="flex items-center font-bold text-xl">
-                        <span class="material-symbols-outlined text-md mr-2">info</span>お客様要望
-                        </h3>
-                        <span id="notificationCloseButton" class="material-symbols-outlined text-md mr-2 text-blue-700 cursor-pointer">keyboard_arrow_up</span>
-                    </div>
-                    <div class="flex items-center text-sm leading-relaxed">
-                        ●●食品株式会社様の中期経営計画にのっとり、デジタルシフトを実現するためのITスキルやITリテラシー強化に寄与するコースを積極的に採用したいとの要望をいただいております。
-                    </div>
-                    </div>
-                </div>
-
-                <!-- 2カラム：左=リスト / 右=プレビュー -->
-                <div class="flex gap-6 pb-4 min-h-0 flex-1">
-                    <!-- 左：リストボックス -->
-                    <section class="w-full flex flex-col min-h-0">
-                        <div class="w-full rounded-2xl border border-gray-200/60 bg-white shadow-sm flex flex-col min-h-0">
-                            <!-- ツールバー -->
-                            <div class="p-4 border-b border-gray-200 flex flex-wrap items-center gap-3">
-                                <div class="relative">
-                                <span class="material-symbols-outlined absolute left-2 top-1/2 -translate-y-1/2 text-gray-400">search</span>
-                                <input id="q" type="text" placeholder="コース名 / コード / タグで検索"
-                                        class="pl-9 pr-3 h-10 w-72 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400">
-                                </div>
-                                <div class="flex items-center gap-2">   
-                                <button data-filter="new" class="h-9 px-3 rounded-lg border border-gray-300 bg-white text-gray-700 hover:bg-gray-50">NEW</button>
-                                <button data-filter="clear" class="h-9 px-3 rounded-lg bg-gray-100 text-gray-700 hover:bg-gray-200">フィルタ解除</button>
-                                </div>
-
-                                <div class="ml-auto flex items-center gap-2">
-                                <div id="open-course-modal"
-                                    class="group bg-white text-blue-600 px-4 py-1 rounded-lg ml-4 hover:bg-blue-600 hover:text-white flex items-center overflow-hidden transition-all duration-300 ease-in-out cursor-pointer">
-                                    <span class="material-symbols-outlined text-lg">add</span>
-                                    <span class="opacity-0 max-w-0 group-hover:opacity-100 group-hover:max-w-[10rem] transition-all duration-300 ease-in-out whitespace-nowrap">
-                                        <span class="ml-2">コースを追加する</span>
-                                    </span>
-                                </div>
-
-                                <!-- 列表示 -->
-                                <!-- <div class="relative">
-                                    <button id="columnMenuBtn" class="h-9 px-3 rounded-lg border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 inline-flex items-center gap-1">
-                                    <span class="material-symbols-outlined text-base">view_column</span> 列表示
-                                    <span class="material-symbols-outlined text-sm">expand_more</span>
-                                    </button>
-                                    <div id="columnMenu" class="hidden absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg p-2 z-10">
-                                    <label class="flex items-center gap-2 px-2 py-1 text-sm"><input type="checkbox" data-col="code" checked> 団体管理コード</label>
-                                    <label class="flex items-center gap-2 px-2 py-1 text-sm"><input type="checkbox" data-col="org" checked> 提供団体</label>
-                                    <label class="flex items-center gap-2 px-2 py-1 text-sm"><input type="checkbox" data-col="stdTag" checked> 標準タグ</label>
-                                    <label class="flex items-center gap-2 px-2 py-1 text-sm"><input type="checkbox" data-col="customTag" checked> カスタムタグ</label>
-                                    </div>
-                                </div> -->
-
-                                </div>
-                            </div>
-
-                            <!-- スティッキーヘッダー -->
-                            <div class="grid grid-cols-[2rem_5rem_1fr_8rem_6rem_9rem_11rem] text-xs uppercase tracking-wide text-gray-500 px-4 py-2 bg-white z-[1]">
-                                <div class="flex items-center justify-center">
-                                    <input id="selectAll" type="checkbox" class="accent-blue-600" title="すべて選択">
-                                </div>
-                                <div data-col="order"class="">並び順</div>
-                                <div>コース名</div>
-                                <div data-col="org">団体</div>
-                                <div>NEW</div>
-                                <div data-col="stdTag">標準タグ</div>
-                                <div data-col="customTag">カスタムタグ</div>
-                            </div>
-
-                            <!-- リスト本体 -->
-                            <div id="list" class="min-h-[1rem] flex-1 overflow-y-auto">
-                                <div id="skeleton" class="p-4 space-y-2">
-                                <div class="h-12 rounded-lg bg-gray-100 animate-pulse"></div>
-                                <div class="h-12 rounded-lg bg-gray-100 animate-pulse"></div>
-                                <div class="h-12 rounded-lg bg-gray-100 animate-pulse"></div>
-                                <div class="h-12 rounded-lg bg-gray-100 animate-pulse"></div>
-                                <div class="h-12 rounded-lg bg-gray-100 animate-pulse"></div>
-                                </div>
-                                <div id="rows"></div>
-                                <div id="sentinel" class="h-10"></div>
-                            </div>
-
-                            <!-- 一括操作バー -->
-                            <div class="min-h-[3.5rem] bg-white border-t border-gray-200 px-4 py-2 flex flex-col items-center gap-3 rounded-b-2xl min-h-0">
-                                <div id="bulkbar" class="hidden flex items-center gap-3 w-full">
-                                    <p class="text-sm text-gray-700"><span id="selCount">0</span> 件選択中</p>
-                                    <button id="clearSelection" class="h-9 px-3 rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-50">選択を解除</button>
-                                    <div class="flex items-center gap-2 ml-2" data-visible-for="iec, customer">
-                                        <button
-                                            id="moveTop"
-                                            class="h-9 px-3 rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-100 text-sm"
-                                        >
-                                            選択行を先頭へ
-                                        </button>
-                                        <button
-                                            id="moveBottom"
-                                            class="h-9 px-3 rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-100 text-sm"
-                                        >
-                                            選択行を末尾へ
-                                        </button>
-                                    </div>
-                                    <div class="ml-auto flex items-center gap-2">
-                                        <button
-                                            id="markDeleteRequest"
-                                            class="h-9 px-3 rounded-md bg-red-50 text-red-700 border border-red-200 hover:bg-red-600 hover:text-white"
-                                            >
-                                            削除希望切替
-                                        </button>
-                                        <button
-                                            id=""
-                                            class="h-9 px-3 rounded-md bg-red-50 text-red-700 border border-red-200 hover:bg-red-600 hover:text-white"
-                                            >
-                                            削除する
-                                        </button>
-                                    </div>
-                                </div>
-                                <div id="def-bar" class="flex justify-end gap-3 w-full">
-                                    <button class="w-52 px-3 py-2 text-sm rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50">
-                                    戻る
-                                    </button>
-                                    <button class="w-52 px-3 py-2 text-sm rounded-lg bg-blue-600 text-white hover:bg-blue-700"
-                                    data-visible-for="iec">
-                                    登録する
-                                    </button>
-                                    <button class="w-52 px-3 py-2 text-sm rounded-lg bg-blue-600 text-white hover:bg-blue-700"
-                                    data-visible-for="supplier">
-                                    提案する
-                                    </button>
-                                    <button class="w-52 px-3 py-2 text-sm rounded-lg bg-white border border-red-500 text-red-700 hover:bg-red-600 hover:text-white"
-                                    data-visible-for="customer">
-                                    再提案を依頼する
-                                    </button>
-                                    <button class="w-52 px-3 py-2 text-sm rounded-lg bg-blue-600 text-white hover:bg-blue-700"
-                                    data-visible-for="customer">
-                                    承認する
-                                    </button>
-                                </div>
-                                
+            <div class="flex-1 bg-gray-50 min-w-0 flex flex-col h-full overflow-hidden">
+                <div class="flex-1 flex flex-col p-6 lg:p-8 max-w-[1920px] mx-auto w-full h-full">
+                    
+                    <div class="flex justify-between items-center mb-6 shrink-0">
+                        <div class="flex items-center gap-3">
+                            <span class="p-2 bg-white border border-gray-200 rounded-lg text-blue-600 shadow-sm">
+                                <span class="material-symbols-outlined icon-md">list_alt</span>
+                            </span>
+                            <div>
+                                <h1 class="text-xl font-bold text-gray-800 tracking-tight">コース提案リスト</h1>
+                                <p class="text-xs text-gray-500 mt-0.5">●●食品株式会社様 FY26SD募集</p>
                             </div>
                         </div>
-                    </section>
+                    </div>
 
-                    <!-- 右：プレビュー -->
-                    <aside id="preview" class="w-[30rem] bg-white rounded-2xl shadow-sm border border-gray-200/60 p-5 overflow-auto">
-                        <div class="text-sm text-gray-500">行をクリックするとここにコース詳細（概要/タグ/リンクなど）が表示されます（モック）。</div>
-                    </aside>
-            </div>
-            </div>
-            </div>
+                    <div class="flex flex-col flex-1 min-h-0 gap-6">
+                        <div id="notifications" class="shrink-0 transition-all duration-300" data-visible-for="supplier">
+                            <div class="relative overflow-hidden rounded-lg border border-blue-100 bg-blue-50/50 shadow-sm">
+                                <div class="px-5 py-4 flex gap-4 items-start">
+                                    <div class="flex-shrink-0 mt-0.5">
+                                        <span class="material-symbols-outlined text-blue-600 icon-md">info</span>
+                                    </div>
+                                    <div class="flex-1 min-w-0">
+                                        <div class="flex items-center justify-between">
+                                            <h3 class="text-sm font-bold text-blue-900">お客様要望</h3>
+                                            <button id="notificationCloseButton" class="text-blue-400 hover:text-blue-700 hover:bg-blue-100 rounded-full p-1 transition-colors">
+                                                <span class="material-symbols-outlined icon-md block">close</span>
+                                            </button>
+                                        </div>
+                                        <div class="mt-1 text-sm text-blue-800/80 leading-relaxed">
+                                            ●●食品株式会社様の中期経営計画にのっとり、デジタルシフトを実現するためのITスキルやITリテラシー強化に寄与するコースを積極的に採用したいとの要望をいただいております。
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
+                        <div class="flex gap-6 min-h-0 flex-1">
+                            
+                            <section class="flex-1 flex flex-col min-h-0 bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                                <div class="p-4 border-b border-gray-100 flex flex-wrap items-center gap-3 bg-white shrink-0">
+                                    <div class="relative w-72">
+                                        <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                            <span class="material-symbols-outlined text-gray-400 icon-sm">search</span>
+                                        </div>
+                                        <input id="q" type="text" placeholder="コース名 / コード / タグ..."
+                                                class="block w-full rounded-md border border-gray-300 pl-10 pr-3 py-2 text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow bg-gray-50/50">
+                                    </div>
+                                    
+                                    <div class="flex items-center gap-2">   
+                                        <button data-filter="new" class="inline-flex items-center px-3 py-2 rounded-md border border-gray-200 bg-white text-xs font-medium text-gray-700 hover:bg-gray-50 transition-colors shadow-sm">
+                                            NEWのみ
+                                        </button>
+                                        <button data-filter="clear" class="inline-flex items-center px-3 py-2 rounded-md text-xs font-medium text-gray-500 hover:text-gray-700 hover:bg-gray-100 transition-colors">
+                                            フィルタ解除
+                                        </button>
+                                    </div>
+
+                                    <div class="ml-auto flex items-center gap-2">
+                                        <button id="open-course-modal" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-md bg-blue-600 text-white text-sm font-bold hover:bg-blue-700 shadow-sm hover:shadow transition-all">
+                                            <span class="material-symbols-outlined icon-sm">add</span>
+                                            <span>コースを追加</span>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div class="grid grid-cols-[3rem_4rem_1fr_6rem_4rem_8rem_10rem] text-xs font-bold text-gray-500 bg-gray-50/80 border-b border-gray-200 px-4 py-3 shrink-0">
+                                    <div class="flex items-center justify-center">
+                                        <input id="selectAll" type="checkbox" class="rounded border-gray-300 text-blue-600 focus:ring-blue-500 h-4 w-4 cursor-pointer" title="すべて選択">
+                                    </div>
+                                    <div class="flex items-center" data-col="order">No.</div>
+                                    <div class="flex items-center">コース名</div>
+                                    <div class="flex items-center" data-col="org">団体</div>
+                                    <div class="flex items-center justify-center">状態</div>
+                                    <div class="flex items-center" data-col="stdTag">標準タグ</div>
+                                    <div class="flex items-center" data-col="customTag">カスタムタグ</div>
+                                </div>
+
+                                <div id="list" class="flex-1 overflow-y-auto custom-scrollbar bg-white">
+                                    <div id="skeleton" class="p-4 space-y-3">
+                                        <div class="h-14 rounded-lg bg-gray-50 animate-pulse border border-gray-100"></div>
+                                        <div class="h-14 rounded-lg bg-gray-50 animate-pulse border border-gray-100"></div>
+                                        <div class="h-14 rounded-lg bg-gray-50 animate-pulse border border-gray-100"></div>
+                                        <div class="h-14 rounded-lg bg-gray-50 animate-pulse border border-gray-100"></div>
+                                        <div class="h-14 rounded-lg bg-gray-50 animate-pulse border border-gray-100"></div>
+                                    </div>
+                                    <div id="rows" class="divide-y divide-gray-100"></div>
+                                    <div id="sentinel" class="h-4"></div>
+                                </div>
+
+                                <div class="bg-white border-t border-gray-200 px-6 py-4 flex flex-col shrink-0">
+                                    <div id="bulkbar" class="hidden flex items-center gap-4 w-full animate-[fadeIn_0.2s_ease-out] mb-4 p-3 bg-blue-50 rounded-lg border border-blue-100">
+                                        <div class="flex items-center gap-2">
+                                            <span class="material-symbols-outlined text-blue-600 icon-md">check_circle</span>
+                                            <p class="text-sm font-bold text-blue-900"><span id="selCount">0</span> 件選択中</p>
+                                        </div>
+                                        <button id="clearSelection" class="text-xs text-blue-600 hover:text-blue-800 underline">選択解除</button>
+                                        
+                                        <div class="h-4 w-px bg-blue-200 mx-2"></div>
+                                        
+                                        <div class="flex items-center gap-2" data-visible-for="iec, customer">
+                                            <button id="moveTop" class="inline-flex items-center px-3 py-1.5 rounded bg-white border border-blue-200 text-blue-700 text-xs hover:bg-blue-50 transition-colors">
+                                                <span class="material-symbols-outlined icon-sm mr-1">vertical_align_top</span>先頭へ
+                                            </button>
+                                            <button id="moveBottom" class="inline-flex items-center px-3 py-1.5 rounded bg-white border border-blue-200 text-blue-700 text-xs hover:bg-blue-50 transition-colors">
+                                                <span class="material-symbols-outlined icon-sm mr-1">vertical_align_bottom</span>末尾へ
+                                            </button>
+                                        </div>
+                                        
+                                        <div class="ml-auto flex items-center gap-2">
+                                            <button id="markDeleteRequest" class="inline-flex items-center px-3 py-1.5 rounded bg-white border border-red-200 text-red-600 text-xs hover:bg-red-50 transition-colors">
+                                                <span class="material-symbols-outlined icon-sm mr-1">delete_sweep</span>削除希望
+                                            </button>
+                                            <button class="inline-flex items-center px-3 py-1.5 rounded bg-red-600 text-white text-xs font-bold hover:bg-red-700 transition-colors shadow-sm">
+                                                <span class="material-symbols-outlined icon-sm mr-1">delete</span>削除
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <div id="def-bar" class="flex justify-between items-center w-full">
+                                        <button class="px-5 py-2.5 text-sm font-medium rounded-md border border-gray-300 text-gray-700 hover:bg-gray-50 transition-colors">
+                                            一覧へ戻る
+                                        </button>
+                                        
+                                        <div class="flex gap-3">
+                                            <button class="px-6 py-2.5 text-sm font-bold rounded-md bg-blue-600 text-white hover:bg-blue-700 shadow-sm hover:shadow transition-all"
+                                                data-visible-for="iec">
+                                                登録完了
+                                            </button>
+                                            <button class="px-6 py-2.5 text-sm font-bold rounded-md bg-blue-600 text-white hover:bg-blue-700 shadow-sm hover:shadow transition-all"
+                                                data-visible-for="supplier">
+                                                コースを提案する
+                                            </button>
+                                            <button class="px-6 py-2.5 text-sm font-bold rounded-md bg-white border border-red-300 text-red-600 hover:bg-red-50 transition-colors"
+                                                data-visible-for="customer">
+                                                再提案を依頼
+                                            </button>
+                                            <button class="px-6 py-2.5 text-sm font-bold rounded-md bg-blue-600 text-white hover:bg-blue-700 shadow-sm hover:shadow transition-all"
+                                                data-visible-for="customer">
+                                                提案を承認
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+
+                            <aside id="preview" class="w-[24rem] xl:w-[28rem] bg-white rounded-xl shadow-sm border border-gray-200 overflow-y-auto custom-scrollbar shrink-0 flex flex-col">
+                                <div class="flex-1 flex flex-col items-center justify-center p-8 text-center text-gray-400">
+                                    <span class="material-symbols-outlined text-6xl mb-4 text-gray-200">plagiarism</span>
+                                    <p class="text-sm font-medium">コースを選択すると<br>詳細プレビューが表示されます</p>
+                                </div>
+                                
+                                </aside>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </main>
 
-        <!-- ===== 全コースリスト モーダル（追加ボタンで開く） ===== -->
-        <div id="course-modal" class="fixed inset-0 bg-black/60 hidden items-center justify-center z-50 p-6">
-            <div class="bg-white rounded-xl shadow-lg w-full max-w-6xl p-6 relative">
-                <button id="close-course-modal" class="absolute top-2 right-2 text-gray-500 hover:text-gray-700">
-                <span class="material-symbols-outlined">close</span>
-                </button>
-
-                <div class="flex items-center gap-2 mb-4">
-                <span class="material-symbols-outlined text-gray-500">library_add</span>
-                <h2 class="text-lg font-semibold">全コース一覧から追加</h2>
+        <div id="course-modal" class="fixed inset-0 z-[100] bg-gray-900/50 backdrop-blur-sm hidden items-center justify-center transition-opacity duration-200 p-4">
+            <div class="bg-white rounded-xl shadow-2xl w-full max-w-5xl h-[85vh] flex flex-col overflow-hidden transform scale-100 transition-transform">
+                <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-white shrink-0">
+                    <h2 class="text-lg font-bold text-gray-800 flex items-center gap-2">
+                        <span class="material-symbols-outlined text-blue-600 icon-md">library_add</span>
+                        全コース一覧から追加
+                    </h2>
+                    <button id="close-course-modal" class="text-gray-400 hover:text-gray-600 hover:bg-gray-100 p-1 rounded-full transition-colors">
+                        <span class="material-symbols-outlined icon-md">close</span>
+                    </button>
                 </div>
 
-                <div class="flex flex-wrap items-center gap-3 mb-3">
-                <div class="relative">
-                    <span class="material-symbols-outlined absolute left-2 top-1/2 -translate-y-1/2 text-gray-400">search</span>
-                    <input id="modal-q" type="text" placeholder="コース名 / コードで絞り込み"
-                        class="pl-9 pr-3 h-10 w-80 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400">
-                </div>
-                </div>
-
-                <div id="modal-list" class="max-h-[60vh] overflow-y-auto border border-gray-200 rounded-lg">
-                <!-- ヘッダー -->
-                <div class="grid grid-cols-[1.5rem_1fr_15rem_10rem] text-xs uppercase tracking-wide text-gray-500 px-4 py-2 sticky top-0 bg-white z-[1] border-b">
-                    <div></div>
-                    <div>コース名</div>
-                    <div>コード</div>
-                    <div>団体</div>
-                </div>
-                <!-- 行 -->
-                <div id="modal-rows"></div>
+                <div class="p-4 bg-gray-50/50 border-b border-gray-100 flex flex-wrap gap-3 shrink-0">
+                    <div class="relative w-80">
+                        <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                            <span class="material-symbols-outlined text-gray-400 icon-sm">search</span>
+                        </div>
+                        <input id="modal-q" type="text" placeholder="コース名 / コードで絞り込み"
+                            class="block w-full rounded-md border border-gray-300 pl-10 pr-3 py-2 text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white">
+                    </div>
                 </div>
 
-                <div class="flex justify-end gap-3 mt-6">
-                <button id="cancel-course-modal" class="px-4 py-2 rounded-md border border-gray-300 text-gray-600 hover:bg-gray-100">キャンセル</button>
-                <button id="add-selected-courses" class="px-4 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700">
-                    追加（<span id="modal-selected-count">0</span>）
-                </button>
+                <div id="modal-list" class="flex-1 overflow-y-auto custom-scrollbar bg-white">
+                    <div class="grid grid-cols-[3rem_1fr_12rem_8rem] text-xs font-bold text-gray-500 bg-gray-50 border-b border-gray-200 px-6 py-3 sticky top-0 z-10">
+                        <div class="text-center">選択</div>
+                        <div>コース名</div>
+                        <div>コード</div>
+                        <div>団体</div>
+                    </div>
+                    <div id="modal-rows" class="divide-y divide-gray-100">
+                        </div>
+                </div>
+
+                <div class="px-6 py-4 bg-gray-50 border-t border-gray-100 flex justify-end gap-3 shrink-0">
+                    <button id="cancel-course-modal" class="px-4 py-2 rounded-md bg-white border border-gray-300 text-gray-700 text-sm font-medium hover:bg-gray-50 hover:border-gray-400 transition-all shadow-sm">
+                        キャンセル
+                    </button>
+                    <button id="add-selected-courses" class="px-5 py-2 rounded-md bg-blue-600 text-white text-sm font-bold hover:bg-blue-700 shadow-sm hover:shadow transition-all flex items-center gap-2">
+                        <span class="material-symbols-outlined icon-sm">add</span>
+                        追加する (<span id="modal-selected-count">0</span>)
+                    </button>
                 </div>
             </div>
         </div>

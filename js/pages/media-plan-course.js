@@ -3,7 +3,7 @@
 window.addEventListener('DOMContentLoaded', () => {
     // ★ URLパラメータから role を取得
     const params = new URLSearchParams(location.search);
-    const initialRole = params.get('role') || 'iec'; // デフォルトはお好みで
+    const initialRole = params.get('role') || 'iec';
 
     if (window.MockUI) {
         MockUI.injectHeader('#app-header', { userName: 'Test User', brand: 'New SD App', initialRole: initialRole });
@@ -18,28 +18,27 @@ window.addEventListener('DOMContentLoaded', () => {
     const selectAllCheckbox = document.getElementById('selectAll');
 
     // コース別コメント保存用（モック：メモリ上だけ）
-    const commentMap = new Map(); // key: course id, value: comment string
+    const commentMap = new Map();
 
     // ========= リストデータ（JSONから読み込み） =========
-    let allData = [];       // selected-list-sample.json の配列
-    const CHUNK = 20;       // 一度に描画する件数
-    let loaded = 0;         // 何件描画済みか
-    let dense = true;
+    let allData = [];
+    const CHUNK = 20;
+    let loaded = 0;
+    let dense = false; // デフォルトは少しゆったりめに
 
-    const TAGS_STD = ["マナー","PCスキル","マーケティング","IT基礎","DX"]; // モーダル追加用に利用
-    function rand(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
-
-    // ★ グリッド定義（ヘッダー／行で共通）
-    const GRID_COLS_FULL     = 'grid-cols-[2rem_5rem_1fr_8rem_6rem_9rem_11rem]'; // 並び順＋カスタムあり（8列）
-    const GRID_COLS_SUPPLIER = 'grid-cols-[2rem_1fr_8rem_6rem_12rem]';           // supplier 用（6列）
+    // ★ グリッド定義（HTMLのヘッダー定義と一致させる）
+    // HTML: grid-cols-[3rem_4rem_1fr_6rem_4rem_8rem_10rem]
+    const GRID_COLS_FULL     = 'grid-cols-[3rem_4rem_1fr_6rem_4rem_8rem_10rem]';
+    // Supplier用: Order(No)とCustomTagを隠す -> grid-cols-[3rem_1fr_6rem_4rem_8rem] などを想定
+    const GRID_COLS_SUPPLIER = 'grid-cols-[3rem_1fr_6rem_4rem_8rem]'; 
 
     function getGridColsClass() {
         return initialRole === 'supplier' ? GRID_COLS_SUPPLIER : GRID_COLS_FULL;
     }
 
     // ★ ヘッダー側のグリッドも role に合わせて変更
-    const headerEl = document.querySelector('#list')?.previousElementSibling;
-    if (headerEl) {
+    const headerEl = document.getElementById('list')?.previousElementSibling;
+    if (headerEl && headerEl.classList.contains('grid')) {
         // 既存の grid-cols-[...] を一旦全部削除
         const toRemove = [];
         headerEl.classList.forEach(c => {
@@ -49,6 +48,14 @@ window.addEventListener('DOMContentLoaded', () => {
 
         // role に応じたグリッドを付与
         headerEl.classList.add(getGridColsClass());
+
+        // Supplierの場合はヘッダーの該当カラムも隠す処理が必要
+        if (initialRole === 'supplier') {
+            // No列とカスタムタグ列を非表示にする簡易対応
+            const cols = headerEl.children;
+            if(cols[1]) cols[1].classList.add('hidden'); // No
+            if(cols[6]) cols[6].classList.add('hidden'); // CustomTag
+        }
     }
 
     // 行順に基づいて並び順ラベルを更新
@@ -57,19 +64,17 @@ window.addEventListener('DOMContentLoaded', () => {
         rows.forEach((row, index) => {
             const label = row.querySelector('.order-value');
             if (label) {
-                label.textContent = index + 1; // 1,2,3,...
+                label.textContent = index + 1; 
             }
         });
     }
 
-    // ★ DOM の並び順をもとに allData を再構成（loaded 範囲だけを並べ替え）
+    // DOM の並び順をもとに allData を再構成
     function reorderAllDataByDom() {
         const domRows = Array.from(rowsEl.querySelectorAll('.row'));
         const domIds = domRows.map(r => String(r.dataset.id));
-
         const loadedPart = allData.slice(0, loaded);
         const restPart   = allData.slice(loaded);
-
         const loadedMap = new Map(loadedPart.map(item => [String(item.id), item]));
         const reorderedLoaded = [];
 
@@ -80,14 +85,10 @@ window.addEventListener('DOMContentLoaded', () => {
                 loadedMap.delete(id);
             }
         });
-
-        // 念のため、DOM上にない loaded 部分があれば後ろに足しておく
         loadedMap.forEach(item => reorderedLoaded.push(item));
-
         allData = reorderedLoaded.concat(restPart);
     }
 
-    // 行の data-id からコースオブジェクトを取得
     function findCourseByRowId(rowId) {
         if (!allData || !allData.length) return null;
         return allData.find(c => String(c.id) === String(rowId)) || null;
@@ -97,8 +98,8 @@ window.addEventListener('DOMContentLoaded', () => {
     function buildOptionsHtml(course) {
         if (!course || !Array.isArray(course.options) || course.options.length === 0) {
             return `
-                <div class="mt-4 text-sm text-gray-500">
-                    オプション情報が未登録です。
+                <div class="mt-6 p-4 bg-gray-50 rounded-lg border border-gray-100 text-sm text-gray-500 text-center">
+                    オプション情報はありません
                 </div>
             `;
         }
@@ -106,24 +107,34 @@ window.addEventListener('DOMContentLoaded', () => {
         const nf = new Intl.NumberFormat('ja-JP');
 
         return `
-            <div class="mt-4 flex flex-col gap-2">
-                ${course.options.map(o => {
-                    const name = (o.name && o.name.trim()) ? o.name : `オプション${o.id}`;
-                    const length = o.length || "";
-                    const priceText = (typeof o.price === "number")
-                        ? nf.format(o.price)
-                        : (o.price || "");
+            <div class="mt-6">
+                <h4 class="text-xs font-bold text-gray-700 mb-3 flex items-center gap-1">
+                    <span class="material-symbols-outlined icon-sm text-gray-400">layers</span>
+                    オプション講座
+                </h4>
+                <div class="flex flex-col gap-2">
+                    ${course.options.map(o => {
+                        const name = (o.name && o.name.trim()) ? o.name : `オプション${o.id}`;
+                        const length = o.length || "-";
+                        const priceText = (typeof o.price === "number") ? nf.format(o.price) : (o.price || "-");
 
-                    return `
-                        <div>
-                            <div>${name}</div>
-                            <div class="m-2 text-gray-700 text-sm flex gap-4">
-                                <div>受講期間：${length}</div>
-                                <div>受講料：${priceText}</div>
+                        return `
+                            <div class="p-3 bg-gray-50 rounded-md border border-gray-100 hover:border-blue-200 transition-colors">
+                                <div class="text-sm font-bold text-gray-800">${name}</div>
+                                <div class="mt-2 flex items-center gap-4 text-xs text-gray-600">
+                                    <div class="flex items-center gap-1">
+                                        <span class="material-symbols-outlined text-[14px] text-gray-400">schedule</span>
+                                        ${length}
+                                    </div>
+                                    <div class="flex items-center gap-1">
+                                        <span class="material-symbols-outlined text-[14px] text-gray-400">payments</span>
+                                        ¥${priceText}
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    `;
-                }).join("")}
+                        `;
+                    }).join("")}
+                </div>
             </div>
         `;
     }
@@ -140,54 +151,55 @@ window.addEventListener('DOMContentLoaded', () => {
         const showCustomCol = initialRole !== 'supplier';
 
         return `
-        <div class="row group grid ${gridColsClass} items-center ${py} px-4 border-b border-gray-100 hover:bg-gray-50 transition"
+        <div class="row group grid ${gridColsClass} items-center ${py} px-4 border-b border-gray-100 hover:bg-blue-50/30 transition-colors"
             data-id="${d.id}"
             data-title="${d.title}" data-code="${d.code}" data-org="${d.org}"
             data-std="${d.stdTag}" data-custom="${customTags.join(",")}"
             data-delete-requested="0"
             data-visible-for="iec,customer,supplier">
 
-            <!-- チェックボックス -->
-            <label class="inline-flex items-center justify-center">
-                <input type="checkbox" class="sel accent-blue-600">
-            </label>
+            <div class="flex items-center justify-center">
+                <input type="checkbox" class="sel rounded border-gray-300 text-blue-600 focus:ring-blue-500 h-4 w-4 cursor-pointer">
+            </div>
 
             ${showOrderCol ? `
-            <!-- 並び順コード＋上下ボタン -->
-            <div class="flex items-center justify-center gap-1 text-xs text-gray-600" data-col="order">
-                <span class="order-value tabular-nums">${d.order ?? ""}</span>
-                <div class="flex space-x-1">
-                    <button type="button" class="order-up leading-none hover:text-blue-600" title="一つ上へ">
-                        <span class="material-symbols-outlined text-[16px]">expand_less</span>
+            <div class="flex items-center gap-1 text-xs font-mono text-gray-500" data-col="order">
+                <span class="order-value w-5 text-right">${d.order ?? ""}</span>
+                <div class="flex flex-col -space-y-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <button type="button" class="order-up text-gray-400 hover:text-blue-600" title="一つ上へ">
+                        <span class="material-symbols-outlined text-[14px]">arrow_drop_up</span>
                     </button>
-                    <button type="button" class="order-down leading-none hover:text-blue-600" title="一つ下へ">
-                        <span class="material-symbols-outlined text-[16px]">expand_more</span>
+                    <button type="button" class="order-down text-gray-400 hover:text-blue-600" title="一つ下へ">
+                        <span class="material-symbols-outlined text-[14px]">arrow_drop_down</span>
                     </button>
                 </div>
             </div>
             ` : ''}
 
-            <!-- コース名+コースコード -->
-            <div class="flex flex-col">
-                <button class="flex text-left truncate hover:underline text-gray-900 font-medium open-preview">
+            <div class="flex flex-col min-w-0 pr-4">
+                <button class="text-left text-sm font-bold text-gray-800 hover:text-blue-600 hover:underline truncate transition-colors open-preview">
                     ${d.title}
                 </button>
-                <div class="text-gray-400 text-xs" data-col="code">${d.code}</div>
+                <div class="text-xs text-gray-400 font-mono mt-0.5" data-col="code">${d.code}</div>
             </div>
             
-            <div class="text-gray-600" data-col="org">${d.org}</div>
+            <div class="text-xs text-gray-600 truncate" data-col="org">${d.org}</div>
+            
             <div class="flex justify-center">
-                ${d.isNew ? `<span class="text-[10px] text-white rounded-full bg-amber-500 px-2 py-0.5">NEW</span>` : ``}
+                ${d.isNew 
+                    ? `<span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-amber-50 text-amber-700 border border-amber-100">NEW</span>` 
+                    : `<span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium text-gray-400 bg-gray-50 border border-gray-100">-</span>`}
             </div>
+            
             <div class="flex items-center gap-1 flex-wrap" data-col="stdTag">
-                <span class="text-[11px] rounded-full bg-blue-100 text-blue-700 px-2 py-0.5">${d.stdTag}</span>
+                ${d.stdTag ? `<span class="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] bg-blue-50 text-blue-700 border border-blue-100 truncate max-w-full">${d.stdTag}</span>` : ''}
             </div>
 
             ${showCustomCol ? `
             <div class="flex items-center gap-1 flex-wrap" data-col="customTag">
-                ${customTags.map(t=>`<span class="text-[11px] rounded-full bg-gray-800 text-white px-2 py-0.5">${t}</span>`).join("")}
-                <button class="opacity-0 group-hover:opacity-100 text-gray-400 hover:text-gray-700 transition inline-flex items-center" title="タグ追加（モック）">
-                    <span class="material-symbols-outlined text-base">add_circle</span>
+                ${customTags.map(t=>`<span class="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] bg-white text-gray-600 border border-gray-200">${t}</span>`).join("")}
+                <button class="opacity-0 group-hover:opacity-100 text-gray-400 hover:text-blue-600 transition-colors inline-flex items-center p-0.5 rounded hover:bg-blue-50" title="タグ追加">
+                    <span class="material-symbols-outlined text-[16px]">add</span>
                 </button>
             </div>
             ` : ''}
@@ -199,11 +211,7 @@ window.addEventListener('DOMContentLoaded', () => {
     let activeFilter = null;
 
     function matchFilter(row){
-        if(activeFilter === 'new') return row.querySelector('.bg-amber-500') !== null;
-        if(activeFilter?.startsWith('tag:')){
-            const tag = activeFilter.slice(4);
-            return (row.dataset.std?.includes(tag) || row.dataset.custom?.includes(tag));
-        }
+        if(activeFilter === 'new') return row.querySelector('.bg-amber-50') !== null;
         return true;
     }
 
@@ -222,21 +230,31 @@ window.addEventListener('DOMContentLoaded', () => {
 
     q.addEventListener('input', updateFilter);
     document.querySelectorAll('[data-filter]').forEach(btn=>{
-        btn.addEventListener('click', ()=>{
+        btn.addEventListener('click', (e)=>{
+            // ボタンスタイルのトグル処理
+            document.querySelectorAll('[data-filter]').forEach(b => {
+                b.classList.remove('bg-blue-50', 'text-blue-700', 'border-blue-200');
+                b.classList.add('bg-white', 'text-gray-700', 'border-gray-200');
+            });
+            
             const v = btn.getAttribute('data-filter');
-            activeFilter = (v === 'clear') ? null : v;
+            if (activeFilter === v) {
+                // 解除
+                activeFilter = null;
+            } else {
+                if(v !== 'clear') {
+                    activeFilter = v;
+                    btn.classList.remove('bg-white', 'text-gray-700', 'border-gray-200');
+                    btn.classList.add('bg-blue-50', 'text-blue-700', 'border-blue-200');
+                } else {
+                    activeFilter = null;
+                }
+            }
             updateFilter();
         });
     });
 
-    // ★ supplier の場合、ヘッダー側の order/customTag セルを隠す
-    if (initialRole === 'supplier') {
-        document.querySelectorAll('[data-col="order"], [data-col="customTag"]').forEach(el => {
-            el.classList.add('hidden');
-        });
-    }
-
-    // ===== チャンク追加（allData から描画） =====
+    // ===== チャンク追加 =====
     function appendChunk(){
         if (!allData.length || loaded >= allData.length) return;
 
@@ -251,11 +269,11 @@ window.addEventListener('DOMContentLoaded', () => {
             }
             rowsEl.appendChild(frag);
             skeletonEl.classList.add('hidden');
-            if (window.RoleMock) RoleMock.applyRoleVisibility(); // 新規行にも適用
+            if (window.RoleMock) RoleMock.applyRoleVisibility(); 
             updateFilter();
-            updateOrderLabels(); // ★ 行追加後に並び順ラベルを更新
+            updateOrderLabels();
             updateSelectAllState();
-        }, 120);
+        }, 100);
     }
 
     // ===== 無限スクロール =====
@@ -274,18 +292,21 @@ window.addEventListener('DOMContentLoaded', () => {
     // ===== 一括バー =====
     const bulkbar = document.getElementById('bulkbar'), selCount = document.getElementById('selCount');
     const defbar = document.getElementById('def-bar');
+    
     function refreshBulkbar(){
         const n = document.querySelectorAll('#rows .sel:checked').length;
-        selCount.textContent = n;
-        bulkbar.classList.toggle('hidden', n === 0);
-        defbar.classList.toggle('hidden', n > 0);
+        if(selCount) selCount.textContent = n;
+        if(bulkbar) bulkbar.classList.toggle('hidden', n === 0);
+        if(defbar) defbar.classList.toggle('hidden', n > 0);
     }
+
     function getVisibleCheckboxes(){
         return Array.from(document.querySelectorAll('#rows .sel')).filter(c => {
             const row = c.closest('.row');
             return row && row.style.display !== 'none';
         });
     }
+
     function updateSelectAllState(){
         if(!selectAllCheckbox) return;
         const visible = getVisibleCheckboxes();
@@ -298,12 +319,14 @@ window.addEventListener('DOMContentLoaded', () => {
         selectAllCheckbox.indeterminate = checkedCount > 0 && checkedCount < visible.length;
         selectAllCheckbox.checked = checkedCount > 0 && checkedCount === visible.length;
     }
+
     listEl.addEventListener('change', e=>{
         if(e.target.classList.contains('sel')){
             refreshBulkbar();
             updateSelectAllState();
         }
     });
+    
     selectAllCheckbox?.addEventListener('change', () => {
         const targets = getVisibleCheckboxes();
         targets.forEach(c => c.checked = selectAllCheckbox.checked);
@@ -311,61 +334,43 @@ window.addEventListener('DOMContentLoaded', () => {
         updateSelectAllState();
     });
 
-    document.getElementById('clearSelection').addEventListener('click', ()=>{
+    document.getElementById('clearSelection')?.addEventListener('click', ()=>{
         document.querySelectorAll('#rows .sel:checked').forEach(c=> c.checked=false);
         refreshBulkbar();
         updateSelectAllState();
     });
 
-    // ★ 一括：選択行を先頭へ移動
-    document.getElementById('moveTop')?.addEventListener('click', () => {
-        const allRows = Array.from(rowsEl.querySelectorAll('.row'));
-        const selected = allRows.filter(r => r.querySelector('.sel:checked'));
-        if (!selected.length) return;
+    // 行移動処理 (Top/Bottom)
+    ['moveTop', 'moveBottom'].forEach(id => {
+        document.getElementById(id)?.addEventListener('click', () => {
+            const allRows = Array.from(rowsEl.querySelectorAll('.row'));
+            const selected = allRows.filter(r => r.querySelector('.sel:checked'));
+            if (!selected.length) return;
 
-        const others = allRows.filter(r => !selected.includes(r));
+            const others = allRows.filter(r => !selected.includes(r));
+            const newOrder = id === 'moveTop' 
+                ? [...selected, ...others] 
+                : [...others, ...selected];
 
-        rowsEl.innerHTML = '';
-        [...selected, ...others].forEach(r => {
-            const chk = r.querySelector('.sel');
-            if (chk) chk.checked = false;
-            rowsEl.appendChild(r);
+            rowsEl.innerHTML = '';
+            newOrder.forEach(r => {
+                const chk = r.querySelector('.sel');
+                if (chk) chk.checked = false;
+                rowsEl.appendChild(r);
+            });
+
+            reorderAllDataByDom();
+            updateOrderLabels();
+            refreshBulkbar();
+            updateSelectAllState();
         });
-
-        reorderAllDataByDom();
-        updateOrderLabels();
-        refreshBulkbar();
-        updateSelectAllState();
     });
 
-    // ★ 一括：選択行を末尾へ移動
-    document.getElementById('moveBottom')?.addEventListener('click', () => {
-        const allRows = Array.from(rowsEl.querySelectorAll('.row'));
-        const selected = allRows.filter(r => r.querySelector('.sel:checked'));
-        if (!selected.length) return;
-
-        const others = allRows.filter(r => !selected.includes(r));
-
-        rowsEl.innerHTML = '';
-        [...others, ...selected].forEach(r => {
-            const chk = r.querySelector('.sel');
-            if (chk) chk.checked = false;
-            rowsEl.appendChild(r);
-        });
-
-        reorderAllDataByDom();
-        updateOrderLabels();
-        refreshBulkbar();
-        updateSelectAllState();
-    });
-
-    // ===== 並び順の上下ボタンによる行入れ替え =====
+    // 上下ボタンによる行入れ替え
     listEl.addEventListener('click', (e) => {
         const upBtn = e.target.closest('.order-up');
         const downBtn = e.target.closest('.order-down');
         if (!upBtn && !downBtn) return;
-
-        // supplier のときは（列自体を出していないので）動作させない
         if (initialRole === 'supplier') return;
 
         const row = e.target.closest('.row');
@@ -378,139 +383,155 @@ window.addEventListener('DOMContentLoaded', () => {
         const isUp = !!upBtn;
         const targetIndex = isUp ? currentIndex - 1 : currentIndex + 1;
 
-        // 先頭より上／末尾より下には動かさない
         if (targetIndex < 0 || targetIndex >= rows.length) return;
 
         const targetRow = rows[targetIndex];
-
-        // allData 側の順番も入れ替え（画面内整合用）
+        
+        // データ配列入れ替え
         const currentId = row.dataset.id;
         const targetId  = targetRow.dataset.id;
-
         const currentDataIndex = allData.findIndex(d => String(d.id) === String(currentId));
         const targetDataIndex  = allData.findIndex(d => String(d.id) === String(targetId));
 
         if (currentDataIndex !== -1 && targetDataIndex !== -1) {
-            const tmp = allData[currentDataIndex];
-            allData[currentDataIndex] = allData[targetDataIndex];
-            allData[targetDataIndex] = tmp;
+            [allData[currentDataIndex], allData[targetDataIndex]] = [allData[targetDataIndex], allData[currentDataIndex]];
         }
 
-        // DOM の並び替え
         if (isUp) {
-            rowsEl.insertBefore(row, targetRow);          // 上に動かす
+            rowsEl.insertBefore(row, targetRow);
         } else {
-            rowsEl.insertBefore(targetRow, row);          // 下に動かす
+            rowsEl.insertBefore(targetRow, row);
         }
-
-        // 並び順ラベルを振り直す
         updateOrderLabels();
     });
 
-    // ===== 「削除希望にする」ボタン：フラグ ON/OFF & バッジ表示 =====
-    const markDeleteRequestBtn = document.getElementById('markDeleteRequest');
+    // 「削除希望」ボタン
+    document.getElementById('markDeleteRequest')?.addEventListener('click', () => {
+        const checked = document.querySelectorAll('#rows .sel:checked');
+        if (!checked.length) return;
 
-    if (markDeleteRequestBtn) {
-        markDeleteRequestBtn.addEventListener('click', () => {
-            const checked = document.querySelectorAll('#rows .sel:checked');
-            if (!checked.length) return;
+        checked.forEach(c => {
+            const row = c.closest('.row');
+            if (!row) return;
 
-            checked.forEach(c => {
-                const row = c.closest('.row');
-                if (!row) return;
+            const current = row.dataset.deleteRequested === '1';
+            row.dataset.deleteRequested = current ? '0' : '1';
 
-                const current = row.dataset.deleteRequested === '1';
-                row.dataset.deleteRequested = current ? '0' : '1';
-
-                row.classList.toggle('bg-red-100', !current);
-                row.classList.toggle('hover:bg-red-200', !current);
-                row.classList.toggle('opacity-100', !current);
-
-                const titleBtn = row.querySelector('.open-preview');
-                if (titleBtn) {
-                    let badge = titleBtn.querySelector('.delete-badge');
-                    if (!current) {
-                        if (!badge) {
-                            badge = document.createElement('span');
-                            badge.className =
-                                'delete-badge ml-2 inline-flex items-center text-xs px-1.5 py-0.5 rounded-full bg-red-200 text-red-700 border border-red-300';
-                            badge.textContent = '削除希望';
-                            titleBtn.appendChild(badge);
-                        }
-                    } else {
-                        if (badge) badge.remove();
+            // 背景色変更
+            row.classList.toggle('bg-red-50', !current);
+            row.classList.toggle('hover:bg-red-100', !current);
+            
+            // バッジの処理
+            const titleBtn = row.querySelector('.open-preview');
+            if (titleBtn) {
+                let badge = titleBtn.querySelector('.delete-badge');
+                if (!current) {
+                    if (!badge) {
+                        badge = document.createElement('span');
+                        badge.className = 'delete-badge ml-2 inline-flex items-center text-[10px] px-1.5 py-0.5 rounded-full bg-red-100 text-red-600 border border-red-200 font-bold';
+                        badge.textContent = '削除希望';
+                        titleBtn.appendChild(badge);
                     }
+                } else {
+                    if (badge) badge.remove();
                 }
-            });
-
-            checked.forEach(c => (c.checked = false));
-            refreshBulkbar();
-            updateSelectAllState();
+            }
         });
-    }
 
-    // ===== 詳細ビュー＋コメント =====
+        checked.forEach(c => (c.checked = false));
+        refreshBulkbar();
+        updateSelectAllState();
+    });
+
+    // ===== 詳細プレビュー表示 =====
     listEl.addEventListener('click', (e)=>{
         const btn = e.target.closest('.open-preview');
         if(!btn) return;
+        
+        // 選択状態のUI反映（簡易的）
+        document.querySelectorAll('.row').forEach(r => r.classList.remove('bg-blue-50'));
         const row = btn.closest('.row');
-        const { id, title, code, org, std, custom } = row.dataset;
+        row.classList.add('bg-blue-50');
 
-        // JSONのコースデータを取得
+        const { id, title, code, org, std, custom } = row.dataset;
         const course = findCourseByRowId(id);
         const optionsHtml = buildOptionsHtml(course);
-
         const savedComment = commentMap.get(id) || "";
 
+        // プレースホルダー画像をダミーで生成
+        const randomColor = ['bg-blue-100', 'bg-green-100', 'bg-indigo-100', 'bg-purple-100'][Math.floor(Math.random()*4)];
+        const randomIcon = ['school', 'menu_book', 'cast_for_education', 'lightbulb'][Math.floor(Math.random()*4)];
+
         preview.innerHTML = `
-            <p class="text-lg font-semibold text-gray-900">${title}</p>
-            <div class="mt-2 text-sm text-gray-600">コード：${code} / 団体：${org}</div>
-            <div class="mt-3 flex flex-wrap gap-1">
-                <span class="text-[11px] rounded-full bg-blue-100 text-blue-700 px-2 py-0.5">${std}</span>
-                ${String(custom).split(',').map(t=> t
-                    ? `<span class="text-[11px] rounded-full bg-gray-800 text-white px-2 py-0.5"
-                        data-visible-for="iec, customer">${t}</span>`
-                    : ""
-                ).join("")}
-            </div>
-
-            ${optionsHtml}
-
-            <div class="mt-4">
-                <a href="#" class="inline-flex text-sm items-center gap-1 text-blue-600 hover:underline">
-                    HTMLを開く <span class="material-symbols-outlined text-sm">open_in_new</span>
-                </a>
-            </div>
-            <div class="mt-6 border-t pt-4">
-                <label class="block text-sm font-medium text-gray-700 mb-1">
-                    掲載判断用コメント
-                </label>
-                <textarea
-                    id="course-comment"
-                    class="w-full min-h-[80px] max-h-[160px] rounded-md border border-gray-300 px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 resize-y"
-                    placeholder="このコースに関するメモや削除希望の理由を自由に記入してください。"
-                ></textarea>
-            </div>
-            <div class="w-full mt-6 border-t pt-4" data-visible-for="iec">
-                <label class="block text-sm font-medium text-gray-700 mb-1">
-                    公開範囲
-                </label>
-                <div class="w-full flex gap-4 items-center  text-sm">
-                    <label class="block">
-                        <input type="date" class="mt-1 text-sm rounded-lg border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
-                    </label>
-                    ～
-                    <label class="block">
-                        <input type="date" class="mt-1 text-sm rounded-lg border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
-                    </label>
+            <div class="relative">
+                <div class="h-40 w-full ${randomColor} flex items-center justify-center text-blue-900/20">
+                    <span class="material-symbols-outlined text-6xl">${randomIcon}</span>
                 </div>
+                <button class="absolute top-2 right-2 p-1 bg-white/80 rounded-full hover:bg-white text-gray-500 hover:text-gray-800 transition-colors" onclick="document.getElementById('preview').innerHTML='...'">
+                     <span class="material-symbols-outlined icon-md">close</span>
+                </button>
             </div>
-            <div class="mt-6 flex justify-end">
-                <button class="py-1 px-4 rounded-md bg-blue-500 hover:bg-blue-600 text-white">更新する</button>
+
+            <div class="p-6">
+                <div class="flex items-start gap-3 mb-4">
+                    <div class="flex-1">
+                        <div class="flex gap-2 mb-2">
+                            <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-blue-50 text-blue-700 border border-blue-100">
+                                ${std || '標準'}
+                            </span>
+                        </div>
+                        <h2 class="text-xl font-bold text-gray-800 leading-snug">${title}</h2>
+                        <div class="mt-1 text-xs text-gray-500 font-mono">コード: ${code}</div>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-2 mb-6 text-sm text-gray-600">
+                    <span class="material-symbols-outlined icon-sm text-gray-400">business</span>
+                    <span>提供団体: <span class="font-medium text-gray-800">${org}</span></span>
+                </div>
+
+                <div class="prose prose-sm text-gray-600 mb-6">
+                    <p>このコースでは、${title}に関する基礎から応用までを体系的に学びます。実務ですぐに使えるスキルを習得することを目標としています。</p>
+                </div>
+
+                <div class="border-t border-gray-100 pt-4 mb-4">
+                    <h4 class="text-xs font-bold text-gray-700 mb-2">設定タグ</h4>
+                    <div class="flex flex-wrap gap-1.5">
+                        ${String(custom).split(',').filter(x=>x).map(t => 
+                            `<span class="inline-flex items-center px-2 py-1 rounded-md text-xs bg-white text-gray-600 border border-gray-200 shadow-sm">${t}</span>`
+                        ).join("")}
+                        ${!custom ? '<span class="text-xs text-gray-400">タグは設定されていません</span>' : ''}
+                    </div>
+                </div>
+
+                ${optionsHtml}
+
+                <div class="mt-8 pt-6 border-t border-gray-100 bg-gray-50 -mx-6 -mb-6 px-6 pb-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h4 class="text-sm font-bold text-gray-800">掲載判断コメント</h4>
+                        <a href="#" class="text-xs text-blue-600 hover:underline flex items-center gap-0.5">
+                            プレビュー <span class="material-symbols-outlined text-[12px]">open_in_new</span>
+                        </a>
+                    </div>
+                    
+                    <textarea
+                        id="course-comment"
+                        class="w-full min-h-[100px] rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-y bg-white"
+                        placeholder="このコースに関するメモや削除希望の理由を記入..."
+                    ></textarea>
+
+                    <div class="mt-4 flex justify-end gap-2">
+                         <button class="px-4 py-2 rounded-md bg-white border border-gray-300 text-gray-700 text-sm hover:bg-gray-50 transition-colors shadow-sm">
+                            リセット
+                        </button>
+                        <button class="px-4 py-2 rounded-md bg-blue-600 text-white text-sm font-bold hover:bg-blue-700 shadow-sm hover:shadow transition-all">
+                            保存する
+                        </button>
+                    </div>
+                </div>
             </div>
         `;
 
-        // プレビューに対してもロール適用
         if (window.RoleMock) RoleMock.applyRoleVisibility();
 
         const textarea = preview.querySelector('#course-comment');
@@ -523,7 +544,7 @@ window.addEventListener('DOMContentLoaded', () => {
     });
 
 
-    // ========= 追加モーダル =========
+    // ========= 追加モーダル関連 =========
     const openCourseModalBtn = document.getElementById('open-course-modal');
     const courseModal = document.getElementById('course-modal');
     const closeCourseModalBtn = document.getElementById('close-course-modal');
@@ -533,24 +554,18 @@ window.addEventListener('DOMContentLoaded', () => {
     const modalRows = document.getElementById('modal-rows');
     const modalQ = document.getElementById('modal-q');
 
-    // モーダル用データ（外部JSONから読み込み）
     let modalData = [];
 
-    // モーダル用JSONの読み込み（コース名 / コード / 団体 / 標準タグ）
+    // モーダルデータ読み込み
     function loadModalData() {
-        return fetch('course-master-sample.json') // ← ファイル名は環境に合わせて
-            .then(res => {
-                if (!res.ok) throw new Error('Modal JSON load failed');
-                return res.json();
-            })
+        return fetch('course-master-sample.json')
+            .then(res => res.ok ? res.json() : [])
             .then(data => {
                 const arr = Array.isArray(data) ? data : [];
-
-                // supplier のときだけ 団体＝「他団体B」に絞り込み
                 if (initialRole === 'supplier') {
                     modalData = arr.filter(d => d.org === "他団体B");
                 } else {
-                    modalData = arr;  // それ以外のロールなら全件
+                    modalData = arr;
                 }
             })
             .catch(err => {
@@ -563,46 +578,48 @@ window.addEventListener('DOMContentLoaded', () => {
         const v = (modalQ.value || '').toLowerCase();
         modalRows.innerHTML = modalData
             .filter(d => (
-                (d.title || '') +
-                ' ' +
-                (d.code || '') +
-                ' ' +
-                (d.org || '') +
-                ' ' +
-                (d.stdTag || '')
+                (d.title || '') + ' ' + (d.code || '') + ' ' + (d.org || '')
             ).toLowerCase().includes(v))
             .map(d => `
-                <label class="grid grid-cols-[1.5rem_1fr_15rem_10rem] items-center px-4 py-2 border-b hover:bg-gray-50 cursor-pointer">
-                    <input type="checkbox"
-                        class="modal-sel accent-blue-600"
-                        data-id="${d.id}">
-                    <span class="truncate">${d.title}</span>
-                    <span class="text-gray-600">${d.code}</span>
-                    <span class="text-gray-600">${d.org}</span>
+                <label class="grid grid-cols-[3rem_1fr_12rem_8rem] items-center px-6 py-3 border-b border-gray-50 hover:bg-blue-50 cursor-pointer transition-colors">
+                    <div class="flex justify-center">
+                        <input type="checkbox"
+                            class="modal-sel rounded border-gray-300 text-blue-600 focus:ring-blue-500 h-4 w-4 cursor-pointer"
+                            data-id="${d.id}">
+                    </div>
+                    <span class="truncate text-sm font-medium text-gray-800">${d.title}</span>
+                    <span class="text-xs text-gray-500 font-mono">${d.code}</span>
+                    <span class="text-xs text-gray-500">${d.org}</span>
                 </label>
             `).join('');
         modalSelectedCount.textContent = document.querySelectorAll('.modal-sel:checked').length;
     }
 
-    function openCourseModal(){ courseModal.classList.remove('hidden'); courseModal.classList.add('flex'); renderModalList(); }
-    function closeCourseModal(){ courseModal.classList.add('hidden'); courseModal.classList.remove('flex'); }
+    function openCourseModal(){ 
+        courseModal.classList.remove('hidden'); 
+        courseModal.classList.add('flex'); 
+        renderModalList(); 
+    }
+    function closeCourseModal(){ 
+        courseModal.classList.add('hidden'); 
+        courseModal.classList.remove('flex'); 
+    }
 
     openCourseModalBtn?.addEventListener('click', openCourseModal);
     closeCourseModalBtn?.addEventListener('click', closeCourseModal);
     cancelCourseModalBtn?.addEventListener('click', closeCourseModal);
     courseModal?.addEventListener('click', (e)=>{ if(e.target === courseModal) closeCourseModal(); });
     modalQ?.addEventListener('input', renderModalList);
+    
     modalRows?.addEventListener('change', (e)=>{
         if(e.target.classList.contains('modal-sel')){
             modalSelectedCount.textContent = document.querySelectorAll('.modal-sel:checked').length;
         }
     });
 
-    // 追加：モーダルで選択したコースを先頭に挿入（モック）
+    // モーダル追加処理
     addSelectedBtn?.addEventListener('click', () => {
-        // チェックされたID（course-master-sample.json側の id）を取得
-        const ids = Array.from(document.querySelectorAll('.modal-sel:checked'))
-            .map(c => Number(c.dataset.id));
+        const ids = Array.from(document.querySelectorAll('.modal-sel:checked')).map(c => Number(c.dataset.id));
 
         if (!ids.length) {
             closeCourseModal();
@@ -612,30 +629,23 @@ window.addEventListener('DOMContentLoaded', () => {
         const frag = document.createDocumentFragment();
         let addedCount = 0;
 
-        ids
-            .map(id => modalData.find(d => Number(d.id) === id))
+        ids.map(id => modalData.find(d => Number(d.id) === id))
             .forEach(md => {
                 if (!md) return;
-
-                // JSONから使うフィールド：title / code / org / stdTag / options
-                // 強制で上書きするフィールド：id / isNew / custom
                 const d = {
-                    id: `A-${md.id}`,                              // 既存と被らないようプレフィックス
-                    title: md.title,                               // タイトルはJSONのまま採用
+                    id: `A-${md.id}`,
+                    title: md.title,
                     code: md.code,
                     org: md.org || "",
                     stdTag: md.stdTag || "",
                     options: Array.isArray(md.options) ? md.options : [],
-
-                    isNew: true,                                   // 新規追加は必ず NEW
-                    custom: []                                     // 追加時はカスタムタグなし
+                    isNew: true,
+                    custom: []
                 };
 
-                // 詳細ビュー用に allData にも入れる
                 allData.unshift(d);
                 addedCount++;
 
-                // 画面の行DOMを作成して先頭に挿入
                 const wrap = document.createElement('div');
                 wrap.innerHTML = rowTemplate(dense, d);
                 frag.appendChild(wrap.firstElementChild);
@@ -644,41 +654,25 @@ window.addEventListener('DOMContentLoaded', () => {
         if (frag.childNodes.length > 0) {
             rowsEl.prepend(frag);
             if (window.RoleMock) RoleMock.applyRoleVisibility();
-
-            // infinite scroll 用の loaded を調整
             loaded += addedCount;
-
-            // フィルタ＆並び順を更新
             updateFilter();
             updateOrderLabels();
             updateSelectAllState();
         }
-
         closeCourseModal();
     });
 
-    
-
-
-    // ========= JSON 読み込み開始（モーダル用） =========
+    // ========= 初期ロード =========
     loadModalData();
 
-    // ========= JSON 読み込み開始 =========
     fetch('selected-list-sample.json')
-        .then(res => {
-            if (!res.ok) throw new Error('JSON load failed');
-            return res.json();
-        })
+        .then(res => res.ok ? res.json() : [])
         .then(data => {
-            // supplier のときだけ絞り込む
             if (initialRole === 'supplier') {
-                allData = Array.isArray(data)
-                    ? data.filter(d => d.org === "他団体B")
-                    : [];
+                allData = Array.isArray(data) ? data.filter(d => d.org === "他団体B") : [];
             } else {
                 allData = Array.isArray(data) ? data : [];
             }
-
             loaded = 0;
             rowsEl.innerHTML = '';
             appendChunk();
@@ -687,131 +681,61 @@ window.addEventListener('DOMContentLoaded', () => {
         .catch(err => {
             console.error(err);
             skeletonEl.classList.add('hidden');
-            rowsEl.innerHTML = '<div class="p-4 text-sm text-red-600">サンプルデータ（JSON）の読み込みに失敗しました。</div>';
-        });
-            // ========= JSON 読み込み開始 =========
-    fetch('selected-list-sample.json')
-        .then(res => {
-            if (!res.ok) throw new Error('JSON load failed');
-            return res.json();
-        })
-        .then(data => {
-            // supplier のときだけ絞り込む
-            if (initialRole === 'supplier') {
-                allData = Array.isArray(data)
-                    ? data.filter(d => d.org === "他団体B")
-                    : [];
-            } else {
-                allData = Array.isArray(data) ? data : [];
-            }
-
-            loaded = 0;
-            rowsEl.innerHTML = '';
-            appendChunk();
-            initInfiniteScroll();
-        })
-        .catch(err => {
-            console.error(err);
-            skeletonEl.classList.add('hidden');
-            rowsEl.innerHTML = '<div class="p-4 text-sm text-red-600">サンプルデータ（JSON）の読み込みに失敗しました。</div>';
+            rowsEl.innerHTML = '<div class="p-8 text-center text-sm text-red-600 bg-red-50 rounded-lg">データの読み込みに失敗しました</div>';
         });
 
-        // ===== Shift + ↑↓ の範囲選択（連続チェック） =====
-
-    // 起点（クリックした行の index）
+    // ===== Shift + Click 範囲選択 =====
     let anchorIndex = null;
-    // 現在のフォーカス位置（Shift＋矢印で動くカーソル）
     let focusIndex = null;
-    // 任意：ホバー中の行 index
-    let hoveredIndex = null;
+    
+    function getRowElements() { return Array.from(rowsEl.querySelectorAll('.row')); }
 
-    // rows 内の .row を配列で取得
-    function getRowElements() {
-        return Array.from(rowsEl.querySelectorAll('.row'));
-    }
-
-    // --- 行クリックで「起点＆フォーカス」をセット ---
     rowsEl.addEventListener('click', (e) => {
         const row = e.target.closest('.row');
         if (!row) return;
-
         const rows = getRowElements();
         const idx = rows.indexOf(row);
-        if (idx === -1) return;
-
-        anchorIndex = idx;
-        focusIndex  = idx;
-        // console.log('anchor:', anchorIndex, 'focus:', focusIndex);
+        if (idx !== -1) {
+            anchorIndex = idx;
+            focusIndex = idx;
+        }
     });
 
-    // --- ホバーしている行を記録（任意：起点がないときの候補に使う） ---
-    rowsEl.addEventListener('mousemove', (e) => {
-        const row = e.target.closest('.row');
-        if (!row) return;
-        const rows = getRowElements();
-        hoveredIndex = rows.indexOf(row);
-    });
-
-    // --- Shift + ↑↓ での範囲選択 ---
     window.addEventListener('keydown', (e) => {
-        // 入力中のテキストボックス等では反応させない
         const tag = (e.target.tagName || '').toLowerCase();
-        if (tag === 'input' || tag === 'textarea' || tag === 'select') return;
-
+        if (['input', 'textarea', 'select'].includes(tag)) return;
         if (!e.shiftKey) return;
 
         const rows = getRowElements();
         if (!rows.length) return;
 
-        // まだ anchor が決まってないとき：
-        // 1) ホバー中の行
-        // 2) 既にチェックされている行のうち最初のもの
         if (anchorIndex === null) {
-            if (hoveredIndex !== null && hoveredIndex >= 0) {
-                anchorIndex = hoveredIndex;
-            } else {
-                const firstChecked = rows.findIndex(r => r.querySelector('.sel:checked'));
-                if (firstChecked !== -1) {
-                    anchorIndex = firstChecked;
-                }
-            }
+             const firstChecked = rows.findIndex(r => r.querySelector('.sel:checked'));
+             anchorIndex = firstChecked !== -1 ? firstChecked : 0;
         }
-        if (anchorIndex === null) return; // それでも起点なしなら何もしない
-
-        // フォーカスが未設定なら起点に合わせる
-        if (focusIndex === null) {
-            focusIndex = anchorIndex;
-        }
+        if (focusIndex === null) focusIndex = anchorIndex;
 
         let newFocus = focusIndex;
-
         if (e.key === 'ArrowDown') {
-            if (newFocus < rows.length - 1) newFocus++;
-            else return; // 末尾ならこれ以上動かさない
+            if (newFocus < rows.length - 1) newFocus++; else return;
         } else if (e.key === 'ArrowUp') {
-            if (newFocus > 0) newFocus--;
-            else return; // 先頭ならこれ以上動かさない
+            if (newFocus > 0) newFocus--; else return;
         } else {
             return;
         }
 
         e.preventDefault();
-
         focusIndex = newFocus;
 
-        // 起点(anchor)〜フォーカス(focus) の範囲を ON、それ以外は OFF
         const start = Math.min(anchorIndex, focusIndex);
         const end   = Math.max(anchorIndex, focusIndex);
 
         rows.forEach((row, idx) => {
             const sel = row.querySelector('.sel');
-            if (!sel) return;
-            sel.checked = (idx >= start && idx <= end);
+            if (sel) sel.checked = (idx >= start && idx <= end);
         });
 
-        // 一括バーの件数更新
         refreshBulkbar();
         updateSelectAllState();
     });
-
 });

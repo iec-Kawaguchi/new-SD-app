@@ -1,156 +1,156 @@
-// mock-ui.js — reusable Header & Sidebar (no framework)
-// 依存: TailwindCSS（任意）, role-visibility.js（RoleMock）
-// 目的: モック用途でヘッダー/メニューを複数ページに簡単再利用
-
+// mock-ui.js — reusable Header & Sidebar (Fixed & Robust Version)
+// 依存: TailwindCSS, role-visibility.js (RoleMock)
 
 (function (global) {
+    // スタイル定義（<a>タグに直接適用するため、クラスを整理）
+    const STYLES = {
+        // 共通: 角丸、Flex配置、トランジション
+        base: "flex items-center w-full py-2 px-3 rounded-md transition-all duration-200 group cursor-pointer",
+        // アクティブ: 青背景、青文字、太字
+        active: "bg-blue-50 text-blue-700 font-semibold shadow-sm",
+        // 非アクティブ: グレー文字、ホバーで薄いグレー
+        inactive: "text-gray-600 hover:bg-gray-50 hover:text-gray-900",
+        // アイコン
+        icon: "material-symbols-outlined text-[1.25rem] mr-3 transition-colors",
+    };
+
     const headerTpl = (opts = {}) => {
         const userName = opts.userName || "Test User";
         const brand = opts.brand || "New SD App";
         return `
-        <header class="bg-blue-800 w-full h-[3rem]">
-        <div class="flex items-center h-full justify-between px-6">
-            <div class="text-xl text-gray-50 font-bold">${brand}</div>
-            <div class="ml-auto flex items-center gap-2 mr-2">
-            <select id="role-select" class="px-2 py-1 rounded border-gray-300 bg-blue-800 hover:bg-blue-600 text-white border-white">
-                <option value="iec">IEC</option>
-                <option value="supplier">他団体</option>
-                <option value="customer">顧客</option>
-            </select>
+        <header class="bg-white w-full h-16 border-b border-gray-200 sticky top-0 z-50">
+            <div class="flex items-center h-full justify-between px-6">
+                <div class="flex items-center gap-3">
+                    <div class="text-xl text-gray-800 font-bold tracking-tight">${brand}</div>
+                </div>
+                <div class="ml-auto flex items-center gap-4">
+                    <div class="relative">
+                        <select id="role-select" class="appearance-none pl-3 pr-8 py-1.5 rounded-md border border-gray-300 bg-gray-50 text-sm text-gray-700 hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors cursor-pointer">
+                            <option value="iec">IEC (管理者)</option>
+                            <option value="supplier">他団体</option>
+                            <option value="customer">顧客</option>
+                        </select>
+                        <span class="material-symbols-outlined absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 text-sm pointer-events-none">expand_more</span>
+                    </div>
+                    <div class="h-6 w-px bg-gray-200 mx-1"></div>
+                    <div class="flex items-center gap-3">
+                        <div class="text-sm font-medium text-gray-700">${userName}</div>
+                        <button class="flex p-1.5 rounded-full text-gray-500 hover:bg-gray-100 transition-colors"><span class="material-symbols-outlined">settings</span></button>
+                        <button class="flex p-1.5 rounded-full text-gray-500 hover:bg-gray-100 hover:text-red-600 transition-colors"><span class="material-symbols-outlined">logout</span></button>
+                    </div>
+                </div>
             </div>
-            <div class="text-white flex gap-4 items-center">
-            <div class="mr-4">${userName}</div>
-            <span class="material-symbols-outlined text-white">settings</span>
-            <span class="material-symbols-outlined text-white">logout</span>
-            </div>
-        </div>
         </header>`;
     };
 
+    // サイドバー：ul/liをやめて、div > a のシンプルな構造に変更（バグ回避）
     const sidebarTpl = () => `
-        <aside class="min-w-60 bg-gray-100">
-        <h2 id="menu-1" class="p-3 pt-4 font-bold text-gray-700 cursor-pointer flex items-center justify-between">
-            募集
-            <span id="menu-1-arrow" class="material-symbols-outlined text-[1.2rem]">keyboard_arrow_up</span>
-        </h2>
-        <ul id="menu-items-1" class="cursor-pointer">
-            <a href="media-plan-list.html" data-visible-for="iec, supplier, customer">
-                <li class="flex items-center ml-3 py-2 px-4 text-gray-700 border-l-2 border-gray-300 hover:border-gray-500 hover:font-bold">   
-                    <span class="material-symbols-outlined text-[1.2rem] mr-1">dashboard</span>
-                    募集一覧
-                </li>
-            </a>
-            <a href="applications-download.html" data-visible-for="iec, supplier, customer">
-                <li class="flex items-center ml-3 py-2 px-4 text-gray-700 border-l-2 border-gray-300 hover:border-gray-500 hover:font-bold">   
-                    <span class="material-symbols-outlined text-[1.2rem] mr-1">download</span>
-                    申込DL
-                </li>
-            </a>
-           
-        </ul>
-        <h2 id="menu-2" class="p-3 pt-4 font-bold text-gray-700 cursor-pointer flex items-center justify-between">
-            マスタ管理
-            <span id="menu-2-arrow" class="material-symbols-outlined text-[1.2rem]">keyboard_arrow_up</span>
-        </h2>
-        <ul id="menu-items-2" class="cursor-pointer">
-            <a href="user-master.html" data-visible-for="iec, supplier, customer">
-            <li class="flex items-center ml-3 py-2 px-4 text-gray-700 border-l-2 border-gray-300 hover:border-gray-500 hover:font-bold">   
-                <span class="material-symbols-outlined text-[1.2rem] mr-1">person</span>
-                ユーザー
-            </li>
-            </a>
-            <a href="org-master.html" data-visible-for="iec, customer">
-            <li class="flex items-center ml-3 py-2 px-4 text-gray-700 border-l-2 border-gray-300 hover:border-gray-500 hover:font-bold">   
-                <span class="material-symbols-outlined text-[1.2rem] mr-1">apartment</span>
-                組織
-            </li>
-            </a>
-            <a href="topics-master-list.html" data-visible-for="iec, customer">
-            <li class="flex items-center ml-3 py-2 px-4 text-gray-700 border-l-2 border-gray-300 hover:border-gray-500 hover:font-bold">
-                <span class="material-symbols-outlined text-[1.2rem] mr-1">view_agenda</span>
-                特集ページ
-            </li>
-            </a>
-            <a href="tag-master.html" data-visible-for="iec, customer">
-            <li class="flex items-center ml-3 py-2 px-4 text-gray-700 border-l-2 border-gray-300 hover:border-gray-500 hover:font-bold">   
-                <span class="material-symbols-outlined text-[1.2rem] mr-1">tag</span>
-                タグ
-            </li>
-            </a>
-            <a href="course-master-list.html" data-visible-for="iec, supplier">
-            <li class="flex items-center ml-3 py-2 px-4 text-gray-700 border-l-2 border-gray-300 hover:border-gray-500 hover:font-bold">   
-                <span class="material-symbols-outlined text-[1.2rem] mr-1">book_2</span>
-                コース
-            </li>
-            </a>
-        </ul>
+        <aside class="w-64 bg-white border-r border-gray-200 flex flex-col h-[calc(100vh-4rem)] overflow-y-auto sticky top-16 hidden lg:flex">
+            <nav class="flex-1 px-3 py-6 space-y-6">
+                
+                <div>
+                    <h2 id="menu-1" class="px-3 mb-2 text-xs font-semibold text-gray-400 uppercase tracking-wider cursor-pointer flex items-center justify-between hover:text-gray-600 transition-colors group/head">
+                        募集メニュー
+                        <span id="menu-1-arrow" class="material-symbols-outlined text-[1rem] group-hover/head:text-gray-600 transition-transform">keyboard_arrow_up</span>
+                    </h2>
+                    <div id="menu-items-1" class="space-y-1">
+                        <a href="media-plan-list.html" data-visible-for="iec, supplier, customer" class="js-nav-item">
+                            <span class="${STYLES.icon}">dashboard</span>
+                            <span class="text-sm">募集一覧</span>
+                        </a>
+                        <a href="applications-download.html" data-visible-for="iec, supplier, customer" class="js-nav-item">
+                            <span class="${STYLES.icon}">download</span>
+                            <span class="text-sm">申込データDL</span>
+                        </a>
+                    </div>
+                </div>
+
+                <div>
+                    <h2 id="menu-2" class="px-3 mb-2 text-xs font-semibold text-gray-400 uppercase tracking-wider cursor-pointer flex items-center justify-between hover:text-gray-600 transition-colors group/head">
+                        システム設定
+                        <span id="menu-2-arrow" class="material-symbols-outlined text-[1rem] group-hover/head:text-gray-600 transition-transform">keyboard_arrow_up</span>
+                    </h2>
+                    <div id="menu-items-2" class="space-y-1">
+                        <a href="user-master.html" data-visible-for="iec, supplier, customer" class="js-nav-item">
+                            <span class="${STYLES.icon}">person</span>
+                            <span class="text-sm">ユーザー管理</span>
+                        </a>
+                        <a href="org-master.html" data-visible-for="iec, customer" class="js-nav-item">
+                            <span class="${STYLES.icon}">apartment</span>
+                            <span class="text-sm">組織マスタ</span>
+                        </a>
+                        <a href="topics-master-list.html" data-visible-for="iec, customer" class="js-nav-item">
+                            <span class="${STYLES.icon}">view_agenda</span>
+                            <span class="text-sm">特集ページ管理</span>
+                        </a>
+                        <a href="tag-master.html" data-visible-for="iec, customer" class="js-nav-item">
+                            <span class="${STYLES.icon}">tag</span>
+                            <span class="text-sm">タグ管理</span>
+                        </a>
+                        <a href="course-master-list.html" data-visible-for="iec, supplier" class="js-nav-item">
+                            <span class="${STYLES.icon}">book_2</span>
+                            <span class="text-sm">コース管理</span>
+                        </a>
+                    </div>
+                </div>
+
+            </nav>
+            <div class="p-4 border-t border-gray-100">
+                <div class="text-xs text-gray-400 text-center">v1.0.1 Fixed</div>
+            </div>
         </aside>`;
 
-    function highlightActiveByHref(sidebarRoot = document) {
-    const here = new URL(location.href);
+    function highlightActiveByHref(sidebarRoot) {
+        // 現在のパス（クエリパラメータ除外）
+        const currentPath = new URL(location.href).pathname;
+        
+        // デバッグ用（F12コンソールで確認可能）
+        // console.log('[MockUI] Current Path:', currentPath);
 
-    sidebarRoot.querySelectorAll('a[href] li').forEach(li => {
-        const a = li.closest('a');
-        if (!a) return;
+        const links = sidebarRoot.querySelectorAll('a.js-nav-item');
+        
+        links.forEach(a => {
+            const rawHref = a.getAttribute('href');
+            if (!rawHref || rawHref === '#') return;
 
-        const u = new URL(a.getAttribute('href'), location.href);
-        const isActive =
-        u.pathname === here.pathname &&
-        (u.hash === '' || u.hash === here.hash);
+            // hrefを絶対パスに変換して比較
+            const targetUrl = new URL(rawHref, location.href);
+            const targetPath = targetUrl.pathname;
+            
+            // 判定ロジック: パスが完全一致するか
+            const isActive = (targetPath === currentPath);
+            
+            // デバッグログ: なぜ一致した/しなかったか確認したい場合はコメント解除
+            // console.log(`[MockUI] Checking: ${targetPath} == ${currentPath} ? ${isActive}`);
 
-        // 強調スタイル付与
-        li.classList.toggle('font-bold', isActive);
-        li.classList.toggle('border-gray-500', isActive);
-
-        // 非アクティブ時リセット（意図的に落ち着いた色に）
-        if (!isActive) {
-            li.classList.remove(
-                'font-bold',
-                'border-gray-500'
-            );
-        li.classList.add('border-gray-300');
-        }
-    });
+            // クラスの適用
+            // baseクラス + (isActive ? active : inactive)
+            a.className = `${STYLES.base} ${isActive ? STYLES.active : STYLES.inactive}`;
+        });
     }
-
 
     function wireSideMenuToggles(root) {
-        const m1 = root.querySelector('#menu-1');
-        const m2 = root.querySelector('#menu-2');
-        const items1 = root.querySelector('#menu-items-1');
-        const items2 = root.querySelector('#menu-items-2');
-        const arrow1 = root.querySelector('#menu-1-arrow');
-        const arrow2 = root.querySelector('#menu-2-arrow');
-    
-        if (m1 && items1 && arrow1) {
-            m1.addEventListener('click', () => {
-                items1.classList.toggle('hidden');
-                arrow1.textContent = items1.classList.contains('hidden') ? 'keyboard_arrow_down' : 'keyboard_arrow_up';
-            });
-        }
-    
-        if (m2 && items2 && arrow2) {
-            m2.addEventListener('click', () => {
-                items2.classList.toggle('hidden');
-                arrow2.textContent = items2.classList.contains('hidden') ? 'keyboard_arrow_down' : 'keyboard_arrow_up';
-            });
-        }
-    }
-
-    function ensureInitialRole(role) {
-        if (!global.RoleMock) return;
-        const qs = new URLSearchParams(location.search);
-        if (!qs.get('role')) RoleMock.setRoleInUrl(role || 'iec');
+        const toggleMenu = (triggerId, itemsId, arrowId) => {
+            const trigger = root.querySelector(triggerId);
+            const items = root.querySelector(itemsId);
+            const arrow = root.querySelector(arrowId);
+            if (trigger && items && arrow) {
+                trigger.addEventListener('click', () => {
+                    const isHidden = items.classList.toggle('hidden');
+                    arrow.style.transform = isHidden ? 'rotate(180deg)' : 'rotate(0deg)';
+                });
+            }
+        };
+        toggleMenu('#menu-1', '#menu-items-1', '#menu-1-arrow');
+        toggleMenu('#menu-2', '#menu-items-2', '#menu-2-arrow');
     }
 
     function injectHeader(targetSelector, opts = {}) {
         const mount = document.querySelector(targetSelector);
-        if (!mount) return console.warn('[mock-ui] header mount not found:', targetSelector);
+        if (!mount) return;
         mount.innerHTML = headerTpl(opts);
-        // Role select sync & visibility apply
-        
         if (global.RoleMock) {
-            ensureInitialRole(opts.initialRole || 'iec');
+            if(!new URLSearchParams(location.search).get('role')) RoleMock.setRoleInUrl(opts.initialRole || 'iec');
             RoleMock.init({ roleSelect: '#role-select' });
             const sel = mount.querySelector('#role-select');
             if (sel) sel.value = RoleMock.getRole();
@@ -159,12 +159,13 @@
 
     function injectSidebar(targetSelector) {
         const mount = document.querySelector(targetSelector);
-        if (!mount) return console.warn('[mock-ui] sidebar mount not found:', targetSelector);
+        if (!mount) return;
         mount.innerHTML = sidebarTpl();
         wireSideMenuToggles(mount);
-        // apply role-based visibility after insertion
         if (global.RoleMock) RoleMock.applyRoleVisibility();
-        highlightActiveByHref(mount); 
+        
+        // 最後にハイライト実行
+        highlightActiveByHref(mount);
     }
 
     global.MockUI = { injectHeader, injectSidebar };

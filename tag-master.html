@@ -1,295 +1,469 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="ja" class="h-full bg-gray-50">
     <head>
         <meta charset="UTF-8">
-        <title>New SD App</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>オリジナルタグ一覧 - New SD App</title>
         <script src="https://cdn.tailwindcss.com"></script>
-        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-        <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nouislider@15.7.0/dist/nouislider.min.css">
-        <script src="https://cdn.jsdelivr.net/npm/nouislider@15.7.0/dist/nouislider.min.js"></script>
-        <script type="module" src="../js/modules/dashboard/index.js"></script>
+        <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+        
         <script src="./js/role-visibility.js" defer></script>
         <script src="./js/mock-ui.js" defer></script>
+        
         <style>
+            /* 全体のフォント設定 */
             body {
-                font-family: "游ゴシック体", "Yu Gothic", "游ゴシック", YuGothic, sans-serif;
+                font-family: 'Noto Sans JP', sans-serif;
             }
+            /* Tailwindのデフォルトと合わせるための調整 */
+            .material-symbols-outlined {
+                font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            }
+            /* アイコンのサイズ調整用ユーティリティ */
+            .icon-sm { font-size: 1.125rem !important; } /* 18px */
+            .icon-md { font-size: 1.25rem !important; }  /* 20px */
         </style>
     </head>
-    <body class="bg-gray-100 min-h-screen flex flex-col">
+    <body class="h-full text-gray-900 antialiased flex flex-col">
         <div id="app-header"></div>
-        <main class="flex flex-1">
+
+        <div class="flex flex-1 overflow-hidden">
             <div id="app-sidebar"></div>
-            <div class="p-10 flex-1 bg-gray-200">
-                <div class="flex justify-between items-center mb-4">
-                    <div class="text-2xl font-bold text-gray-700">オリジナルタグ一覧</div>
-                </div>
-                <div class="bg-white w-full  rounded-xl flex flex-col mx-auto shadow-md p-4">
-                    <div class="p-4 flex flex-col md:flex-row items-center justify-between gap-4">
-    <div class="flex items-center gap-2 w-full md:w-auto flex-1 max-w-2xl">
-        <select class="bg-gray-50 border border-gray-300 text-gray-700 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 w-32 md:w-40">
-            <option selected>すべてのタイプ</option>
-            <option value="target">対象・階層</option>
-            <option value="genre">ジャンル</option>
-            </select>
-        
-        <div class="relative w-full">
-            <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                <span class="material-symbols-outlined text-gray-400">search</span>
-            </div>
-            <input type="text" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5" placeholder="タグ名で検索...">
-        </div>
-    </div>
 
-    <button id="btnOpenModal" class="flex items-center justify-center gap-2 text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 transition shadow-sm whitespace-nowrap">
-        <span class="material-symbols-outlined text-xl">add</span>
-        <span>新規登録</span>
-    </button>
-</div>
-                    <div class="p-4 w-full">
-                        <table class="w-full max-w-4xl table-auto text-left text-gray-700">
-                            <thead>
-                                <tr>
-                                    <th class="border-b px-4 py-3 text-sm text-gray-500">タグタイプ</th>
-                                    <th class="border-b px-4 py-3 text-sm text-gray-500">タグ名</th>
-                                    <th class="border-b px-4 py-3 text-sm text-gray-500">対象企業</th>
-                                    <th class="border-b px-4 py-3 text-sm text-gray-500 text-center">ステータス</th>
-                                    <th class="border-b px-4 py-3 text-sm text-gray-500 text-center">アクション</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr class="hover:bg-gray-50 transition-colors">
-                                    <td class="border-b px-4 py-3">
-                                        <span class="px-2 py-1 text-xs font-bold text-sky-600 bg-sky-100 rounded-md">対象・階層</span>
-                                    </td>
-                                    <td class="border-b px-4 py-3 font-medium">新人・内定者</td>
-                                    <td class="border-b px-4 py-3 text-sm">
-                                        <div class="flex flex-col">
-                                            <span class="text-sm font-bold text-gray-700">○○株式会社</span>
-                                            <span class="text-xs text-gray-400 font-mono">ID: 201129</span>
-                                        </div>
-                                    </td>
-                                    <td class="border-b px-4 py-3 text-center">
-                                        <span class="text-xs text-green-600 font-bold border border-green-200 bg-green-50 px-2 py-1 rounded-full">公開</span>
-                                    </td>
-                                    <td class="border-b px-4 py-3 text-center">
-                                        <div class="relative group ml-1 inline-flex items-center">
-                                            <span data-row="2" class="menu-trigger material-symbols-outlined text-gray-400 hover:text-gray-600 text-lg cursor-pointer align-middle">more_horiz</span>
-                                            <div id="row-2-items" class="menu text-left flex flex-col absolute w-max z-10 bottom-full right-0 mb-1 bg-white border border-gray-200 rounded-lg shadow-xl p-1 hidden">
-                                                <a href="#" class="py-2 px-3 text-sm text-gray-600 hover:bg-gray-50 hover:text-gray-900 rounded cursor-pointer flex items-center">
-                                                    <span class="material-symbols-outlined text-lg mr-2">edit</span>
-                                                    編集する
-                                                </a>
-                                                <a href="#" class="py-2 px-3 text-sm text-gray-600 hover:bg-gray-50 hover:text-gray-900 rounded cursor-pointer flex items-center">
-                                                    <span class="material-symbols-outlined text-lg mr-2">public_off</span>
-                                                    非公開にする
-                                                </a>
-                                                <hr class="my-1 border-gray-100">
-                                                <a href="#" class="py-2 px-3 text-sm hover:bg-red-50 cursor-pointer flex items-center text-red-500 rounded">
-                                                    <span class="material-symbols-outlined text-lg mr-2 text-red-500">delete</span>
-                                                    削除する
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                                
-                                <tr class="hover:bg-gray-50 transition-colors">
-                                    <td class="border-b px-4 py-3">
-                                        <span class="px-2 py-1 text-xs font-bold text-rose-600 bg-rose-100 rounded-md">その他</span>
-                                    </td>
-                                    <td class="border-b px-4 py-3 font-medium">100％補助</td>
-                                    <td class="border-b px-4 py-3 text-sm">
-                                                                                <div class="flex flex-col">
-                                            <span class="text-sm font-bold text-gray-700">○○株式会社</span>
-                                            <span class="text-xs text-gray-400 font-mono">ID: 201129</span>
-                                        </div>
-                                    </td>
-                                    <td class="border-b px-4 py-3 text-center">
-                                        <span class="text-xs text-green-600 font-bold border border-green-200 bg-green-50 px-2 py-1 rounded-full">公開</span>
-                                    </td>
-                                    <td class="border-b px-4 py-3 text-center">
-                                        <div class="relative group ml-1 inline-flex items-center">
-                                            <span data-row="3" class="menu-trigger material-symbols-outlined text-gray-400 hover:text-gray-600 text-lg cursor-pointer align-middle">more_horiz</span>
-                                            <div id="row-3-items" class="menu text-left flex flex-col absolute w-max z-10 bottom-full right-0 mb-1 bg-white border border-gray-200 rounded-lg shadow-xl p-1 hidden">
-                                                <a href="#" class="py-2 px-3 text-sm text-gray-600 hover:bg-gray-50 hover:text-gray-900 rounded cursor-pointer flex items-center">
-                                                    <span class="material-symbols-outlined text-lg mr-2">edit</span>
-                                                    編集する
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
-
-                                <tr class="hover:bg-gray-50 transition-colors">
-                                    <td class="border-b px-4 py-3">
-                                        <span class="px-2 py-1 text-xs font-bold text-slate-600 bg-slate-100 rounded-md">ジャンル</span>
-                                    </td>
-                                    <td class="border-b px-4 py-3 font-medium">DX・ITスキル</td>
-                                    <td class="border-b px-4 py-3 text-sm">
-                                                                                <div class="flex flex-col">
-                                            <span class="text-sm font-bold text-gray-700">○○株式会社</span>
-                                            <span class="text-xs text-gray-400 font-mono">ID: 201129</span>
-                                        </div>
-                                    </td>
-                                    <td class="border-b px-4 py-3 text-center">
-                                        <span class="text-xs text-gray-500 font-bold border border-gray-200 bg-gray-50 px-2 py-1 rounded-full">非公開</span>
-                                    </td>
-                                    <td class="border-b px-4 py-3 text-center">
-                                        <div class="relative group ml-1 inline-flex items-center">
-                                            <span data-row="1" class="menu-trigger material-symbols-outlined text-gray-400 hover:text-gray-600 text-lg cursor-pointer align-middle">more_horiz</span>
-                                            <div id="row-1-items" class="menu text-left flex flex-col absolute w-max z-10 bottom-full right-0 mb-1 bg-white border border-gray-200 rounded-lg shadow-xl p-1 hidden">
-                                                <a href="#" class="py-2 px-3 text-sm text-gray-600 hover:bg-gray-50 hover:text-gray-900 rounded cursor-pointer flex items-center">
-                                                    <span class="material-symbols-outlined text-lg mr-2">public</span>
-                                                    公開する
-                                                </a>
-                                                <a href="#" class="py-2 px-3 text-sm hover:bg-red-50 cursor-pointer flex items-center text-red-500 rounded">
-                                                    <span class="material-symbols-outlined text-lg mr-2 text-red-500">delete</span>
-                                                    削除する
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+            <main class="flex-1 h-full overflow-y-auto bg-gray-50 p-6 lg:p-8">
+                <div class="max-w-7xl mx-auto h-full flex flex-col">
+                    <div class="mb-6 flex items-center justify-between">
+                        <h1 class="text-2xl font-bold text-gray-800 tracking-tight">オリジナルタグ一覧</h1>
                     </div>
-                </div>
-            </div>
-        </main>
 
-        <div id="modal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center hidden transition-opacity duration-300">
-            <div class="bg-white rounded-xl shadow-2xl w-full max-w-lg mx-4 overflow-hidden transform transition-all scale-100">
-                <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50">
-                    <h2 class="text-lg font-bold text-gray-800 flex items-center gap-2">
-                        <span class="material-symbols-outlined text-blue-500">bookmark_add</span>
-                        オリジナルタグ登録
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden flex flex-col flex-1">
+                        
+                        <div class="p-4 border-b border-gray-100 flex flex-col md:flex-row items-center justify-between gap-4 bg-white">
+                            <div class="flex items-center gap-3 w-full md:w-auto flex-1 max-w-2xl">
+                                <div class="relative">
+                                    <select class="appearance-none bg-gray-50 border border-gray-300 text-gray-700 text-sm rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 block w-full pl-3 pr-8 py-2 leading-tight transition-colors">
+                                        <option selected>すべてのタイプ</option>
+                                        <option value="target">対象・階層</option>
+                                        <option value="genre">ジャンル</option>
+                                    </select>
+                                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-500">
+                                        <span class="material-symbols-outlined icon-sm">expand_more</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="relative w-full md:max-w-md">
+                                    <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                        <span class="material-symbols-outlined text-gray-400 icon-sm">search</span>
+                                    </div>
+                                    <input type="text" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2 leading-tight transition-shadow" placeholder="タグ名、企業名で検索...">
+                                </div>
+                            </div>
+
+                            <button id="btnOpenModal" class="flex items-center justify-center gap-1.5 text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:ring-blue-100 font-medium rounded-md text-sm px-4 py-2 transition-all shadow-sm hover:shadow active:scale-95 whitespace-nowrap">
+                                <span class="material-symbols-outlined icon-sm">add</span>
+                                <span>新規登録</span>
+                            </button>
+                        </div>
+
+                        <div class="flex-1 overflow-x-auto">
+                            <table class="min-w-full text-left whitespace-nowrap">
+                                <thead class="bg-gray-50 border-b border-gray-200">
+                                    <tr>
+                                        <th class="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">タグタイプ</th>
+                                        <th class="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">タグ名</th>
+                                        <th class="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">対象企業</th>
+                                        <th class="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider text-center">ステータス</th>
+                                        <th class="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider text-center">アクション</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-gray-100 bg-white">
+                                    <tr class="hover:bg-gray-50 transition-colors cursor-pointer js-row group" 
+                                        data-id="1" data-type="target" data-name="新人・内定者" data-corp="corp-4" data-status="public">
+                                        <td class="px-6 py-4">
+                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-sky-100 text-sky-800">
+                                                対象・階層
+                                            </span>
+                                        </td>
+                                        <td class="px-6 py-4 text-sm text-gray-900 font-medium">新人・内定者</td>
+                                        <td class="px-6 py-4 text-sm text-gray-600">
+                                            <div class="flex flex-col">
+                                                <span class="font-medium text-gray-800">○○食品株式会社</span>
+                                                <span class="text-xs text-gray-400">ID: 201129</span>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 text-center">
+                                            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-green-50 text-green-700 border border-green-100">
+                                                <span class="w-1.5 h-1.5 bg-green-500 rounded-full"></span>
+                                                公開
+                                            </span>
+                                        </td>
+                                        <td class="px-6 py-4 text-center relative">
+                                            <div class="relative inline-block text-left">
+                                                <button data-row="1" class="flex menu-trigger p-2 rounded-full text-gray-400 hover:text-gray-600 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors group-hover:bg-gray-100">
+                                                    <span class="material-symbols-outlined icon-md">more_horiz</span>
+                                                </button>
+                                                <div id="row-1-items" class="menu hidden absolute right-0 mt-2 w-48 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-10">
+                                                    <div class="py-1">
+                                                        <a href="#" class="group flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-gray-900 js-edit-action">
+                                                            <span class="material-symbols-outlined icon-sm mr-3 text-gray-400 group-hover:text-gray-500">edit</span>
+                                                            編集する
+                                                        </a>
+                                                        <a href="#" class="group flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-gray-900">
+                                                            <span class="material-symbols-outlined icon-sm mr-3 text-gray-400 group-hover:text-gray-500">lock</span>
+                                                            非公開にする
+                                                        </a>
+                                                    </div>
+                                                    <div class="border-t border-gray-100 my-1"></div>
+                                                    <div class="py-1">
+                                                        <a href="#" class="group flex items-center px-4 py-2 text-sm text-red-600 hover:bg-red-50">
+                                                            <span class="material-symbols-outlined icon-sm mr-3 text-red-400 group-hover:text-red-500">delete</span>
+                                                            削除する
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    
+                                    <tr class="hover:bg-gray-50 transition-colors cursor-pointer js-row group" 
+                                        data-id="2" data-type="other" data-name="100％補助" data-corp="corp-4" data-status="public">
+                                        <td class="px-6 py-4">
+                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-rose-100 text-rose-800">
+                                                その他
+                                            </span>
+                                        </td>
+                                        <td class="px-6 py-4 text-sm text-gray-900 font-medium">100％補助</td>
+                                        <td class="px-6 py-4 text-sm text-gray-600">
+                                            <div class="flex flex-col">
+                                                <span class="font-medium text-gray-800">○○食品株式会社</span>
+                                                <span class="text-xs text-gray-400">ID: 201129</span>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 text-center">
+                                            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-green-50 text-green-700 border border-green-100">
+                                                <span class="w-1.5 h-1.5 bg-green-500 rounded-full"></span>
+                                                公開
+                                            </span>
+                                        </td>
+                                        <td class="px-6 py-4 text-center relative">
+                                            <div class="relative inline-block text-left">
+                                                <button data-row="2" class="flex menu-trigger p-2 rounded-full text-gray-400 hover:text-gray-600 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors group-hover:bg-gray-100">
+                                                    <span class="material-symbols-outlined icon-md">more_horiz</span>
+                                                </button>
+                                                <div id="row-2-items" class="menu hidden absolute right-0 mt-2 w-48 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-10">
+                                                    <div class="py-1">
+                                                        <a href="#" class="group flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-gray-900 js-edit-action">
+                                                            <span class="material-symbols-outlined icon-sm mr-3 text-gray-400 group-hover:text-gray-500">edit</span>
+                                                            編集する
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+
+                                    <tr class="hover:bg-gray-50 transition-colors cursor-pointer js-row group" 
+                                        data-id="3" data-type="genre" data-name="DX・ITスキル" data-corp="corp-4" data-status="private">
+                                        <td class="px-6 py-4">
+                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-800">
+                                                ジャンル
+                                            </span>
+                                        </td>
+                                        <td class="px-6 py-4 text-sm text-gray-900 font-medium">DX・ITスキル</td>
+                                        <td class="px-6 py-4 text-sm text-gray-600">
+                                            <div class="flex flex-col">
+                                                <span class="font-medium text-gray-800">○○食品株式会社</span>
+                                                <span class="text-xs text-gray-400">ID: 201129</span>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 text-center">
+                                            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-600 border border-gray-200">
+                                                <span class="w-1.5 h-1.5 bg-gray-400 rounded-full"></span>
+                                                非公開
+                                            </span>
+                                        </td>
+                                        <td class="px-6 py-4 text-center relative">
+                                            <div class="relative inline-block text-left">
+                                                <button data-row="3" class="flex menu-trigger p-2 rounded-full text-gray-400 hover:text-gray-600 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors group-hover:bg-gray-100">
+                                                    <span class="material-symbols-outlined icon-md">more_horiz</span>
+                                                </button>
+                                                <div id="row-3-items" class="menu hidden absolute right-0 mt-2 w-48 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-10">
+                                                    <div class="py-1">
+                                                        <a href="#" class="group flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-gray-900">
+                                                            <span class="material-symbols-outlined icon-sm mr-3 text-gray-400 group-hover:text-gray-500">public</span>
+                                                            公開する
+                                                        </a>
+                                                    </div>
+                                                    <div class="border-t border-gray-100 my-1"></div>
+                                                    <div class="py-1">
+                                                        <a href="#" class="group flex items-center px-4 py-2 text-sm text-red-600 hover:bg-red-50">
+                                                            <span class="material-symbols-outlined icon-sm mr-3 text-red-400 group-hover:text-red-500">delete</span>
+                                                            削除する
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6">
+                            <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+                                <div>
+                                    <p class="text-sm text-gray-700">
+                                        全 <span class="font-medium">3</span> 件中 <span class="font-medium">1</span> から <span class="font-medium">3</span> 件を表示
+                                    </p>
+                                </div>
+                                <div>
+                                    <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+                                        <a href="#" class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                                            <span class="sr-only">Previous</span>
+                                            <span class="material-symbols-outlined icon-sm">chevron_left</span>
+                                        </a>
+                                        <a href="#" aria-current="page" class="z-10 bg-blue-50 border-blue-500 text-blue-600 relative inline-flex items-center px-4 py-2 border text-sm font-medium">
+                                            1
+                                        </a>
+                                        <a href="#" class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                                            <span class="sr-only">Next</span>
+                                            <span class="material-symbols-outlined icon-sm">chevron_right</span>
+                                        </a>
+                                    </nav>
+                                </div>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+            </main>
+        </div>
+
+        <div id="modal" class="fixed inset-0 z-[100] bg-gray-900/50 backdrop-blur-sm flex items-center justify-center hidden transition-all duration-200">
+            <div class="bg-white rounded-xl shadow-2xl w-full max-w-lg mx-4 overflow-hidden transform transition-all scale-100 border border-gray-100">
+                <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-white">
+                    <h2 id="modalTitle" class="text-lg font-bold text-gray-800 flex items-center gap-2">
+                        <span class="material-symbols-outlined text-blue-600 icon-md">bookmark_add</span>
+                        <span class="text">オリジナルタグ登録</span>
                     </h2>
-                    <button id="btnCloseModalHeader" class="text-gray-400 hover:text-gray-600 transition">
-                        <span class="material-symbols-outlined">close</span>
+                    <button id="btnCloseModalHeader" class="text-gray-400 hover:text-gray-600 hover:bg-gray-100 p-1 rounded-full transition-colors">
+                        <span class="material-symbols-outlined icon-md">close</span>
                     </button>
                 </div>
 
-                <div class="p-6 flex flex-col gap-6">
+                <div class="p-6 flex flex-col gap-5 bg-white">
+                    <input type="hidden" id="inputTagId">
+                    
                     <div class="flex flex-col gap-1.5" data-visible-for="iec">
-                        <label class="text-sm font-bold text-gray-700">企業 <span class="text-red-500 text-xs ml-1">*</span></label>
-                        <select class="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white shadow-sm transition">
-                            <option value="">企業を選択してください</option>
-                            <option value="corp-1">IEC</option>
-                            <option value="corp-2">産業能率大学</option>
-                            <option value="corp-3">JTEX</option>
-                            <option value="corp-4">○○食品株式会社</option>
-                        </select>
+                        <label for="inputCorp" class="text-sm font-bold text-gray-700">企業 <span class="text-red-500">*</span></label>
+                        <div class="relative">
+                            <select id="inputCorp" class="appearance-none w-full rounded-md border border-gray-300 px-3 py-2.5 text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white shadow-sm sm:text-sm transition-shadow pr-8">
+                                <option value="">企業を選択してください</option>
+                                <option value="corp-1">IEC</option>
+                                <option value="corp-2">産業能率大学</option>
+                                <option value="corp-3">JTEX</option>
+                                <option value="corp-4">○○食品株式会社</option>
+                            </select>
+                            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-500">
+                                <span class="material-symbols-outlined icon-sm">expand_more</span>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="flex flex-col gap-1.5">
-                        <label class="text-sm font-bold text-gray-700">タグタイプ <span class="text-red-500 text-xs ml-1">*</span></label>
-                        <select class="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white shadow-sm transition">
-                            <option value="">タイプを選択してください</option>
-                            <option value="target">対象・階層（新人、管理職など）</option>
-                            <option value="genre">ジャンル（営業、ITなど）</option>
-                            <option value="level">難易度（初級、上級など）</option>
-                            <option value="other">その他（補助金、キャンペーンなど）</option>
-                        </select>
-                        <p class="text-xs text-gray-400">※タグの性質に合わせて分類を選択してください。</p>
+                        <label for="inputType" class="text-sm font-bold text-gray-700">タグタイプ <span class="text-red-500">*</span></label>
+                        <div class="relative">
+                            <select id="inputType" class="appearance-none w-full rounded-md border border-gray-300 px-3 py-2.5 text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white shadow-sm sm:text-sm transition-shadow pr-8">
+                                <option value="">タイプを選択してください</option>
+                                <option value="target">対象・階層</option>
+                                <option value="genre">ジャンル</option>
+                                <option value="level">難易度</option>
+                                <option value="other">その他</option>
+                            </select>
+                            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-500">
+                                <span class="material-symbols-outlined icon-sm">expand_more</span>
+                            </div>
+                        </div>
+                        <p class="text-xs text-gray-500">※タグの性質に合わせて分類を選択してください。</p>
                     </div>
 
                     <div class="flex flex-col gap-1.5">
-                        <label class="text-sm font-bold text-gray-700">タグ名 <span class="text-red-500 text-xs ml-1">*</span></label>
-                        <input type="text" class="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 shadow-sm transition" placeholder="例：2025年新人研修">
+                        <label for="inputName" class="text-sm font-bold text-gray-700">タグ名 <span class="text-red-500">*</span></label>
+                        <input id="inputName" type="text" class="w-full rounded-md border border-gray-300 px-3 py-2.5 text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 shadow-sm sm:text-sm transition-shadow" placeholder="例：2025年新人研修">
                     </div>
 
-                    <div class="flex flex-col gap-1.5" data-visible-for="iec">
-                    <label class="text-sm font-bold text-gray-700">ステータス</label>
-                    <div class="flex w-full bg-gray-100 rounded-lg p-1">
-                        <label class="flex-1 cursor-pointer">
-                            <input type="radio" name="status" value="public" class="peer sr-only" checked>
-                            <div class="text-center py-2 rounded-md text-sm font-medium text-gray-500 peer-checked:bg-white peer-checked:text-blue-600 peer-checked:shadow-sm transition-all flex items-center justify-center gap-1">
-                                <span class="material-symbols-outlined text-lg">public</span>
-                                公開
-                            </div>
-                        </label>
-                        <label class="flex-1 cursor-pointer">
-                            <input type="radio" name="status" value="private" class="peer sr-only">
-                            <div class="text-center py-2 rounded-md text-sm font-medium text-gray-500 peer-checked:bg-white peer-checked:text-gray-800 peer-checked:shadow-sm transition-all flex items-center justify-center gap-1">
-                                <span class="material-symbols-outlined text-lg">lock</span>
-                                非公開
-                            </div>
-                        </label>
+                    <div class="flex flex-col gap-1.5" data-visible-for="iec, customer">
+                        <label class="text-sm font-bold text-gray-700">ステータス</label>
+                        <div class="flex w-full bg-gray-100 rounded-lg p-1">
+                            <label class="flex-1 cursor-pointer">
+                                <input type="radio" name="status" value="public" class="peer sr-only" checked>
+                                <div class="text-center py-2 rounded-md text-sm font-medium text-gray-500 peer-checked:bg-white peer-checked:text-blue-700 peer-checked:shadow-sm transition-all flex items-center justify-center gap-1.5">
+                                    <span class="material-symbols-outlined icon-sm">public</span>
+                                    公開
+                                </div>
+                            </label>
+                            <label class="flex-1 cursor-pointer">
+                                <input type="radio" name="status" value="private" class="peer sr-only">
+                                <div class="text-center py-2 rounded-md text-sm font-medium text-gray-500 peer-checked:bg-white peer-checked:text-gray-800 peer-checked:shadow-sm transition-all flex items-center justify-center gap-1.5">
+                                    <span class="material-symbols-outlined icon-sm">lock</span>
+                                    非公開
+                                </div>
+                            </label>
+                        </div>
                     </div>
-                </div>
                 </div>
 
                 <div class="px-6 py-4 bg-gray-50 flex gap-3 justify-end border-t border-gray-100">
-                    <button id="btnCloseModal" class="px-5 py-2 rounded-lg bg-white border border-gray-300 text-gray-600 font-medium hover:bg-gray-50 transition shadow-sm">キャンセル</button>
-                    <button class="px-5 py-2 rounded-lg bg-blue-600 text-white font-bold hover:bg-blue-700 hover:shadow-md transition">登録する</button>
+                    <button id="btnCloseModal" class="px-4 py-2 rounded-md bg-white border border-gray-300 text-gray-700 font-medium hover:bg-gray-50 hover:border-gray-400 transition-all shadow-sm">キャンセル</button>
+                    <button id="btnSubmit" class="px-4 py-2 rounded-md bg-blue-600 text-white font-bold hover:bg-blue-700 shadow-sm hover:shadow transition-all">登録する</button>
                 </div>
             </div>
         </div>
+
+        <script>
+            window.addEventListener('DOMContentLoaded', () => {
+                // --- MockUI初期化 ---
+                // 依存ファイル(mock-ui.js, role-visibility.js)が正しく読み込まれている必要があります。
+                if (typeof MockUI !== 'undefined') {
+                    MockUI.injectHeader('#app-header', {
+                        userName: 'Test User',
+                        brand: 'New SD App',
+                        initialRole: 'iec', // 初期ロール
+                    });
+                    MockUI.injectSidebar('#app-sidebar');
+                }
+
+                // --- 要素の取得 ---
+                const modal = document.getElementById('modal');
+                const btnOpenModal = document.getElementById('btnOpenModal');
+                const btnCloseModal = document.getElementById('btnCloseModal');
+                const btnCloseModalHeader = document.getElementById('btnCloseModalHeader');
+                const btnSubmit = document.getElementById('btnSubmit');
+                const modalTitle = document.getElementById('modalTitle');
+                
+                // 入力フォーム要素
+                const inputTagId = document.getElementById('inputTagId');
+                const inputCorp = document.getElementById('inputCorp');
+                const inputType = document.getElementById('inputType');
+                const inputName = document.getElementById('inputName');
+                const radioStatuses = document.getElementsByName('status');
+
+                // --- 関数定義 ---
+                
+                // メニューをすべて閉じる
+                const closeAllMenus = () => {
+                    document.querySelectorAll(".menu").forEach(m => m.classList.add("hidden"));
+                };
+
+                // モーダルを開く（mode: 'new' | 'edit', data: 行データオブジェクト）
+                const openModal = (mode, data = null) => {
+                    closeAllMenus(); // モーダルを開く前にメニューを閉じる
+
+                    if (mode === 'edit') {
+                        // 編集モード
+                        modalTitle.querySelector('.text').textContent = 'タグ情報の編集';
+                        modalTitle.querySelector('.material-symbols-outlined').textContent = 'edit_note';
+                        btnSubmit.textContent = '更新する';
+                        
+                        // データの充填
+                        if (data) {
+                            inputTagId.value = data.id || '';
+                            inputCorp.value = data.corp || '';
+                            inputType.value = data.type || '';
+                            inputName.value = data.name || '';
+                            
+                            // ラジオボタンの選択
+                            Array.from(radioStatuses).forEach(radio => {
+                                radio.checked = (radio.value === data.status);
+                            });
+                        }
+                    } else {
+                        // 新規登録モード
+                        modalTitle.querySelector('.text').textContent = 'オリジナルタグ登録';
+                        modalTitle.querySelector('.material-symbols-outlined').textContent = 'bookmark_add';
+                        btnSubmit.textContent = '登録する';
+
+                        // フォームのリセット
+                        inputTagId.value = '';
+                        inputCorp.value = '';
+                        inputType.value = '';
+                        inputName.value = '';
+                        if(radioStatuses[0]) radioStatuses[0].checked = true; // デフォルト公開
+                    }
+
+                    modal.classList.remove('hidden');
+                };
+
+                // モーダルを閉じる
+                const closeModal = () => {
+                    modal.classList.add('hidden');
+                };
+
+
+                // --- イベントリスナー設定 ---
+
+                // 新規登録ボタン
+                btnOpenModal.addEventListener('click', () => openModal('new'));
+
+                // モーダル閉じるボタン（フッター＆ヘッダー）
+                btnCloseModal.addEventListener('click', closeModal);
+                btnCloseModalHeader.addEventListener('click', closeModal);
+                
+                // モーダル背景クリックで閉じる
+                modal.addEventListener('click', (e) => {
+                    if (e.target === modal) closeModal();
+                });
+
+                // 行クリック設定 (js-row クラスを持つ要素)
+                document.querySelectorAll('.js-row').forEach(row => {
+                    row.addEventListener('click', (e) => {
+                        // メニュー関連の要素をクリックした場合はモーダルを開かない
+                        if (e.target.closest('.menu-trigger') || e.target.closest('.menu')) {
+                            return;
+                        }
+                        // 行のdata属性を取得してモーダルを開く
+                        openModal('edit', row.dataset);
+                    });
+                });
+
+                // ドロップダウンメニュー内「編集する」リンクのクリック処理
+                document.querySelectorAll('.js-edit-action').forEach(link => {
+                    link.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        
+                        const row = e.target.closest('tr');
+                        if (row) {
+                            openModal('edit', row.dataset);
+                        }
+                    });
+                });
+
+                // 3点リーダーメニューの開閉制御
+                document.querySelectorAll(".menu-trigger").forEach(trigger => {
+                    trigger.addEventListener("click", (e) => {
+                        e.stopPropagation(); // 行クリックへの伝播を止める
+                        
+                        const rowId = trigger.dataset.row;
+                        const targetMenu = document.getElementById(`row-${rowId}-items`);
+
+                        // 他の開いているメニューを閉じる
+                        closeAllMenus();
+
+                        // 対象のメニューを開閉
+                        if(targetMenu) targetMenu.classList.toggle("hidden");
+                    });
+                });
+
+                // メニュー内部クリックで閉じないようにする
+                document.querySelectorAll(".menu").forEach(menu => {
+                    menu.addEventListener("click", (e) => e.stopPropagation());
+                });
+
+                // 画面のどこかをクリックしたらメニューを閉じる
+                document.addEventListener("click", () => {
+                    closeAllMenus();
+                });
+            });
+        </script>
     </body>
 </html>
-<script>
-    window.addEventListener('DOMContentLoaded', () => {
-        // 初期ロールやブランド名・ユーザー名は自由に
-        MockUI.injectHeader('#app-header', {
-            userName: 'Test User',
-            brand: 'New SD App',
-            initialRole: 'iec', // 初回roleが未指定ならiecをセット
-        });
-        MockUI.injectSidebar('#app-sidebar');
-
-        // サイドバー挿入直後に data-visible-for を反映
-        // タイミング調整のため少し遅延させるか、MockUI側のコールバックを使うのが理想ですが、
-        // ここでは簡易的にsetTimeoutを使用、またはRoleMockの仕様に合わせて調整してください。
-        setTimeout(() => RoleMock.applyRoleVisibility(), 100);
-    });
-
-    const modal = document.getElementById('modal');
-    const btnOpenModal = document.getElementById('btnOpenModal');
-    const btnCloseModal = document.getElementById('btnCloseModal');
-    const btnCloseModalHeader = document.getElementById('btnCloseModalHeader'); // 追加
-
-    // モーダル開閉
-    const toggleModal = (show) => {
-        if (show) {
-            modal.classList.remove('hidden');
-        } else {
-            modal.classList.add('hidden');
-        }
-    };
-
-    btnOpenModal.addEventListener('click', () => toggleModal(true));
-    btnCloseModal.addEventListener('click', () => toggleModal(false));
-    if(btnCloseModalHeader) btnCloseModalHeader.addEventListener('click', () => toggleModal(false));
-
-    // 背景クリックで閉じる
-    modal.addEventListener('click', (e) => {
-        if (e.target === modal) toggleModal(false);
-    });
-
-
-    // メニュー制御
-    const triggers = document.querySelectorAll(".menu-trigger");
-    const menus = document.querySelectorAll(".menu");
-
-    triggers.forEach(trigger => {
-        trigger.addEventListener("click", (e) => {
-            e.stopPropagation();
-            // 他のメニューを閉じる
-            menus.forEach(menu => menu.classList.add("hidden"));
-            // 対応するメニューを開閉
-            const rowId = trigger.dataset.row;
-            const menu = document.getElementById(`row-${rowId}-items`);
-            if(menu) menu.classList.toggle("hidden");
-        });
-    });
-
-    menus.forEach(menu => {
-        menu.addEventListener("click", (e) => e.stopPropagation());
-    });
-
-    document.addEventListener("click", () => {
-        menus.forEach(menu => menu.classList.add("hidden"));
-    });
-</script>
