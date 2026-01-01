@@ -1,74 +1,93 @@
 <!DOCTYPE html>
 <html lang="ja">
-    <head>
-        <meta charset="UTF-8" />
-        <title></title>
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <!-- 親と同じ見た目にしたい場合：必要なCDNを再掲 -->
-        <style>
-            body {
-                font-family: "游ゴシック体", "Yu Gothic", "游ゴシック", YuGothic, sans-serif;
-            }
-        </style>
-        <script src="https://cdn.tailwindcss.com"></script>
-        <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
-    </head>
-       <body class="bg-white text-gray-800">
-        <div class="min-h-dvh">
-            <!-- ページヘッダー -->
-            <header class="px-6 pt-8 pb-4">
-                <h1 class="text-2xl font-bold tracking-tight">サイト確認依頼</h1>
-                <p class="mt-1 text-sm text-gray-600">顧客へのサイト確認依頼書を作成します。</p>
-            </header>
+<head>
+  <meta charset="UTF-8" />
+  <title>サイト確認依頼</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
 
-            <main class="px-6 space-y-6 pb-40"><!-- 下の固定バー分の余白 -->
-                <!-- テーブル（カード風の行） -->
-                <section class="bg-white rounded-2xl shadow-sm border border-gray-200/60">
-                    <div class="p-5">
-                        <div class="flex items-center gap-2 mb-3">
-                        <span class="material-symbols-outlined text-gray-500" aria-hidden="true">playlist_add_check</span>
-                        <h2 class="font-semibold">確認担当者</h2>
-                        </div>
+  <style>
+      body { font-family: 'Noto Sans JP', sans-serif; }
+      .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; vertical-align: middle; }
+      .icon-sm { font-size: 1.125rem !important; }
+      .icon-md { font-size: 1.25rem !important; }
+      ::-webkit-scrollbar { width: 6px; height: 6px; }
+      ::-webkit-scrollbar-track { background: transparent; }
+      ::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 20px; }
+      ::-webkit-scrollbar-thumb:hover { background-color: #94a3b8; }
+  </style>
+</head>
+<body class="bg-gray-50 text-gray-900 antialiased">
+  <div class="min-h-dvh flex flex-col">
+    
+    <header class="sticky top-0 z-10 bg-white/95 backdrop-blur-sm border-b border-gray-100 px-6 py-4">
+      <div class="flex items-center gap-2 mb-1">
+          <span class="material-symbols-outlined text-blue-600">playlist_add_check</span>
+          <h1 class="text-lg font-bold text-gray-800 tracking-tight">サイト確認依頼</h1>
+      </div>
+      <p class="text-xs text-gray-500 ml-8">顧客へのサイト確認依頼書を作成します。</p>
+    </header>
 
-                        <div class="space-y-3">
-                        <!-- カード1 -->
-                        <div class="flex items-center gap-4 rounded-xl bg-white border border-gray-200 shadow-sm px-4 py-3 hover:shadow-md transition">
-                            <div class="shrink-0">
-                            <span class="inline-grid place-items-center size-9 rounded-full bg-blue-50 text-blue-600 font-semibold">A</span>
-                            </div>
-                            <div class="min-w-0 flex-1">
-                            <p class="font-medium text-gray-900">担当A</p>
-                            <p class="text-gray-500 text-sm">A@example.com</p>
-                            <p class="text-xs text-violet-600 font-medium mt-0.5">管理者</p>
-                            </div>
-                        </div>
-                        </div>
-                    </div>
-                    
-                </section>
-                <section class="bg-white rounded-2xl shadow-sm border border-gray-200/60">
-                   <div class="bg-white rounded-2xl shadow-sm border border-gray-200/60 p-5">
-          <div class="flex items-center gap-2 mb-3">
-            <span class="material-symbols-outlined text-gray-500" aria-hidden="true">event</span>
-            <h2 class="font-semibold">回答期日</h2>
-          </div>
-          <input type="date" class="rounded-lg border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 w-[12rem]">
-          <p class="mt-2 text-xs text-gray-500">※ 期日を過ぎると自動でリマインドが送られます</p>
-        </div>
-                </section>
-            </main>
+    <main class="flex-1 px-6 py-6 space-y-8 pb-32">
+      
+      <section class="space-y-3">
+        <h2 class="text-sm font-bold text-gray-600 flex items-center gap-2 mb-3">
+          <span class="material-symbols-outlined icon-md">group</span>
+          確認担当者
+        </h2>
 
-            <!-- 固定アクションバー -->
-            <div class="fixed bottom-0 inset-x-0 z-50">
-                <div class="mx-auto max-w-5xl px-6 pb-[calc(12px+var(--safe-bottom))]">
-                    <div class="rounded-2xl bg-white/95 backdrop-blur shadow-[0_-6px_24px_-8px_rgba(0,0,0,0.18)] border border-gray-200">
-                        <div class="flex items-center justify-end gap-3 p-4">
-                            <button class="h-10 px-4 rounded-lg border border-gray-300 bg-white text-gray-600 hover:bg-gray-50">キャンセル</button>
-                            <button class="h-10 px-5 rounded-lg bg-blue-600 text-white font-medium hover:bg-blue-700 active:scale-[0.99] transition">確認を依頼する</button>
-                        </div>
-                    </div>
-                </div>
+        <div class="group relative flex flex-col md:flex-row md:items-center gap-4 rounded-xl bg-white border border-gray-200 shadow-sm px-5 py-4 hover:shadow-md hover:border-blue-200 transition-all duration-200">
+          <div class="absolute left-0 top-3 bottom-3 w-1 bg-blue-500 rounded-r opacity-0 group-hover:opacity-100 transition-opacity"></div>
+          
+          <div class="flex items-center gap-4 flex-1 min-w-0">
+            <div class="shrink-0">
+              <span class="inline-grid place-items-center size-10 rounded-full bg-blue-50 text-blue-600 font-bold text-sm border border-blue-100 shadow-sm">A</span>
             </div>
+            <div class="min-w-0 flex-1">
+              <div class="flex flex-wrap items-center gap-2">
+                <p class="text-sm font-bold text-gray-800 truncate group-hover:text-blue-700 transition-colors">担当A</p>
+                <span class="px-2 py-0.5 rounded text-[10px] font-medium bg-violet-50 text-violet-700 border border-violet-100">管理者</span>
+              </div>
+              <p class="text-xs text-gray-500 truncate mt-0.5 font-mono">A@example.com</p>
+            </div>
+          </div>
         </div>
-    </body>
+      </section>
+
+      <section class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden h-fit">
+          <div class="bg-gray-50/50 px-5 py-3 border-b border-gray-100 flex items-center justify-between">
+             <h2 class="text-sm font-bold text-gray-700 flex items-center gap-2">
+                <span class="material-symbols-outlined icon-md text-gray-400">event</span>
+                回答期日
+             </h2>
+          </div>
+          <div class="p-5">
+            <div class="relative">
+              <input type="date" class="h-10 block w-full rounded-md border border-gray-300 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50/50 transition-shadow hover:bg-white cursor-pointer">
+            </div>
+            <p class="mt-3 text-xs text-gray-400 flex items-center gap-1">
+              <span class="material-symbols-outlined text-[16px]">info</span>
+              期日を過ぎると自動でリマインドが送られます
+            </p>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <div class="fixed bottom-0 inset-x-0 z-50 bg-white border-t border-gray-200 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
+      <div class="mx-auto px-6 py-4 flex items-center justify-end gap-3">
+        <button class="px-5 py-2.5 rounded-lg border border-gray-300 bg-white text-sm font-bold text-gray-600 hover:bg-gray-50 hover:text-gray-800 transition-colors">
+          キャンセル
+        </button>
+        <button class="px-6 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-bold hover:bg-blue-700 shadow-sm hover:shadow active:scale-[0.98] transition-all">
+          確認を依頼する
+        </button>
+      </div>
+    </div>
+  </div>
+</body>
 </html>

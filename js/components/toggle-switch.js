@@ -3,62 +3,71 @@ class ToggleSwitch extends HTMLElement {
     super();
   }
 
-  // HTMLに配置されたときに呼ばれる
   connectedCallback() {
-    // 属性から初期値を取得
     const isOn = this.getAttribute('checked') === 'true';
     const labelOn = this.getAttribute('label-on') || 'ON';
     const labelOff = this.getAttribute('label-off') || 'OFF';
 
-    // 現在の状態を保持
     this.state = isOn;
 
-    // レンダリング（Tailwindのクラスをそのまま使用）
+    // デザイン定義
+    // w-16 (64px) で統一して左右対称にするアプローチ
     this.innerHTML = `
-      <div class="cursor-pointer relative inline-flex items-center h-8 rounded-full w-[4.5rem] transition-colors duration-200 ${isOn ? 'bg-blue-600' : 'bg-gray-200'}">
-        <span class="label-on absolute left-2 text-[10px] font-bold text-white pointer-events-none ${isOn ? '' : 'hidden'}">${labelOn}</span>
-        <span class="label-off absolute right-2 text-[10px] font-bold text-gray-500 pointer-events-none ${isOn ? 'hidden' : ''}">${labelOff}</span>
-        <span class="knob inline-block size-6 bg-white rounded-full shadow transform transition-transform duration-200 mx-1 ${isOn ? 'translate-x-10' : 'translate-x-0'}"></span>
+      <div class="cursor-pointer relative h-10 inline-flex items-center bg-gray-100 rounded-lg p-1 border border-gray-200 shadow-inner select-none">
+        
+        <span class="knob absolute top-1 bottom-1 left-1 w-16 bg-white rounded-md shadow-[0_1px_2px_0_rgba(0,0,0,0.1)] transition-transform duration-200 ease-out"></span>
+
+        <span class="label-off relative z-10 w-16 text-center text-xs font-bold leading-none py-1.5 flex items-center justify-center h-full transition-colors duration-200">
+          ${labelOff}
+        </span>
+
+        <span class="label-on relative z-10 w-16 text-center text-xs font-bold leading-none py-1.5 flex items-center justify-center h-full transition-colors duration-200">
+          ${labelOn}
+        </span>
       </div>
     `;
 
-    // クリックイベントの登録
     this.addEventListener('click', this.toggle.bind(this));
+    this.updateView();
   }
 
   toggle() {
     this.state = !this.state;
     this.updateView();
-    
-    // 親要素に「変更されたよ」と伝えるイベントを発火
-    this.dispatchEvent(new CustomEvent('change', { 
-      detail: { checked: this.state } 
-    }));
+    this.dispatchEvent(new CustomEvent('change', { detail: { checked: this.state } }));
   }
 
   updateView() {
-    const container = this.querySelector('div');
     const knob = this.querySelector('.knob');
     const labelOn = this.querySelector('.label-on');
     const labelOff = this.querySelector('.label-off');
 
+    // スタイル定義
+    const activeClass = ['text-blue-600'];     // アクティブ時の文字色
+    const inactiveClass = ['text-gray-400', 'font-medium']; // 非アクティブ時の文字色（少し薄く）
+
     if (this.state) {
-      container.classList.remove('bg-gray-200');
-      container.classList.add('bg-blue-600');
-      knob.classList.remove('translate-x-0');
-      knob.classList.add('translate-x-10');
-      labelOn.classList.remove('hidden');
-      labelOff.classList.add('hidden');
+      // ONの状態：ノブを右へ移動 (幅の分だけきれいに100%移動)
+      knob.style.transform = 'translateX(100%)';
+      
+      labelOn.classList.add(...activeClass);
+      labelOn.classList.remove(...inactiveClass);
+      
+      labelOff.classList.add(...inactiveClass);
+      labelOff.classList.remove(...activeClass);
     } else {
-      container.classList.remove('bg-blue-600');
-      container.classList.add('bg-gray-200');
-      knob.classList.remove('translate-x-10');
-      knob.classList.add('translate-x-0');
-      labelOn.classList.add('hidden');
-      labelOff.classList.remove('hidden');
+      // OFFの状態：ノブを左へ戻す
+      knob.style.transform = 'translateX(0)';
+      
+      labelOn.classList.add(...inactiveClass);
+      labelOn.classList.remove(...activeClass);
+      
+      labelOff.classList.add(...activeClass);
+      labelOff.classList.remove(...inactiveClass);
     }
   }
 }
 
-// ブラウザにタグを登録 (<custom-toggle>として使えるようになる)
-customElements.define('custom-toggle', ToggleSwitch);
+if (!customElements.get('custom-toggle')) {
+  customElements.define('custom-toggle', ToggleSwitch);
+}

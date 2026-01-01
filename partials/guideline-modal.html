@@ -1,286 +1,286 @@
 <!DOCTYPE html>
 <html lang="ja">
-    <head>
-        <meta charset="UTF-8" />
-        <title>募集要項登録（Quillエディタ版）</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <script src="https://cdn.tailwindcss.com"></script>
-        <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+  <head>
+    <meta charset="UTF-8" />
+    <title>募集要項登録</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+    <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
+
+    <style>
+        /* デザイン統一のための基本スタイル */
+        body { font-family: 'Noto Sans JP', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .icon-sm { font-size: 1.125rem !important; }
+        .icon-md { font-size: 1.25rem !important; }
+
+        /* カスタムスクロールバー */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 20px; }
+        ::-webkit-scrollbar-thumb:hover { background-color: #94a3b8; }
+
+        /* Quillのスタイル調整（SaaS風に馴染ませる） */
+        .ql-toolbar.ql-snow {
+            border-color: #d1d5db !important; /* border-gray-300 */
+            border-top-left-radius: 0.5rem;
+            border-top-right-radius: 0.5rem;
+            background-color: #f9fafb; /* bg-gray-50 */
+            padding: 8px !important;
+        }
+        .ql-container.ql-snow {
+            border-color: #d1d5db !important;
+            border-bottom-left-radius: 0.5rem;
+            border-bottom-right-radius: 0.5rem;
+            background-color: #fff;
+            font-family: 'Noto Sans JP', sans-serif !important;
+        }
+        .ql-editor {
+            min-height: 200px;
+            font-size: 0.875rem; /* text-sm */
+            line-height: 1.6;
+            color: #374151; /* text-gray-700 */
+        }
+        .ql-editor.ql-blank::before {
+            color: #9ca3af;
+            font-style: normal;
+        }
         
-        <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
-        <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
+        /* Quill カスタムブロックのスタイル */
+        .info-box {
+            border-left: 4px solid #06b6d4; /* cyan-500 */
+            background-color: #ecfeff; /* cyan-50 */
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 0 0.375rem 0.375rem 0;
+            font-weight: bold;
+            color: #0e7490; /* cyan-700 */
+        }
+    </style>
+  </head>
+  <body class="bg-gray-50 text-gray-900 antialiased">
+    <div class="min-h-dvh flex flex-col">
+      
+      <header class="sticky top-0 z-20 bg-white/95 backdrop-blur-sm border-b border-gray-100 px-6 py-4">
+        <div class="flex items-center gap-2 mb-1">
+            <span class="material-symbols-outlined text-blue-600">description</span>
+            <h1 class="text-lg font-bold text-gray-800 tracking-tight">募集要項登録</h1>
+        </div>
+        <p class="text-xs text-gray-500 ml-8">本募集の募集要項（概要・ポリシー等）を登録してください。</p>
+      </header>
 
-        <style>
-            body { font-family:"游ゴシック体","Yu Gothic","游ゴシック",YuGothic,sans-serif; }
-            :root { --safe-bottom: env(safe-area-inset-bottom); }
-            
-            .ql-snow .ql-picker.ql-header { width: auto; }
-            .ql-info-box:after {
-                content: "見出し"; 
-                font-weight: bold;
-                color: #0891b2; /* Tailwindのtext-sky-600 */
-            }
+      <main class="flex-1 px-6 py-6 space-y-8 pb-32">
+        
+        <section class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+          <div class="bg-gray-50/50 px-5 py-3 border-b border-gray-100 flex items-center justify-between">
+             <h2 class="text-sm font-bold text-gray-700 flex items-center gap-2">
+                <span class="material-symbols-outlined icon-md text-gray-400">badge</span>
+                基本情報
+             </h2>
+          </div>
+          
+          <div class="p-6 space-y-6">
+            <div>
+                <div class="flex justify-between items-end mb-1.5">
+                    <label for="title" class="text-sm font-bold text-gray-700">タイトル <span class="text-red-500">*</span></label>
+                    <div class="text-xs text-gray-400 font-mono"><span id="titleCount">0</span>/60</div>
+                </div>
+                <input id="title" type="text" maxlength="60" class="h-10 block w-full rounded-md border border-gray-300 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50/50 transition-shadow hover:bg-white placeholder-gray-400" placeholder="例）2026年度 新入社員研修 募集要項" />
+                <p class="mt-1.5 text-xs text-gray-500">募集一覧カードや詳細ページのヘッダーに表示されます。</p>
+            </div>
 
-            .ql-info-box {
-                width: auto !important;
-                padding: 0 8px !important;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            }
- 
-            /* Quillのスタイル微調整 */
-            .ql-toolbar { border-color: #e5e7eb !important; border-top-left-radius: 0.5rem; border-top-right-radius: 0.5rem; background-color: #f9fafb; }
-            .ql-container { border-color: #e5e7eb !important; border-bottom-left-radius: 0.5rem; border-bottom-right-radius: 0.5rem; background-color: #fff; font-family: inherit; }
-            .ql-editor { min-height: 200px; font-size: 1rem; color: #1f2937; }
-            /* プレースホルダーの色調整 */
-            .ql-editor.ql-blank::before { color: #9ca3af; font-style: normal; }
-            /* ヘッダー選択（Normal, H1...）の幅を広げる */
-            .ql-snow .ql-picker.ql-header {
-                width: 7rem !important;  /* デフォルト(98px)だと狭いので広げる */
-            }
-
-            /* 必要に応じてラベルの右側に余白を確保（矢印と文字の重なり防止） */
-            .ql-snow .ql-picker.ql-header .ql-picker-label {
-                padding-right: 24px !important;
-            }
-        </style>
-    </head>
-    <body class="bg-gray-50 text-gray-800 min-h-dvh overflow-y-auto overflow-hidden flex flex-col">
-        <header class="px-6 pt-8 pb-4">
-            <h1 class="text-2xl font-bold tracking-tight flex items-center gap-2">
-                <span class="material-symbols-outlined text-gray-500">description</span>
-                募集要項登録
-            </h1>
-            <p class="mt-1 text-sm text-gray-600">本募集の募集要項を登録してください。</p>
-        </header>
-
-        <main class="flex-1 min-h-0 px-6 pb-40">
-            <div class="grid grid-cols-1 gap-6 min-h-0">
-                <section class="rounded-2xl bg-white border border-gray-200/70 shadow-sm flex flex-col min-h-0">
-                    <div class="px-5 py-5 space-y-8 overflow-y-auto min-h-0">
-                        
-                    <div>
-                        <label class="block text-sm font-medium text-gray-900 mb-1">サムネイル</label>
-                        <p class="text-xs text-gray-500 mb-2">推奨 16:9（横長） / JPG・PNG・WebP / 5MB まで</p>
-                        <div class="grid grid-cols-1 md:grid-cols-[minmax(0,1fr)_16rem] gap-4">
-                            <div id="thumbDrop" class="group relative rounded-xl border border-dashed border-gray-300 bg-gray-50/60 hover:bg-gray-50 transition p-4 flex items-center justify-center cursor-pointer">
-                                <input id="thumbInput" type="file" accept="image/*" class="sr-only" />
-                                <div class="text-center pointer-events-none">
-                                    <span class="material-symbols-outlined text-3xl text-gray-400 group-hover:text-gray-500">add_photo_alternate</span>
-                                    <p class="mt-1 text-sm text-gray-700">画像をドラッグ&ドロップ<br class="hidden sm:block" />または <span class="underline">クリックして選択</span></p>
-                                    <p class="text-xs text-gray-500 mt-1">JPG / PNG / WebP（5MBまで）</p>
-                                </div>
-                                <div id="thumbDropMask" class="hidden absolute inset-0 rounded-xl bg-blue-500/10 ring-2 ring-blue-400 pointer-events-none"></div>
+            <div>
+                <label class="block text-sm font-bold text-gray-700 mb-1.5">サムネイル画像</label>
+                <div class="grid grid-cols-1 md:grid-cols-[1fr_240px] gap-6">
+                    <div id="thumbDrop" class="group relative rounded-xl border-2 border-dashed border-gray-200 bg-gray-50 hover:bg-blue-50/50 hover:border-blue-300 transition-all p-6 flex flex-col items-center justify-center cursor-pointer min-h-[160px]">
+                        <input id="thumbInput" type="file" accept="image/*" class="sr-only" />
+                        <div class="text-center pointer-events-none">
+                            <div class="bg-white p-2 rounded-full shadow-sm inline-flex mb-2 group-hover:scale-110 transition-transform">
+                                <span class="material-symbols-outlined text-2xl text-blue-500">add_photo_alternate</span>
                             </div>
-                            <div class="space-y-2">
-                                <div class="relative w-full rounded-lg overflow-hidden bg-gray-100 border border-gray-200 aspect-[16/9]">
-                                    <img id="thumbPreview" alt="" class="w-full h-full object-cover hidden" />
-                                    <div id="thumbEmpty" class="absolute inset-0 grid place-items-center text-gray-400 text-sm">プレビュー（16:9）</div>
-                                </div>
-                                <div class="flex gap-2">
-                                    <button id="thumbSelectBtn" type="button" class="h-10 px-3 rounded-lg bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 flex items-center gap-1"><span class="material-symbols-outlined text-base">upload</span> 画像を選ぶ</button>
-                                    <button id="thumbClearBtn" type="button" class="h-10 px-3 rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 flex items-center gap-1 disabled:opacity-50 disabled:cursor-not-allowed" disabled><span class="material-symbols-outlined text-base">delete</span> クリア</button>
-                                </div>
-                                <p id="thumbMeta" class="text-xs text-gray-500"></p>
+                            <p class="text-sm font-medium text-gray-700">クリックしてアップロード</p>
+                            <p class="text-xs text-gray-400 mt-1">または画像をドラッグ&ドロップ</p>
+                            <p class="text-[10px] text-gray-400 mt-2">JPG / PNG / WebP（5MBまで）</p>
+                        </div>
+                        <div id="thumbDropMask" class="hidden absolute inset-0 rounded-xl bg-blue-500/10 ring-2 ring-blue-400 pointer-events-none"></div>
+                    </div>
+
+                    <div class="space-y-2">
+                        <div class="relative w-full rounded-lg overflow-hidden bg-gray-100 border border-gray-200 shadow-inner aspect-[16/9] group">
+                            <img id="thumbPreview" alt="" class="w-full h-full object-cover hidden" />
+                            <div id="thumbEmpty" class="absolute inset-0 flex flex-col items-center justify-center text-gray-400">
+                                <span class="material-symbols-outlined text-3xl opacity-20">image</span>
+                                <span class="text-[10px] mt-1 opacity-50">プレビュー</span>
                             </div>
                         </div>
-                    </div>
-
-                    <div>
-                        <label for="title" class="block text-sm font-medium text-gray-900 mb-1">タイトル</label>
-                        <div class="flex justify-between w-full max-w-3xl">
-                            <p class="text-xs text-gray-500 mb-2">サムネイル未設定時の表示用</p>
-                            <div class=" text-xs text-gray-400"><span id="titleCount">0</span>/60</div>
-                        </div>
-                        <input id="title" type="text" maxlength="60" class="w-full max-w-3xl rounded-lg border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="例）FY26 自己啓発制度 募集要項" />
-                    </div>
-
-                    <div>
-                        <label class="block text-sm font-medium text-gray-900 mb-1">本文</label>
-                        <div class="flex justify-between w-full max-w-4xl">
-                            <p class="text-xs text-gray-500 mb-2">概要・対象・期間・費用・申込方法など（太字やリストが使えます）</p>
-                            <div class="text-xs text-gray-400"><span id="bodyCount">0</span>/2000</div>
-                        </div>
-                        
-                        <div class="w-full max-w-4xl">
-                            <div id="editor-container-1"></div>
-                        </div>
-                    </div>
-
-                    <div>
-                        <label class="block text-sm font-medium text-gray-900 mb-1">個人情報保護とキャンセルポリシー</label>
-                        <div class="flex justify-between w-full max-w-4xl">
-                            <p class="text-xs text-gray-500 mb-2">個人情報保護方針とキャンセルポリシーを記載</p>
-                            <div class="text-xs text-gray-400"><span id="bodyCount2">0</span>/2000</div>
-                        </div>
-                        
-                        <div class="flex items-center mb-2 gap-2">
-                            <select id="templateSelect" class="mt-1 rounded-lg border border-gray-300 bg-white px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
-                                <option value="">テンプレートを選択</option>
-                                <option value="opt-1">A：キャンセル可能</option>
-                                <option value="opt-2">B：キャンセル不可</option>
-                            </select>
-                            <button id="applyTemplateBtn" class="bg-blue-500 py-2 px-4 rounded-lg text-white hover:bg-blue-600 active:scale-[0.98] transition flex items-center gap-1">
-                                <span class="material-symbols-outlined text-sm">content_paste</span> テンプレートをセット
+                        <div class="flex gap-2">
+                            <button id="thumbClearBtn" type="button" class="flex-1 h-8 rounded border border-gray-200 bg-white text-xs text-gray-600 hover:bg-red-50 hover:text-red-600 hover:border-red-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors" disabled>
+                                削除
                             </button>
                         </div>
-
-                        <div class="w-full max-w-4xl">
-                            <div id="editor-container-2"></div>
-                        </div>
-                    </div>
-
-                    <div class="rounded-xl border border-dashed border-gray-200 p-4 bg-gray-50/50">
-                        <p class="text-sm text-gray-600">他に必要な必須項目があれば追加。</p>
-                    </div>
-
-                    </div>
-                </section>
-            </div>
-        </main>
-
-        <div class="fixed bottom-0 inset-x-0 z-40">
-            <div class="mx-auto max-w-7xl px-6 pb-[calc(12px+var(--safe-bottom))]">
-                <div class="rounded-2xl bg-white/95 backdrop-blur shadow-[0_-6px_24px_-8px_rgba(0,0,0,0.18)] border border-gray-200">
-                    <div class="flex items-center justify-end gap-3 p-4">
-                        <button class="h-10 px-4 rounded-lg border border-gray-300 bg-white text-gray-600 hover:bg-gray-50">キャンセル</button>
-                        <button onclick="submitMock()" class="h-10 px-5 rounded-lg bg-blue-600 text-white font-medium hover:bg-blue-700 active:scale-[.99] transition">登録する</button>
+                        <p id="thumbMeta" class="text-[10px] text-gray-400 truncate text-center h-4"></p>
                     </div>
                 </div>
             </div>
+          </div>
+        </section>
+
+        <section class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+            <div class="bg-gray-50/50 px-5 py-3 border-b border-gray-100 flex items-center justify-between">
+               <h2 class="text-sm font-bold text-gray-700 flex items-center gap-2">
+                  <span class="material-symbols-outlined icon-md text-gray-400">article</span>
+                  募集詳細
+               </h2>
+               <div class="text-xs text-gray-400 font-mono"><span id="bodyCount">0</span>/2000</div>
+            </div>
+            
+            <div class="p-6">
+                <p class="text-xs text-gray-500 mb-2">概要・対象・期間・費用・申込方法などを入力してください。</p>
+                <div id="editor-container-1"></div>
+            </div>
+        </section>
+
+        <section class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+            <div class="bg-gray-50/50 px-5 py-3 border-b border-gray-100 flex flex-col md:flex-row md:items-center justify-between gap-3">
+               <h2 class="text-sm font-bold text-gray-700 flex items-center gap-2">
+                  <span class="material-symbols-outlined icon-md text-gray-400">policy</span>
+                  個人情報保護・キャンセル規定
+               </h2>
+               
+               <div class="flex items-center gap-2 w-full md:w-auto">
+                    <div class="relative flex-1 md:flex-none">
+                        <select id="templateSelect" class="h-8 w-full md:w-48 rounded border border-gray-300 pl-2 pr-8 text-xs focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white appearance-none cursor-pointer">
+                            <option value="">テンプレートを選択...</option>
+                            <option value="opt-1">A：キャンセル可能（通常）</option>
+                            <option value="opt-2">B：キャンセル不可（厳格）</option>
+                        </select>
+                        <div class="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
+                            <span class="material-symbols-outlined text-gray-400 icon-sm">expand_more</span>
+                        </div>
+                    </div>
+                    <button id="applyTemplateBtn" class="h-8 px-3 rounded bg-white border border-gray-300 text-xs font-bold text-gray-600 hover:bg-gray-50 hover:text-blue-600 active:scale-[0.98] transition-all flex items-center gap-1">
+                        <span class="material-symbols-outlined icon-sm">content_paste</span>
+                        反映
+                    </button>
+               </div>
+            </div>
+            
+            <div class="p-6">
+                <div class="flex justify-between items-end mb-2">
+                    <p class="text-xs text-gray-500">トラブル防止のため、キャンセル時の対応や個人情報の取り扱いについて明記してください。</p>
+                    <div class="text-xs text-gray-400 font-mono"><span id="bodyCount2">0</span>/2000</div>
+                </div>
+                <div id="editor-container-2"></div>
+            </div>
+        </section>
+
+      </main>
+
+      <div class="fixed bottom-0 inset-x-0 z-50 bg-white border-t border-gray-200 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
+        <div class="mx-auto px-6 py-4 flex items-center justify-end gap-3">
+          <button class="px-5 py-2.5 rounded-lg border border-gray-300 bg-white text-sm font-bold text-gray-600 hover:bg-gray-50 hover:text-gray-800 transition-colors">
+            キャンセル
+          </button>
+          <button onclick="submitMock()" class="px-6 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-bold hover:bg-blue-700 shadow-sm hover:shadow active:scale-[0.98] transition-all flex items-center">
+            <span>登録する</span>
+          </button>
         </div>
+      </div>
+    </div>
 
     <script>
-        // Quillのブロック要素を継承して、新しいタグ <div class="info-box"> を定義します
+        // --- Quill設定: カスタムブロック ---
         const Block = Quill.import('blots/block');
-
         class InfoBox extends Block {
             static create(value) {
                 const node = super.create();
-                // Tailwindのクラスをここで付与できます
-                node.setAttribute('class', 'border-l-4 border-cyan-500 p-2 my-2 text-lg font-bold text-cyan-700');
-                // 必要ならアイコンを入れるなども可能
+                node.setAttribute('class', 'info-box');
                 return node;
             }
         }
-
-        // 識別キーとタグ名を指定
         InfoBox.blotName = 'info-box';
         InfoBox.tagName = 'div';
-
-        // Quillに登録
         Quill.register(InfoBox);
-        // --- Quill Editor設定 ---
+
+        // --- Quill設定: ツールバー ---
         const toolbarOptions = {
             container: [
-                [{ 'header': [1, 2, false] }],
-                ['bold', 'underline', 'strike'],        // toggled buttons
+                [{ 'header': [2, 3, false] }],
+                ['bold', 'underline', 'strike'],
                 [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-                [{ 'color': [] }, { 'background': [] }],          // dropdown with defaults from theme
-                ['info-box'], // ★ここにカスタムボタンのキーを追加
+                [{ 'color': [] }, { 'background': [] }],
+                ['info-box'], // カスタムボタン
                 ['link', 'clean']
             ],
             handlers: {
-                // ボタンが押されたときの挙動
                 'info-box': function() {
-                    const range = this.quill.getSelection();
-                    if (range) {
-                        // 現在の行を 'info-box' フォーマットにする
-                        this.quill.format('info-box', true);
-                    }
+                    this.quill.format('info-box', true);
                 }
             }
         };
 
-        // エディタ1（本文）の初期化
+        // エディタの初期化
         const quill1 = new Quill('#editor-container-1', {
             theme: 'snow',
             modules: { toolbar: toolbarOptions },
-            placeholder: '募集の詳細内容を入力してください...'
+            placeholder: 'ここ詳細内容を入力...'
         });
 
-        // エディタ2（ポリシー）の初期化
         const quill2 = new Quill('#editor-container-2', {
             theme: 'snow',
             modules: { toolbar: toolbarOptions },
-            placeholder: 'キャンセル規定などを入力してください...'
+            placeholder: 'キャンセル規定などを入力...'
         });
         
-        // --- 文字数カウントロジック ---
+        // --- 文字数カウント ---
         const titleEl = document.getElementById('title');
         const titleCount = document.getElementById('titleCount');
         const bodyCount = document.getElementById('bodyCount');
         const bodyCount2 = document.getElementById('bodyCount2');
 
-        // タイトル
         titleEl.addEventListener('input', () => {
             titleCount.textContent = titleEl.value.length;
         });
 
-        // 本文（Quill 1）
         quill1.on('text-change', () => {
-            // Quillは空でも最後に改行コードが入るため、実質0文字なら0とみなす処理が必要
             const text = quill1.getText();
-            const length = text.replace(/\n$/, '').length; 
-            bodyCount.textContent = length;
+            // 改行のみの場合は0とする
+            const length = text === '\n' ? 0 : text.length - 1; 
+            bodyCount.textContent = Math.max(0, length);
         });
 
-        // ポリシー（Quill 2）
         quill2.on('text-change', () => {
             const text = quill2.getText();
-            const length = text.replace(/\n$/, '').length;
-            bodyCount2.textContent = length;
+            const length = text === '\n' ? 0 : text.length - 1;
+            bodyCount2.textContent = Math.max(0, length);
         });
 
-
-        // --- テンプレート挿入ロジック ---
+        // --- テンプレート挿入 ---
         const templateSelect = document.getElementById('templateSelect');
         const applyTemplateBtn = document.getElementById('applyTemplateBtn');
-
         const templates = {
             'opt-1': `<h3>キャンセルポリシー（通常）</h3><p>開催日の<strong>3日前</strong>まではキャンセル料は発生しません。それ以降は参加費の100%を申し受けます。</p><ul><li>連絡なしの不参加：100%</li><li>当日キャンセル：100%</li></ul>`,
-            'opt-2': `<h3>キャンセルポリシー（厳格）</h3><p>お申し込み完了後の<span style="color: red;">キャンセル・返金は一切できません</span>のでご注意ください。</p><p>代理の方の参加は可能です。</p>`
+            'opt-2': `<h3>キャンセルポリシー（厳格）</h3><p>お申し込み完了後の<span style="color: #ef4444;">キャンセル・返金は一切できません</span>のでご注意ください。</p><p>代理の方の参加は可能です。</p>`
         };
 
         applyTemplateBtn.addEventListener('click', () => {
             const val = templateSelect.value;
             if(!val) return;
-            
-            // 現在のカーソル位置、または末尾に挿入などの制御が可能ですが、
-            // 今回は「セット」なので内容を上書き(または追記)します。
-            // ここではHTMLとして挿入します。
-            const html = templates[val];
-            
-            // 方法A: 現在の内容をクリアしてセット
-            quill2.root.innerHTML = html;
-
-            // 方法B: 末尾に追記したい場合はこちら
-            // const range = quill2.getLength();
-            // quill2.clipboard.dangerouslyPasteHTML(range, html);
+            // エディタの内容を上書き
+            quill2.root.innerHTML = templates[val];
         });
 
-
-        // --- 送信モック（データ取得方法のデモ） ---
-        function submitMock() {
-            // QuillからHTMLデータを取得する方法
-            const data = {
-                title: titleEl.value,
-                bodyHTML: quill1.root.innerHTML,   // ★ここでHTMLが取れます
-                policyHTML: quill2.root.innerHTML, // ★ここでHTMLが取れます
-                image: document.getElementById('thumbInput').files[0]?.name || 'なし'
-            };
-            
-            console.log('送信データ:', data);
-            alert('コンソールに送信データ(HTML)を出力しました。\n\n本文先頭: ' + quill1.getText().slice(0, 20) + '...');
-        }
-
-
-        // --- 以下、サムネイル画像の既存ロジック ---
+        // --- サムネイル画像処理 ---
         const drop = document.getElementById('thumbDrop');
         const dropMask = document.getElementById('thumbDropMask');
         const input = document.getElementById('thumbInput');
-        const selectBtn = document.getElementById('thumbSelectBtn');
         const clearBtn = document.getElementById('thumbClearBtn');
         const preview = document.getElementById('thumbPreview');
         const empty = document.getElementById('thumbEmpty');
@@ -289,30 +289,48 @@
 
         function setPreview(file){
             if(!file) return;
-            const okType = /^image\//.test(file.type);
-            const okSize = file.size <= MAX_MB*1024*1024;
-            if(!okType || !okSize){
-                alert(okType ? `サイズが大きすぎます（${MAX_MB}MBまで）` : '画像ファイルを選択してください');
-                return;
-            }
+            if(!file.type.startsWith('image/')){ alert('画像ファイルを選択してください'); return; }
+            if(file.size > MAX_MB*1024*1024){ alert(`サイズが大きすぎます（${MAX_MB}MBまで）`); return; }
+
             const url = URL.createObjectURL(file);
-            preview.src = url; preview.classList.remove('hidden'); empty.classList.add('hidden');
+            preview.src = url; 
+            preview.classList.remove('hidden'); 
+            empty.classList.add('hidden');
             clearBtn.disabled = false;
-            meta.textContent = `${file.name}（${(file.size/1024/1024).toFixed(2)}MB）`;
+            meta.textContent = `${file.name} (${(file.size/1024/1024).toFixed(2)}MB)`;
         }
+
         function clearPreview(){
-            preview.removeAttribute('src'); preview.classList.add('hidden'); empty.classList.remove('hidden');
-            input.value = ''; meta.textContent = ''; clearBtn.disabled = true;
+            preview.removeAttribute('src'); 
+            preview.classList.add('hidden'); 
+            empty.classList.remove('hidden');
+            input.value = ''; 
+            meta.textContent = ''; 
+            clearBtn.disabled = true;
         }
+
         drop.addEventListener('click', () => input.click());
-        selectBtn.addEventListener('click', () => input.click());
         input.addEventListener('change', (e) => setPreview(e.target.files?.[0]));
+        
         ['dragenter','dragover'].forEach(ev => drop.addEventListener(ev, (e)=>{e.preventDefault(); dropMask.classList.remove('hidden');}));
         ['dragleave','drop'].forEach(ev => drop.addEventListener(ev, (e)=>{e.preventDefault(); dropMask.classList.add('hidden');}));
         drop.addEventListener('drop', (e)=>{
-            const file = e.dataTransfer.files?.[0]; if(file) setPreview(file);
+            const file = e.dataTransfer.files?.[0]; 
+            if(file) setPreview(file);
         });
-        clearBtn.addEventListener('click', clearPreview);
+        clearBtn.addEventListener('click', (e) => { e.stopPropagation(); clearPreview(); });
+
+        // --- 送信モック ---
+        function submitMock() {
+            const data = {
+                title: titleEl.value,
+                bodyHTML: quill1.root.innerHTML,
+                policyHTML: quill2.root.innerHTML,
+                image: input.files[0]?.name || null
+            };
+            console.log('送信データ:', data);
+            alert('コンソールに送信データを出力しました。');
+        }
     </script>
-    </body>
+  </body>
 </html>
