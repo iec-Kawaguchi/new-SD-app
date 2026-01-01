@@ -467,9 +467,6 @@ window.addEventListener('DOMContentLoaded', () => {
                 <div class="h-40 w-full ${randomColor} flex items-center justify-center text-blue-900/20">
                     <span class="material-symbols-outlined text-6xl">${randomIcon}</span>
                 </div>
-                <button class="absolute top-2 right-2 p-1 bg-white/80 rounded-full hover:bg-white text-gray-500 hover:text-gray-800 transition-colors" onclick="document.getElementById('preview').innerHTML='...'">
-                     <span class="material-symbols-outlined icon-md">close</span>
-                </button>
             </div>
 
             <div class="p-6">

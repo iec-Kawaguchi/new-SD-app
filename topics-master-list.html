@@ -1,180 +1,311 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="ja" class="h-full bg-gray-50">
     <head>
         <meta charset="UTF-8">
-        <title>New SD App</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>特集ページ一覧 - New SD App</title>
         <script src="https://cdn.tailwindcss.com"></script>
-        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-        <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nouislider@15.7.0/dist/nouislider.min.css">
-        <script src="https://cdn.jsdelivr.net/npm/nouislider@15.7.0/dist/nouislider.min.js"></script>
-        <script type="module" src="../js/modules/dashboard/index.js"></script>
+        <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+        
         <script src="./js/role-visibility.js" defer></script>
         <script src="./js/mock-ui.js" defer></script>
+        
         <style>
+            /* 全体のフォント設定 */
             body {
-                font-family: "游ゴシック体", "Yu Gothic", "游ゴシック", YuGothic, sans-serif;
+                font-family: 'Noto Sans JP', sans-serif;
             }
+            /* Tailwindのデフォルトと合わせるための調整 */
+            .material-symbols-outlined {
+                font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            }
+            /* アイコンのサイズ調整用ユーティリティ */
+            .icon-sm { font-size: 1.125rem !important; } /* 18px */
+            .icon-md { font-size: 1.25rem !important; }  /* 20px */
         </style>
     </head>
-    <body class="bg-gray-100 min-h-screen flex flex-col">
+    <body class="h-full text-gray-900 antialiased flex flex-col">
         <div id="app-header"></div>
-        <main class="flex flex-1">
+
+        <div class="flex flex-1 overflow-hidden">
             <div id="app-sidebar"></div>
 
-            <div class="p-10 flex-1 bg-gray-200">
-                <div class="flex justify-between items-center mb-4">
-                    <div class="text-2xl font-bold text-gray-700">特集ページ一覧</div>
-                </div>
-                <div class="bg-white w-full  rounded-xl flex flex-col mx-auto shadow-md p-4">
-                    <div class="p-4 flex items-center justify-between">
-                        <input type="text" class="border p-2 px-4 w-96 rounded-full" placeholder="特集名で検索...">
-                        <a href=""
-                            class="group bg-white text-blue-500 px-4 py-2 rounded-md ml-4 hover:bg-blue-500 hover:text-white flex items-center overflow-hidden transition-all duration-300 ease-in-out">
-                            <span class="material-symbols-outlined text-lg">add</span>
-                            <span class="opacity-0 max-w-0 group-hover:opacity-100 group-hover:max-w-[100px] transition-all duration-300 ease-in-out whitespace-nowrap">
-                                <span class="ml-2">新規登録</span>
-                            </span>
-                        </a>
+            <main class="flex-1 h-full overflow-y-auto bg-gray-50 p-6 lg:p-8">
+                <div class="max-w-7xl mx-auto h-full flex flex-col">
+                    <div class="mb-6 flex items-center justify-between">
+                        <div class="flex flex-col">
+                            <h1 class="text-2xl font-bold text-gray-800 tracking-tight">特集ページ一覧</h1>
+                            <p class="text-sm text-gray-500 mt-1">特集ページを管理します。</p>
+                        </div>
+                        <div class="flex items-center gap-3 w-full md:w-auto" data-visible-for="iec">
+                            <span class="text-sm font-bold text-gray-700 whitespace-nowrap">対象企業:</span>
+                            <div class="relative w-full md:w-64">
+                                <select class="appearance-none bg-gray-50 border border-gray-300 text-gray-700 text-sm rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 block w-full pl-3 pr-8 py-2 leading-tight transition-colors">
+                                    <option value="1">IEC株式会社</option>
+                                    <option value="2">テスト企業A</option>
+                                </select>
+                                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-500">
+                                    <span class="material-symbols-outlined icon-sm">expand_more</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="p-4 w-full">
-                        <table class="w-full table-auto text-left text-gray-700">
-                            <tr>
-                                <th class="border-b px-4 py-2">サムネイル</th>
-                                <th class="border-b px-4 py-2">特集名</th>
-                                <th class="border-b px-4 py-2">企業指定</th>
-                                <th class="border-b px-4 py-2 text-center">ステータス</th>
-                                <th class="border-b px-4 py-2 text-center">アクション</th>
-                            </tr>
-                            <tr class="hover:bg-gray-100 cursor-pointer">
-                                <td class="border-b px-4 py-2">
-                                    <img src="./img/slide1.webp" alt="" class="w-32 h-20 object-cover rounded-md">
-                                </td>
-                                <td class="border-b px-4 py-2">特集1</td>
-                                <td class="border-b px-4 py-2">なし</td>
-                                <td class="border-b px-4 py-2 text-center">
-                                    <span class="text-sm text-green-400 font-bold rounded- border-green-500 bg-green-100  px-2 py-1">公開</span>
-                                </td>
-                                <td class="border-b px-4 py-2  text-center">
-                                    <div class="relative group ml-1 inline-flex items-center">
-                                        <span data-row="2" class="menu-trigger material-symbols-outlined text-lg cursor-pointer align-middle">more_horiz</span>
-                                        <div id="row-2-items" class="menu text-left flex flex-col absolute w-max bottom-full left-1/2 transform -translate-x-1/2 bg-white border border-gray-300 rounded shadow-lg p-2 hidden">
-                                            <a href="topics-master-detail.html" class="py-1 px-2 text-base hover:bg-gray-100 cursor-pointer flex items-center">
-                                                <span class="material-symbols-outlined text-sm mr-2">edit</span>
-                                                編集する
-                                            </a>
-                                            <a href="#" class="py-1 px-2 text-base hover:bg-gray-100 cursor-pointer flex items-center text-red-500">
-                                                <span class="material-symbols-outlined text-sm mr-2 text-red-500">delete</span>
-                                                削除する
-                                            </a>
-                                        </div>
+
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden flex flex-col flex-1">
+                        
+                        <div class="p-4 border-b border-gray-100 flex flex-col md:flex-row items-center justify-between gap-4 bg-white">
+                            <div class="flex items-center gap-3 w-full md:w-auto flex-1 max-w-2xl">
+                                <div class="relative">
+                                    <select class="appearance-none bg-gray-50 border border-gray-300 text-gray-700 text-sm rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 block w-full pl-3 pr-8 py-2 leading-tight transition-colors">
+                                        <option selected>すべてのステータス</option>
+                                        <option value="public">公開</option>
+                                        <option value="private">非公開</option>
+                                    </select>
+                                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-500">
+                                        <span class="material-symbols-outlined icon-sm">expand_more</span>
                                     </div>
-                                </td>
-                            </tr>
-                            <tr class="hover:bg-gray-100 cursor-pointer">
-                                <td class="border-b px-4 py-2">
-                                    <img src="./img/slide2.webp" alt="" class="w-32 h-20 object-cover rounded-md">
-                                </td>
-                                <td class="border-b px-4 py-2">特集2</td>
-                                <td class="border-b px-4 py-2">なし</td>
-                                <td class="border-b px-4 py-2 text-center">
-                                    <span class="text-sm text-green-400 font-bold rounded- border-green-500 bg-green-100  px-2 py-1">公開</span>
-                                </td>
-                                <td class="border-b px-4 py-2  text-center">
-                                    <div class="relative group ml-1 inline-flex items-center">
-                                        <span data-row="3" class="menu-trigger material-symbols-outlined text-lg cursor-pointer align-middle">more_horiz</span>
-                                        <div id="row-3-items" class="menu text-left flex flex-col absolute w-max bottom-full left-1/2 transform -translate-x-1/2 bg-white border border-gray-300 rounded shadow-lg p-2 hidden">
-                                            <a href="#" class="py-1 px-2 text-base hover:bg-gray-100 cursor-pointer flex items-center">
-                                                <span class="material-symbols-outlined text-sm mr-2">edit</span>
-                                                編集する
-                                            </a>
-                                            <a href="#" class="py-1 px-2 text-base hover:bg-gray-100 cursor-pointer flex items-center text-red-500">
-                                                <span class="material-symbols-outlined text-sm mr-2 text-red-500">delete</span>
-                                                削除する
-                                            </a>
-                                        </div>
+                                </div>
+                                
+                                <div class="relative w-full md:max-w-md">
+                                    <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                        <span class="material-symbols-outlined text-gray-400 icon-sm">search</span>
                                     </div>
-                                </td>
-                            </tr>
-                            <tr class="hover:bg-gray-100 cursor-pointer">
-                                <td class="border-b px-4 py-2">
-                                    <img src="" alt="no image" class="w-32 h-20 object-cover rounded-md bg-gray-300">
-                                </td>
-                                <td class="border-b px-4 py-2">特集3</td>
-                                <td class="border-b px-4 py-2">201129.○○株式会社</td>
-                                <td class="border-b px-4 py-2 text-center">
-                                    <span class="text-sm text-gray-400 font-bold rounded- bg-gray-200  px-2 py-1">非公開</span>
-                                </td>
-                                <td class="border-b px-4 py-2  text-center">
-                                    <div class="relative group ml-1 inline-flex items-center">
-                                        <span data-row="1" class="menu-trigger material-symbols-outlined text-lg cursor-pointer align-middle">more_horiz</span>
-                                        <div id="row-1-items" class="menu text-left flex flex-col absolute w-max bottom-full left-1/2 transform -translate-x-1/2 bg-white border border-gray-300 rounded shadow-lg p-2 hidden">
-                                            <a href="#" class="py-1 px-2 text-base hover:bg-gray-100 cursor-pointer flex items-center">
-                                                <span class="material-symbols-outlined text-sm mr-2">edit</span>
-                                                編集する
-                                            </a>
-                                            <a href="#" class="py-1 px-2 text-base hover:bg-gray-100 cursor-pointer flex items-center text-red-500">
-                                                <span class="material-symbols-outlined text-sm mr-2 text-red-500">delete</span>
-                                                削除する
-                                            </a>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                        </table>
+                                    <input type="text" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2 leading-tight transition-shadow" placeholder="特集名で検索...">
+                                </div>
+                            </div>
+
+                            <a href="#" class="flex items-center justify-center gap-1.5 text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:ring-blue-100 font-medium rounded-md text-sm px-4 py-2 transition-all shadow-sm hover:shadow active:scale-95 whitespace-nowrap">
+                                <span class="material-symbols-outlined icon-sm">add</span>
+                                <span>新規登録</span>
+                            </a>
+                        </div>
+
+                        <div class="flex-1 overflow-x-auto">
+                            <table class="min-w-full text-left whitespace-nowrap">
+                                <thead class="bg-gray-50 border-b border-gray-200">
+                                    <tr>
+                                        <th class="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">サムネイル</th>
+                                        <th class="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">特集名</th>
+                                        <th class="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">企業指定</th>
+                                        <th class="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider text-center">ステータス</th>
+                                        <th class="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider text-center">アクション</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-gray-100 bg-white">
+                                    <tr class="hover:bg-gray-50 transition-colors group">
+                                        <td class="px-6 py-4">
+                                            <div class="h-14 w-24 rounded-md bg-gray-100 border border-gray-200 overflow-hidden">
+                                                <img src="./img/slide1.webp" alt="" class="h-full w-full object-cover" onerror="this.style.display='none';this.parentElement.classList.add('flex','items-center','justify-center');this.parentElement.innerHTML='<span class=\'material-symbols-outlined text-gray-300\'>image</span>'">
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 text-sm text-gray-900 font-medium">
+                                            春の新人研修特集2025
+                                        </td>
+                                        <td class="px-6 py-4 text-sm text-gray-500">
+                                            なし
+                                        </td>
+                                        <td class="px-6 py-4 text-center">
+                                            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-green-50 text-green-700 border border-green-100">
+                                                <span class="w-1.5 h-1.5 bg-green-500 rounded-full"></span>
+                                                公開
+                                            </span>
+                                        </td>
+                                        <td class="px-6 py-4 text-center relative">
+                                            <div class="relative inline-block text-left">
+                                                <button data-row="1" class="flex menu-trigger p-2 rounded-full text-gray-400 hover:text-gray-600 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors group-hover:bg-gray-100">
+                                                    <span class="material-symbols-outlined icon-md">more_horiz</span>
+                                                </button>
+                                                <div id="row-1-items" class="menu hidden absolute right-0 mt-2 w-48 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-10">
+                                                    <div class="py-1">
+                                                        <a href="topics-master-detail.html" class="group flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-gray-900">
+                                                            <span class="material-symbols-outlined icon-sm mr-3 text-gray-400 group-hover:text-gray-500">edit</span>
+                                                            編集する
+                                                        </a>
+                                                        <a href="#" class="group flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-gray-900">
+                                                            <span class="material-symbols-outlined icon-sm mr-3 text-gray-400 group-hover:text-gray-500">visibility_off</span>
+                                                            非公開にする
+                                                        </a>
+                                                    </div>
+                                                    <div class="border-t border-gray-100 my-1"></div>
+                                                    <div class="py-1">
+                                                        <a href="#" class="group flex items-center px-4 py-2 text-sm text-red-600 hover:bg-red-50">
+                                                            <span class="material-symbols-outlined icon-sm mr-3 text-red-400 group-hover:text-red-500">delete</span>
+                                                            削除する
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+
+                                    <tr class="hover:bg-gray-50 transition-colors group">
+                                        <td class="px-6 py-4">
+                                            <div class="h-14 w-24 rounded-md bg-gray-100 border border-gray-200 overflow-hidden">
+                                                <img src="./img/slide2.webp" alt="" class="h-full w-full object-cover" onerror="this.style.display='none';this.parentElement.classList.add('flex','items-center','justify-center');this.parentElement.innerHTML='<span class=\'material-symbols-outlined text-gray-300\'>image</span>'">
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 text-sm text-gray-900 font-medium">
+                                            管理職マネジメント講座
+                                        </td>
+                                        <td class="px-6 py-4 text-sm text-gray-500">
+                                            なし
+                                        </td>
+                                        <td class="px-6 py-4 text-center">
+                                            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-green-50 text-green-700 border border-green-100">
+                                                <span class="w-1.5 h-1.5 bg-green-500 rounded-full"></span>
+                                                公開
+                                            </span>
+                                        </td>
+                                        <td class="px-6 py-4 text-center relative">
+                                            <div class="relative inline-block text-left">
+                                                <button data-row="2" class="flex menu-trigger p-2 rounded-full text-gray-400 hover:text-gray-600 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors group-hover:bg-gray-100">
+                                                    <span class="material-symbols-outlined icon-md">more_horiz</span>
+                                                </button>
+                                                <div id="row-2-items" class="menu hidden absolute right-0 mt-2 w-48 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-10">
+                                                    <div class="py-1">
+                                                        <a href="#" class="group flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-gray-900">
+                                                            <span class="material-symbols-outlined icon-sm mr-3 text-gray-400 group-hover:text-gray-500">edit</span>
+                                                            編集する
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+
+                                    <tr class="hover:bg-gray-50 transition-colors group">
+                                        <td class="px-6 py-4">
+                                            <div class="h-14 w-24 rounded-md bg-gray-100 border border-gray-200 overflow-hidden flex items-center justify-center">
+                                                <span class="material-symbols-outlined text-gray-300">image</span>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 text-sm text-gray-900 font-medium">
+                                            【社内限定】DX推進プロジェクト
+                                        </td>
+                                        <td class="px-6 py-4 text-sm text-gray-600">
+                                            <div class="flex flex-col">
+                                                <span class="font-medium text-gray-800">○○食品株式会社</span>
+                                                <span class="text-xs text-gray-400">ID: 201129</span>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 text-center">
+                                            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-600 border border-gray-200">
+                                                <span class="w-1.5 h-1.5 bg-gray-400 rounded-full"></span>
+                                                非公開
+                                            </span>
+                                        </td>
+                                        <td class="px-6 py-4 text-center relative">
+                                            <div class="relative inline-block text-left">
+                                                <button data-row="3" class="flex menu-trigger p-2 rounded-full text-gray-400 hover:text-gray-600 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors group-hover:bg-gray-100">
+                                                    <span class="material-symbols-outlined icon-md">more_horiz</span>
+                                                </button>
+                                                <div id="row-3-items" class="menu hidden absolute right-0 mt-2 w-48 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-10">
+                                                    <div class="py-1">
+                                                        <a href="#" class="group flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-gray-900">
+                                                            <span class="material-symbols-outlined icon-sm mr-3 text-gray-400 group-hover:text-gray-500">public</span>
+                                                            公開する
+                                                        </a>
+                                                        <a href="#" class="group flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-gray-900">
+                                                            <span class="material-symbols-outlined icon-sm mr-3 text-gray-400 group-hover:text-gray-500">edit</span>
+                                                            編集する
+                                                        </a>
+                                                    </div>
+                                                    <div class="border-t border-gray-100 my-1"></div>
+                                                    <div class="py-1">
+                                                        <a href="#" class="group flex items-center px-4 py-2 text-sm text-red-600 hover:bg-red-50">
+                                                            <span class="material-symbols-outlined icon-sm mr-3 text-red-400 group-hover:text-red-500">delete</span>
+                                                            削除する
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6">
+                            <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+                                <div>
+                                    <p class="text-sm text-gray-700">
+                                        全 <span class="font-medium">3</span> 件中 <span class="font-medium">1</span> から <span class="font-medium">3</span> 件を表示
+                                    </p>
+                                </div>
+                                <div>
+                                    <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+                                        <a href="#" class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                                            <span class="sr-only">Previous</span>
+                                            <span class="material-symbols-outlined icon-sm">chevron_left</span>
+                                        </a>
+                                        <a href="#" aria-current="page" class="z-10 bg-blue-50 border-blue-500 text-blue-600 relative inline-flex items-center px-4 py-2 border text-sm font-medium">
+                                            1
+                                        </a>
+                                        <a href="#" class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                                            <span class="sr-only">Next</span>
+                                            <span class="material-symbols-outlined icon-sm">chevron_right</span>
+                                        </a>
+                                    </nav>
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
-                    
                 </div>
-              
-        </main>
-       
-        <!-- ローディングアニメーション -->
-        <div id="loading" class="fixed inset-0 bg-white/60 flex items-center justify-center z-50 hidden">
-            <div class="animate-spin rounded-full h-12 w-12 border-4 border-blue-500 border-t-transparent"></div>
+            </main>
         </div>
-        <!-- トースト通知コンテナ -->
-        <div id="toast-container" class="fixed bottom-5 right-5 space-y-2 z-50"></div>
+
+        <script>
+            window.addEventListener('DOMContentLoaded', () => {
+                // --- MockUI初期化 ---
+                if (typeof MockUI !== 'undefined') {
+                    MockUI.injectHeader('#app-header', {
+                        userName: 'Test User',
+                        brand: 'New SD App',
+                        initialRole: 'iec',
+                    });
+                    MockUI.injectSidebar('#app-sidebar');
+                }
+
+                // --- 3点リーダーメニューの制御 ---
+                const triggers = document.querySelectorAll(".menu-trigger");
+                const menus = document.querySelectorAll(".menu");
+
+                // メニューをすべて閉じる関数
+                const closeAllMenus = () => {
+                    menus.forEach(menu => menu.classList.add("hidden"));
+                };
+
+                // トリガーのクリックイベント
+                triggers.forEach(trigger => {
+                    trigger.addEventListener("click", (e) => {
+                        e.stopPropagation(); // 行クリックや親要素への伝播を止める
+                        
+                        const rowId = trigger.dataset.row;
+                        const targetMenu = document.getElementById(`row-${rowId}-items`);
+
+                        // 一旦すべて閉じてから
+                        const isCurrentlyHidden = targetMenu.classList.contains("hidden");
+                        closeAllMenus();
+
+                        // ターゲットの状態を反転（開いてたら閉じたまま、閉じてたら開く）
+                        if (isCurrentlyHidden) {
+                            targetMenu.classList.remove("hidden");
+                        }
+                    });
+                });
+
+                // メニュー内部クリックで閉じないようにする
+                menus.forEach(menu => {
+                    menu.addEventListener("click", (e) => e.stopPropagation());
+                });
+
+                // 画面のどこかをクリックしたらメニューを閉じる
+                document.addEventListener("click", () => {
+                    closeAllMenus();
+                });
+            });
+        </script>
     </body>
 </html>
-<script>
-  window.addEventListener('DOMContentLoaded', () => {
-    // 初期ロールやブランド名・ユーザー名は自由に
-    MockUI.injectHeader('#app-header', {
-      userName: 'Test User',
-      brand: 'New SD App',
-      initialRole: 'iec', // 初回roleが未指定ならiecをセット
-    });
-    MockUI.injectSidebar('#app-sidebar');
-
-    // サイドバー挿入直後に data-visible-for を反映（MockUI内でもApplyしていますが念のため）
-    RoleMock.applyRoleVisibility();
-  });
-
-  // すべてのトリガーを取得
-  const triggers = document.querySelectorAll(".menu-trigger");
-  const menus = document.querySelectorAll(".menu");
-
-  triggers.forEach(trigger => {
-    trigger.addEventListener("click", (e) => {
-      e.stopPropagation(); // 外部クリック処理を止める
-
-      // 他のメニューを閉じる
-      menus.forEach(menu => menu.classList.add("hidden"));
-
-      // 対応するメニューを開閉
-      const rowId = trigger.dataset.row;
-      const menu = document.getElementById(`row-${rowId}-items`);
-      menu.classList.toggle("hidden");
-    });
-  });
-
-  // メニュー内クリックでは閉じない
-  menus.forEach(menu => {
-    menu.addEventListener("click", (e) => e.stopPropagation());
-  });
-
-  // 領域外クリックで全部閉じる
-  document.addEventListener("click", () => {
-    menus.forEach(menu => menu.classList.add("hidden"));
-  });
-</script>

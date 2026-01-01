@@ -5,150 +5,202 @@
   <title>申込承認（ユーザー×コース単位）</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
   <style>
-    body { font-family: "游ゴシック体","Yu Gothic","游ゴシック",YuGothic,sans-serif; }
+    /* フォント設定 */
+    body {
+        font-family: 'Noto Sans JP', sans-serif;
+    }
+    /* アイコン設定 */
+    .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+    .icon-sm { font-size: 1.125rem !important; } /* 18px */
+    .icon-md { font-size: 1.25rem !important; }  /* 20px */
+
+    /* スクロールバー */
+    ::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+        background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+        background-color: #cbd5e1;
+        border-radius: 20px;
+    }
   </style>
 </head>
-<body class="bg-gray-50 text-gray-800">
-  <div class="min-h-dvh p-6 space-y-6">
+<body class="bg-gray-50 text-gray-900 antialiased p-6">
+  <div class="max-w-7xl mx-auto space-y-6 pb-12">
 
-    <!-- ヘッダー -->
-    <div class="flex items-center justify-between">
-      <div class="flex items-center gap-2">
-        <span class="material-symbols-outlined text-blue-700">assignment_turned_in</span>
-        <div>
-          <h1 class="text-xl font-bold">申込承認</h1>
-          <p class="text-xs text-gray-500">
-            申込期間と開講日で絞り込んだうえで、ユーザー×コース単位で承認 / 否認を一括設定します。
-          </p>
-        </div>
+    <div class="flex items-start justify-between">
+      <div>
+        <h1 class="text-2xl font-bold text-gray-800 tracking-tight flex items-center gap-2 mb-1">
+          <span class="material-symbols-outlined text-blue-600">assignment_turned_in</span>
+          申込承認
+        </h1>
+        <p class="text-sm text-gray-500 ml-8">
+          期間と開講日で絞り込み、ユーザー×コース単位で承認ステータスを管理します。
+        </p>
       </div>
-      <!-- 戻る（集計画面へ） -->
       <a href="application-stats-sample.html"
-         class="inline-flex items-center gap-1 px-3 py-1.5 rounded-full border border-gray-300 bg-white text-xs text-gray-700 hover:bg-gray-50">
-        <span class="material-symbols-outlined text-sm">arrow_back</span>
+         class="inline-flex items-center gap-1 px-4 py-2 rounded-md border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors shadow-sm">
+        <span class="material-symbols-outlined icon-sm">arrow_back</span>
         集計画面へ戻る
       </a>
     </div>
 
-    <!-- フィルタバー：申込期間 × 開講日 -->
-    <div class="flex flex-wrap items-center gap-3">
-      <!-- 申込期間 -->
-      <div class="inline-flex items-center gap-2 bg-white border border-gray-200 rounded-full px-3 py-1.5 shadow-sm">
-        <span class="material-symbols-outlined text-gray-400 text-base">event_upcoming</span>
-        <span class="text-xs text-gray-500">申込期間</span>
-        <select id="filter-period"
-                class="bg-transparent text-sm font-medium text-gray-900 border-none focus:outline-none focus:ring-0">
-        </select>
-      </div>
-      <!-- 開講日 -->
-      <div class="inline-flex items-center gap-2 bg-white border border-gray-200 rounded-full px-3 py-1.5 shadow-sm">
-        <span class="material-symbols-outlined text-gray-400 text-base">calendar_month</span>
-        <span class="text-xs text-gray-500">開講日</span>
-        <select id="filter-opening"
-                class="bg-transparent text-sm font-medium text-gray-900 border-none focus:outline-none focus:ring-0">
-        </select>
+    <section class="bg-white border border-gray-200 rounded-xl shadow-sm p-5 space-y-4">
+      <div class="flex flex-wrap items-end gap-5">
+        <div class="flex flex-col gap-1.5 flex-1 min-w-[240px]">
+          <label for="filter-period" class="text-xs font-bold text-gray-500 uppercase tracking-wide">申込期間</label>
+          <div class="relative">
+            <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+              <span class="material-symbols-outlined text-gray-400 icon-sm">event_upcoming</span>
+            </div>
+            <select id="filter-period"
+                    class="block w-full rounded-md border border-gray-300 pl-10 pr-8 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50/50 appearance-none transition-shadow cursor-pointer hover:bg-white">
+            </select>
+            <div class="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
+              <span class="material-symbols-outlined text-gray-400 icon-sm">expand_more</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex flex-col gap-1.5 flex-1 min-w-[240px]">
+          <label for="filter-opening" class="text-xs font-bold text-gray-500 uppercase tracking-wide">開講日</label>
+          <div class="relative">
+            <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+              <span class="material-symbols-outlined text-gray-400 icon-sm">calendar_month</span>
+            </div>
+            <select id="filter-opening"
+                    class="block w-full rounded-md border border-gray-300 pl-10 pr-8 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50/50 appearance-none transition-shadow cursor-pointer hover:bg-white disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed">
+            </select>
+            <div class="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
+              <span class="material-symbols-outlined text-gray-400 icon-sm">expand_more</span>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <!-- ラベル -->
-      <div class="flex items-center gap-1 text-xs text-gray-500">
-        <span class="material-symbols-outlined text-[16px] text-gray-400">info</span>
+      <div class="pt-3 border-t border-gray-100 flex items-center gap-2 text-xs text-gray-500">
+        <span class="material-symbols-outlined text-[16px] text-blue-500">info</span>
         <span id="filter-label">すべての申込期間・開講日を対象</span>
       </div>
+    </section>
+
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-5">
+      <div class="relative bg-white border border-gray-200 rounded-xl p-5 shadow-[0_1px_2px_rgba(0,0,0,0.05)] overflow-hidden group hover:border-blue-300 transition-colors">
+        <div class="absolute left-0 top-0 bottom-0 w-1 bg-blue-500"></div>
+        <div class="flex items-start justify-between pl-2">
+          <div>
+            <div class="text-xs font-bold text-gray-500 uppercase tracking-wide mb-1">対象ユーザー数</div>
+            <div id="summary-users" class="text-3xl font-bold text-gray-800 tracking-tight">0</div>
+          </div>
+          <div class="p-2 bg-blue-50 rounded-lg text-blue-600">
+            <span class="material-symbols-outlined icon-md">group</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="relative bg-white border border-gray-200 rounded-xl p-5 shadow-[0_1px_2px_rgba(0,0,0,0.05)] overflow-hidden group hover:border-indigo-300 transition-colors">
+        <div class="absolute left-0 top-0 bottom-0 w-1 bg-indigo-500"></div>
+        <div class="flex items-start justify-between pl-2">
+          <div>
+            <div class="text-xs font-bold text-gray-500 uppercase tracking-wide mb-1">申込件数</div>
+            <div id="summary-applications" class="text-3xl font-bold text-gray-800 tracking-tight">0</div>
+          </div>
+          <div class="p-2 bg-indigo-50 rounded-lg text-indigo-600">
+            <span class="material-symbols-outlined icon-md">list_alt</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="relative bg-white border border-gray-200 rounded-xl p-5 shadow-[0_1px_2px_rgba(0,0,0,0.05)] overflow-hidden group hover:border-orange-300 transition-colors">
+        <div class="absolute left-0 top-0 bottom-0 w-1 bg-orange-500"></div>
+        <div class="flex items-start justify-between pl-2">
+          <div>
+            <div class="text-xs font-bold text-gray-500 uppercase tracking-wide mb-1">未承認の申込</div>
+            <div id="summary-pending" class="text-3xl font-bold text-orange-500 tracking-tight">0</div>
+          </div>
+          <div class="p-2 bg-orange-50 rounded-lg text-orange-500">
+            <span class="material-symbols-outlined icon-md">pending_actions</span>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <!-- サマリー -->
-    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-      <div class="bg-white p-4 rounded-xl shadow flex flex-col">
-        <div class="text-gray-500 text-sm">対象ユーザー数</div>
-        <div id="summary-users" class="text-3xl font-bold mt-2">0</div>
-      </div>
-      <div class="bg-white p-4 rounded-xl shadow flex flex-col">
-        <div class="text-gray-500 text-sm">申込件数</div>
-        <div id="summary-applications" class="text-3xl font-bold mt-2">0</div>
-      </div>
-      <div class="bg-white p-4 rounded-xl shadow flex flex-col">
-        <div class="text-gray-500 text-sm">未承認の申込</div>
-        <div id="summary-pending" class="text-3xl font-bold mt-2 text-orange-500">0</div>
-      </div>
-    </div>
-
-    <!-- 申込一覧（ユーザー×コース 1 行） -->
-    <section class="space-y-3">
-      <div class="flex items-center justify-between">
-        <h2 class="text-lg font-semibold flex items-center gap-1">
-          <span class="material-symbols-outlined text-gray-500">view_list</span>
-          申込一覧（ユーザー×コース）
+    <section class="space-y-4">
+      <div class="flex items-end justify-between px-1">
+        <h2 class="text-lg font-bold text-gray-800 flex items-center gap-2">
+          <span class="material-symbols-outlined text-gray-400 icon-md">table_rows</span>
+          申込一覧
         </h2>
-        <div class="flex items-center gap-2 text-xs text-gray-500">
-          <span class="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-gray-100">
+        
+        <div class="flex items-center gap-3 text-xs font-medium text-gray-600 bg-white px-3 py-1.5 rounded-lg border border-gray-200 shadow-sm">
+          <span class="flex items-center gap-1.5">
             <span class="w-2 h-2 rounded-full bg-blue-500"></span> 承認
           </span>
-          <span class="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-gray-100">
+          <span class="flex items-center gap-1.5">
             <span class="w-2 h-2 rounded-full bg-red-500"></span> 否認
           </span>
-          <span class="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-gray-100">
+          <span class="flex items-center gap-1.5">
             <span class="w-2 h-2 rounded-full bg-orange-400"></span> 保留 / 未承認
           </span>
         </div>
       </div>
 
-      <!-- 一括操作バー -->
-      <div class="flex flex-wrap items-center justify-between gap-3 text-xs">
-        <div class="flex items-center gap-2">
-          <span id="selected-count" class="text-gray-500">選択中：0件</span>
+      <div class="bg-gray-100/50 rounded-lg border border-gray-200 p-2 flex flex-wrap items-center justify-between gap-3">
+        <div class="flex items-center gap-3 pl-2">
+          <span class="material-symbols-outlined text-gray-400 icon-sm">check_box</span>
+          <span id="selected-count" class="text-sm font-bold text-gray-700">選択中：0件</span>
         </div>
         <div class="flex items-center gap-2">
           <button id="btn-approve-selected"
-                  class="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-blue-600 text-white font-semibold disabled:opacity-40 disabled:cursor-not-allowed hover:bg-blue-500 text-xs"
+                  class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-blue-600 text-white font-bold text-xs disabled:opacity-50 disabled:cursor-not-allowed hover:bg-blue-700 hover:shadow transition-all"
                   disabled>
-            <span class="material-symbols-outlined text-sm">done_all</span>
+            <span class="material-symbols-outlined icon-sm">done_all</span>
             選択行を承認
           </button>
           <button id="btn-deny-selected"
-                  class="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-red-600 text-white font-semibold disabled:opacity-40 disabled:cursor-not-allowed hover:bg-red-500 text-xs"
+                  class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-red-600 text-white font-bold text-xs disabled:opacity-50 disabled:cursor-not-allowed hover:bg-red-700 hover:shadow transition-all"
                   disabled>
-            <span class="material-symbols-outlined text-sm">cancel</span>
+            <span class="material-symbols-outlined icon-sm">cancel</span>
             選択行を否認
           </button>
-          <!-- <button id="btn-pend-selected"
-                  class="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-gray-700 text-white font-semibold disabled:opacity-40 disabled:cursor-not-allowed hover:bg-gray-600 text-xs"
-                  disabled>
-            <span class="material-symbols-outlined text-sm">pause_circle</span>
-            選択行を保留に戻す
-          </button> -->
         </div>
       </div>
 
-      <div class="bg-white rounded-xl shadow overflow-hidden">
+      <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
         <table class="w-full text-sm text-left">
-          <thead class="bg-gray-100 text-xs">
+          <thead class="bg-gray-50/80 border-b border-gray-200 text-xs text-gray-500 uppercase tracking-wider">
             <tr>
-              <th class="p-3 w-10 text-center">
+              <th class="px-4 py-3 w-12 text-center">
                 <input type="checkbox" id="check-all"
-                       class="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500" />
+                       class="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer" />
               </th>
-              <th class="p-3 font-semibold">ユーザー</th>
-              <th class="p-3 font-semibold">所属</th>
-              <th class="p-3 font-semibold">コース名</th>
-              <th class="p-3 font-semibold">申込日</th>
-              <th class="p-3 font-semibold">開講日</th>
-              <th class="p-3 font-semibold">現在ステータス</th>
-              <th class="p-3 font-semibold w-48">コメント</th>
+              <th class="px-4 py-3 font-semibold">ユーザー</th>
+              <th class="px-4 py-3 font-semibold">所属</th>
+              <th class="px-4 py-3 font-semibold">コース名</th>
+              <th class="px-4 py-3 font-semibold">申込日</th>
+              <th class="px-4 py-3 font-semibold">開講日</th>
+              <th class="px-4 py-3 font-semibold">ステータス</th>
+              <th class="px-4 py-3 font-semibold w-64">コメント</th>
             </tr>
           </thead>
-          <tbody id="application-rows">
-            <!-- JSで行をレンダリング -->
-          </tbody>
+          <tbody id="application-rows" class="divide-y divide-gray-100">
+            </tbody>
         </table>
       </div>
 
-      <div class="flex justify-end">
+      <div class="flex justify-end pt-4">
         <button id="btn-save-all"
-                class="inline-flex items-center gap-1 px-4 py-2 rounded-full bg-blue-600 text-white text-xs font-semibold hover:bg-blue-500">
-          <span class="material-symbols-outlined text-sm">save</span>
-          変更を保存（モック）
+                class="inline-flex items-center gap-2 px-6 py-2.5 rounded-md bg-blue-600 text-white text-sm font-bold hover:bg-blue-700 shadow-sm hover:shadow transition-all">
+          <span class="material-symbols-outlined icon-sm">save</span>
+          変更を保存
         </button>
       </div>
     </section>
@@ -422,10 +474,8 @@
       if (periodId === "all") {
         openingSelect.value = "all";
         openingSelect.disabled = true;
-        openingSelect.classList.add("text-gray-400");
       } else {
         openingSelect.disabled = false;
-        openingSelect.classList.remove("text-gray-400");
       }
     }
 
@@ -524,8 +574,11 @@
 
       if (apps.length === 0) {
         const tr = document.createElement("tr");
-        tr.innerHTML = `<td class="p-4 text-center text-xs text-gray-500" colspan="8">
-          対象の申込はありません。
+        tr.innerHTML = `<td class="p-12 text-center text-gray-400" colspan="8">
+            <div class="flex flex-col items-center gap-2">
+                <span class="material-symbols-outlined text-4xl text-gray-300">search_off</span>
+                <span class="text-sm font-medium">条件に一致する申込はありません</span>
+            </div>
         </td>`;
         rowsBody.appendChild(tr);
         return;
@@ -533,46 +586,52 @@
 
       apps.forEach(app => {
         const tr = document.createElement("tr");
-        tr.className = "border-t hover:bg-gray-50/70";
+        tr.className = "hover:bg-gray-50/70 transition-colors";
         const dotClass =
           app.action === "承認" ? "bg-blue-500"
           : app.action === "否認" ? "bg-red-500"
           : "bg-orange-400";
+        
+        // バッジスタイル
+        const statusBadgeClass = 
+            app.action === "承認" ? "bg-blue-50 text-blue-700 border-blue-100"
+          : app.action === "否認" ? "bg-red-50 text-red-700 border-red-100"
+          : "bg-orange-50 text-orange-700 border-orange-100";
 
         tr.innerHTML = `
-          <td class="p-3 align-middle text-center">
+          <td class="px-4 py-3 align-middle text-center">
             <input type="checkbox"
-                   class="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 row-check"
+                   class="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer row-check"
                    data-app-id="${app.id}" />
           </td>
-          <td class="p-3 align-middle">
+          <td class="px-4 py-3 align-middle">
             <div class="flex flex-col">
-              <span class="font-medium">${app.userName}</span>
-              <span class="text-xs text-gray-500">ID: ${app.userId}</span>
+              <span class="font-bold text-gray-800 text-sm">${app.userName}</span>
+              <span class="text-xs text-gray-400 font-mono">ID: ${app.userId}</span>
             </div>
           </td>
-          <td class="p-3 align-middle">
-            <span class="text-sm">${app.org}</span>
+          <td class="px-4 py-3 align-middle">
+            <span class="text-xs text-gray-600 bg-gray-100 px-2 py-1 rounded border border-gray-200">${app.org}</span>
           </td>
-          <td class="p-3 align-middle">
-            <span class="text-sm">${app.courseName}</span>
+          <td class="px-4 py-3 align-middle">
+            <span class="text-sm font-medium text-gray-700">${app.courseName}</span>
           </td>
-          <td class="p-3 align-middle text-xs">
+          <td class="px-4 py-3 align-middle text-xs text-gray-500">
             ${app.appliedAt}
           </td>
-          <td class="p-3 align-middle text-xs">
+          <td class="px-4 py-3 align-middle text-xs text-gray-500">
             ${app.openingDate}
           </td>
-          <td class="p-3 align-middle text-xs">
-            <div class="inline-flex items-center gap-2">
-              <span class="w-2 h-2 rounded-full ${dotClass}"></span>
-              <span>${app.status}（${app.action}）</span>
+          <td class="px-4 py-3 align-middle text-xs">
+            <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded border ${statusBadgeClass}">
+              <span class="w-1.5 h-1.5 rounded-full ${dotClass}"></span>
+              <span class="font-medium">${app.status}（${app.action}）</span>
             </div>
           </td>
-          <td class="p-3 align-middle">
+          <td class="px-4 py-3 align-middle">
             <input type="text"
-                   class="w-full text-xs rounded-md border-gray-300 focus:ring-blue-400 focus:border-blue-400"
-                   placeholder="コメント（任意）"
+                   class="w-full text-xs rounded-md border-gray-300 focus:ring-blue-500 focus:border-blue-500 placeholder-gray-400 bg-gray-50 focus:bg-white transition-colors"
+                   placeholder="コメントを入力..."
                    data-app-comment="${app.id}"
                    value="${app.comment || ""}" />
           </td>

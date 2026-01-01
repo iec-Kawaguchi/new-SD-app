@@ -4,101 +4,157 @@
     <meta charset="UTF-8" />
     <title>申込状況サンプル</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
     <script src="../js/role-visibility.js" defer></script>
 
     <style>
-        body { font-family: "Yu Gothic", "游ゴシック体", "YuGothic", sans-serif; }
+        /* フォント設定 */
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+        }
+        /* アイコン設定 */
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .icon-sm { font-size: 1.125rem !important; } /* 18px */
+        .icon-md { font-size: 1.25rem !important; }  /* 20px */
+        
+        /* スクロールバー（iframe内でも綺麗に見せる） */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background-color: #cbd5e1;
+            border-radius: 20px;
+        }
     </style>
 </head>
-<body class="bg-gray-50 p-6">
+<body class="bg-gray-50 p-6 text-gray-900 antialiased">
 
-    <!-- ヘッダー＋DLボタン -->
-    <div class="flex justify-between items-center mb-3">
-        <h2 class="text-xl font-bold text-gray-800 flex items-center">
-            <span class="material-symbols-outlined text-blue-700 mr-1">bar_chart</span>
-            申込状況
-        </h2>
+    <div class="flex justify-between items-start mb-6">
+        <div>
+            <h2 class="text-lg font-bold text-gray-800 flex items-center gap-2">
+                <span class="material-symbols-outlined text-blue-600 icon-md">insights</span>
+                申込状況
+            </h2>
+            <p class="text-xs text-gray-500 mt-1 ml-7">
+                現在の申込・承認ステータスのサマリーとコース別内訳
+            </p>
+        </div>
 
-         <!-- 承認画面へ -->
-    <a id="btn-go-manage"
-       href="applications-manage.html"
-       class="inline-flex items-center px-3 py-2 rounded-full border border-blue-600 text-blue-600 text-xs font-semibold bg-white hover:bg-blue-50"
-       data-visible-for="iec, customer">
-      <span class="material-symbols-outlined text-sm mr-1">assignment_turned_in</span>
-      申込承認へ
-    </a>
-
-        <!-- DL -->
-        <!-- <div class="text-right">
-            <a href="#"
-               class="inline-flex items-center px-4 py-2 rounded-lg bg-blue-600 text-white font-semibold hover:bg-blue-500">
-                <span class="material-symbols-outlined mr-2">download</span>
-                現在の条件でダウンロード
-            </a>
-        </div> -->
+         <a id="btn-go-manage"
+           href="applications-manage.html"
+           class="inline-flex items-center gap-1.5 px-4 py-2 rounded-md border border-blue-200 text-blue-700 bg-blue-50 hover:bg-blue-100 hover:border-blue-300 text-xs font-bold transition-all shadow-sm"
+           data-visible-for="iec, customer">
+          <span class="material-symbols-outlined icon-sm">assignment_turned_in</span>
+          申込承認画面へ
+        </a>
     </div>
 
-    <!-- 絞り込み：申込期間 × 開講日 -->
-    <div class="mb-6 flex flex-wrap items-center gap-3">
-        <!-- 申込期間セレクト -->
-        <div class="inline-flex items-center gap-2 bg-white border border-gray-200 rounded-full px-3 py-1.5 shadow-sm">
-            <span class="material-symbols-outlined text-gray-400 text-base">event_upcoming</span>
-            <span class="text-xs text-gray-500">申込期間</span>
-            <select id="filter-period"
-                    class="bg-transparent text-sm font-medium text-gray-900 border-none focus:outline-none focus:ring-0">
-                <!-- JSで埋め込み -->
-            </select>
-        </div>
+    <div class="bg-white border border-gray-200 rounded-xl shadow-sm p-4 mb-6">
+        <div class="flex flex-wrap items-end gap-4">
+            <div class="flex flex-col gap-1.5 flex-1 min-w-[200px]">
+                <label for="filter-period" class="text-[11px] font-bold text-gray-500 uppercase tracking-wide">申込期間</label>
+                <div class="relative">
+                    <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                        <span class="material-symbols-outlined text-gray-400 icon-sm">event_upcoming</span>
+                    </div>
+                    <select id="filter-period"
+                            class="block w-full rounded-md border border-gray-300 pl-10 pr-8 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50/50 appearance-none transition-shadow cursor-pointer hover:bg-white">
+                        </select>
+                    <div class="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
+                        <span class="material-symbols-outlined text-gray-400 icon-sm">expand_more</span>
+                    </div>
+                </div>
+            </div>
 
-        <!-- 開講日セレクト -->
-        <div class="inline-flex items-center gap-2 bg-white border border-gray-200 rounded-full px-3 py-1.5 shadow-sm">
-            <span class="material-symbols-outlined text-gray-400 text-base">calendar_month</span>
-            <span class="text-xs text-gray-500">開講日</span>
-            <select id="filter-opening"
-                    class="bg-transparent text-sm font-medium text-gray-900 border-none focus:outline-none focus:ring-0">
-                <!-- JSで埋め込み -->
-            </select>
+            <div class="flex flex-col gap-1.5 flex-1 min-w-[200px]">
+                <label for="filter-opening" class="text-[11px] font-bold text-gray-500 uppercase tracking-wide">開講日</label>
+                <div class="relative">
+                    <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                        <span class="material-symbols-outlined text-gray-400 icon-sm">calendar_month</span>
+                    </div>
+                    <select id="filter-opening"
+                            class="block w-full rounded-md border border-gray-300 pl-10 pr-8 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50/50 appearance-none transition-shadow cursor-pointer hover:bg-white disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed">
+                        </select>
+                    <div class="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
+                        <span class="material-symbols-outlined text-gray-400 icon-sm">expand_more</span>
+                    </div>
+                </div>
+            </div>
         </div>
-
-        <!-- 現在の条件ラベル -->
-        <div class="text-xs text-gray-500 flex items-center gap-1">
-            <span class="material-symbols-outlined text-[16px] text-gray-400">info</span>
+        
+        <div class="mt-3 pt-3 border-t border-gray-100 flex items-center gap-1.5 text-xs text-gray-500">
+            <span class="material-symbols-outlined text-[16px] text-blue-500">info</span>
             <span id="filter-label">すべての申込期間・開講日を表示中</span>
         </div>
     </div>
 
-    <!-- 申込サマリー -->
-    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
-        <div class="bg-white p-4 rounded-xl shadow flex flex-col">
-            <div class="text-gray-500 text-sm">総申込件数</div>
-            <div id="summary-total" class="text-3xl font-bold mt-2">124</div>
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+        <div class="relative bg-white border border-gray-200 rounded-xl p-4 shadow-[0_1px_2px_rgba(0,0,0,0.05)] overflow-hidden group hover:border-blue-300 transition-colors">
+            <div class="absolute left-0 top-0 bottom-0 w-1 bg-blue-500"></div>
+            <div class="flex items-start justify-between pl-2">
+                <div>
+                    <div class="text-xs font-medium text-gray-500 mb-1">総申込件数</div>
+                    <div id="summary-total" class="text-2xl font-bold text-gray-800 tracking-tight">124</div>
+                </div>
+                <div class="p-2 bg-blue-50 rounded-lg text-blue-600">
+                    <span class="material-symbols-outlined icon-md">group_add</span>
+                </div>
+            </div>
         </div>
-        <div class="bg-white p-4 rounded-xl shadow flex flex-col">
-            <div class="text-gray-500 text-sm">承認済み</div>
-            <div id="summary-approved" class="text-3xl font-bold mt-2 text-green-600">108</div>
+
+        <div class="relative bg-white border border-gray-200 rounded-xl p-4 shadow-[0_1px_2px_rgba(0,0,0,0.05)] overflow-hidden group hover:border-emerald-300 transition-colors">
+            <div class="absolute left-0 top-0 bottom-0 w-1 bg-emerald-500"></div>
+            <div class="flex items-start justify-between pl-2">
+                <div>
+                    <div class="text-xs font-medium text-gray-500 mb-1">承認済み</div>
+                    <div id="summary-approved" class="text-2xl font-bold text-emerald-600 tracking-tight">108</div>
+                </div>
+                <div class="p-2 bg-emerald-50 rounded-lg text-emerald-600">
+                    <span class="material-symbols-outlined icon-md">check_circle</span>
+                </div>
+            </div>
         </div>
-        <div class="bg-white p-4 rounded-xl shadow flex flex-col">
-            <div class="text-gray-500 text-sm">未承認</div>
-            <div id="summary-pending" class="text-3xl font-bold mt-2 text-orange-500">16</div>
+
+        <div class="relative bg-white border border-gray-200 rounded-xl p-4 shadow-[0_1px_2px_rgba(0,0,0,0.05)] overflow-hidden group hover:border-orange-300 transition-colors">
+            <div class="absolute left-0 top-0 bottom-0 w-1 bg-orange-400"></div>
+            <div class="flex items-start justify-between pl-2">
+                <div>
+                    <div class="text-xs font-medium text-gray-500 mb-1">未承認</div>
+                    <div id="summary-pending" class="text-2xl font-bold text-orange-500 tracking-tight">16</div>
+                </div>
+                <div class="p-2 bg-orange-50 rounded-lg text-orange-500">
+                    <span class="material-symbols-outlined icon-md">pending_actions</span>
+                </div>
+            </div>
         </div>
     </div>
 
-    <!-- コース別申込数 -->
-    <h3 class="text-lg font-semibold text-gray-800 mb-3">コース別申込数</h3>
-    <div class="bg-white rounded-xl shadow overflow-hidden">
-        <table class="w-full text-left text-sm">
-            <thead class="bg-gray-100">
-                <tr>
-                    <th class="p-3 font-semibold">コース名</th>
-                    <th class="p-3 font-semibold">団体</th>
-                    <th class="p-3 font-semibold">申込数</th>
-                </tr>
-            </thead>
-            <tbody id="course-rows">
-                <!-- JSで行をレンダリング -->
-            </tbody>
-        </table>
+    <div class="space-y-3">
+        <h3 class="text-sm font-bold text-gray-700 flex items-center gap-2 px-1">
+            <span class="material-symbols-outlined text-gray-400 icon-md">list_alt</span>
+            コース別申込状況
+        </h3>
+        
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+            <table class="w-full text-left text-sm">
+                <thead class="bg-gray-50/80 border-b border-gray-200 text-xs text-gray-500 uppercase tracking-wider">
+                    <tr>
+                        <th class="px-5 py-3 font-semibold">コース名</th>
+                        <th class="px-5 py-3 font-semibold">団体</th>
+                        <th class="px-5 py-3 font-semibold text-right">申込数</th>
+                    </tr>
+                </thead>
+                <tbody id="course-rows" class="divide-y divide-gray-100">
+                    </tbody>
+            </table>
+        </div>
     </div>
 
     <script>
@@ -250,10 +306,9 @@
             if (periodId === "all") {
                 openingSelect.value = "all";
                 openingSelect.disabled = true;
-                openingSelect.classList.add("text-gray-400");
+                // スタイルはCSS側で制御(disabled属性)
             } else {
                 openingSelect.disabled = false;
-                openingSelect.classList.remove("text-gray-400");
             }
         }
 
@@ -295,11 +350,11 @@
             courseRowsBody.innerHTML = "";
             stats.courses.forEach(c => {
                 const tr = document.createElement("tr");
-                tr.className = "border-t";
+                tr.className = "hover:bg-gray-50/70 transition-colors";
                 tr.innerHTML = `
-                    <td class="p-3">${c.name}</td>
-                    <td class="p-3">${c.group}</td>
-                    <td class="p-3 font-semibold">${c.count}</td>
+                    <td class="px-5 py-3 font-medium text-gray-800">${c.name}</td>
+                    <td class="px-5 py-3 text-gray-500">${c.group}</td>
+                    <td class="px-5 py-3 font-bold text-right text-blue-600">${c.count}</td>
                 `;
                 courseRowsBody.appendChild(tr);
             });

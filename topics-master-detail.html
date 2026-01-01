@@ -1,97 +1,172 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="ja" class="h-full bg-gray-50">
     <head>
         <meta charset="UTF-8">
-        <title>New SD App</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>特集ページ編集 - New SD App</title>
         <script src="https://cdn.tailwindcss.com"></script>
-        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-        <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nouislider@15.7.0/dist/nouislider.min.css">
-        <script src="https://cdn.jsdelivr.net/npm/nouislider@15.7.0/dist/nouislider.min.js"></script>
-        <script type="module" src="../js/modules/dashboard/index.js"></script>
+        <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+        
         <script src="./js/role-visibility.js" defer></script>
         <script src="./js/mock-ui.js" defer></script>
+        
         <style>
-            body {
-                font-family: "游ゴシック体", "Yu Gothic", "游ゴシック", YuGothic, sans-serif;
-            }
+            body { font-family: 'Noto Sans JP', sans-serif; }
+            .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+            .icon-sm { font-size: 1.125rem !important; }
+            .icon-md { font-size: 1.25rem !important; }
         </style>
     </head>
-    <body class="bg-gray-100 min-h-screen flex flex-col">
+    <body class="h-full text-gray-900 antialiased flex flex-col overflow-hidden">
         <div id="app-header"></div>
-        <main class="flex flex-1">
+
+        <div class="flex flex-1 overflow-hidden">
             <div id="app-sidebar"></div>
 
-            <div class="p-10 flex-1 bg-gray-200">
-                <div class="flex justify-between items-center mb-4">
-                    <div class="text-2xl font-bold text-gray-700">特集1　編集</div>
-                </div>
-                <div class="bg-white w-full  rounded-xl flex flex-col mx-auto shadow-md p-6 space-y-6">
-                    <div class="flex flex-col">
-                        <div class="font-bold text-gray-700">特集名</div>
-                        <input type="text" class="border p-2 px-4 w-full rounded-md max-w-xl" placeholder="特集名を入力" value="特集１">
-                    </div>
-                    <div class="flex flex-col">
-                        <div class="font-bold text-gray-700">サムネイル</div>
-                        <div class="rounded bg-gray-200 p-2 px-4 mb-2 flex inline-flex w-max space-x-4">
-                            <div class="flex items-center cursor-pointer">
-                                image1.webp
-                                <span class="material-symbols-outlined  ml-2 text-sm">close</span>
-                            </div>
-                        </div>
-                        <img src="img/slide1.webp" alt="" class="rounded-lg max-h-92 max-w-xl w-auto h-auto object-cover border">
-                    </div>
-                    <div class="flex flex-col">
-                        <div class="font-bold text-gray-700">HTML一式</div>
-                        <div class="rounded bg-gray-200 p-2 px-4 mb-2 flex inline-flex w-max space-x-4">
-                            <div class="flex items-center cursor-pointer">
-                                html.zip
-                                <span class="material-symbols-outlined ml-2 text-sm">close</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="flex flex-col">
-                        <div class="font-bold text-gray-700">企業指定　※指定するとその企業でのみ利用できます</div>
-                        <select name="" id="" class="border p-2 px-4 w-full rounded-md max-w-xl">
-                            <option value="">指定しない</option>
-                            <option value="">201129.○○株式会社</option>
-                            <option value="">201130.△△株式会社</option>
-                        </select>
-                    </div>
-                    <div class="flex flex-col">
-                        <div class="font-bold text-gray-700">ステータス</div>
-                        <select name="" id="" class="border p-2 px-4 w-full rounded-md max-w-xl">
-                            <option value="">非公開</option>
-                            <option value="">公開</option>
-                        </select>
-                    </div>
-                    <div class="p-4 w-full">
-                        
-                    </div>
+            <main class="flex-1 overflow-y-auto bg-gray-50 p-6 lg:p-8">
+                <div class="max-w-4xl mx-auto flex flex-col">
                     
+                    <div class="mb-6 flex items-center justify-between">
+                        <div class="flex items-center justify-center gap-4">
+                            <a href="topics-master-list.html" class="flex text-gray-400 hover:text-gray-600 transition-colors p-1 rounded-full hover:bg-gray-100">
+                                <span class="material-symbols-outlined">arrow_back</span>
+                            </a>
+                            <h1 class="text-2xl font-bold text-gray-800 tracking-tight">特集ページ編集</h1>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden mb-8">
+                        <div class="p-6 lg:p-8 space-y-8">
+                            
+                            <div class="space-y-6">
+                                <h2 class="text-lg font-bold text-gray-900 flex items-center gap-2 border-b border-gray-100 pb-2">
+                                    <span class="material-symbols-outlined text-blue-600">edit_note</span>
+                                    基本情報
+                                </h2>
+
+                                <div class="grid gap-1.5">
+                                    <label for="inputName" class="text-sm font-bold text-gray-700">特集名 <span class="text-red-500">*</span></label>
+                                    <input type="text" id="inputName" class="w-full rounded-md border border-gray-300 px-3 py-2.5 text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 shadow-sm sm:text-sm transition-shadow" placeholder="特集名を入力" value="特集１">
+                                </div>
+
+                                <div class="grid grid-cols-1 gap-6">
+                                    <div class="grid gap-1.5">
+                                        <label for="inputCorp" class="text-sm font-bold text-gray-700">企業指定</label>
+                                        <div class="relative">
+                                            <select id="inputCorp" class="appearance-none w-full rounded-md border border-gray-300 px-3 py-2.5 text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white shadow-sm sm:text-sm transition-shadow pr-8">
+                                                <option value="">指定しない（全企業公開）</option>
+                                                <option value="corp-1">201129.○○食品株式会社</option>
+                                                <option value="corp-2">201130.△△テック株式会社</option>
+                                            </select>
+                                            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-500">
+                                                <span class="material-symbols-outlined icon-sm">expand_more</span>
+                                            </div>
+                                        </div>
+                                        <p class="text-xs text-gray-500">※特定の企業だけに表示する場合に選択してください。</p>
+                                    </div>
+
+                                    <div class="grid gap-1.5">
+                                        <label class="text-sm font-bold text-gray-700">ステータス <span class="text-red-500">*</span></label>
+                                        <div class="flex w-full bg-gray-100 rounded-lg p-1 max-w-md">
+                                            <label class="flex-1 cursor-pointer">
+                                                <input type="radio" name="status" value="public" class="peer sr-only" checked>
+                                                <div class="text-center py-2 rounded-md text-sm font-medium text-gray-500 peer-checked:bg-white peer-checked:text-blue-700 peer-checked:shadow-sm transition-all flex items-center justify-center gap-1.5 whitespace-nowrap">
+                                                    <span class="material-symbols-outlined icon-sm">public</span>
+                                                    公開
+                                                </div>
+                                            </label>
+                                            <label class="flex-1 cursor-pointer">
+                                                <input type="radio" name="status" value="private" class="peer sr-only">
+                                                <div class="text-center py-2 rounded-md text-sm font-medium text-gray-500 peer-checked:bg-white peer-checked:text-gray-800 peer-checked:shadow-sm transition-all flex items-center justify-center gap-1.5 whitespace-nowrap">
+                                                    <span class="material-symbols-outlined icon-sm">lock</span>
+                                                    非公開
+                                                </div>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="space-y-6 pt-2">
+                                <h2 class="text-lg font-bold text-gray-900 flex items-center gap-2 border-b border-gray-100 pb-2">
+                                    <span class="material-symbols-outlined text-blue-600">image</span>
+                                    コンテンツ素材
+                                </h2>
+
+                                <div class="grid gap-2">
+                                    <div class="flex items-center justify-between">
+                                        <label class="text-sm font-bold text-gray-700">サムネイル画像</label>
+                                        <button class="text-xs text-blue-600 hover:text-blue-700 font-medium hover:underline">変更する</button>
+                                    </div>
+                                    
+                                    <div class="border border-gray-200 rounded-lg p-4 bg-gray-50 flex flex-col items-start gap-3">
+                                        <div class="relative group rounded-lg overflow-hidden border border-gray-200 shadow-sm max-w-sm">
+                                            <img src="img/slide1.webp" alt="現在のサムネイル" class="w-full h-auto object-cover max-h-64" onerror="this.src='https://placehold.co/600x400?text=No+Image'">
+                                            <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                                <button class="bg-white/90 text-gray-800 px-3 py-1.5 rounded-full text-xs font-bold hover:bg-white shadow-sm flex items-center gap-1">
+                                                    <span class="material-symbols-outlined icon-sm">zoom_in</span>
+                                                    プレビュー
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-center gap-2 text-xs text-gray-500">
+                                            <span class="material-symbols-outlined icon-sm text-gray-400">image</span>
+                                            <span>image1.webp (124 KB)</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="grid gap-2">
+                                    <div class="flex items-center justify-between">
+                                        <label class="text-sm font-bold text-gray-700">HTMLパッケージ (Zip)</label>
+                                        <button class="text-xs text-blue-600 hover:text-blue-700 font-medium hover:underline">再アップロード</button>
+                                    </div>
+
+                                    <div class="border border-gray-200 rounded-lg p-4 bg-white flex items-center justify-between shadow-sm">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-10 h-10 rounded bg-orange-100 text-orange-600 flex items-center justify-center flex-shrink-0">
+                                                <span class="material-symbols-outlined">folder_zip</span>
+                                            </div>
+                                            <div class="flex flex-col">
+                                                <span class="text-sm font-bold text-gray-800">html_package_v1.zip</span>
+                                                <span class="text-xs text-gray-500">2.4 MB • 2024/12/31 アップロード</span>
+                                            </div>
+                                        </div>
+                                        <button class="text-gray-400 hover:text-red-500 transition-colors p-2 rounded-full hover:bg-red-50">
+                                            <span class="material-symbols-outlined icon-md">delete</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="px-6 py-4 bg-gray-50 flex items-center justify-end gap-3 border-t border-gray-100">
+                            <a href="topics-master-list.html" class="px-4 py-2.5 rounded-md bg-white border border-gray-300 text-gray-700 font-medium hover:bg-gray-50 hover:border-gray-400 transition-all shadow-sm">
+                                キャンセル
+                            </a>
+                            <button class="px-6 py-2.5 rounded-md bg-blue-600 text-white font-bold hover:bg-blue-700 shadow-sm hover:shadow transition-all flex items-center gap-2">
+                                <span class="material-symbols-outlined icon-sm">save</span>
+                                保存する
+                            </button>
+                        </div>
+                    </div>
                 </div>
-              
-        </main>
-       
-        <!-- ローディングアニメーション -->
-        <div id="loading" class="fixed inset-0 bg-white/60 flex items-center justify-center z-50 hidden">
-            <div class="animate-spin rounded-full h-12 w-12 border-4 border-blue-500 border-t-transparent"></div>
+            </main>
         </div>
-        <!-- トースト通知コンテナ -->
-        <div id="toast-container" class="fixed bottom-5 right-5 space-y-2 z-50"></div>
+
+        <script>
+            window.addEventListener('DOMContentLoaded', () => {
+                if (typeof MockUI !== 'undefined') {
+                    MockUI.injectHeader('#app-header', {
+                        userName: 'Test User',
+                        brand: 'New SD App',
+                        initialRole: 'iec',
+                    });
+                    MockUI.injectSidebar('#app-sidebar');
+                }
+            });
+        </script>
     </body>
 </html>
-<script>
-  window.addEventListener('DOMContentLoaded', () => {
-    // 初期ロールやブランド名・ユーザー名は自由に
-    MockUI.injectHeader('#app-header', {
-      userName: 'Test User',
-      brand: 'New SD App',
-      initialRole: 'iec', // 初回roleが未指定ならiecをセット
-    });
-    MockUI.injectSidebar('#app-sidebar');
-
-    // サイドバー挿入直後に data-visible-for を反映（MockUI内でもApplyしていますが念のため）
-    RoleMock.applyRoleVisibility();
-  });
-</script>
