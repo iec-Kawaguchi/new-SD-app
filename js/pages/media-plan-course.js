@@ -1,16 +1,22 @@
-// ./js/pages/media-plan-course.js
+// =========================================================
+// モックデータ読み込み (fetch廃止 -> importに変更)
+// =========================================================
+import { selectedCourseData } from '../data/selected-course-data.js';
+import { courseMasterData } from '../data/course-master-data.js';
 
 window.addEventListener('DOMContentLoaded', () => {
-    // ★ URLパラメータから role を取得
+    // --- URLパラメータから role を取得 ---
     const params = new URLSearchParams(location.search);
     const initialRole = params.get('role') || 'iec';
 
+    // --- MockUI / RoleMock 初期化 ---
     if (window.MockUI) {
         MockUI.injectHeader('#app-header', { userName: 'Test User', brand: 'New SD App', initialRole: initialRole });
         MockUI.injectSidebar('#app-sidebar');
     }
     if (window.RoleMock) RoleMock.applyRoleVisibility();
 
+    // --- DOM要素取得 ---
     const rowsEl = document.getElementById('rows');
     const skeletonEl = document.getElementById('skeleton');
     const listEl = document.getElementById('list');
@@ -20,26 +26,26 @@ window.addEventListener('DOMContentLoaded', () => {
     // コース別コメント保存用（モック：メモリ上だけ）
     const commentMap = new Map();
 
-    // ========= リストデータ（JSONから読み込み） =========
+    // ========= リストデータ管理 =========
     let allData = [];
     const CHUNK = 20;
     let loaded = 0;
-    let dense = false; // デフォルトは少しゆったりめに
+    let dense = false; // trueなら行間を狭くする
 
-    // ★ グリッド定義（HTMLのヘッダー定義と一致させる）
+    // --- グリッド定義 ---
     // HTML: grid-cols-[3rem_4rem_1fr_6rem_4rem_8rem_10rem]
     const GRID_COLS_FULL     = 'grid-cols-[3rem_4rem_1fr_6rem_4rem_8rem_10rem]';
-    // Supplier用: Order(No)とCustomTagを隠す -> grid-cols-[3rem_1fr_6rem_4rem_8rem] などを想定
+    // Supplier用: Order(No)とCustomTagを隠す
     const GRID_COLS_SUPPLIER = 'grid-cols-[3rem_1fr_6rem_4rem_8rem]'; 
 
     function getGridColsClass() {
         return initialRole === 'supplier' ? GRID_COLS_SUPPLIER : GRID_COLS_FULL;
     }
 
-    // ★ ヘッダー側のグリッドも role に合わせて変更
+    // --- ヘッダー側のグリッド調整 ---
     const headerEl = document.getElementById('list')?.previousElementSibling;
     if (headerEl && headerEl.classList.contains('grid')) {
-        // 既存の grid-cols-[...] を一旦全部削除
+        // 既存の grid-cols-[...] を削除
         const toRemove = [];
         headerEl.classList.forEach(c => {
             if (c.startsWith('grid-cols-[')) toRemove.push(c);
@@ -49,16 +55,15 @@ window.addEventListener('DOMContentLoaded', () => {
         // role に応じたグリッドを付与
         headerEl.classList.add(getGridColsClass());
 
-        // Supplierの場合はヘッダーの該当カラムも隠す処理が必要
+        // Supplierの場合はヘッダーの該当カラムも隠す
         if (initialRole === 'supplier') {
-            // No列とカスタムタグ列を非表示にする簡易対応
             const cols = headerEl.children;
             if(cols[1]) cols[1].classList.add('hidden'); // No
             if(cols[6]) cols[6].classList.add('hidden'); // CustomTag
         }
     }
 
-    // 行順に基づいて並び順ラベルを更新
+    // --- 行順序の表示更新 ---
     function updateOrderLabels() {
         const rows = Array.from(rowsEl.querySelectorAll('.row'));
         rows.forEach((row, index) => {
@@ -69,12 +74,15 @@ window.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // DOM の並び順をもとに allData を再構成
+    // --- DOMの並び順をもとに allData を再構成 ---
     function reorderAllDataByDom() {
         const domRows = Array.from(rowsEl.querySelectorAll('.row'));
         const domIds = domRows.map(r => String(r.dataset.id));
+        
+        // 読み込み済みデータと未読み込みデータを分離
         const loadedPart = allData.slice(0, loaded);
         const restPart   = allData.slice(loaded);
+        
         const loadedMap = new Map(loadedPart.map(item => [String(item.id), item]));
         const reorderedLoaded = [];
 
@@ -85,7 +93,11 @@ window.addEventListener('DOMContentLoaded', () => {
                 loadedMap.delete(id);
             }
         });
+        
+        // マップに残ったものがあれば追加（念のため）
         loadedMap.forEach(item => reorderedLoaded.push(item));
+        
+        // 再結合
         allData = reorderedLoaded.concat(restPart);
     }
 
@@ -94,7 +106,7 @@ window.addEventListener('DOMContentLoaded', () => {
         return allData.find(c => String(c.id) === String(rowId)) || null;
     }
 
-    // コースオブジェクトの options から詳細HTMLを組み立て
+    // --- オプション情報のHTML生成 ---
     function buildOptionsHtml(course) {
         if (!course || !Array.isArray(course.options) || course.options.length === 0) {
             return `
@@ -139,7 +151,7 @@ window.addEventListener('DOMContentLoaded', () => {
         `;
     }
 
-    // ===== 行テンプレート =====
+    // ===== 行テンプレート生成 =====
     function rowTemplate(dense, d){
         const py = dense ? "py-2" : "py-3";
         const customTags = Array.isArray(d.custom)
@@ -206,7 +218,7 @@ window.addEventListener('DOMContentLoaded', () => {
         </div>`;
     }
 
-    // ===== 検索＆フィルタ =====
+    // ===== 検索＆フィルタロジック =====
     const q = document.getElementById('q');
     let activeFilter = null;
 
@@ -229,6 +241,7 @@ window.addEventListener('DOMContentLoaded', () => {
     }
 
     q.addEventListener('input', updateFilter);
+    
     document.querySelectorAll('[data-filter]').forEach(btn=>{
         btn.addEventListener('click', (e)=>{
             // ボタンスタイルのトグル処理
@@ -239,8 +252,7 @@ window.addEventListener('DOMContentLoaded', () => {
             
             const v = btn.getAttribute('data-filter');
             if (activeFilter === v) {
-                // 解除
-                activeFilter = null;
+                activeFilter = null; // 解除
             } else {
                 if(v !== 'clear') {
                     activeFilter = v;
@@ -254,11 +266,14 @@ window.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // ===== チャンク追加 =====
+    // ===== データ描画 (チャンク追加) =====
     function appendChunk(){
         if (!allData.length || loaded >= allData.length) return;
 
+        // 読み込み中スケルトンを一瞬表示（JSデータなので実際は一瞬だが、UI体験として残す）
         skeletonEl.classList.remove('hidden');
+        
+        // 少し遅延させてレンダリング（UIブロック防止）
         setTimeout(()=>{
             const frag = document.createDocumentFragment();
             for(let i = 0; i < CHUNK && loaded < allData.length; i++, loaded++){
@@ -269,27 +284,30 @@ window.addEventListener('DOMContentLoaded', () => {
             }
             rowsEl.appendChild(frag);
             skeletonEl.classList.add('hidden');
+            
             if (window.RoleMock) RoleMock.applyRoleVisibility(); 
             updateFilter();
             updateOrderLabels();
             updateSelectAllState();
-        }, 100);
+        }, 50);
     }
 
-    // ===== 無限スクロール =====
+    // ===== 無限スクロール (IntersectionObserver) =====
     let io = null;
     function initInfiniteScroll(){
         const sentinel = document.getElementById('sentinel');
         if (!sentinel) return;
+        
         io = new IntersectionObserver((entries)=>{
             entries.forEach(e=>{
                 if(e.isIntersecting && loaded < allData.length) appendChunk();
             });
         }, {root: listEl, rootMargin: '400px 0px'});
+        
         io.observe(sentinel);
     }
 
-    // ===== 一括バー =====
+    // ===== 一括操作バー & 選択制御 =====
     const bulkbar = document.getElementById('bulkbar'), selCount = document.getElementById('selCount');
     const defbar = document.getElementById('def-bar');
     
@@ -340,7 +358,7 @@ window.addEventListener('DOMContentLoaded', () => {
         updateSelectAllState();
     });
 
-    // 行移動処理 (Top/Bottom)
+    // ===== 行移動 (先頭へ/末尾へ) =====
     ['moveTop', 'moveBottom'].forEach(id => {
         document.getElementById(id)?.addEventListener('click', () => {
             const allRows = Array.from(rowsEl.querySelectorAll('.row'));
@@ -366,7 +384,7 @@ window.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // 上下ボタンによる行入れ替え
+    // ===== 行移動 (矢印ボタンによる1行移動) =====
     listEl.addEventListener('click', (e) => {
         const upBtn = e.target.closest('.order-up');
         const downBtn = e.target.closest('.order-down');
@@ -405,7 +423,7 @@ window.addEventListener('DOMContentLoaded', () => {
         updateOrderLabels();
     });
 
-    // 「削除希望」ボタン
+    // ===== 「削除希望」フラグ切り替え =====
     document.getElementById('markDeleteRequest')?.addEventListener('click', () => {
         const checked = document.querySelectorAll('#rows .sel:checked');
         if (!checked.length) return;
@@ -448,7 +466,7 @@ window.addEventListener('DOMContentLoaded', () => {
         const btn = e.target.closest('.open-preview');
         if(!btn) return;
         
-        // 選択状態のUI反映（簡易的）
+        // 選択状態のUI反映
         document.querySelectorAll('.row').forEach(r => r.classList.remove('bg-blue-50'));
         const row = btn.closest('.row');
         row.classList.add('bg-blue-50');
@@ -464,8 +482,9 @@ window.addEventListener('DOMContentLoaded', () => {
 
         preview.innerHTML = `
             <div class="relative">
-                <div class="h-40 w-full ${randomColor} flex items-center justify-center text-blue-900/20">
+                <div class="flex flex-col h-40 w-full ${randomColor} flex items-center justify-center text-blue-900/20">
                     <span class="material-symbols-outlined text-6xl">${randomIcon}</span>
+                    <span class="text-xs text-gray-400 mt-2">コースサムネイルを表示予定<br>無い場合はこのようにランダムダミー</span>
                 </div>
             </div>
 
@@ -488,11 +507,11 @@ window.addEventListener('DOMContentLoaded', () => {
                 </div>
 
                 <div class="prose prose-sm text-gray-600 mb-6">
-                    <p>このコースでは、${title}に関する基礎から応用までを体系的に学びます。実務ですぐに使えるスキルを習得することを目標としています。</p>
+                    <p>選択コースに関する50文字、100文字コメントをここに表示</p>
                 </div>
 
                 <div class="border-t border-gray-100 pt-4 mb-4">
-                    <h4 class="text-xs font-bold text-gray-700 mb-2">設定タグ</h4>
+                    <h4 class="text-xs font-bold text-gray-700 mb-2">追加タグ</h4>
                     <div class="flex flex-wrap gap-1.5">
                         ${String(custom).split(',').filter(x=>x).map(t => 
                             `<span class="inline-flex items-center px-2 py-1 rounded-md text-xs bg-white text-gray-600 border border-gray-200 shadow-sm">${t}</span>`
@@ -553,22 +572,15 @@ window.addEventListener('DOMContentLoaded', () => {
 
     let modalData = [];
 
-    // モーダルデータ読み込み
+    // --- モーダル用データ準備 (fetch廃止) ---
     function loadModalData() {
-        return fetch('course-master-sample.json')
-            .then(res => res.ok ? res.json() : [])
-            .then(data => {
-                const arr = Array.isArray(data) ? data : [];
-                if (initialRole === 'supplier') {
-                    modalData = arr.filter(d => d.org === "他団体B");
-                } else {
-                    modalData = arr;
-                }
-            })
-            .catch(err => {
-                console.error('Failed to load modal data:', err);
-                modalData = [];
-            });
+        const data = courseMasterData || []; // importしたデータを使用
+        
+        if (initialRole === 'supplier') {
+            modalData = data.filter(d => d.org === "他団体B");
+        } else {
+            modalData = data;
+        }
     }
 
     function renderModalList(){
@@ -614,7 +626,7 @@ window.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // モーダル追加処理
+    // --- モーダル: 選択したコースを追加 ---
     addSelectedBtn?.addEventListener('click', () => {
         const ids = Array.from(document.querySelectorAll('.modal-sel:checked')).map(c => Number(c.dataset.id));
 
@@ -659,27 +671,42 @@ window.addEventListener('DOMContentLoaded', () => {
         closeCourseModal();
     });
 
-    // ========= 初期ロード =========
+    // ========= 初期化処理 =========
+    
+    // モーダルデータの準備
     loadModalData();
 
-    fetch('selected-list-sample.json')
-        .then(res => res.ok ? res.json() : [])
-        .then(data => {
-            if (initialRole === 'supplier') {
-                allData = Array.isArray(data) ? data.filter(d => d.org === "他団体B") : [];
-            } else {
-                allData = Array.isArray(data) ? data : [];
-            }
-            loaded = 0;
-            rowsEl.innerHTML = '';
-            appendChunk();
-            initInfiniteScroll();
-        })
-        .catch(err => {
-            console.error(err);
+    // メインリストデータの準備 (fetch廃止)
+    const initMainList = () => {
+        const data = selectedCourseData || []; // importしたデータを使用
+        
+        if (initialRole === 'supplier') {
+            allData = data.filter(d => d.org === "他団体B");
+        } else {
+            allData = data;
+        }
+        
+        loaded = 0;
+        rowsEl.innerHTML = '';
+        
+        // データがない場合の表示
+        if (allData.length === 0) {
             skeletonEl.classList.add('hidden');
-            rowsEl.innerHTML = '<div class="p-8 text-center text-sm text-red-600 bg-red-50 rounded-lg">データの読み込みに失敗しました</div>';
-        });
+            rowsEl.innerHTML = `
+                <div class="flex flex-col items-center justify-center py-12 text-gray-500">
+                    <span class="material-symbols-outlined text-4xl mb-2 text-gray-300">inbox</span>
+                    <p class="text-sm">表示するコースデータがありません</p>
+                </div>`;
+            return;
+        }
+
+        // 初期描画
+        appendChunk();
+        initInfiniteScroll();
+    };
+
+    // 実行
+    initMainList();
 
     // ===== Shift + Click 範囲選択 =====
     let anchorIndex = null;

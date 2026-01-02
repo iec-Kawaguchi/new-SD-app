@@ -1,4 +1,4 @@
-[
+export const courseMasterData = [
   {
     "id": 101,
     "title": "新人のためのビジネスマナー基礎",
@@ -207,4 +207,4 @@
       { "id": 2, "name": "演習付き版", "price": 26950, "length": "4か月" }
     ]
   }
-]
+];

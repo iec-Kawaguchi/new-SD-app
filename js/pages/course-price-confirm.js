@@ -1,4 +1,8 @@
-// ./js/pages/course-price-confirm.js
+// =========================================================
+// モックデータ読み込み (fetch廃止 -> importに変更)
+// =========================================================
+import { selectedCourseData } from '../data/selected-course-data.js';
+import { courseMasterData } from '../data/course-master-data.js';
 
 window.addEventListener('DOMContentLoaded', () => {
     // --- 共通UI（ヘッダー / サイドバー） ---
@@ -35,13 +39,13 @@ window.addEventListener('DOMContentLoaded', () => {
     const closeCourseModalBtn  = document.getElementById('close-course-modal');
     const cancelCourseModalBtn = document.getElementById('cancel-course-modal');
     const addSelectedBtn       = document.getElementById('add-selected-courses');
-    const modalSelectedCount   = document.getElementById('modal-selected-count'); // 追加・修正
+    const modalSelectedCount   = document.getElementById('modal-selected-count');
     const modalRows            = document.getElementById('modal-rows');
     const modalQ               = document.getElementById('modal-q');
 
     // --- データ保持 ---
-    let allData = [];            // selected-list-sample.json から読み込み
-    let modalData = [];          // course-master-sample.json から読み込み
+    let allData = [];            
+    let modalData = [];          
     const commentMap = new Map(); // id → コメント文字列
 
     // 「いま差し替えを設定中の行」
@@ -583,21 +587,30 @@ window.addEventListener('DOMContentLoaded', () => {
 
         preview.innerHTML = `
             <div class="relative">
-                <div class="h-32 w-full ${randomColor} flex items-center justify-center text-blue-900/20">
-                    <span class="material-symbols-outlined text-5xl">${randomIcon}</span>
+                <div class="flex flex-col h-40 w-full ${randomColor} flex items-center justify-center text-blue-900/20">
+                    <span class="material-symbols-outlined text-6xl">${randomIcon}</span>
+                    <span class="text-xs text-gray-400 mt-2">コースサムネイルを表示予定<br>無い場合はこのようにランダムダミー</span>
                 </div>
                 ${isReplace ? '<div class="absolute top-2 left-2 bg-yellow-400 text-white text-xs font-bold px-2 py-1 rounded shadow">差し替え候補</div>' : ''}
             </div>
-
             <div class="p-6">
-                <h2 class="text-lg font-bold text-gray-800 leading-snug mb-1">${title}</h2>
-                <div class="text-xs text-gray-500 font-mono mb-4">${code || ''} / ${org || ''}</div>
-
-                <div class="flex flex-wrap gap-1 mb-6">
-                     ${(std||'').split(',').filter(t=>t).map(t=>`<span class="rounded-full bg-blue-50 text-blue-700 px-2 py-0.5 border border-blue-100 text-[10px]">${t}</span>`).join('')}
-                     ${(custom||'').split(',').filter(t=>t).map(t=>`<span class="rounded-full bg-gray-800 text-white px-2 py-0.5 text-[10px]" data-visible-for="iec,customer">${t}</span>`).join('')}
+                <div class="flex items-start gap-3 mb-4">
+                    <div class="flex-1">
+                        
+                        <h2 class="text-xl font-bold text-gray-800 leading-snug">${title}</h2>
+                        <div class="mt-1 text-xs text-gray-500 font-mono">コード: ${code || ''}</div>
+                    </div>
                 </div>
 
+                <div class="flex items-center gap-2 mb-6 text-sm text-gray-600">
+                    <span class="material-symbols-outlined icon-sm text-gray-400">business</span>
+                    <span>提供団体: <span class="font-medium text-gray-800">${org || ''}</span></span>
+                </div>
+
+                <div class="prose prose-sm text-gray-600 mb-6">
+                    <p>選択コースに関する50文字、100文字コメントをここに表示</p>
+                </div>
+                
                 ${optionsHtml}
 
                 <div class="mt-8 pt-6 border-t border-gray-100 bg-gray-50 -mx-6 -mb-6 px-6 pb-6">
@@ -671,57 +684,43 @@ window.addEventListener('DOMContentLoaded', () => {
         closeCourseModal();
     });
 
-    // ---- JSON読込 ----
+    // =========================================================
+    // ▼ データ初期化 (fetch廃止)
+    // =========================================================
 
-    // モーダル用 course-master-sample.json
-    function loadModalData() {
-        return fetch('course-master-sample.json')
-            .then(res => {
-                if (!res.ok) throw new Error('Modal JSON load failed');
-                return res.json();
-            })
-            .then(data => {
-                const arr = Array.isArray(data) ? data : [];
-                if (initialRole === 'supplier') {
-                    // supplier のときだけ 他団体B に絞り込み
-                    modalData = arr.filter(d => d.org === '他団体B');
-                } else {
-                    modalData = arr;
-                }
-            })
-            .catch(err => {
-                console.error('Failed to load modal data:', err);
-                modalData = [];
-            });
-    }
+    // モーダルデータのロード
+    const initModalData = () => {
+        const data = courseMasterData || []; // importしたデータを使用
+        if (initialRole === 'supplier') {
+            modalData = data.filter(d => d.org === '他団体B');
+        } else {
+            modalData = data;
+        }
+    };
 
-    loadModalData();
+    // メインリストデータのロード
+    const initMainList = () => {
+        const data = selectedCourseData || []; // importしたデータを使用
 
-    // メインリスト用 selected-list-sample.json
-    fetch('selected-list-sample.json')
-        .then(res => {
-            if (!res.ok) throw new Error('JSON load failed');
-            return res.json();
-        })
-        .then(data => {
-            if (initialRole === 'supplier') {
-                // supplier のときだけ 他団体B に絞り込み
-                allData = Array.isArray(data)
-                    ? data.filter(d => d.org === '他団体B')
-                    : [];
-            } else {
-                allData = Array.isArray(data) ? data : [];
-            }
+        if (initialRole === 'supplier') {
+            allData = data.filter(d => d.org === '他団体B');
+        } else {
+            allData = data;
+        }
 
-            skeletonEl.classList.add('hidden');
+        // 初期描画
+        skeletonEl.classList.add('hidden');
+        if (allData.length === 0) {
+            rowsEl.innerHTML = '<div class="p-4 text-sm text-gray-500">表示するデータがありません</div>';
+        } else {
             renderRows();
-        })
-        .catch(err => {
-            console.error(err);
-            skeletonEl.classList.add('hidden');
-            rowsEl.innerHTML = '<div class="p-4 text-sm text-red-600">サンプルデータ（JSON）の読み込みに失敗しました。</div>';
-        });
+        }
+    };
 
-    // 検索
+    // 実行
+    initModalData();
+    initMainList();
+
+    // 検索イベント
     qInput?.addEventListener('input', applyFilter);
 });

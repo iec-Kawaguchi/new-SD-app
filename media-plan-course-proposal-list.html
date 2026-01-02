@@ -5,16 +5,12 @@
         <title>コース提案 - New SD App</title>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <script src="https://cdn.tailwindcss.com"></script>
-        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
         <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
         <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nouislider@15.7.0/dist/nouislider.min.css">
         <link rel="stylesheet" href="./css/base-style.css">
-        <script src="https://cdn.jsdelivr.net/npm/nouislider@15.7.0/dist/nouislider.min.js"></script>
-        
         <script src="./js/role-visibility.js" defer></script>
         <script src="./js/mock-ui.js" defer></script>
-        <script src="./js/pages/media-plan-course.js" defer></script>
+        <script type="module" src="./js/pages/media-plan-course.js" defer></script>
 
         <style>
         </style>
@@ -49,7 +45,7 @@
                                     </div>
                                     <div class="flex-1 min-w-0">
                                         <div class="flex items-center justify-between">
-                                            <h3 class="text-sm font-bold text-blue-900">お客様要望</h3>
+                                            <h3 class="text-sm font-bold text-blue-900">提案要望</h3>
                                             <button id="notificationCloseButton" class="text-blue-400 hover:text-blue-700 hover:bg-blue-100 rounded-full p-1 transition-colors">
                                                 <span class="material-symbols-outlined icon-md block">close</span>
                                             </button>
@@ -151,9 +147,13 @@
                                             </button>
                                         </a>
                                         <div class="flex gap-3">
+                                            <button class="px-6 py-2.5 text-sm font-bold rounded-md bg-white border border-blue-300 text-blue-600 hover:bg-blue-50 transition-colors"
+                                                data-visible-for="iec, supplier, customer">
+                                                変更を保存する
+                                            </button>
                                             <button class="px-6 py-2.5 text-sm font-bold rounded-md bg-blue-600 text-white hover:bg-blue-700 shadow-sm hover:shadow transition-all"
                                                 data-visible-for="iec">
-                                                登録完了
+                                                変更を登録する
                                             </button>
                                             <button class="px-6 py-2.5 text-sm font-bold rounded-md bg-blue-600 text-white hover:bg-blue-700 shadow-sm hover:shadow transition-all"
                                                 data-visible-for="supplier">
@@ -161,7 +161,7 @@
                                             </button>
                                             <button class="px-6 py-2.5 text-sm font-bold rounded-md bg-white border border-red-300 text-red-600 hover:bg-red-50 transition-colors"
                                                 data-visible-for="customer">
-                                                再提案を依頼
+                                                再提案を依頼する
                                             </button>
                                             <button class="px-6 py-2.5 text-sm font-bold rounded-md bg-blue-600 text-white hover:bg-blue-700 shadow-sm hover:shadow transition-all"
                                                 data-visible-for="customer">

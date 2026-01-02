@@ -1,4 +1,4 @@
-[
+export const selectedCourseData = [
   {
     "id": 1,
     "title": "Z世代のためのマナー",
@@ -250,4 +250,4 @@
       {"id":2, "name":"WEB＋演習版", "price":23110, "length":"4か月"}
     ]
   }
-]
+];
