@@ -21,7 +21,7 @@
         <header class="bg-white w-full h-16 border-b border-gray-200 sticky top-0 z-50">
             <div class="flex items-center h-full justify-between px-6">
                 <div class="flex items-center gap-3">
-                    <div class="text-xl text-gray-800 font-bold tracking-tight">${brand}</div>
+                    <div class="text-xl text-blue-800 font-bold tracking-tight">${brand}</div>
                 </div>
                 <div class="ml-auto flex items-center gap-4">
                     <div class="relative">
