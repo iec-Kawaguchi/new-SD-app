@@ -130,7 +130,7 @@ window.addEventListener('DOMContentLoaded', () => {
             <div class="mt-6">
                 <h4 class="text-xs font-bold text-gray-700 mb-3 flex items-center gap-1">
                     <span class="material-symbols-outlined icon-sm text-gray-400">layers</span>
-                    オプション講座
+                    オプション
                 </h4>
                 <div class="flex flex-col gap-2">
                     ${course.options.map(o => {
