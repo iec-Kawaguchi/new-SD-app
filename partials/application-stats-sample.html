@@ -59,13 +59,13 @@
     <div class="bg-white border border-gray-200 rounded-xl shadow-sm p-4 mb-6">
         <div class="flex flex-wrap items-end gap-4">
             <div class="flex flex-col gap-1.5 flex-1 min-w-[200px]">
-                <label for="filter-period" class="text-[11px] font-bold text-gray-500 uppercase tracking-wide">申込期間</label>
+                <label for="filter-period" class="text-xs font-bold text-gray-500 uppercase tracking-wide">申込期間</label>
                 <div class="relative">
                     <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                         <span class="material-symbols-outlined text-gray-400 icon-sm">event_upcoming</span>
                     </div>
                     <select id="filter-period"
-                            class="block w-full rounded-md border border-gray-300 pl-10 pr-8 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50/50 appearance-none transition-shadow cursor-pointer hover:bg-white">
+                            class="h-10 block w-full rounded-md border border-gray-300 pl-10 pr-8 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50/50 appearance-none transition-shadow cursor-pointer hover:bg-white">
                         </select>
                     <div class="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
                         <span class="material-symbols-outlined text-gray-400 icon-sm">expand_more</span>
@@ -74,13 +74,13 @@
             </div>
 
             <div class="flex flex-col gap-1.5 flex-1 min-w-[200px]">
-                <label for="filter-opening" class="text-[11px] font-bold text-gray-500 uppercase tracking-wide">開講日</label>
+                <label for="filter-opening" class="text-xs font-bold text-gray-500 uppercase tracking-wide">開講日</label>
                 <div class="relative">
                     <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                         <span class="material-symbols-outlined text-gray-400 icon-sm">calendar_month</span>
                     </div>
                     <select id="filter-opening"
-                            class="block w-full rounded-md border border-gray-300 pl-10 pr-8 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50/50 appearance-none transition-shadow cursor-pointer hover:bg-white disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed">
+                            class="h-10 block w-full rounded-md border border-gray-300 pl-10 pr-8 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50/50 appearance-none transition-shadow cursor-pointer hover:bg-white disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed">
                         </select>
                     <div class="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
                         <span class="material-symbols-outlined text-gray-400 icon-sm">expand_more</span>
@@ -90,7 +90,7 @@
         </div>
         
         <div class="mt-3 pt-3 border-t border-gray-100 flex items-center gap-1.5 text-xs text-gray-500">
-            <span class="material-symbols-outlined text-[16px] text-blue-500">info</span>
+            <span class="material-symbols-outlined text-base text-blue-500">info</span>
             <span id="filter-label">すべての申込期間・開講日を表示中</span>
         </div>
     </div>
@@ -103,7 +103,7 @@
                     <div class="text-xs font-medium text-gray-500 mb-1">総申込件数</div>
                     <div id="summary-total" class="text-2xl font-bold text-gray-800 tracking-tight">124</div>
                 </div>
-                <div class="p-2 bg-blue-50 rounded-lg text-blue-600">
+                <div class="flex p-2 bg-blue-50 rounded-lg text-blue-600">
                     <span class="material-symbols-outlined icon-md">group_add</span>
                 </div>
             </div>
@@ -116,7 +116,7 @@
                     <div class="text-xs font-medium text-gray-500 mb-1">承認済み</div>
                     <div id="summary-approved" class="text-2xl font-bold text-emerald-600 tracking-tight">108</div>
                 </div>
-                <div class="p-2 bg-emerald-50 rounded-lg text-emerald-600">
+                <div class="flex p-2 bg-emerald-50 rounded-lg text-emerald-600">
                     <span class="material-symbols-outlined icon-md">check_circle</span>
                 </div>
             </div>
@@ -129,7 +129,7 @@
                     <div class="text-xs font-medium text-gray-500 mb-1">未承認</div>
                     <div id="summary-pending" class="text-2xl font-bold text-orange-500 tracking-tight">16</div>
                 </div>
-                <div class="p-2 bg-orange-50 rounded-lg text-orange-500">
+                <div class="flex p-2 bg-orange-50 rounded-lg text-orange-500">
                     <span class="material-symbols-outlined icon-md">pending_actions</span>
                 </div>
             </div>

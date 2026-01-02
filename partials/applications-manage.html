@@ -1,701 +1,700 @@
 <!DOCTYPE html>
 <html lang="ja">
-<head>
-  <meta charset="UTF-8" />
-  <title>申込承認（ユーザー×コース単位）</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
-  <style>
-    /* フォント設定 */
-    body {
-        font-family: 'Noto Sans JP', sans-serif;
-    }
-    /* アイコン設定 */
-    .material-symbols-outlined {
-        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-    }
-    .icon-sm { font-size: 1.125rem !important; } /* 18px */
-    .icon-md { font-size: 1.25rem !important; }  /* 20px */
+	<head>
+	<meta charset="UTF-8" />
+	<title>申込承認（ユーザー×コース単位）</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<script src="https://cdn.tailwindcss.com"></script>
+	<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
+	<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+	<style>
+		/* フォント設定 */
+		body {
+			font-family: 'Noto Sans JP', sans-serif;
+		}
+		/* アイコン設定 */
+		.material-symbols-outlined {
+			font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+		}
+		.icon-sm { font-size: 1.125rem !important; } /* 18px */
+		.icon-md { font-size: 1.25rem !important; }  /* 20px */
 
-    /* スクロールバー */
-    ::-webkit-scrollbar {
-        width: 6px;
-        height: 6px;
-    }
-    ::-webkit-scrollbar-track {
-        background: transparent;
-    }
-    ::-webkit-scrollbar-thumb {
-        background-color: #cbd5e1;
-        border-radius: 20px;
-    }
-  </style>
-</head>
-<body class="bg-gray-50 text-gray-900 antialiased p-6">
-  <div class="max-w-7xl mx-auto space-y-6 pb-12">
+		/* スクロールバー */
+		::-webkit-scrollbar {
+			width: 6px;
+			height: 6px;
+		}
+		::-webkit-scrollbar-track {
+			background: transparent;
+		}
+		::-webkit-scrollbar-thumb {
+			background-color: #cbd5e1;
+			border-radius: 20px;
+		}
+	</style>
+	</head>
+	<body class="bg-gray-50 text-gray-900 antialiased p-6">
+	<div class="max-w-7xl mx-auto space-y-6 pb-12">
+		<div class="flex items-start justify-between">
+			<div>
+				<h2 class="text-lg font-bold text-gray-800 tracking-tight flex items-center gap-2 mb-1">
+				<span class="material-symbols-outlined text-blue-600">assignment_turned_in</span>
+				申込承認
+				</h2>
+				<p class="text-xs text-gray-500 ml-8">
+				期間と開講日で絞り込み、ユーザー×コース単位で承認ステータスを管理します。
+				</p>
+			</div>
+			<a href="application-stats-sample.html"
+				class="inline-flex items-center gap-1 px-4 py-2 rounded-md border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors shadow-sm">
+				<span class="material-symbols-outlined icon-sm">arrow_back</span>
+				集計画面へ戻る
+			</a>
+		</div>
 
-    <div class="flex items-start justify-between">
-      <div>
-        <h1 class="text-2xl font-bold text-gray-800 tracking-tight flex items-center gap-2 mb-1">
-          <span class="material-symbols-outlined text-blue-600">assignment_turned_in</span>
-          申込承認
-        </h1>
-        <p class="text-sm text-gray-500 ml-8">
-          期間と開講日で絞り込み、ユーザー×コース単位で承認ステータスを管理します。
-        </p>
-      </div>
-      <a href="application-stats-sample.html"
-         class="inline-flex items-center gap-1 px-4 py-2 rounded-md border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors shadow-sm">
-        <span class="material-symbols-outlined icon-sm">arrow_back</span>
-        集計画面へ戻る
-      </a>
-    </div>
+		<section class="bg-white border border-gray-200 rounded-xl shadow-sm p-5 space-y-4">
+		<div class="flex flex-wrap items-end gap-5">
+			<div class="flex flex-col gap-1.5 flex-1 min-w-[240px]">
+			<label for="filter-period" class="text-xs font-bold text-gray-500 uppercase tracking-wide">申込期間</label>
+			<div class="relative">
+				<div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+					<span class="material-symbols-outlined text-gray-400 icon-sm">event_upcoming</span>
+				</div>
+				<select id="filter-period"
+						class="h-10 block w-full rounded-md border border-gray-300 pl-10 pr-8 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50/50 appearance-none transition-shadow cursor-pointer hover:bg-white">
+				</select>
+				<div class="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
+					<span class="material-symbols-outlined text-gray-400 icon-sm">expand_more</span>
+				</div>
+			</div>
+			</div>
 
-    <section class="bg-white border border-gray-200 rounded-xl shadow-sm p-5 space-y-4">
-      <div class="flex flex-wrap items-end gap-5">
-        <div class="flex flex-col gap-1.5 flex-1 min-w-[240px]">
-          <label for="filter-period" class="text-xs font-bold text-gray-500 uppercase tracking-wide">申込期間</label>
-          <div class="relative">
-            <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-              <span class="material-symbols-outlined text-gray-400 icon-sm">event_upcoming</span>
-            </div>
-            <select id="filter-period"
-                    class="block w-full rounded-md border border-gray-300 pl-10 pr-8 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50/50 appearance-none transition-shadow cursor-pointer hover:bg-white">
-            </select>
-            <div class="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
-              <span class="material-symbols-outlined text-gray-400 icon-sm">expand_more</span>
-            </div>
-          </div>
-        </div>
+			<div class="flex flex-col gap-1.5 flex-1 min-w-[240px]">
+			<label for="filter-opening" class="text-xs font-bold text-gray-500 uppercase tracking-wide">開講日</label>
+			<div class="relative">
+				<div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+				<span class="material-symbols-outlined text-gray-400 icon-sm">calendar_month</span>
+				</div>
+				<select id="filter-opening"
+						class="h-10 block w-full rounded-md border border-gray-300 pl-10 pr-8 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50/50 appearance-none transition-shadow cursor-pointer hover:bg-white disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed">
+				</select>
+				<div class="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
+				<span class="material-symbols-outlined text-gray-400 icon-sm">expand_more</span>
+				</div>
+			</div>
+			</div>
+		</div>
 
-        <div class="flex flex-col gap-1.5 flex-1 min-w-[240px]">
-          <label for="filter-opening" class="text-xs font-bold text-gray-500 uppercase tracking-wide">開講日</label>
-          <div class="relative">
-            <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-              <span class="material-symbols-outlined text-gray-400 icon-sm">calendar_month</span>
-            </div>
-            <select id="filter-opening"
-                    class="block w-full rounded-md border border-gray-300 pl-10 pr-8 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50/50 appearance-none transition-shadow cursor-pointer hover:bg-white disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed">
-            </select>
-            <div class="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
-              <span class="material-symbols-outlined text-gray-400 icon-sm">expand_more</span>
-            </div>
-          </div>
-        </div>
-      </div>
+		<div class="pt-3 border-t border-gray-100 flex items-center gap-2 text-xs text-gray-500">
+			<span class="material-symbols-outlined text-base text-blue-500">info</span>
+			<span id="filter-label">すべての申込期間・開講日を対象</span>
+		</div>
+		</section>
 
-      <div class="pt-3 border-t border-gray-100 flex items-center gap-2 text-xs text-gray-500">
-        <span class="material-symbols-outlined text-[16px] text-blue-500">info</span>
-        <span id="filter-label">すべての申込期間・開講日を対象</span>
-      </div>
-    </section>
+		<div class="grid grid-cols-1 sm:grid-cols-3 gap-5">
+		<div class="relative bg-white border border-gray-200 rounded-xl p-5 shadow-[0_1px_2px_rgba(0,0,0,0.05)] overflow-hidden group hover:border-blue-300 transition-colors">
+			<div class="absolute left-0 top-0 bottom-0 w-1 bg-blue-500"></div>
+			<div class="flex items-start justify-between pl-2">
+			<div>
+				<div class="text-xs font-bold text-gray-500 uppercase tracking-wide mb-1">対象ユーザー数</div>
+				<div id="summary-users" class="text-3xl font-bold text-gray-800 tracking-tight">0</div>
+			</div>
+			<div class="flex p-2 bg-blue-50 rounded-lg text-blue-600">
+				<span class="material-symbols-outlined icon-md">group</span>
+			</div>
+			</div>
+		</div>
 
-    <div class="grid grid-cols-1 sm:grid-cols-3 gap-5">
-      <div class="relative bg-white border border-gray-200 rounded-xl p-5 shadow-[0_1px_2px_rgba(0,0,0,0.05)] overflow-hidden group hover:border-blue-300 transition-colors">
-        <div class="absolute left-0 top-0 bottom-0 w-1 bg-blue-500"></div>
-        <div class="flex items-start justify-between pl-2">
-          <div>
-            <div class="text-xs font-bold text-gray-500 uppercase tracking-wide mb-1">対象ユーザー数</div>
-            <div id="summary-users" class="text-3xl font-bold text-gray-800 tracking-tight">0</div>
-          </div>
-          <div class="p-2 bg-blue-50 rounded-lg text-blue-600">
-            <span class="material-symbols-outlined icon-md">group</span>
-          </div>
-        </div>
-      </div>
+		<div class="relative bg-white border border-gray-200 rounded-xl p-5 shadow-[0_1px_2px_rgba(0,0,0,0.05)] overflow-hidden group hover:border-indigo-300 transition-colors">
+			<div class="absolute left-0 top-0 bottom-0 w-1 bg-indigo-500"></div>
+			<div class="flex items-start justify-between pl-2">
+			<div>
+				<div class="text-xs font-bold text-gray-500 uppercase tracking-wide mb-1">申込件数</div>
+				<div id="summary-applications" class="text-3xl font-bold text-gray-800 tracking-tight">0</div>
+			</div>
+			<div class="flex p-2 bg-indigo-50 rounded-lg text-indigo-600">
+				<span class="material-symbols-outlined icon-md">list_alt</span>
+			</div>
+			</div>
+		</div>
 
-      <div class="relative bg-white border border-gray-200 rounded-xl p-5 shadow-[0_1px_2px_rgba(0,0,0,0.05)] overflow-hidden group hover:border-indigo-300 transition-colors">
-        <div class="absolute left-0 top-0 bottom-0 w-1 bg-indigo-500"></div>
-        <div class="flex items-start justify-between pl-2">
-          <div>
-            <div class="text-xs font-bold text-gray-500 uppercase tracking-wide mb-1">申込件数</div>
-            <div id="summary-applications" class="text-3xl font-bold text-gray-800 tracking-tight">0</div>
-          </div>
-          <div class="p-2 bg-indigo-50 rounded-lg text-indigo-600">
-            <span class="material-symbols-outlined icon-md">list_alt</span>
-          </div>
-        </div>
-      </div>
+		<div class="relative bg-white border border-gray-200 rounded-xl p-5 shadow-[0_1px_2px_rgba(0,0,0,0.05)] overflow-hidden group hover:border-orange-300 transition-colors">
+			<div class="absolute left-0 top-0 bottom-0 w-1 bg-orange-500"></div>
+			<div class="flex items-start justify-between pl-2">
+			<div>
+				<div class="text-xs font-bold text-gray-500 uppercase tracking-wide mb-1">未承認の申込</div>
+				<div id="summary-pending" class="text-3xl font-bold text-orange-500 tracking-tight">0</div>
+			</div>
+			<div class="flex p-2 bg-orange-50 rounded-lg text-orange-500">
+				<span class="material-symbols-outlined icon-md">pending_actions</span>
+			</div>
+			</div>
+		</div>
+		</div>
 
-      <div class="relative bg-white border border-gray-200 rounded-xl p-5 shadow-[0_1px_2px_rgba(0,0,0,0.05)] overflow-hidden group hover:border-orange-300 transition-colors">
-        <div class="absolute left-0 top-0 bottom-0 w-1 bg-orange-500"></div>
-        <div class="flex items-start justify-between pl-2">
-          <div>
-            <div class="text-xs font-bold text-gray-500 uppercase tracking-wide mb-1">未承認の申込</div>
-            <div id="summary-pending" class="text-3xl font-bold text-orange-500 tracking-tight">0</div>
-          </div>
-          <div class="p-2 bg-orange-50 rounded-lg text-orange-500">
-            <span class="material-symbols-outlined icon-md">pending_actions</span>
-          </div>
-        </div>
-      </div>
-    </div>
+		<section class="space-y-4">
+		<div class="flex items-end justify-between px-1">
+			<h2 class="text-lg font-bold text-gray-800 flex items-center gap-2">
+			<span class="material-symbols-outlined text-gray-400 icon-md">table_rows</span>
+			申込一覧
+			</h2>
+			
+			<div class="flex items-center gap-3 text-xs font-medium text-gray-600 bg-white px-3 py-1.5 rounded-lg border border-gray-200 shadow-sm">
+			<span class="flex items-center gap-1.5">
+				<span class="w-2 h-2 rounded-full bg-blue-500"></span> 承認
+			</span>
+			<span class="flex items-center gap-1.5">
+				<span class="w-2 h-2 rounded-full bg-red-500"></span> 否認
+			</span>
+			<span class="flex items-center gap-1.5">
+				<span class="w-2 h-2 rounded-full bg-orange-400"></span> 保留 / 未承認
+			</span>
+			</div>
+		</div>
 
-    <section class="space-y-4">
-      <div class="flex items-end justify-between px-1">
-        <h2 class="text-lg font-bold text-gray-800 flex items-center gap-2">
-          <span class="material-symbols-outlined text-gray-400 icon-md">table_rows</span>
-          申込一覧
-        </h2>
-        
-        <div class="flex items-center gap-3 text-xs font-medium text-gray-600 bg-white px-3 py-1.5 rounded-lg border border-gray-200 shadow-sm">
-          <span class="flex items-center gap-1.5">
-            <span class="w-2 h-2 rounded-full bg-blue-500"></span> 承認
-          </span>
-          <span class="flex items-center gap-1.5">
-            <span class="w-2 h-2 rounded-full bg-red-500"></span> 否認
-          </span>
-          <span class="flex items-center gap-1.5">
-            <span class="w-2 h-2 rounded-full bg-orange-400"></span> 保留 / 未承認
-          </span>
-        </div>
-      </div>
+		<div class="bg-gray-100/50 rounded-lg border border-gray-200 p-2 flex flex-wrap items-center justify-between gap-3">
+			<div class="flex items-center gap-3 pl-2">
+			<span class="material-symbols-outlined text-gray-400 icon-sm">check_box</span>
+			<span id="selected-count" class="text-sm font-bold text-gray-700">選択中：0件</span>
+			</div>
+			<div class="flex items-center gap-2">
+			<button id="btn-approve-selected"
+					class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-blue-600 text-white font-bold text-xs disabled:opacity-50 disabled:cursor-not-allowed hover:bg-blue-700 hover:shadow transition-all"
+					disabled>
+				<span class="material-symbols-outlined icon-sm">done_all</span>
+				選択行を承認
+			</button>
+			<button id="btn-deny-selected"
+					class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-red-600 text-white font-bold text-xs disabled:opacity-50 disabled:cursor-not-allowed hover:bg-red-700 hover:shadow transition-all"
+					disabled>
+				<span class="material-symbols-outlined icon-sm">cancel</span>
+				選択行を否認
+			</button>
+			</div>
+		</div>
 
-      <div class="bg-gray-100/50 rounded-lg border border-gray-200 p-2 flex flex-wrap items-center justify-between gap-3">
-        <div class="flex items-center gap-3 pl-2">
-          <span class="material-symbols-outlined text-gray-400 icon-sm">check_box</span>
-          <span id="selected-count" class="text-sm font-bold text-gray-700">選択中：0件</span>
-        </div>
-        <div class="flex items-center gap-2">
-          <button id="btn-approve-selected"
-                  class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-blue-600 text-white font-bold text-xs disabled:opacity-50 disabled:cursor-not-allowed hover:bg-blue-700 hover:shadow transition-all"
-                  disabled>
-            <span class="material-symbols-outlined icon-sm">done_all</span>
-            選択行を承認
-          </button>
-          <button id="btn-deny-selected"
-                  class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-red-600 text-white font-bold text-xs disabled:opacity-50 disabled:cursor-not-allowed hover:bg-red-700 hover:shadow transition-all"
-                  disabled>
-            <span class="material-symbols-outlined icon-sm">cancel</span>
-            選択行を否認
-          </button>
-        </div>
-      </div>
+		<div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+			<table class="w-full text-sm text-left">
+			<thead class="bg-gray-50/80 border-b border-gray-200 text-xs text-gray-500 uppercase tracking-wider">
+				<tr>
+				<th class="px-4 py-3 w-12 text-center">
+					<input type="checkbox" id="check-all"
+						class="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer" />
+				</th>
+				<th class="px-4 py-3 font-semibold">ユーザー</th>
+				<th class="px-4 py-3 font-semibold">所属</th>
+				<th class="px-4 py-3 font-semibold">コース名</th>
+				<th class="px-4 py-3 font-semibold">申込日</th>
+				<th class="px-4 py-3 font-semibold">開講日</th>
+				<th class="px-4 py-3 font-semibold">ステータス</th>
+				<th class="px-4 py-3 font-semibold w-64">コメント</th>
+				</tr>
+			</thead>
+			<tbody id="application-rows" class="divide-y divide-gray-100">
+				</tbody>
+			</table>
+		</div>
 
-      <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-        <table class="w-full text-sm text-left">
-          <thead class="bg-gray-50/80 border-b border-gray-200 text-xs text-gray-500 uppercase tracking-wider">
-            <tr>
-              <th class="px-4 py-3 w-12 text-center">
-                <input type="checkbox" id="check-all"
-                       class="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer" />
-              </th>
-              <th class="px-4 py-3 font-semibold">ユーザー</th>
-              <th class="px-4 py-3 font-semibold">所属</th>
-              <th class="px-4 py-3 font-semibold">コース名</th>
-              <th class="px-4 py-3 font-semibold">申込日</th>
-              <th class="px-4 py-3 font-semibold">開講日</th>
-              <th class="px-4 py-3 font-semibold">ステータス</th>
-              <th class="px-4 py-3 font-semibold w-64">コメント</th>
-            </tr>
-          </thead>
-          <tbody id="application-rows" class="divide-y divide-gray-100">
-            </tbody>
-        </table>
-      </div>
+		<div class="flex justify-end pt-4">
+			<button id="btn-save-all"
+					class="inline-flex items-center gap-2 px-6 py-2.5 rounded-md bg-blue-600 text-white text-sm font-bold hover:bg-blue-700 shadow-sm hover:shadow transition-all">
+			<span class="material-symbols-outlined icon-sm">save</span>
+			変更を保存
+			</button>
+		</div>
+		</section>
+	</div>
 
-      <div class="flex justify-end pt-4">
-        <button id="btn-save-all"
-                class="inline-flex items-center gap-2 px-6 py-2.5 rounded-md bg-blue-600 text-white text-sm font-bold hover:bg-blue-700 shadow-sm hover:shadow transition-all">
-          <span class="material-symbols-outlined icon-sm">save</span>
-          変更を保存
-        </button>
-      </div>
-    </section>
-  </div>
+	<script>
+		// ====== フィルタの前提（stats 画面と合わせる） ======
+		const PERIODS = [
+		{ id: "all",       label: "すべての申込期間" },
+		{ id: "2026-h1",   label: "2026年度上期募集（例：2026/05/01〜05/15）" },
+		{ id: "2026-h2",   label: "2026年度下期募集（例：2026/11/01〜11/15）" }
+		];
 
-  <script>
-    // ====== フィルタの前提（stats 画面と合わせる） ======
-    const PERIODS = [
-      { id: "all",       label: "すべての申込期間" },
-      { id: "2026-h1",   label: "2026年度上期募集（例：2026/05/01〜05/15）" },
-      { id: "2026-h2",   label: "2026年度下期募集（例：2026/11/01〜11/15）" }
-    ];
+		const OPENINGS_BY_PERIOD = {
+		"all": [
+			{ id: "all", label: "すべての開講日" }
+		],
+		"2026-h1": [
+			{ id: "all",        label: "すべての開講日" },
+			{ id: "2026-06-01", label: "2026/06/01 開講" },
+			{ id: "2026-07-01", label: "2026/07/01 開講" }
+		],
+		"2026-h2": [
+			{ id: "all",        label: "すべての開講日" },
+			{ id: "2026-12-01", label: "2026/12/01 開講" },
+			{ id: "2026-12-15", label: "2026/12/15 開講" },
+			{ id: "2027-01-05", label: "2027/01/05 開講" }
+		]
+		};
 
-    const OPENINGS_BY_PERIOD = {
-      "all": [
-        { id: "all", label: "すべての開講日" }
-      ],
-      "2026-h1": [
-        { id: "all",        label: "すべての開講日" },
-        { id: "2026-06-01", label: "2026/06/01 開講" },
-        { id: "2026-07-01", label: "2026/07/01 開講" }
-      ],
-      "2026-h2": [
-        { id: "all",        label: "すべての開講日" },
-        { id: "2026-12-01", label: "2026/12/01 開講" },
-        { id: "2026-12-15", label: "2026/12/15 開講" },
-        { id: "2027-01-05", label: "2027/01/05 開講" }
-      ]
-    };
+		// ====== 申込データ（1レコード = 1ユーザー×1コース×1開講） ======
+		// action: 承認 / 否認 / 保留（承認ワークフロー上の内部状態）
+		const APPLICATION_STATS = [
+		{
+			periodId: "all",
+			openingId: "all",
+			applications: [
+			{
+				id: "a001",
+				userId: "u001",
+				userName: "山田 太郎",
+				org: "第一営業部",
+				courseName: "基礎から学ぶExcel",
+				appliedAt: "2026/05/02",
+				openingDate: "2026/06/01",
+				status: "申請中",
+				action: "保留",
+				comment: ""
+			},
+			{
+				id: "a002",
+				userId: "u001",
+				userName: "山田 太郎",
+				org: "第一営業部",
+				courseName: "DX入門",
+				appliedAt: "2026/05/05",
+				openingDate: "2026/06/01",
+				status: "承認済み",
+				action: "承認",
+				comment: ""
+			},
+			{
+				id: "a003",
+				userId: "u001",
+				userName: "山田 太郎",
+				org: "第一営業部",
+				courseName: "ビジネス文章講座",
+				appliedAt: "2026/05/10",
+				openingDate: "2026/07/01",
+				status: "申請中",
+				action: "保留",
+				comment: ""
+			},
+			{
+				id: "a004",
+				userId: "u002",
+				userName: "佐藤 花子",
+				org: "人事部",
+				courseName: "DX入門",
+				appliedAt: "2026/11/03",
+				openingDate: "2026/12/01",
+				status: "承認済み",
+				action: "承認",
+				comment: ""
+			},
+			{
+				id: "a005",
+				userId: "u002",
+				userName: "佐藤 花子",
+				org: "人事部",
+				courseName: "ビジネス文章講座",
+				appliedAt: "2026/11/05",
+				openingDate: "2026/12/15",
+				status: "承認済み",
+				action: "承認",
+				comment: ""
+			},
+			{
+				id: "a006",
+				userId: "u003",
+				userName: "鈴木 一郎",
+				org: "第二営業部",
+				courseName: "プロジェクト管理",
+				appliedAt: "2026/05/12",
+				openingDate: "2026/07/01",
+				status: "申請中",
+				action: "保留",
+				comment: ""
+			}
+			]
+		},
+		// 2026-h1 × all
+		{
+			periodId: "2026-h1",
+			openingId: "all",
+			applications: [
+			{
+				id: "a001",
+				userId: "u001",
+				userName: "山田 太郎",
+				org: "第一営業部",
+				courseName: "基礎から学ぶExcel",
+				appliedAt: "2026/05/02",
+				openingDate: "2026/06/01",
+				status: "申請中",
+				action: "保留",
+				comment: ""
+			},
+			{
+				id: "a002",
+				userId: "u001",
+				userName: "山田 太郎",
+				org: "第一営業部",
+				courseName: "DX入門",
+				appliedAt: "2026/05/05",
+				openingDate: "2026/06/01",
+				status: "承認済み",
+				action: "承認",
+				comment: ""
+			},
+			{
+				id: "a003",
+				userId: "u001",
+				userName: "山田 太郎",
+				org: "第一営業部",
+				courseName: "ビジネス文章講座",
+				appliedAt: "2026/05/10",
+				openingDate: "2026/07/01",
+				status: "申請中",
+				action: "保留",
+				comment: ""
+			},
+			{
+				id: "a006",
+				userId: "u003",
+				userName: "鈴木 一郎",
+				org: "第二営業部",
+				courseName: "プロジェクト管理",
+				appliedAt: "2026/05/12",
+				openingDate: "2026/07/01",
+				status: "申請中",
+				action: "保留",
+				comment: ""
+			}
+			]
+		},
+		// 2026-h1 × 2026-06-01
+		{
+			periodId: "2026-h1",
+			openingId: "2026-06-01",
+			applications: [
+			{
+				id: "a001",
+				userId: "u001",
+				userName: "山田 太郎",
+				org: "第一営業部",
+				courseName: "基礎から学ぶExcel",
+				appliedAt: "2026/05/02",
+				openingDate: "2026/06/01",
+				status: "申請中",
+				action: "保留",
+				comment: ""
+			},
+			{
+				id: "a002",
+				userId: "u001",
+				userName: "山田 太郎",
+				org: "第一営業部",
+				courseName: "DX入門",
+				appliedAt: "2026/05/05",
+				openingDate: "2026/06/01",
+				status: "承認済み",
+				action: "承認",
+				comment: ""
+			}
+			]
+		},
+		// 2026-h1 × 2026-07-01
+		{
+			periodId: "2026-h1",
+			openingId: "2026-07-01",
+			applications: [
+			{
+				id: "a003",
+				userId: "u001",
+				userName: "山田 太郎",
+				org: "第一営業部",
+				courseName: "ビジネス文章講座",
+				appliedAt: "2026/05/10",
+				openingDate: "2026/07/01",
+				status: "申請中",
+				action: "保留",
+				comment: ""
+			},
+			{
+				id: "a006",
+				userId: "u003",
+				userName: "鈴木 一郎",
+				org: "第二営業部",
+				courseName: "プロジェクト管理",
+				appliedAt: "2026/05/12",
+				openingDate: "2026/07/01",
+				status: "申請中",
+				action: "保留",
+				comment: ""
+			}
+			]
+		}
+		// 必要に応じて 2026-h2 も追加
+		];
 
-    // ====== 申込データ（1レコード = 1ユーザー×1コース×1開講） ======
-    // action: 承認 / 否認 / 保留（承認ワークフロー上の内部状態）
-    const APPLICATION_STATS = [
-      {
-        periodId: "all",
-        openingId: "all",
-        applications: [
-          {
-            id: "a001",
-            userId: "u001",
-            userName: "山田 太郎",
-            org: "第一営業部",
-            courseName: "基礎から学ぶExcel",
-            appliedAt: "2026/05/02",
-            openingDate: "2026/06/01",
-            status: "申請中",
-            action: "保留",
-            comment: ""
-          },
-          {
-            id: "a002",
-            userId: "u001",
-            userName: "山田 太郎",
-            org: "第一営業部",
-            courseName: "DX入門",
-            appliedAt: "2026/05/05",
-            openingDate: "2026/06/01",
-            status: "承認済み",
-            action: "承認",
-            comment: ""
-          },
-          {
-            id: "a003",
-            userId: "u001",
-            userName: "山田 太郎",
-            org: "第一営業部",
-            courseName: "ビジネス文章講座",
-            appliedAt: "2026/05/10",
-            openingDate: "2026/07/01",
-            status: "申請中",
-            action: "保留",
-            comment: ""
-          },
-          {
-            id: "a004",
-            userId: "u002",
-            userName: "佐藤 花子",
-            org: "人事部",
-            courseName: "DX入門",
-            appliedAt: "2026/11/03",
-            openingDate: "2026/12/01",
-            status: "承認済み",
-            action: "承認",
-            comment: ""
-          },
-          {
-            id: "a005",
-            userId: "u002",
-            userName: "佐藤 花子",
-            org: "人事部",
-            courseName: "ビジネス文章講座",
-            appliedAt: "2026/11/05",
-            openingDate: "2026/12/15",
-            status: "承認済み",
-            action: "承認",
-            comment: ""
-          },
-          {
-            id: "a006",
-            userId: "u003",
-            userName: "鈴木 一郎",
-            org: "第二営業部",
-            courseName: "プロジェクト管理",
-            appliedAt: "2026/05/12",
-            openingDate: "2026/07/01",
-            status: "申請中",
-            action: "保留",
-            comment: ""
-          }
-        ]
-      },
-      // 2026-h1 × all
-      {
-        periodId: "2026-h1",
-        openingId: "all",
-        applications: [
-          {
-            id: "a001",
-            userId: "u001",
-            userName: "山田 太郎",
-            org: "第一営業部",
-            courseName: "基礎から学ぶExcel",
-            appliedAt: "2026/05/02",
-            openingDate: "2026/06/01",
-            status: "申請中",
-            action: "保留",
-            comment: ""
-          },
-          {
-            id: "a002",
-            userId: "u001",
-            userName: "山田 太郎",
-            org: "第一営業部",
-            courseName: "DX入門",
-            appliedAt: "2026/05/05",
-            openingDate: "2026/06/01",
-            status: "承認済み",
-            action: "承認",
-            comment: ""
-          },
-          {
-            id: "a003",
-            userId: "u001",
-            userName: "山田 太郎",
-            org: "第一営業部",
-            courseName: "ビジネス文章講座",
-            appliedAt: "2026/05/10",
-            openingDate: "2026/07/01",
-            status: "申請中",
-            action: "保留",
-            comment: ""
-          },
-          {
-            id: "a006",
-            userId: "u003",
-            userName: "鈴木 一郎",
-            org: "第二営業部",
-            courseName: "プロジェクト管理",
-            appliedAt: "2026/05/12",
-            openingDate: "2026/07/01",
-            status: "申請中",
-            action: "保留",
-            comment: ""
-          }
-        ]
-      },
-      // 2026-h1 × 2026-06-01
-      {
-        periodId: "2026-h1",
-        openingId: "2026-06-01",
-        applications: [
-          {
-            id: "a001",
-            userId: "u001",
-            userName: "山田 太郎",
-            org: "第一営業部",
-            courseName: "基礎から学ぶExcel",
-            appliedAt: "2026/05/02",
-            openingDate: "2026/06/01",
-            status: "申請中",
-            action: "保留",
-            comment: ""
-          },
-          {
-            id: "a002",
-            userId: "u001",
-            userName: "山田 太郎",
-            org: "第一営業部",
-            courseName: "DX入門",
-            appliedAt: "2026/05/05",
-            openingDate: "2026/06/01",
-            status: "承認済み",
-            action: "承認",
-            comment: ""
-          }
-        ]
-      },
-      // 2026-h1 × 2026-07-01
-      {
-        periodId: "2026-h1",
-        openingId: "2026-07-01",
-        applications: [
-          {
-            id: "a003",
-            userId: "u001",
-            userName: "山田 太郎",
-            org: "第一営業部",
-            courseName: "ビジネス文章講座",
-            appliedAt: "2026/05/10",
-            openingDate: "2026/07/01",
-            status: "申請中",
-            action: "保留",
-            comment: ""
-          },
-          {
-            id: "a006",
-            userId: "u003",
-            userName: "鈴木 一郎",
-            org: "第二営業部",
-            courseName: "プロジェクト管理",
-            appliedAt: "2026/05/12",
-            openingDate: "2026/07/01",
-            status: "申請中",
-            action: "保留",
-            comment: ""
-          }
-        ]
-      }
-      // 必要に応じて 2026-h2 も追加
-    ];
+		// ====== DOM ======
+		const periodSelect    = document.getElementById("filter-period");
+		const openingSelect   = document.getElementById("filter-opening");
+		const filterLabel     = document.getElementById("filter-label");
+		const rowsBody        = document.getElementById("application-rows");
+		const summaryUsers    = document.getElementById("summary-users");
+		const summaryApps     = document.getElementById("summary-applications");
+		const summaryPending  = document.getElementById("summary-pending");
+		const btnSaveAll      = document.getElementById("btn-save-all");
+		const checkAll        = document.getElementById("check-all");
+		const selectedCountEl = document.getElementById("selected-count");
+		const btnApproveSel   = document.getElementById("btn-approve-selected");
+		const btnDenySel      = document.getElementById("btn-deny-selected");
+		//const btnPendSel      = document.getElementById("btn-pend-selected");
 
-    // ====== DOM ======
-    const periodSelect    = document.getElementById("filter-period");
-    const openingSelect   = document.getElementById("filter-opening");
-    const filterLabel     = document.getElementById("filter-label");
-    const rowsBody        = document.getElementById("application-rows");
-    const summaryUsers    = document.getElementById("summary-users");
-    const summaryApps     = document.getElementById("summary-applications");
-    const summaryPending  = document.getElementById("summary-pending");
-    const btnSaveAll      = document.getElementById("btn-save-all");
-    const checkAll        = document.getElementById("check-all");
-    const selectedCountEl = document.getElementById("selected-count");
-    const btnApproveSel   = document.getElementById("btn-approve-selected");
-    const btnDenySel      = document.getElementById("btn-deny-selected");
-    //const btnPendSel      = document.getElementById("btn-pend-selected");
+		let currentPeriodId  = "all";
+		let currentOpeningId = "all";
 
-    let currentPeriodId  = "all";
-    let currentOpeningId = "all";
+		// ====== フィルタ初期化 ======
+		function initPeriodOptions() {
+		PERIODS.forEach(p => {
+			const opt = document.createElement("option");
+			opt.value = p.id;
+			opt.textContent = p.label;
+			periodSelect.appendChild(opt);
+		});
+		periodSelect.value = "all";
+		}
 
-    // ====== フィルタ初期化 ======
-    function initPeriodOptions() {
-      PERIODS.forEach(p => {
-        const opt = document.createElement("option");
-        opt.value = p.id;
-        opt.textContent = p.label;
-        periodSelect.appendChild(opt);
-      });
-      periodSelect.value = "all";
-    }
+		function initOpeningOptions(periodId) {
+		openingSelect.innerHTML = "";
+		const list = OPENINGS_BY_PERIOD[periodId] || OPENINGS_BY_PERIOD["all"];
+		list.forEach(o => {
+			const opt = document.createElement("option");
+			opt.value = o.id;
+			opt.textContent = o.label;
+			openingSelect.appendChild(opt);
+		});
 
-    function initOpeningOptions(periodId) {
-      openingSelect.innerHTML = "";
-      const list = OPENINGS_BY_PERIOD[periodId] || OPENINGS_BY_PERIOD["all"];
-      list.forEach(o => {
-        const opt = document.createElement("option");
-        opt.value = o.id;
-        opt.textContent = o.label;
-        openingSelect.appendChild(opt);
-      });
+		if (periodId === "all") {
+			openingSelect.value = "all";
+			openingSelect.disabled = true;
+		} else {
+			openingSelect.disabled = false;
+		}
+		}
 
-      if (periodId === "all") {
-        openingSelect.value = "all";
-        openingSelect.disabled = true;
-      } else {
-        openingSelect.disabled = false;
-      }
-    }
+		function updateFilterLabel() {
+		const period = PERIODS.find(p => p.id === currentPeriodId);
+		const openings = OPENINGS_BY_PERIOD[currentPeriodId] || OPENINGS_BY_PERIOD["all"];
+		const opening  = openings.find(o => o.id === currentOpeningId) || openings[0];
 
-    function updateFilterLabel() {
-      const period = PERIODS.find(p => p.id === currentPeriodId);
-      const openings = OPENINGS_BY_PERIOD[currentPeriodId] || OPENINGS_BY_PERIOD["all"];
-      const opening  = openings.find(o => o.id === currentOpeningId) || openings[0];
+		if (currentPeriodId === "all") {
+			filterLabel.textContent = "すべての申込期間・開講日を対象";
+		} else if (currentOpeningId === "all") {
+			filterLabel.textContent = `${period?.label ?? ""}／すべての開講日を対象`;
+		} else {
+			filterLabel.textContent = `${period?.label ?? ""}／${opening?.label ?? ""} を対象`;
+		}
+		}
 
-      if (currentPeriodId === "all") {
-        filterLabel.textContent = "すべての申込期間・開講日を対象";
-      } else if (currentOpeningId === "all") {
-        filterLabel.textContent = `${period?.label ?? ""}／すべての開講日を対象`;
-      } else {
-        filterLabel.textContent = `${period?.label ?? ""}／${opening?.label ?? ""} を対象`;
-      }
-    }
+		function findApplications(periodId, openingId) {
+		let found = APPLICATION_STATS.find(s => s.periodId === periodId && s.openingId === openingId);
+		if (!found) {
+			found = APPLICATION_STATS.find(s => s.periodId === periodId && s.openingId === "all");
+		}
+		if (!found) {
+			found = APPLICATION_STATS.find(s => s.periodId === "all" && s.openingId === "all");
+		}
+		return found?.applications ?? [];
+		}
 
-    function findApplications(periodId, openingId) {
-      let found = APPLICATION_STATS.find(s => s.periodId === periodId && s.openingId === openingId);
-      if (!found) {
-        found = APPLICATION_STATS.find(s => s.periodId === periodId && s.openingId === "all");
-      }
-      if (!found) {
-        found = APPLICATION_STATS.find(s => s.periodId === "all" && s.openingId === "all");
-      }
-      return found?.applications ?? [];
-    }
+		// ====== 選択状態の更新 ======
+		function updateSelectionState() {
+		const checkboxes = rowsBody.querySelectorAll('input[type="checkbox"][data-app-id]');
+		let selectedCount = 0;
+		checkboxes.forEach(cb => { if (cb.checked) selectedCount++; });
 
-    // ====== 選択状態の更新 ======
-    function updateSelectionState() {
-      const checkboxes = rowsBody.querySelectorAll('input[type="checkbox"][data-app-id]');
-      let selectedCount = 0;
-      checkboxes.forEach(cb => { if (cb.checked) selectedCount++; });
+		selectedCountEl.textContent = `選択中：${selectedCount}件`;
+		const disabled = selectedCount === 0;
+		[btnApproveSel, btnDenySel].forEach(btn => {
+			btn.disabled = disabled;
+		});
 
-      selectedCountEl.textContent = `選択中：${selectedCount}件`;
-      const disabled = selectedCount === 0;
-      [btnApproveSel, btnDenySel].forEach(btn => {
-        btn.disabled = disabled;
-      });
+		// 全選択チェックボックスの状態
+		if (checkboxes.length === 0) {
+			checkAll.checked = false;
+			checkAll.indeterminate = false;
+		} else if (selectedCount === 0) {
+			checkAll.checked = false;
+			checkAll.indeterminate = false;
+		} else if (selectedCount === checkboxes.length) {
+			checkAll.checked = true;
+			checkAll.indeterminate = false;
+		} else {
+			checkAll.checked = false;
+			checkAll.indeterminate = true;
+		}
+		}
 
-      // 全選択チェックボックスの状態
-      if (checkboxes.length === 0) {
-        checkAll.checked = false;
-        checkAll.indeterminate = false;
-      } else if (selectedCount === 0) {
-        checkAll.checked = false;
-        checkAll.indeterminate = false;
-      } else if (selectedCount === checkboxes.length) {
-        checkAll.checked = true;
-        checkAll.indeterminate = false;
-      } else {
-        checkAll.checked = false;
-        checkAll.indeterminate = true;
-      }
-    }
+		function applyBulkAction(actionLabel) {
+		const checkboxes = rowsBody.querySelectorAll('input[type="checkbox"][data-app-id]');
+		const targets = [];
+		checkboxes.forEach(cb => {
+			if (cb.checked) targets.push(cb.getAttribute("data-app-id"));
+		});
+		if (targets.length === 0) return;
 
-    function applyBulkAction(actionLabel) {
-      const checkboxes = rowsBody.querySelectorAll('input[type="checkbox"][data-app-id]');
-      const targets = [];
-      checkboxes.forEach(cb => {
-        if (cb.checked) targets.push(cb.getAttribute("data-app-id"));
-      });
-      if (targets.length === 0) return;
+		const ok = confirm(`選択中の ${targets.length} 件を「${actionLabel}」に更新します。よろしいですか？`);
+		if (!ok) return;
 
-      const ok = confirm(`選択中の ${targets.length} 件を「${actionLabel}」に更新します。よろしいですか？`);
-      if (!ok) return;
+		// 全グループの applications から該当IDの action を更新
+		APPLICATION_STATS.forEach(group => {
+			group.applications.forEach(a => {
+			if (targets.includes(a.id)) {
+				a.action = actionLabel;
+			}
+			});
+		});
 
-      // 全グループの applications から該当IDの action を更新
-      APPLICATION_STATS.forEach(group => {
-        group.applications.forEach(a => {
-          if (targets.includes(a.id)) {
-            a.action = actionLabel;
-          }
-        });
-      });
+		// 再描画（選択状態はクリアされる）
+		renderApplications();
+		}
 
-      // 再描画（選択状態はクリアされる）
-      renderApplications();
-    }
+		// ====== 描画 ======
+		function renderApplications() {
+		const apps = findApplications(currentPeriodId, currentOpeningId);
 
-    // ====== 描画 ======
-    function renderApplications() {
-      const apps = findApplications(currentPeriodId, currentOpeningId);
+		// サマリー
+		const userSet = new Set(apps.map(a => a.userId));
+		summaryUsers.textContent   = userSet.size;
+		summaryApps.textContent    = apps.length;
+		summaryPending.textContent = apps.filter(a => a.action === "保留" || a.status === "申請中").length;
 
-      // サマリー
-      const userSet = new Set(apps.map(a => a.userId));
-      summaryUsers.textContent   = userSet.size;
-      summaryApps.textContent    = apps.length;
-      summaryPending.textContent = apps.filter(a => a.action === "保留" || a.status === "申請中").length;
+		rowsBody.innerHTML = "";
+		checkAll.checked = false;
+		checkAll.indeterminate = false;
+		selectedCountEl.textContent = "選択中：0件";
+		[btnApproveSel, btnDenySel].forEach(btn => btn.disabled = true);
 
-      rowsBody.innerHTML = "";
-      checkAll.checked = false;
-      checkAll.indeterminate = false;
-      selectedCountEl.textContent = "選択中：0件";
-      [btnApproveSel, btnDenySel].forEach(btn => btn.disabled = true);
+		if (apps.length === 0) {
+			const tr = document.createElement("tr");
+			tr.innerHTML = `<td class="p-12 text-center text-gray-400" colspan="8">
+				<div class="flex flex-col items-center gap-2">
+					<span class="material-symbols-outlined text-4xl text-gray-300">search_off</span>
+					<span class="text-sm font-medium">条件に一致する申込はありません</span>
+				</div>
+			</td>`;
+			rowsBody.appendChild(tr);
+			return;
+		}
 
-      if (apps.length === 0) {
-        const tr = document.createElement("tr");
-        tr.innerHTML = `<td class="p-12 text-center text-gray-400" colspan="8">
-            <div class="flex flex-col items-center gap-2">
-                <span class="material-symbols-outlined text-4xl text-gray-300">search_off</span>
-                <span class="text-sm font-medium">条件に一致する申込はありません</span>
-            </div>
-        </td>`;
-        rowsBody.appendChild(tr);
-        return;
-      }
+		apps.forEach(app => {
+			const tr = document.createElement("tr");
+			tr.className = "hover:bg-gray-50/70 transition-colors";
+			const dotClass =
+			app.action === "承認" ? "bg-blue-500"
+			: app.action === "否認" ? "bg-red-500"
+			: "bg-orange-400";
+			
+			// バッジスタイル
+			const statusBadgeClass = 
+				app.action === "承認" ? "bg-blue-50 text-blue-700 border-blue-100"
+			: app.action === "否認" ? "bg-red-50 text-red-700 border-red-100"
+			: "bg-orange-50 text-orange-700 border-orange-100";
 
-      apps.forEach(app => {
-        const tr = document.createElement("tr");
-        tr.className = "hover:bg-gray-50/70 transition-colors";
-        const dotClass =
-          app.action === "承認" ? "bg-blue-500"
-          : app.action === "否認" ? "bg-red-500"
-          : "bg-orange-400";
-        
-        // バッジスタイル
-        const statusBadgeClass = 
-            app.action === "承認" ? "bg-blue-50 text-blue-700 border-blue-100"
-          : app.action === "否認" ? "bg-red-50 text-red-700 border-red-100"
-          : "bg-orange-50 text-orange-700 border-orange-100";
+			tr.innerHTML = `
+			<td class="px-4 py-3 align-middle text-center">
+				<input type="checkbox"
+					class="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer row-check"
+					data-app-id="${app.id}" />
+			</td>
+			<td class="px-4 py-3 align-middle">
+				<div class="flex flex-col">
+				<span class="font-bold text-gray-800 text-sm">${app.userName}</span>
+				<span class="text-xs text-gray-400 font-mono">ID: ${app.userId}</span>
+				</div>
+			</td>
+			<td class="px-4 py-3 align-middle">
+				<span class="text-xs text-gray-600 bg-gray-100 px-2 py-1 rounded border border-gray-200">${app.org}</span>
+			</td>
+			<td class="px-4 py-3 align-middle">
+				<span class="text-sm font-medium text-gray-700">${app.courseName}</span>
+			</td>
+			<td class="px-4 py-3 align-middle text-xs text-gray-500">
+				${app.appliedAt}
+			</td>
+			<td class="px-4 py-3 align-middle text-xs text-gray-500">
+				${app.openingDate}
+			</td>
+			<td class="px-4 py-3 align-middle text-xs">
+				<div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded border ${statusBadgeClass}">
+				<span class="w-1.5 h-1.5 rounded-full ${dotClass}"></span>
+				<span class="font-medium">${app.status}（${app.action}）</span>
+				</div>
+			</td>
+			<td class="px-4 py-3 align-middle">
+				<input type="text"
+					class="w-full text-xs rounded-md border-gray-300 focus:ring-blue-500 focus:border-blue-500 placeholder-gray-400 bg-gray-50 focus:bg-white transition-colors"
+					placeholder="コメントを入力..."
+					data-app-comment="${app.id}"
+					value="${app.comment || ""}" />
+			</td>
+			`;
+			rowsBody.appendChild(tr);
+		});
 
-        tr.innerHTML = `
-          <td class="px-4 py-3 align-middle text-center">
-            <input type="checkbox"
-                   class="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer row-check"
-                   data-app-id="${app.id}" />
-          </td>
-          <td class="px-4 py-3 align-middle">
-            <div class="flex flex-col">
-              <span class="font-bold text-gray-800 text-sm">${app.userName}</span>
-              <span class="text-xs text-gray-400 font-mono">ID: ${app.userId}</span>
-            </div>
-          </td>
-          <td class="px-4 py-3 align-middle">
-            <span class="text-xs text-gray-600 bg-gray-100 px-2 py-1 rounded border border-gray-200">${app.org}</span>
-          </td>
-          <td class="px-4 py-3 align-middle">
-            <span class="text-sm font-medium text-gray-700">${app.courseName}</span>
-          </td>
-          <td class="px-4 py-3 align-middle text-xs text-gray-500">
-            ${app.appliedAt}
-          </td>
-          <td class="px-4 py-3 align-middle text-xs text-gray-500">
-            ${app.openingDate}
-          </td>
-          <td class="px-4 py-3 align-middle text-xs">
-            <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded border ${statusBadgeClass}">
-              <span class="w-1.5 h-1.5 rounded-full ${dotClass}"></span>
-              <span class="font-medium">${app.status}（${app.action}）</span>
-            </div>
-          </td>
-          <td class="px-4 py-3 align-middle">
-            <input type="text"
-                   class="w-full text-xs rounded-md border-gray-300 focus:ring-blue-500 focus:border-blue-500 placeholder-gray-400 bg-gray-50 focus:bg-white transition-colors"
-                   placeholder="コメントを入力..."
-                   data-app-comment="${app.id}"
-                   value="${app.comment || ""}" />
-          </td>
-        `;
-        rowsBody.appendChild(tr);
-      });
+		// チェックボックスイベント
+		rowsBody.querySelectorAll('.row-check').forEach(cb => {
+			cb.addEventListener("change", updateSelectionState);
+		});
 
-      // チェックボックスイベント
-      rowsBody.querySelectorAll('.row-check').forEach(cb => {
-        cb.addEventListener("change", updateSelectionState);
-      });
+		// コメント入力をデータに反映（blurベースにしておく）
+		rowsBody.querySelectorAll('input[data-app-comment]').forEach(inp => {
+			inp.addEventListener("blur", () => {
+			const appId = inp.getAttribute("data-app-comment");
+			const value = inp.value;
+			APPLICATION_STATS.forEach(group => {
+				group.applications.forEach(a => {
+				if (a.id === appId) a.comment = value;
+				});
+			});
+			});
+		});
+		}
 
-      // コメント入力をデータに反映（blurベースにしておく）
-      rowsBody.querySelectorAll('input[data-app-comment]').forEach(inp => {
-        inp.addEventListener("blur", () => {
-          const appId = inp.getAttribute("data-app-comment");
-          const value = inp.value;
-          APPLICATION_STATS.forEach(group => {
-            group.applications.forEach(a => {
-              if (a.id === appId) a.comment = value;
-            });
-          });
-        });
-      });
-    }
+		// ====== 初期化 ======
+		document.addEventListener("DOMContentLoaded", () => {
+		initPeriodOptions();
+		initOpeningOptions("all");
+		updateFilterLabel();
+		renderApplications();
 
-    // ====== 初期化 ======
-    document.addEventListener("DOMContentLoaded", () => {
-      initPeriodOptions();
-      initOpeningOptions("all");
-      updateFilterLabel();
-      renderApplications();
+		periodSelect.addEventListener("change", () => {
+			currentPeriodId = periodSelect.value;
+			initOpeningOptions(currentPeriodId);
+			currentOpeningId = openingSelect.value || "all";
+			updateFilterLabel();
+			renderApplications();
+		});
 
-      periodSelect.addEventListener("change", () => {
-        currentPeriodId = periodSelect.value;
-        initOpeningOptions(currentPeriodId);
-        currentOpeningId = openingSelect.value || "all";
-        updateFilterLabel();
-        renderApplications();
-      });
+		openingSelect.addEventListener("change", () => {
+			currentOpeningId = openingSelect.value || "all";
+			updateFilterLabel();
+			renderApplications();
+		});
 
-      openingSelect.addEventListener("change", () => {
-        currentOpeningId = openingSelect.value || "all";
-        updateFilterLabel();
-        renderApplications();
-      });
+		checkAll.addEventListener("change", () => {
+			const checked = checkAll.checked;
+			rowsBody.querySelectorAll('.row-check').forEach(cb => {
+			cb.checked = checked;
+			});
+			updateSelectionState();
+		});
 
-      checkAll.addEventListener("change", () => {
-        const checked = checkAll.checked;
-        rowsBody.querySelectorAll('.row-check').forEach(cb => {
-          cb.checked = checked;
-        });
-        updateSelectionState();
-      });
+		btnApproveSel.addEventListener("click", () => applyBulkAction("承認"));
+		btnDenySel.addEventListener("click", () => applyBulkAction("否認"));
+		//btnPendSel.addEventListener("click", () => applyBulkAction("保留"));
 
-      btnApproveSel.addEventListener("click", () => applyBulkAction("承認"));
-      btnDenySel.addEventListener("click", () => applyBulkAction("否認"));
-      //btnPendSel.addEventListener("click", () => applyBulkAction("保留"));
-
-      btnSaveAll.addEventListener("click", () => {
-        // 実装時はここで API 連携
-        alert("モック：ここでサーバーに承認情報を送信するイメージです。");
-      });
-    });
-  </script>
-</body>
+		btnSaveAll.addEventListener("click", () => {
+			// 実装時はここで API 連携
+			alert("モック：ここでサーバーに承認情報を送信するイメージです。");
+		});
+		});
+	</script>
+	</body>
 </html>
