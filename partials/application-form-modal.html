@@ -9,20 +9,20 @@
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
 
     <style>
-        /* デザイン統一のための基本スタイル */
-        body { font-family: 'Noto Sans JP', sans-serif; }
-        .material-symbols-outlined {
-            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-            vertical-align: middle;
-        }
-        .icon-sm { font-size: 1.125rem !important; }
-        .icon-md { font-size: 1.25rem !important; }
+      /* デザイン統一のための基本スタイル */
+      body { font-family: 'Noto Sans JP', sans-serif; }
+      .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        vertical-align: middle;
+      }
+      .icon-sm { font-size: 1.125rem !important; }
+      .icon-md { font-size: 1.25rem !important; }
 
-        /* カスタムスクロールバー */
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 20px; }
-        ::-webkit-scrollbar-thumb:hover { background-color: #94a3b8; }
+      /* カスタムスクロールバー */
+      ::-webkit-scrollbar { width: 6px; height: 6px; }
+      ::-webkit-scrollbar-track { background: transparent; }
+      ::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 20px; }
+      ::-webkit-scrollbar-thumb:hover { background-color: #94a3b8; }
     </style>
   </head>
   <body class="bg-gray-50 text-gray-900 antialiased">
@@ -30,8 +30,8 @@
       
       <header class="sticky top-0 z-20 bg-white/95 backdrop-blur-sm border-b border-gray-100 px-6 py-4">
         <div class="flex items-center gap-2 mb-1">
-            <span class="material-symbols-outlined text-blue-600">assignment_add</span>
-            <h1 class="text-lg font-bold text-gray-800 tracking-tight">申込フォーム設定</h1>
+          <span class="material-symbols-outlined text-blue-600">assignment_add</span>
+          <h1 class="text-lg font-bold text-gray-800 tracking-tight">申込フォーム設定</h1>
         </div>
         <p class="text-xs text-gray-500 ml-8">参加者に登録を求める項目と、その必須/任意の扱いを設定します。</p>
       </header>
@@ -115,19 +115,24 @@
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-[200px_1fr] items-center gap-4 p-5 hover:bg-gray-50/50 transition-colors">
+            <div class="p-5 bg-gray-50/30 border-t border-gray-100">
+              <div class="flex items-center justify-between mb-4">
                 <div>
-                    <div class="text-sm font-bold text-gray-800">自由設定項目</div>
-                    <div class="text-xs text-gray-400 mt-0.5">フリーテキスト入力欄</div>
+                  <div class="text-sm font-bold text-gray-800">独自追加項目</div>
+                  <div class="text-xs text-gray-400 mt-0.5">アンケートや独自ヒアリング事項を設定</div>
                 </div>
-                <div class="flex flex-col sm:flex-row sm:items-center gap-4">
-                    <segment-control name="free_req" value="none"></segment-control>
-                    
-                    <div class="flex items-center gap-2">
-                        <label class="text-xs text-gray-500 font-bold whitespace-nowrap">質問文:</label>
-                        <input type="text" id="free-input" class="h-8 w-48 rounded border border-gray-300 px-2 text-xs focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="例）希望する連絡時間帯" disabled>
-                    </div>
+                <button type="button" id="add-custom-field-btn" class="text-xs flex items-center gap-1 bg-white border border-blue-200 text-blue-600 px-3 py-1.5 rounded-md font-bold hover:bg-blue-50 transition-colors shadow-sm">
+                  <span class="material-symbols-outlined icon-sm">add</span>
+                  項目を追加
+                </button>
+              </div>
+
+              <div id="custom-fields-container" class="space-y-3">
                 </div>
+              
+              <div id="custom-fields-empty" class="hidden text-center py-6 border border-dashed border-gray-200 rounded-lg">
+                <span class="text-xs text-gray-400">追加された項目はありません</span>
+              </div>
             </div>
 
           </div>
@@ -142,7 +147,6 @@
           </div>
           
           <div class="divide-y divide-gray-100">
-            
             <div class="grid grid-cols-1 md:grid-cols-[200px_1fr] items-center gap-4 p-5 hover:bg-gray-50/50 transition-colors">
                 <div>
                     <div class="text-sm font-bold text-gray-800">上司承認プロセス</div>
@@ -152,36 +156,6 @@
                     <custom-toggle checked="false" label-on="有効" label-off="無効"></custom-toggle>
                 </div>
             </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-[200px_1fr] items-start gap-4 p-5 hover:bg-gray-50/50 transition-colors">
-                <div class="mt-1">
-                    <div class="text-sm font-bold text-gray-800">事前アンケート</div>
-                    <div class="text-xs text-gray-400 mt-0.5">申込完了後に回答を求める</div>
-                </div>
-                <div class="w-full">
-                    <div class="mb-4">
-                        <custom-toggle id="survey-toggle" checked="true" label-on="あり" label-off="なし"></custom-toggle>
-                    </div>
-
-                    <div id="survey-area" class="rounded-xl border border-dashed border-blue-200 bg-blue-50/50 p-4 transition-all duration-300 overflow-hidden">
-                        <div class="flex items-center gap-2 mb-2">
-                            <span class="material-symbols-outlined text-blue-500 icon-md">playlist_add_check</span>
-                            <span class="text-xs font-bold text-blue-700">アンケート設定エリア</span>
-                        </div>
-                        <div class="space-y-2">
-                            <div class="bg-white p-3 rounded border border-blue-100 shadow-sm flex items-center gap-3 opacity-60">
-                                <span class="material-symbols-outlined text-gray-300">drag_indicator</span>
-                                <div class="h-2 w-32 bg-gray-100 rounded"></div>
-                                <div class="h-2 w-16 bg-gray-100 rounded ml-auto"></div>
-                            </div>
-                            <div class="text-center py-2">
-                                <button class="text-xs text-blue-600 font-bold hover:underline">＋ 質問を追加する</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
           </div>
         </section>
 
@@ -204,37 +178,120 @@
     <script src="../js/components/segment-control.js"></script>
     
     <script>
-        // アンケートエリアの表示切り替えロジック
-        const surveyToggle = document.getElementById('survey-toggle');
-        const surveyArea = document.getElementById('survey-area');
-        
-        if (surveyToggle) {
-            surveyToggle.addEventListener('change', (e) => {
-                const isOn = e.detail.checked;
-                if (isOn) {
-                    surveyArea.classList.remove('hidden', 'opacity-0', 'h-0', 'p-0', 'border-0');
-                    surveyArea.classList.add('p-4', 'border', 'opacity-100', 'h-auto');
-                } else {
-                    surveyArea.classList.add('hidden', 'opacity-0', 'h-0', 'p-0', 'border-0');
-                    surveyArea.classList.remove('p-4', 'border', 'opacity-100', 'h-auto');
-                }
-            });
+        /* * 独自追加項目（マルチ）管理ロジック 
+         */
+        const container = document.getElementById('custom-fields-container');
+        const addBtn = document.getElementById('add-custom-field-btn');
+        const emptyMsg = document.getElementById('custom-fields-empty');
+
+        // ユニークID生成用
+        const generateId = () => 'field_' + Math.random().toString(36).substr(2, 9);
+
+        // 項目追加処理
+        const addCustomField = () => {
+            const id = generateId();
+            
+            const fieldHTML = `
+                <div class="group bg-white rounded-lg border border-gray-200 p-4 shadow-sm transition-all hover:border-blue-300 hover:shadow-md relative" id="${id}">
+                    <button type="button" onclick="removeField('${id}')" class="absolute top-2 right-2 text-gray-300 hover:text-red-500 transition-colors p-1 rounded-md hover:bg-red-50">
+                        <span class="material-symbols-outlined icon-sm">delete</span>
+                    </button>
+
+                    <div class="grid grid-cols-1 md:grid-cols-12 gap-4">
+                        
+                        <div class="md:col-span-7 space-y-3">
+                            <div>
+                                <label class="block text-xs font-bold text-gray-500 mb-1">項目名（質問文）</label>
+                                <input type="text" class="w-full text-sm font-bold text-gray-800 border-b border-gray-200 focus:border-blue-500 focus:outline-none py-1 transition-colors bg-transparent placeholder-gray-300" placeholder="例）懇親会の参加有無">
+                            </div>
+                            
+                            <div class="grid grid-cols-2 gap-3">
+                                <div>
+                                    <label class="block text-[10px] font-bold text-gray-400 mb-1">入力タイプ</label>
+                                    <select onchange="handleTypeChange(this, '${id}')" class="w-full text-xs border border-gray-200 rounded bg-gray-50 px-2 py-1.5 focus:outline-none focus:ring-1 focus:ring-blue-500 cursor-pointer">
+                                        <option value="text">1行テキスト</option>
+                                        <option value="textarea">複数行テキスト</option>
+                                        <option value="select">セレクトボックス</option>
+                                        <option value="radio">ラジオボタン</option>
+                                        <option value="checkbox">チェックボックス</option>
+                                    </select>
+                                </div>
+                                <div class="flex flex-col justify-end">
+                                     <segment-control name="req_${id}" options="optional:任意, required:必須" value="optional"></segment-control>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="md:col-span-5 border-l border-gray-100 pl-4 flex flex-col justify-center">
+                            <div class="options-config hidden" id="options_area_${id}">
+                                <label class="block text-xs font-bold text-blue-600 mb-1 flex items-center gap-1">
+                                    <span class="material-symbols-outlined text-[14px]">list</span>
+                                    選択肢設定
+                                </label>
+                                <textarea class="w-full h-20 text-xs border border-blue-100 rounded bg-blue-50/30 p-2 focus:outline-none focus:border-blue-400 resize-none placeholder-blue-300" placeholder="カンマ区切りで入力&#13;&#10;例）参加する, 参加しない, 未定"></textarea>
+                                <p class="text-[10px] text-gray-400 mt-1 text-right">※カンマ(,)で区切ってください</p>
+                            </div>
+                            <div class="text-center text-xs text-gray-300 py-4" id="no_options_msg_${id}">
+                                選択肢の設定は不要です
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // HTML挿入
+            container.insertAdjacentHTML('beforeend', fieldHTML);
+            updateEmptyState();
+        };
+
+        // 項目削除処理
+        window.removeField = (id) => {
+            const el = document.getElementById(id);
+            if (el) {
+                // アニメーションっぽく消す
+                el.style.opacity = '0';
+                el.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    el.remove();
+                    updateEmptyState();
+                }, 200);
+            }
+        };
+
+        // 入力タイプ変更時の表示制御
+        window.handleTypeChange = (select, id) => {
+            const val = select.value;
+            const optionsArea = document.getElementById(`options_area_${id}`);
+            const msgArea = document.getElementById(`no_options_msg_${id}`);
+            
+            // 選択肢が必要なタイプ
+            const needsOptions = ['select', 'radio', 'checkbox'].includes(val);
+
+            if (needsOptions) {
+                optionsArea.classList.remove('hidden');
+                msgArea.classList.add('hidden');
+            } else {
+                optionsArea.classList.add('hidden');
+                msgArea.classList.remove('hidden');
+            }
+        };
+
+        // 表示状態更新
+        const updateEmptyState = () => {
+            if (container.children.length === 0) {
+                emptyMsg.classList.remove('hidden');
+            } else {
+                emptyMsg.classList.add('hidden');
+            }
+        };
+
+        // イベントリスナー登録
+        if (addBtn) {
+            addBtn.addEventListener('click', addCustomField);
         }
-        
-        // 自由入力項目の活性制御
-        const freeControl = document.querySelector('segment-control[name="free_req"]');
-        const freeInput = document.getElementById('free-input');
-        
-        if (freeControl && freeInput) {
-            freeControl.addEventListener('change', (e) => {
-                const val = e.detail.value;
-                freeInput.disabled = (val === 'none');
-                
-                if(!freeInput.disabled) {
-                    freeInput.focus();
-                }
-            });
-        }
+
+        // 初期化
+        updateEmptyState();
     </script>
   </body>
 </html>
