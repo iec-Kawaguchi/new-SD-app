@@ -1,6 +1,6 @@
 :root {
   /* ここでフォントを一元管理 */
-  --font-main: "Yu Gothic", "Noto Sans JP", "Hiragino Kaku Gothic ProN", sans-serif;
+  --font-main: "Noto Sans JP", "Hiragino Kaku Gothic ProN", sans-serif;
   --font-code: "HackGen", "Consolas", monospace; /* プログラム用などに */
   
   /* ついでにメインの色なども変数にしておくと便利です */
