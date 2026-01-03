@@ -13,6 +13,18 @@
         <script type="module" src="./js/pages/media-plan-course.js" defer></script>
 
         <style>
+            /* カスタムスクロールバーなどのスタイルが必要であればここに記述 */
+            .custom-scrollbar::-webkit-scrollbar {
+                width: 6px;
+                height: 6px;
+            }
+            .custom-scrollbar::-webkit-scrollbar-track {
+                background: transparent;
+            }
+            .custom-scrollbar::-webkit-scrollbar-thumb {
+                background-color: #cbd5e1;
+                border-radius: 3px;
+            }
         </style>
     </head>
     <body class="bg-gray-50 h-screen overflow-hidden flex flex-col text-gray-900 antialiased">
@@ -87,16 +99,18 @@
                                     </div>
                                 </div>
 
-                                <div class="grid grid-cols-[3rem_4rem_1fr_6rem_4rem_8rem_10rem] text-xs font-bold text-gray-500 bg-gray-50/80 border-b border-gray-200 px-4 py-3 shrink-0">
+                                <div class="grid grid-cols-[3rem_4rem_4rem_1fr_6rem_4rem_8rem_15rem] text-xs font-bold text-gray-500 bg-gray-50/80 border-b border-gray-200 px-4 py-3 shrink-0">
                                     <div class="flex items-center justify-center">
                                         <input id="selectAll" type="checkbox" class="rounded border-gray-300 text-blue-600 focus:ring-blue-500 h-4 w-4 cursor-pointer" title="すべて選択">
                                     </div>
+                                    <div class="flex items-center justify-center"></div>
                                     <div class="flex items-center" data-col="order">No.</div>
                                     <div class="flex items-center">コース名</div>
                                     <div class="flex items-center" data-col="org">団体</div>
                                     <div class="flex items-center justify-center">状態</div>
                                     <div class="flex items-center" data-col="stdTag">標準タグ</div>
                                     <div class="flex items-center" data-col="customTag">カスタムタグ</div>
+                                    
                                 </div>
 
                                 <div id="list" class="flex-1 overflow-y-auto custom-scrollbar bg-white">
@@ -131,11 +145,12 @@
                                         </div>
                                         
                                         <div class="ml-auto flex items-center gap-2">
-                                            <button id="markDeleteRequest" class="inline-flex items-center px-3 py-1.5 rounded bg-white border border-red-200 text-red-600 text-xs hover:bg-red-50 transition-colors">
+                                            <button id="markDeleteRequest" class="inline-flex items-center px-3 py-1.5 rounded bg-white border border-red-200 text-red-600 text-xs hover:bg-red-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
                                                 <span class="material-symbols-outlined icon-sm mr-1">delete_sweep</span>削除希望
                                             </button>
-                                            <button class="inline-flex items-center px-3 py-1.5 rounded bg-red-600 text-white text-xs font-bold hover:bg-red-700 transition-colors shadow-sm">
-                                                <span class="material-symbols-outlined icon-sm mr-1">delete</span>削除
+                                            
+                                            <button id="bulk-delete-physical" class="inline-flex items-center px-3 py-1.5 rounded bg-red-600 text-white text-xs font-bold hover:bg-red-700 transition-colors shadow-sm disabled:opacity-50 disabled:bg-gray-400 disabled:cursor-not-allowed">
+                                                <span class="material-symbols-outlined icon-sm mr-1">close</span>提案取消
                                             </button>
                                         </div>
                                     </div>
@@ -177,8 +192,7 @@
                                     <span class="material-symbols-outlined text-6xl mb-4 text-gray-200">plagiarism</span>
                                     <p class="text-sm font-medium">コースを選択すると<br>詳細プレビューが表示されます</p>
                                 </div>
-                                
-                                </aside>
+                            </aside>
                         </div>
                     </div>
                 </div>
@@ -229,5 +243,50 @@
                 </div>
             </div>
         </div>
+
+        <div id="tag-modal" class="fixed inset-0 z-[100] bg-gray-900/50 backdrop-blur-sm hidden items-center justify-center transition-opacity duration-200 p-4">
+            <div class="bg-white rounded-xl shadow-2xl w-full max-w-lg flex flex-col overflow-hidden transform scale-100 transition-transform">
+                <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-white shrink-0">
+                    <h2 class="text-lg font-bold text-gray-800 flex items-center gap-2">
+                        <span class="material-symbols-outlined text-blue-600 icon-md">label</span>
+                        カスタムタグ編集
+                    </h2>
+                    <button id="close-tag-modal" class="text-gray-400 hover:text-gray-600 hover:bg-gray-100 p-1 rounded-full transition-colors">
+                        <span class="material-symbols-outlined icon-md">close</span>
+                    </button>
+                </div>
+
+                <div class="flex-1 overflow-y-auto custom-scrollbar bg-white p-6">
+                    <div class="space-y-6">
+                        <div>
+                            <h3 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">対象</h3>
+                            <div id="tag-group-target" class="grid grid-cols-2 gap-2"></div>
+                        </div>
+                        <div>
+                            <h3 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">ジャンル</h3>
+                            <div id="tag-group-genre" class="grid grid-cols-2 gap-2"></div>
+                        </div>
+                        <div>
+                            <h3 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">レベル</h3>
+                            <div id="tag-group-level" class="grid grid-cols-2 gap-2"></div>
+                        </div>
+                        <div>
+                            <h3 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">その他</h3>
+                            <div id="tag-group-other" class="grid grid-cols-2 gap-2"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="px-6 py-4 bg-gray-50 border-t border-gray-100 flex justify-end gap-3 shrink-0">
+                    <button id="cancel-tag-modal" class="px-4 py-2 rounded-md bg-white border border-gray-300 text-gray-700 text-sm font-medium hover:bg-gray-50 hover:border-gray-400 transition-all shadow-sm">
+                        キャンセル
+                    </button>
+                    <button id="save-tag-modal" class="px-5 py-2 rounded-md bg-blue-600 text-white text-sm font-bold hover:bg-blue-700 shadow-sm hover:shadow transition-all">
+                        設定を保存
+                    </button>
+                </div>
+            </div>
+        </div>
+
     </body>
 </html>
