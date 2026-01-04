@@ -12,6 +12,12 @@
         <script src="./js/mock-ui.js" defer></script>
 
         <style>
+            body { font-family: 'Noto Sans JP', sans-serif; }
+            .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+            .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+            .custom-scrollbar::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 20px; }
+            .icon-sm { font-size: 20px !important; }
+            .icon-md { font-size: 24px !important; }
         </style>
     </head>
     <body class="h-full text-gray-900 antialiased flex flex-col">
@@ -30,7 +36,7 @@
                         <span class="text-sm font-bold text-gray-700 whitespace-nowrap">対象企業:</span>
                         <div class="relative w-full md:w-64">
                             <select class="h-10 appearance-none bg-gray-50 border border-gray-300 text-gray-700 text-sm rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 block w-full pl-3 pr-8 leading-tight transition-colors">
-                                <option value="1">IEC株式会社</option>
+                                <option value="1">○○食品株式会社</option>
                                 <option value="2">テスト企業A</option>
                             </select>
                             <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-500">
@@ -48,8 +54,7 @@
                                 <span class="text-sm font-semibold text-gray-500 uppercase tracking-wider">階層レベル 1</span>
                                 <span class="bg-white border border-gray-200 text-gray-600 text-sm px-2 py-0.5 rounded-full font-bold shadow-sm" id="count-lvl1">0</span>
                             </div>
-                            <div class="flex-1 overflow-y-auto custom-scrollbar p-3 space-y-1" id="list-lvl1">
-                                </div>
+                            <div class="flex-1 overflow-y-auto custom-scrollbar p-3 space-y-1" id="list-lvl1"></div>
                             <div class="p-3 border-t border-gray-100 bg-white">
                                 <form id="form-lvl1" class="flex gap-2" onsubmit="return false;">
                                     <input type="text" placeholder="名称..." class="h-10 flex-1 min-w-0 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 block px-3 transition-shadow" required>
@@ -68,7 +73,7 @@
                             <div class="flex-1 overflow-y-auto custom-scrollbar p-3 space-y-1 relative" id="list-lvl2">
                                 <div class="absolute inset-0 flex flex-col items-center justify-center text-gray-400 pointer-events-none p-4 text-center">
                                     <span class="material-symbols-outlined text-4xl mb-2 text-gray-300">arrow_back</span>
-                                    <span class="text-sm">左側の「本部」を選択してください</span>
+                                    <span class="text-sm">左側の「階層レベル 1」を選択してください</span>
                                 </div>
                             </div>
                             <div class="p-3 border-t border-gray-100 bg-white relative">
@@ -90,7 +95,7 @@
                             <div class="flex-1 overflow-y-auto custom-scrollbar p-3 space-y-1 relative" id="list-lvl3">
                                 <div class="absolute inset-0 flex flex-col items-center justify-center text-gray-400 pointer-events-none p-4 text-center">
                                     <span class="material-symbols-outlined text-4xl mb-2 text-gray-300">arrow_back</span>
-                                    <span class="text-sm">左側の「部」を選択してください</span>
+                                    <span class="text-sm">左側の「階層レベル 2」を選択してください</span>
                                 </div>
                             </div>
                             <div class="p-3 border-t border-gray-100 bg-white relative">
@@ -118,23 +123,78 @@
             </main>
         </div>
 
+        <div id="edit-modal" class="fixed inset-0 z-50 hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+            <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity backdrop-blur-sm" onclick="closeEditModal()"></div>
+    
+            <div class="fixed inset-0 z-10 overflow-y-auto pointer-events-none">
+                <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0 pointer-events-auto">
+                    <div class="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
+                        <form id="edit-form" onsubmit="return false;">
+                            <div class="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
+                                <h3 class="text-lg font-semibold leading-6 text-gray-900 mb-4" id="modal-title">組織情報の編集</h3>
+                                
+                                <div class="space-y-4">
+                                    <div>
+                                        <label for="edit-name" class="block text-sm font-medium text-gray-700">組織名称</label>
+                                        <input type="text" id="edit-name" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm h-10 border px-3" required>
+                                    </div>
+    
+                                    <div class="p-4 bg-blue-50 rounded-md border border-blue-100 transition-all duration-300" data-visible-for="iec">
+                                        <div class="flex items-center gap-2 mb-2">
+                                            <div class="p-1 bg-blue-100 rounded text-blue-700">
+                                                <span class="material-symbols-outlined icon-sm block">domain</span>
+                                            </div>
+                                            <label for="edit-office" class="block text-sm font-bold text-blue-900">事業所マスター紐付け</label>
+                                            <span class="text-[10px] bg-blue-600 text-white px-2 py-0.5 rounded-full ml-auto font-medium">IEC Admin Only</span>
+                                        </div>
+                                        <p class="text-xs text-blue-700 mb-3 leading-relaxed">
+                                            基幹システムの「事業所マスター」とこの組織をリンクさせます。<br>
+                                            <span class="opacity-75">※この設定は一般ユーザーには表示されません。</span>
+                                        </p>
+                                        <select id="edit-office" class="bg-white block w-full rounded-md border-gray-300 text-gray-900 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm h-10 border px-3">
+                                            <option value="">(紐付けなし)</option>
+                                            </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
+                                <button type="button" id="btn-save-edit" class="inline-flex w-full justify-center rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 sm:ml-3 sm:w-auto">保存する</button>
+                                <button type="button" onclick="closeEditModal()" class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto">キャンセル</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <script>
             // Mock Data Generator
             const generateId = () => Math.random().toString(36).substr(2, 9);
             
-            // 初期データ (親子関係を持った構造)
+            // --- 1. Master Data Definitions ---
+
+            // 基幹システム側の事業所マスター (Mock)
+            const officeMasterData = [
+                { id: 'off_01', name: '東京本社 (HQ)' },
+                { id: 'off_02', name: '大阪支店' },
+                { id: 'off_03', name: '名古屋営業所' },
+                { id: 'off_04', name: '福岡配送センター' },
+                { id: 'off_05', name: 'R&Dセンター' }
+            ];
+
+            // 組織データ (officeIdを追加)
             const orgData = [
                 {
-                    id: '1', name: '営業本部', children: [
-                        { id: '1-1', name: '第一営業部', children: [
+                    id: '1', name: '営業本部', officeId: 'off_01', children: [
+                        { id: '1-1', name: '第一営業部', officeId: 'off_01', children: [
                             { id: '1-1-1', name: '営業一課' },
                             { id: '1-1-2', name: '営業二課' }
                         ]},
-                        { id: '1-2', name: '第二営業部', children: [] }
+                        { id: '1-2', name: '第二営業部', officeId: 'off_02', children: [] }
                     ]
                 },
                 {
-                    id: '2', name: '管理本部', children: [
+                    id: '2', name: '管理本部', officeId: 'off_01', children: [
                         { id: '2-1', name: '人事総務部', children: [
                             { id: '2-1-1', name: '採用チーム' },
                             { id: '2-1-2', name: '労務チーム' }
@@ -142,12 +202,16 @@
                         { id: '2-2', name: '経理部', children: [] }
                     ]
                 },
-                { id: '3', name: 'DX推進室', children: [] }
+                { id: '3', name: 'DX推進室', officeId: 'off_05', children: [] }
             ];
 
             // State
-            let currentLvl1 = null; // ID string
-            let currentLvl2 = null; // ID string
+            let currentLvl1 = null; 
+            let currentLvl2 = null; 
+
+            // Modal State
+            let editingTarget = null;
+            let renderCallback = null;
 
             // DOM Elements
             const els = {
@@ -162,23 +226,43 @@
                 form1: document.getElementById('form-lvl1'),
                 form2: document.getElementById('form-lvl2'),
                 form3: document.getElementById('form-lvl3'),
+                // Modal
+                modal: document.getElementById('edit-modal'),
+                modalName: document.getElementById('edit-name'),
+                modalOffice: document.getElementById('edit-office'),
+                btnSave: document.getElementById('btn-save-edit')
             };
 
-            // Initial Render
+            // --- 2. Initialization ---
+
             window.addEventListener('DOMContentLoaded', () => {
-                // MockUI Setup
+                // MockUI Setup (External JS)
                 if (typeof MockUI !== 'undefined') {
                     MockUI.injectHeader('#app-header', { userName: 'Test User', brand: 'New SD App' });
                     MockUI.injectSidebar('#app-sidebar');
                 }
+                
+                // Role Visibility Setup (External JS)
+                // data-visible-for属性を持つ要素の初期制御
                 if (typeof RoleMock !== 'undefined') {
                     RoleMock.applyRoleVisibility();
                 }
 
+                initOfficeSelect();
                 renderLvl1();
             });
 
-            // --- Render Functions ---
+            function initOfficeSelect() {
+                els.modalOffice.innerHTML = '<option value="">(紐付けなし)</option>';
+                officeMasterData.forEach(office => {
+                    const opt = document.createElement('option');
+                    opt.value = office.id;
+                    opt.textContent = office.name;
+                    els.modalOffice.appendChild(opt);
+                });
+            }
+
+            // --- 3. Render Functions ---
 
             function renderLvl1() {
                 els.list1.innerHTML = '';
@@ -187,8 +271,17 @@
                 orgData.forEach(item => {
                     const el = createItemElement(item, item.id === currentLvl1);
                     el.onclick = () => selectLvl1(item.id);
-                    // 削除ボタンの挙動（デモ）
-                    el.querySelector('[data-delete]').onclick = (e) => {
+                    
+                    // Edit
+                    const editBtn = el.querySelector('[data-edit]');
+                    if(editBtn) editBtn.onclick = (e) => {
+                        e.stopPropagation();
+                        openEditModal(item, () => { renderLvl1(); renderLvl2(); renderLvl3(); });
+                    };
+
+                    // Delete
+                    const delBtn = el.querySelector('[data-delete]');
+                    if(delBtn) delBtn.onclick = (e) => {
                         e.stopPropagation();
                         if(confirm('削除しますか？')) {
                             const idx = orgData.findIndex(d => d.id === item.id);
@@ -199,6 +292,9 @@
                     };
                     els.list1.appendChild(el);
                 });
+
+                // 【修正】新しく生成された要素に対して権限表示制御を再適用する
+                if (typeof RoleMock !== 'undefined') RoleMock.applyRoleVisibility();
             }
 
             function renderLvl2() {
@@ -207,8 +303,7 @@
                 if (!currentLvl1) {
                     els.count2.textContent = '-';
                     els.overlay2.classList.remove('hidden');
-                    // show placeholder
-                    els.list2.innerHTML = `<div class="absolute inset-0 flex flex-col items-center justify-center text-gray-400 pointer-events-none p-4 text-center"><span class="material-symbols-outlined text-4xl mb-2 text-gray-300">arrow_back</span><span class="text-sm">左側の「本部」を選択してください</span></div>`;
+                    els.list2.innerHTML = `<div class="absolute inset-0 flex flex-col items-center justify-center text-gray-400 pointer-events-none p-4 text-center"><span class="material-symbols-outlined text-4xl mb-2 text-gray-300">arrow_back</span><span class="text-sm">左側の「階層レベル 1」を選択してください</span></div>`;
                     return;
                 }
 
@@ -220,7 +315,15 @@
                 items.forEach(item => {
                     const el = createItemElement(item, item.id === currentLvl2);
                     el.onclick = () => selectLvl2(item.id);
-                    el.querySelector('[data-delete]').onclick = (e) => {
+                    
+                    const editBtn = el.querySelector('[data-edit]');
+                    if(editBtn) editBtn.onclick = (e) => {
+                        e.stopPropagation();
+                        openEditModal(item, () => { renderLvl2(); renderLvl3(); });
+                    };
+
+                    const delBtn = el.querySelector('[data-delete]');
+                    if(delBtn) delBtn.onclick = (e) => {
                         e.stopPropagation();
                         if(confirm('削除しますか？')) {
                             const idx = items.findIndex(d => d.id === item.id);
@@ -231,6 +334,9 @@
                     };
                     els.list2.appendChild(el);
                 });
+
+                // 【修正】新しく生成された要素に対して権限表示制御を再適用する
+                if (typeof RoleMock !== 'undefined') RoleMock.applyRoleVisibility();
             }
 
             function renderLvl3() {
@@ -239,7 +345,7 @@
                 if (!currentLvl1 || !currentLvl2) {
                     els.count3.textContent = '-';
                     els.overlay3.classList.remove('hidden');
-                    els.list3.innerHTML = `<div class="absolute inset-0 flex flex-col items-center justify-center text-gray-400 pointer-events-none p-4 text-center"><span class="material-symbols-outlined text-4xl mb-2 text-gray-300">arrow_back</span><span class="text-sm">左側の「部」を選択してください</span></div>`;
+                    els.list3.innerHTML = `<div class="absolute inset-0 flex flex-col items-center justify-center text-gray-400 pointer-events-none p-4 text-center"><span class="material-symbols-outlined text-4xl mb-2 text-gray-300">arrow_back</span><span class="text-sm">左側の「階層レベル 2」を選択してください</span></div>`;
                     return;
                 }
 
@@ -251,9 +357,16 @@
                 els.overlay3.classList.add('hidden');
 
                 items.forEach(item => {
-                    const el = createItemElement(item, false); // Lvl3 is leaf, no selection needed visually
-                    // leaf click logic (maybe edit?)
-                    el.querySelector('[data-delete]').onclick = (e) => {
+                    const el = createItemElement(item, false); 
+                    
+                    const editBtn = el.querySelector('[data-edit]');
+                    if(editBtn) editBtn.onclick = (e) => {
+                        e.stopPropagation();
+                        openEditModal(item, () => { renderLvl3(); });
+                    };
+
+                    const delBtn = el.querySelector('[data-delete]');
+                    if(delBtn) delBtn.onclick = (e) => {
                         e.stopPropagation();
                         const idx = items.findIndex(d => d.id === item.id);
                         items.splice(idx, 1);
@@ -261,26 +374,27 @@
                     };
                     els.list3.appendChild(el);
                 });
+
+                // 【修正】新しく生成された要素に対して権限表示制御を再適用する
+                if (typeof RoleMock !== 'undefined') RoleMock.applyRoleVisibility();
             }
 
-            // --- Logic Helpers ---
+            // --- 4. Logic Helpers ---
 
             function selectLvl1(id) {
                 currentLvl1 = id;
-                currentLvl2 = null; // reset child selection
-                renderLvl1(); // update active styling
+                currentLvl2 = null; 
+                renderLvl1(); 
                 renderLvl2();
                 renderLvl3();
             }
 
             function selectLvl2(id) {
                 currentLvl2 = id;
-                renderLvl2(); // update active styling
+                renderLvl2(); 
                 renderLvl3();
             }
 
-            // HTML Element Builder
-            // デザイン調整: Sky(水色)系からBlue(青)系へ変更し、ShadowやBorderの質感を統一
             function createItemElement(data, isActive) {
                 const div = document.createElement('div');
                 div.className = `group flex justify-between items-center p-3 rounded-lg cursor-pointer transition-all border ${
@@ -289,6 +403,14 @@
                     : 'bg-white border-transparent hover:bg-gray-50 hover:border-gray-100'
                 }`;
                 
+                // 紐付けバッジ (Link Badge)
+                const linkedOffice = officeMasterData.find(o => o.id === data.officeId);
+                const officeBadge = linkedOffice 
+                    ? `<span data-visible-for="iec" class="ml-2 inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-xs font-medium bg-indigo-50 text-indigo-700 border border-indigo-100" title="事業所: ${linkedOffice.name}">
+                        <span class="material-symbols-outlined text-xs">domain</span>${linkedOffice.name}
+                    </span>` 
+                    : '';
+
                 div.innerHTML = `
                     <div class="flex items-center gap-2 min-w-0">
                         <span class="material-symbols-outlined icon-sm ${isActive ? 'text-blue-600' : 'text-gray-400 group-hover:text-gray-500'}">
@@ -297,22 +419,72 @@
                         <span class="font-medium text-sm truncate ${isActive ? 'text-blue-900' : 'text-gray-700'}">
                             ${data.name}
                         </span>
+                        ${officeBadge}
                     </div>
                     <div class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity ${isActive ? 'opacity-100' : ''}">
-                         <button type="button" class="p-1 text-gray-400 hover:text-blue-600 rounded hover:bg-white transition" title="編集">
-                            <span class="material-symbols-outlined text-[16px]">edit</span>
+                        <button type="button" data-edit class="p-1 text-gray-400 hover:text-blue-600 rounded hover:bg-white transition" title="編集">
+                            <span class="material-symbols-outlined text-base">edit</span>
                         </button>
                         <button type="button" data-delete class="p-1 text-gray-400 hover:text-red-500 rounded hover:bg-white transition" title="削除">
-                            <span class="material-symbols-outlined text-[16px]">delete</span>
+                            <span class="material-symbols-outlined text-base">delete</span>
                         </button>
-                        ${isActive ? '<span class="material-symbols-outlined text-blue-400 text-[16px]">chevron_right</span>' : ''}
+                        ${isActive ? '<span class="material-symbols-outlined text-blue-400 text-base">chevron_right</span>' : ''}
                     </div>
                 `;
                 return div;
             }
 
-            // --- Form Handlers ---
+            // --- 5. Modal & Form Handlers ---
 
+            function openEditModal(data, callback) {
+                editingTarget = data;
+                renderCallback = callback;
+                
+                els.modalName.value = data.name;
+                els.modalOffice.value = data.officeId || '';
+                
+                els.modal.classList.remove('hidden');
+
+                // 重要: モーダルが開いたタイミングで可視性制御を再適用する
+                // RoleMockがグローバルにある前提
+                if (typeof RoleMock !== 'undefined') {
+                    RoleMock.applyRoleVisibility();
+                }
+            }
+
+            function closeEditModal() {
+                els.modal.classList.add('hidden');
+                editingTarget = null;
+                renderCallback = null;
+            }
+
+            // Save Handler
+            els.btnSave.addEventListener('click', () => {
+                if (!editingTarget) return;
+                
+                const newName = els.modalName.value.trim();
+                if (!newName) {
+                    alert('名称を入力してください');
+                    return;
+                }
+
+                // 名称更新
+                editingTarget.name = newName;
+                
+                // 事業所ID更新 (Roleによって入力欄が隠れている場合は更新しない、あるいは既存値を維持する判断が必要)
+                // ここでは「隠れていたら触らない」制御を入れる
+                const officeContainer = els.modalOffice.closest('[data-visible-for]');
+                const isHidden = officeContainer && window.getComputedStyle(officeContainer).display === 'none';
+
+                if (!isHidden) {
+                    editingTarget.officeId = els.modalOffice.value;
+                }
+
+                if (renderCallback) renderCallback();
+                closeEditModal();
+            });
+
+            // Add Form Handlers
             els.form1.addEventListener('submit', (e) => {
                 const input = e.target.querySelector('input');
                 if(!input.value.trim()) return;
