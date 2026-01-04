@@ -7,10 +7,11 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="./css/base-style.css">
+
     <style>
-        body { font-family: 'Noto+Sans+JP', sans-serif; }
         .accordion-content { transition: max-height 0.3s ease-out; overflow: hidden; }
-        .period-card.active { border-color: #3b82f6; ring: 2px; --tw-ring-color: #3b82f6; }
+        .period-card.active { border-color: #3b82f6;  --tw-ring-color: #3b82f6; }
         .dot-line::before {
             content: '';
             position: absolute;
@@ -20,6 +21,21 @@
             width: 2px;
             background-image: linear-gradient(to bottom, #e5e7eb 50%, transparent 50%);
             background-size: 2px 8px;
+        }
+		/* カスタムスクロールバー */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background-color: #cbd5e1;
+            border-radius: 20px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background-color: #94a3b8;
         }
     </style>
 </head>
