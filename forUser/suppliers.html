@@ -1,215 +1,215 @@
 <!DOCTYPE html>
 <html lang="ja">
-<head>
-    <meta charset="UTF-8" />
-    <title>参加団体一覧 | Course Catalog</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="js/header.js" defer></script>
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
-    <style>
-        body {
-            font-family: "Inter", "Noto Sans JP", system-ui, -apple-system, Segoe UI, sans-serif;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-        }
-        /* guidelines.htmlと共通の背景 */
-        .bg-grid {
-            background-image: radial-gradient(#e5e7eb 1px, transparent 1px);
-            background-size: 20px 20px;
-            mask-image: radial-gradient(ellipse 60% 60% at 50% 50%, #000 70%, transparent 100%);
-        }
-    </style>
-</head>
-<body class="bg-gray-50 text-slate-800 selection:bg-sky-200 selection:text-sky-900">
-    <div class="fixed inset-0 -z-10 bg-grid"></div>
-    
-    <div id="global-header" class="sticky top-0 z-40 w-full"></div>
-
-    <main class="max-w-5xl mx-auto px-4 sm:px-6 pb-16">
+    <head>
+        <meta charset="UTF-8" />
+        <title>参加団体一覧 | Course Catalog</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <script src="https://cdn.tailwindcss.com"></script>
+        <script src="js/header.js" defer></script>
+        <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+        <style>
+            body {
+                font-family: "Inter", "Noto Sans JP", system-ui, -apple-system, Segoe UI, sans-serif;
+                -webkit-font-smoothing: antialiased;
+                -moz-osx-font-smoothing: grayscale;
+            }
+            /* guidelines.htmlと共通の背景 */
+            .bg-grid {
+                background-image: radial-gradient(#e5e7eb 1px, transparent 1px);
+                background-size: 20px 20px;
+                mask-image: radial-gradient(ellipse 60% 60% at 50% 50%, #000 70%, transparent 100%);
+            }
+        </style>
+    </head>
+    <body class="bg-gray-50 text-slate-800 selection:bg-sky-200 selection:text-sky-900">
+        <div class="fixed inset-0 -z-10 bg-grid"></div>
         
-        <section class="mt-8">
-            <div class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-indigo-600 via-violet-600 to-sky-500 shadow-xl text-white">
-                <div class="absolute inset-0 opacity-30 pointer-events-none">
-                    <div class="absolute -left-12 -top-16 h-48 w-48 rounded-full bg-white/20 blur-3xl"></div>
-                    <div class="absolute right-0 bottom-0 h-64 w-64 rounded-full bg-emerald-200/30 blur-3xl"></div>
-                </div>
+        <div id="global-header" class="sticky top-0 z-40 w-full"></div>
 
-                <div class="relative p-8 sm:p-10 flex flex-col gap-4">
-                    
-                    
-                    <div class="max-w-3xl space-y-2">
-                        <h1 class="text-3xl sm:text-4xl font-extrabold leading-tight tracking-tight">教育団体一覧</h1>
-                        <p class="text-indigo-100/90 leading-relaxed text-sm sm:text-base">
-                            本募集制度に提携している教育機関・研修団体および各担当窓口の情報です。<br>
-                            お問い合わせや各種手続きの連絡先としてご活用ください。
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- <section class="mt-8">
-            <div class="rounded-3xl bg-white shadow-sm border border-slate-100 p-6">
-                <div class="flex flex-col md:flex-row gap-4 items-center">
-                    <div class="relative w-full md:flex-1">
-                        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">search</span>
-                        <input type="text" id="supplier-search" 
-                            class="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all placeholder:text-slate-400"
-                            placeholder="団体名、担当者名で検索..." />
-                    </div>
-                    </div>
-            </div>
-        </section> -->
-
-        <section class="mt-8 space-y-6">
-            <div class="flex items-center gap-2 px-2">
-                <span class="w-1.5 h-6 rounded-full bg-indigo-500"></span>
-                <h2 class="text-xl font-bold text-slate-900">団体リスト</h2>
-            </div>
-
-            <div id="suppliers-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-                </div>
-
-            <div id="no-results" class="hidden rounded-3xl border border-dashed border-slate-300 bg-slate-50/50 p-12 text-center">
-                <span class="material-symbols-outlined text-4xl text-slate-300 mb-2">search_off</span>
-                <p class="text-slate-500 font-medium">条件に一致する団体が見つかりませんでした</p>
-            </div>
-        </section>
-
-        <div class="mt-10 text-center">
-            <a href="top.html" class="inline-flex items-center gap-2 px-6 py-3 rounded-full border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 transition-colors shadow-sm font-medium">
-                <span class="material-symbols-outlined text-lg">arrow_back</span>
-                トップページへ戻る
-            </a>
-        </div>
-    </main>
-
-    <script>
-        // モックデータ (guidelinesの雰囲気に合うカラーリングで調整)
-        const suppliersData = [
-            {
-                id: 1,
-                name: "株式会社ラーニング・パス",
-                contact: "佐藤 健一",
-                email: "k.sato@learning-path.co.jp",
-                roles: ["sales", "apply"],
-                initial: "L",
-                theme: "indigo" 
-            },
-            {
-                id: 2,
-                name: "グローバル・アカデミー",
-                contact: "田中 美咲",
-                email: "m.tanaka@global-academy.edu",
-                roles: ["sales", "billing"],
-                initial: "G",
-                theme: "emerald"
-            },
-            {
-                id: 3,
-                name: "テック・フロンティア株式会社",
-                contact: "鈴木 一朗",
-                email: "suzuki.i@tech-frontier.jp",
-                roles: ["apply", "billing"],
-                initial: "T",
-                theme: "sky"
-            },
-            {
-                id: 4,
-                name: "日本ビジネス研修センター",
-                contact: "山田 花子",
-                email: "h.yamada@jbtc.or.jp",
-                roles: ["sales", "apply", "billing"],
-                initial: "J",
-                theme: "violet"
-            },
-            {
-                id: 5,
-                name: "Future Skills Lab",
-                contact: "高橋 啓介",
-                email: "k.takahashi@fsl.com",
-                roles: ["sales"],
-                initial: "F",
-                theme: "rose"
-            },
-            {
-                id: 6,
-                name: "合同会社クリエイティブ・マインド",
-                contact: "伊藤 翼",
-                email: "tsubasa.ito@creative-m.net",
-                roles: ["apply"],
-                initial: "C",
-                theme: "amber"
-            }
-        ];
-
-        const roleConfig = {
-            sales: { label: "営業担当", class: "bg-blue-50 text-blue-700 border-blue-100" },
-            apply: { label: "申込担当", class: "bg-emerald-50 text-emerald-700 border-emerald-100" },
-            billing: { label: "請求担当", class: "bg-purple-50 text-purple-700 border-purple-100" }
-        };
-
-        const gridEl = document.getElementById('suppliers-grid');
-        // const searchInput = document.getElementById('supplier-search');
-        const noResultsEl = document.getElementById('no-results');
-
-        function renderSuppliers(data) {
-            gridEl.innerHTML = '';
+        <main class="max-w-5xl mx-auto px-4 sm:px-6 pb-16">
             
-            if (data.length === 0) {
-                gridEl.classList.add('hidden');
-                noResultsEl.classList.remove('hidden');
-                return;
-            }
-            gridEl.classList.remove('hidden');
-            noResultsEl.classList.add('hidden');
+            <section class="mt-8">
+                <div class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-indigo-600 via-violet-600 to-sky-500 shadow-xl text-white">
+                    <div class="absolute inset-0 opacity-30 pointer-events-none">
+                        <div class="absolute -left-12 -top-16 h-48 w-48 rounded-full bg-white/20 blur-3xl"></div>
+                        <div class="absolute right-0 bottom-0 h-64 w-64 rounded-full bg-emerald-200/30 blur-3xl"></div>
+                    </div>
 
-            data.forEach(item => {
-                // ロールバッジ生成
-                const badgesHtml = item.roles.map(r => {
-                    const conf = roleConfig[r];
-                    return `<span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium border ${conf.class}">${conf.label}</span>`;
-                }).join('');
+                    <div class="relative p-8 sm:p-10 flex flex-col gap-4">
+                        
+                        
+                        <div class="max-w-3xl space-y-2">
+                            <h1 class="text-3xl sm:text-4xl font-extrabold leading-tight tracking-tight">教育団体一覧</h1>
+                            <p class="text-indigo-100/90 leading-relaxed text-sm sm:text-base">
+                                本募集制度に提携している教育機関・研修団体および各担当窓口の情報です。<br>
+                                お問い合わせや各種手続きの連絡先としてご活用ください。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
 
-                // テーマカラーに応じたクラス設定 (アイコン背景など)
-                const bgClass = `bg-${item.theme}-50`;
-                const textClass = `text-${item.theme}-600`;
-                const borderClass = `border-${item.theme}-100`;
+            <!-- <section class="mt-8">
+                <div class="rounded-3xl bg-white shadow-sm border border-slate-100 p-6">
+                    <div class="flex flex-col md:flex-row gap-4 items-center">
+                        <div class="relative w-full md:flex-1">
+                            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">search</span>
+                            <input type="text" id="supplier-search" 
+                                class="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none transition-all placeholder:text-slate-400"
+                                placeholder="団体名、担当者名で検索..." />
+                        </div>
+                        </div>
+                </div>
+            </section> -->
 
-                // カード生成: guidelines.htmlのHighlightsセクションのようなデザイン
-                const cardHtml = `
-                    <div class="group rounded-2xl border border-slate-100 bg-white shadow-sm hover:shadow-md hover:border-indigo-100 transition-all p-5 flex flex-col gap-4">
-                        <div>
-                            <h3 class="font-bold text-slate-900 group-hover:text-indigo-600 transition-colors">${item.name}</h3>
-                            <div class="mt-3 space-y-2 text-sm">
-                                <div class="flex items-center gap-2 text-slate-600">
-                                    <span class="material-symbols-outlined text-[18px] text-slate-400">person</span>
-                                    <span>${item.contact}</span>
-                                </div>
-                                <div class="flex items-center gap-2 text-slate-600">
-                                    <span class="material-symbols-outlined text-[18px] text-slate-400">mail</span>
-                                    <a href="mailto:${item.email}" class="truncate hover:text-indigo-600 hover:underline underline-offset-2">${item.email}</a>
+            <section class="mt-8 space-y-6">
+                <div class="flex items-center gap-2 px-2">
+                    <span class="w-1.5 h-6 rounded-full bg-indigo-500"></span>
+                    <h2 class="text-xl font-bold text-slate-900">団体リスト</h2>
+                </div>
+
+                <div id="suppliers-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                    </div>
+
+                <div id="no-results" class="hidden rounded-3xl border border-dashed border-slate-300 bg-slate-50/50 p-12 text-center">
+                    <span class="material-symbols-outlined text-4xl text-slate-300 mb-2">search_off</span>
+                    <p class="text-slate-500 font-medium">条件に一致する団体が見つかりませんでした</p>
+                </div>
+            </section>
+
+            <div class="mt-10 text-center">
+                <a href="top.html" class="inline-flex items-center gap-2 px-6 py-3 rounded-full border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 transition-colors shadow-sm font-medium">
+                    <span class="material-symbols-outlined text-lg">arrow_back</span>
+                    トップページへ戻る
+                </a>
+            </div>
+        </main>
+
+        <script>
+            // モックデータ (guidelinesの雰囲気に合うカラーリングで調整)
+            const suppliersData = [
+                {
+                    id: 1,
+                    name: "株式会社ラーニング・パス",
+                    contact: "佐藤 健一",
+                    email: "k.sato@learning-path.co.jp",
+                    roles: ["sales", "apply"],
+                    initial: "L",
+                    theme: "indigo" 
+                },
+                {
+                    id: 2,
+                    name: "グローバル・アカデミー",
+                    contact: "田中 美咲",
+                    email: "m.tanaka@global-academy.edu",
+                    roles: ["sales", "billing"],
+                    initial: "G",
+                    theme: "emerald"
+                },
+                {
+                    id: 3,
+                    name: "テック・フロンティア株式会社",
+                    contact: "鈴木 一朗",
+                    email: "suzuki.i@tech-frontier.jp",
+                    roles: ["apply", "billing"],
+                    initial: "T",
+                    theme: "sky"
+                },
+                {
+                    id: 4,
+                    name: "日本ビジネス研修センター",
+                    contact: "山田 花子",
+                    email: "h.yamada@jbtc.or.jp",
+                    roles: ["sales", "apply", "billing"],
+                    initial: "J",
+                    theme: "violet"
+                },
+                {
+                    id: 5,
+                    name: "Future Skills Lab",
+                    contact: "高橋 啓介",
+                    email: "k.takahashi@fsl.com",
+                    roles: ["sales"],
+                    initial: "F",
+                    theme: "rose"
+                },
+                {
+                    id: 6,
+                    name: "合同会社クリエイティブ・マインド",
+                    contact: "伊藤 翼",
+                    email: "tsubasa.ito@creative-m.net",
+                    roles: ["apply"],
+                    initial: "C",
+                    theme: "amber"
+                }
+            ];
+
+            const roleConfig = {
+                sales: { label: "営業担当", class: "bg-blue-50 text-blue-700 border-blue-100" },
+                apply: { label: "申込担当", class: "bg-emerald-50 text-emerald-700 border-emerald-100" },
+                billing: { label: "請求担当", class: "bg-purple-50 text-purple-700 border-purple-100" }
+            };
+
+            const gridEl = document.getElementById('suppliers-grid');
+            // const searchInput = document.getElementById('supplier-search');
+            const noResultsEl = document.getElementById('no-results');
+
+            function renderSuppliers(data) {
+                gridEl.innerHTML = '';
+                
+                if (data.length === 0) {
+                    gridEl.classList.add('hidden');
+                    noResultsEl.classList.remove('hidden');
+                    return;
+                }
+                gridEl.classList.remove('hidden');
+                noResultsEl.classList.add('hidden');
+
+                data.forEach(item => {
+                    // ロールバッジ生成
+                    const badgesHtml = item.roles.map(r => {
+                        const conf = roleConfig[r];
+                        return `<span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium border ${conf.class}">${conf.label}</span>`;
+                    }).join('');
+
+                    // テーマカラーに応じたクラス設定 (アイコン背景など)
+                    const bgClass = `bg-${item.theme}-50`;
+                    const textClass = `text-${item.theme}-600`;
+                    const borderClass = `border-${item.theme}-100`;
+
+                    // カード生成: guidelines.htmlのHighlightsセクションのようなデザイン
+                    const cardHtml = `
+                        <div class="group rounded-2xl border border-slate-100 bg-white shadow-sm hover:shadow-md hover:border-indigo-100 transition-all p-5 flex flex-col gap-4">
+                            <div>
+                                <h3 class="font-bold text-slate-900 group-hover:text-indigo-600 transition-colors">${item.name}</h3>
+                                <div class="mt-3 space-y-2 text-sm">
+                                    <div class="flex items-center gap-2 text-slate-600">
+                                        <span class="material-symbols-outlined text-[18px] text-slate-400">person</span>
+                                        <span>${item.contact}</span>
+                                    </div>
+                                    <div class="flex items-center gap-2 text-slate-600">
+                                        <span class="material-symbols-outlined text-[18px] text-slate-400">mail</span>
+                                        <a href="mailto:${item.email}" class="truncate hover:text-indigo-600 hover:underline underline-offset-2">${item.email}</a>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                `;
-                gridEl.insertAdjacentHTML('beforeend', cardHtml);
-            });
-        }
+                    `;
+                    gridEl.insertAdjacentHTML('beforeend', cardHtml);
+                });
+            }
 
-        renderSuppliers(suppliersData);
+            renderSuppliers(suppliersData);
 
-        // 検索処理
-        // searchInput.addEventListener('input', (e) => {
-        //     const val = e.target.value.toLowerCase();
-        //     const filtered = suppliersData.filter(d => 
-        //         d.name.toLowerCase().includes(val) || 
-        //         d.contact.toLowerCase().includes(val)
-        //     );
-        //     renderSuppliers(filtered);
-        // });
-    </script>
-</body>
+            // 検索処理
+            // searchInput.addEventListener('input', (e) => {
+            //     const val = e.target.value.toLowerCase();
+            //     const filtered = suppliersData.filter(d => 
+            //         d.name.toLowerCase().includes(val) || 
+            //         d.contact.toLowerCase().includes(val)
+            //     );
+            //     renderSuppliers(filtered);
+            // });
+        </script>
+    </body>
 </html>

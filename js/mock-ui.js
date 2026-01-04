@@ -75,22 +75,23 @@
                             <span class="${STYLES.icon}">person</span>
                             <span class="text-sm">ユーザー管理</span>
                         </a>
-                        <a href="org-master.html" data-visible-for="iec, customer" class="js-nav-item">
-                            <span class="${STYLES.icon}">apartment</span>
-                            <span class="text-sm">組織マスタ</span>
+                        <a href="course-master-list.html" data-visible-for="iec, supplier" class="js-nav-item">
+                            <span class="${STYLES.icon}">book_2</span>
+                            <span class="text-sm">コース管理</span>
                         </a>
                         <a href="topics-master-list.html" data-visible-for="iec, customer" class="js-nav-item">
                             <span class="${STYLES.icon}">view_agenda</span>
                             <span class="text-sm">特集ページ管理</span>
                         </a>
+                        <a href="org-master.html" data-visible-for="iec, customer" class="js-nav-item">
+                            <span class="${STYLES.icon}">apartment</span>
+                            <span class="text-sm">組織マスタ</span>
+                        </a>
                         <a href="tag-master.html" data-visible-for="iec, customer" class="js-nav-item">
                             <span class="${STYLES.icon}">tag</span>
                             <span class="text-sm">タグ管理</span>
                         </a>
-                        <a href="course-master-list.html" data-visible-for="iec, supplier" class="js-nav-item">
-                            <span class="${STYLES.icon}">book_2</span>
-                            <span class="text-sm">コース管理</span>
-                        </a>
+                        
                     </div>
                 </div>
 

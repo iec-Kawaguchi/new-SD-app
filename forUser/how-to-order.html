@@ -1,100 +1,97 @@
 <!DOCTYPE html>
 <html lang="ja">
-<head>
-    <meta charset="UTF-8" />
-    <title>受講の進め方 | Course Catalog</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="js/header.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
-    <style>
-        body {
-            font-family: "Inter", "Noto Sans JP", system-ui, -apple-system, Segoe UI, sans-serif;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-        }
-        .bg-grid {
-            background-image: radial-gradient(#e5e7eb 1px, transparent 1px);
-            background-size: 20px 20px;
-            mask-image: radial-gradient(ellipse 60% 60% at 50% 50%, #000 70%, transparent 100%);
-        }
-        @media (prefers-reduced-motion: reduce) {
-            * { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; }
-        }
-    </style>
-</head>
-<body class="bg-gray-50 text-slate-800 selection:bg-sky-200 selection:text-sky-900">
-    <div class="fixed inset-0 -z-10 bg-grid"></div>
-    <!-- Header -->
-    <div id="global-header" class="sticky top-0 z-40 w-full"></div>
+    <head>
+        <meta charset="UTF-8" />
+        <title>受講の進め方 | Course Catalog</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <script src="https://cdn.tailwindcss.com"></script>
+        <script src="js/header.js"></script>
+        <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+        <style>
+            body {
+                font-family: "Inter", "Noto Sans JP", system-ui, -apple-system, Segoe UI, sans-serif;
+                -webkit-font-smoothing: antialiased;
+                -moz-osx-font-smoothing: grayscale;
+            }
+            .bg-grid {
+                background-image: radial-gradient(#e5e7eb 1px, transparent 1px);
+                background-size: 20px 20px;
+                mask-image: radial-gradient(ellipse 60% 60% at 50% 50%, #000 70%, transparent 100%);
+            }
+            @media (prefers-reduced-motion: reduce) {
+                * { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; }
+            }
+        </style>
+    </head>
+    <body class="bg-gray-50 text-slate-800 selection:bg-sky-200 selection:text-sky-900">
+        <div class="fixed inset-0 -z-10 bg-grid"></div>
+        <!-- Header -->
+        <div id="global-header" class="sticky top-0 z-40 w-full"></div>
 
-    <main class="max-w-5xl mx-auto px-4 sm:px-6 pb-16">
-        <!-- Hero -->
-        <section class="mt-8">
-            <div class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-indigo-600 via-violet-600 to-sky-500 shadow-xl text-white">
-                <div class="absolute inset-0 opacity-30">
-                    <div class="absolute -left-12 -top-16 h-48 w-48 rounded-full bg-white/20 blur-3xl"></div>
-                    <div class="absolute right-0 bottom-0 h-64 w-64 rounded-full bg-emerald-200/30 blur-3xl"></div>
-                </div>
-                <div class="relative p-8 sm:p-10 flex flex-col gap-6">
-                    <div class="max-w-3xl space-y-2">
-                        <h1 class="text-3xl sm:text-4xl font-extrabold leading-tight tracking-tight">受講の進め方</h1>
-                        <p class="text-indigo-100/90 leading-relaxed text-sm sm:text-base">
-                            受講の進め方をまとめました。
-                        </p>
+        <main class="max-w-5xl mx-auto px-4 sm:px-6 pb-16">
+            <!-- Hero -->
+            <section class="mt-8">
+                <div class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-indigo-600 via-violet-600 to-sky-500 shadow-xl text-white">
+                    <div class="absolute inset-0 opacity-30">
+                        <div class="absolute -left-12 -top-16 h-48 w-48 rounded-full bg-white/20 blur-3xl"></div>
+                        <div class="absolute right-0 bottom-0 h-64 w-64 rounded-full bg-emerald-200/30 blur-3xl"></div>
+                    </div>
+                    <div class="relative p-8 sm:p-10 flex flex-col gap-6">
+                        <div class="max-w-3xl space-y-2">
+                            <h1 class="text-3xl sm:text-4xl font-extrabold leading-tight tracking-tight">受講の進め方</h1>
+                            <p class="text-indigo-100/90 leading-relaxed text-sm sm:text-base">
+                                受講の進め方をまとめました。
+                            </p>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </section>
-
-     
-        <!-- Details -->
-        <section class="mt-10 space-y-8">
-            <div class="rounded-3xl bg-white shadow-sm border border-slate-100 p-6 sm:p-8">
-                <div class="flex items-center gap-2 mb-4">
-                    <span class="w-1.5 h-6 rounded-full bg-sky-500"></span>
-                    <h2 class="text-xl font-bold text-slate-900">申込の流れ</h2>
+            </section>
+            <!-- Details -->
+            <section class="mt-10 space-y-8">
+                <div class="rounded-3xl bg-white shadow-sm border border-slate-100 p-6 sm:p-8">
+                    <div class="flex items-center gap-2 mb-4">
+                        <span class="w-1.5 h-6 rounded-full bg-sky-500"></span>
+                        <h2 class="text-xl font-bold text-slate-900">申込の流れ</h2>
+                    </div>
+                    <ol class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                        <li class="rounded-2xl border border-slate-100 bg-slate-50/60 p-4 flex flex-col gap-2">
+                            <div class="flex items-center gap-2 text-xs font-semibold text-slate-500">
+                                <span class="h-6 w-6 rounded-full bg-sky-600 text-white grid place-items-center text-sm font-bold">1</span>
+                                コース選定
+                            </div>
+                            <p class="text-sm text-slate-700 leading-relaxed">カタログから受講したいコースを選び、受講条件と日程を確認。</p>
+                        </li>
+                        <li class="rounded-2xl border border-slate-100 bg-slate-50/60 p-4 flex flex-col gap-2">
+                            <div class="flex items-center gap-2 text-xs font-semibold text-slate-500">
+                                <span class="h-6 w-6 rounded-full bg-sky-600 text-white grid place-items-center text-sm font-bold">2</span>
+                                上長承認
+                            </div>
+                            <p class="text-sm text-slate-700 leading-relaxed">申込フォームを作成し、上長の事前承認を取得してください。</p>
+                        </li>
+                        <li class="rounded-2xl border border-slate-100 bg-slate-50/60 p-4 flex flex-col gap-2">
+                            <div class="flex items-center gap-2 text-xs font-semibold text-slate-500">
+                                <span class="h-6 w-6 rounded-full bg-sky-600 text-white grid place-items-center text-sm font-bold">3</span>
+                                受講・修了
+                            </div>
+                            <p class="text-sm text-slate-700 leading-relaxed">受講後、修了証やレポートを準備し、必要書類を揃えます。</p>
+                        </li>
+                        <li class="rounded-2xl border border-slate-100 bg-slate-50/60 p-4 flex flex-col gap-2">
+                            <div class="flex items-center gap-2 text-xs font-semibold text-slate-500">
+                                <span class="h-6 w-6 rounded-full bg-sky-600 text-white grid place-items-center text-sm font-bold">4</span>
+                                精算・申請完了
+                            </div>
+                            <p class="text-sm text-slate-700 leading-relaxed">領収書の写しとレポートを添付し、申請完了後に補助が支給されます。</p>
+                        </li>
+                    </ol>
                 </div>
-                <ol class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                    <li class="rounded-2xl border border-slate-100 bg-slate-50/60 p-4 flex flex-col gap-2">
-                        <div class="flex items-center gap-2 text-xs font-semibold text-slate-500">
-                            <span class="h-6 w-6 rounded-full bg-sky-600 text-white grid place-items-center text-sm font-bold">1</span>
-                            コース選定
-                        </div>
-                        <p class="text-sm text-slate-700 leading-relaxed">カタログから受講したいコースを選び、受講条件と日程を確認。</p>
-                    </li>
-                    <li class="rounded-2xl border border-slate-100 bg-slate-50/60 p-4 flex flex-col gap-2">
-                        <div class="flex items-center gap-2 text-xs font-semibold text-slate-500">
-                            <span class="h-6 w-6 rounded-full bg-sky-600 text-white grid place-items-center text-sm font-bold">2</span>
-                            上長承認
-                        </div>
-                        <p class="text-sm text-slate-700 leading-relaxed">申込フォームを作成し、上長の事前承認を取得してください。</p>
-                    </li>
-                    <li class="rounded-2xl border border-slate-100 bg-slate-50/60 p-4 flex flex-col gap-2">
-                        <div class="flex items-center gap-2 text-xs font-semibold text-slate-500">
-                            <span class="h-6 w-6 rounded-full bg-sky-600 text-white grid place-items-center text-sm font-bold">3</span>
-                            受講・修了
-                        </div>
-                        <p class="text-sm text-slate-700 leading-relaxed">受講後、修了証やレポートを準備し、必要書類を揃えます。</p>
-                    </li>
-                    <li class="rounded-2xl border border-slate-100 bg-slate-50/60 p-4 flex flex-col gap-2">
-                        <div class="flex items-center gap-2 text-xs font-semibold text-slate-500">
-                            <span class="h-6 w-6 rounded-full bg-sky-600 text-white grid place-items-center text-sm font-bold">4</span>
-                            精算・申請完了
-                        </div>
-                        <p class="text-sm text-slate-700 leading-relaxed">領収書の写しとレポートを添付し、申請完了後に補助が支給されます。</p>
-                    </li>
-                </ol>
+            </section>
+
+            <div class="mt-12 text-center">
+                <a href="top.html" class="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-white border border-slate-200 text-slate-600 font-medium shadow-sm hover:bg-slate-50 hover:text-slate-900 transition-all group">
+                    <span class="material-symbols-outlined text-[20px] group-hover:-translate-x-0.5 transition-transform">arrow_back</span>
+                    トップページへ戻る
+                </a>
             </div>
-
-        </section>
-
-        <div class="mt-12 text-center">
-             <a href="top.html" class="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-white border border-slate-200 text-slate-600 font-medium shadow-sm hover:bg-slate-50 hover:text-slate-900 transition-all group">
-                <span class="material-symbols-outlined text-[20px] group-hover:-translate-x-0.5 transition-transform">arrow_back</span>
-                トップページへ戻る
-            </a>
-        </div>
-    </main>
-</body>
+        </main>
+    </body>
 </html>
