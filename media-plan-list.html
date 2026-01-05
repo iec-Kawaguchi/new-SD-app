@@ -58,25 +58,64 @@
                                 </button>
                             </div>
 
-                            <div id="filter-panel" class="hidden mt-4 pt-4 border-t border-gray-100 animate-[fadeIn_0.2s_ease-out]">
-                                <div class="space-y-4">
+                            <div id="filter-panel" class="hidden mt-4 pt-4 border-t border-gray-100 animate-[fadeIn_0.2s_ease-out]  overflow-y-auto custom-scrollbar">
+                                <div class="space-y-6">
                                     <div>
-                                        <label class="block text-xs font-bold text-gray-500 mb-2 uppercase tracking-wide">ステータス</label>
-                                        <div id="status-filter-container" class="flex flex-wrap gap-2">
-                                            <button type="button" data-val="募集中" class="filter-status-btn text-xs px-2.5 py-1.5 rounded-full border border-gray-200 bg-white text-gray-600 hover:bg-gray-50 transition-colors">募集中</button>
-                                            <button type="button" data-val="基本情報入力" class="filter-status-btn text-xs px-2.5 py-1.5 rounded-full border border-gray-200 bg-white text-gray-600 hover:bg-gray-50 transition-colors">基本情報入力</button>
-                                            <button type="button" data-val="コース提案" class="filter-status-btn text-xs px-2.5 py-1.5 rounded-full border border-gray-200 bg-white text-gray-600 hover:bg-gray-50 transition-colors">コース提案</button>
-                                            <button type="button" data-val="サイト作成" class="filter-status-btn text-xs px-2.5 py-1.5 rounded-full border border-gray-200 bg-white text-gray-600 hover:bg-gray-50 transition-colors">サイト作成</button>
-                                            <button type="button" data-val="募集終了" class="filter-status-btn text-xs px-2.5 py-1.5 rounded-full border border-gray-200 bg-white text-gray-600 hover:bg-gray-50 transition-colors">募集終了</button>
+                                        <label class="block text-xs font-bold text-gray-500 mb-2 uppercase tracking-wide">全体ステータス</label>
+                                        <div class="flex flex-wrap gap-2">
+                                            <button type="button" data-cat="main" data-val="公開" class="filter-btn text-xs px-3 py-1.5 rounded-full border border-gray-200 bg-white text-gray-600 hover:bg-gray-50 transition-colors">公開</button>
+                                            <button type="button" data-cat="main" data-val="非公開" class="filter-btn text-xs px-3 py-1.5 rounded-full border border-gray-200 bg-white text-gray-600 hover:bg-gray-50 transition-colors">非公開</button>
                                         </div>
                                     </div>
+
                                     <div>
-                                        <label class="block text-xs font-bold text-gray-500 mb-2 uppercase tracking-wide">対象期間</label>
-                                        <div class="relative">
-                                            <input id="date-filter-input" type="date" class="w-full text-sm border border-gray-300 rounded-md px-3 py-2 text-gray-700 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                                        <div class="flex items-center gap-2 mb-2">
+                                            <span class="material-symbols-outlined text-gray-400 text-[16px]">info</span>
+                                            <label class="block text-xs font-bold text-gray-500 uppercase tracking-wide">基本情報</label>
+                                        </div>
+                                        <div class="flex flex-wrap gap-2">
+                                            <button type="button" data-cat="basic" data-val="未着手" class="filter-btn text-xs px-2.5 py-1 rounded border border-gray-200 bg-white text-gray-500 hover:bg-gray-50">未着手</button>
+                                            <button type="button" data-cat="basic" data-val="処理中" class="filter-btn text-xs px-2.5 py-1 rounded border border-gray-200 bg-white text-gray-500 hover:bg-gray-50">処理中</button>
+                                            <button type="button" data-cat="basic" data-val="完了" class="filter-btn text-xs px-2.5 py-1 rounded border border-gray-200 bg-white text-gray-500 hover:bg-gray-50">完了</button>
                                         </div>
                                     </div>
-                                    <div class="flex justify-end pt-2 gap-2">
+
+                                    <div>
+                                        <div class="flex items-center gap-2 mb-2">
+                                            <span class="material-symbols-outlined text-gray-400 text-[16px]">list_alt</span>
+                                            <label class="block text-xs font-bold text-gray-500 uppercase tracking-wide">コースリスト</label>
+                                        </div>
+                                        <div class="flex flex-wrap gap-2">
+                                            <button type="button" data-cat="course" data-val="未着手" class="filter-btn text-xs px-2.5 py-1 rounded border border-gray-200 bg-white text-gray-500 hover:bg-gray-50">未着手</button>
+                                            <button type="button" data-cat="course" data-val="提案中" class="filter-btn text-xs px-2.5 py-1 rounded border border-gray-200 bg-white text-gray-500 hover:bg-gray-50">提案中</button>
+                                            <button type="button" data-cat="course" data-val="顧客確認中" class="filter-btn text-xs px-2.5 py-1 rounded border border-gray-200 bg-white text-gray-500 hover:bg-gray-50">顧客確認中</button>
+                                            <button type="button" data-cat="course" data-val="料金確認中" class="filter-btn text-xs px-2.5 py-1 rounded border border-gray-200 bg-white text-gray-500 hover:bg-gray-50">料金確認中</button>
+                                            <button type="button" data-cat="course" data-val="完了" class="filter-btn text-xs px-2.5 py-1 rounded border border-gray-200 bg-white text-gray-500 hover:bg-gray-50">完了</button>
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <div class="flex items-center gap-2 mb-2">
+                                            <span class="material-symbols-outlined text-gray-400 text-[16px]">web</span>
+                                            <label class="block text-xs font-bold text-gray-500 uppercase tracking-wide">募集サイト</label>
+                                        </div>
+                                        <div class="flex flex-wrap gap-2">
+                                            <button type="button" data-cat="site" data-val="未着手" class="filter-btn text-xs px-2.5 py-1 rounded border border-gray-200 bg-white text-gray-500 hover:bg-gray-50">未着手</button>
+                                            <button type="button" data-cat="site" data-val="顧客承認中" class="filter-btn text-xs px-2.5 py-1 rounded border border-gray-200 bg-white text-gray-500 hover:bg-gray-50">顧客承認中</button>
+                                            <button type="button" data-cat="site" data-val="完了" class="filter-btn text-xs px-2.5 py-1 rounded border border-gray-200 bg-white text-gray-500 hover:bg-gray-50">完了</button>
+                                        </div>
+                                    </div>
+
+                                   <div>
+    <label class="block text-xs font-bold text-gray-500 mb-2 uppercase tracking-wide">対象期間</label>
+    <div class="flex items-center gap-2">
+        <input id="date-filter-from" type="date" class="w-full text-sm border border-gray-300 rounded-md px-2 py-1.5 text-gray-700 focus:ring-2 focus:ring-blue-500 focus:outline-none placeholder-gray-400">
+        <span class="text-gray-400 text-xs">～</span>
+        <input id="date-filter-to" type="date" class="w-full text-sm border border-gray-300 rounded-md px-2 py-1.5 text-gray-700 focus:ring-2 focus:ring-blue-500 focus:outline-none placeholder-gray-400">
+    </div>
+</div>
+
+                                    <div class="flex justify-end pt-2 gap-2 pb-2">
                                         <button id="filter-reset" class="text-xs text-gray-500 hover:text-gray-800 underline px-2">条件クリア</button>
                                         <button id="filter-close-btn" class="text-xs bg-gray-800 text-white px-3 py-1.5 rounded-md hover:bg-gray-700 font-medium transition-colors">閉じる</button>
                                     </div>
@@ -529,7 +568,9 @@
 <script type="module">
     import { planData } from './js/data/plan-data.js';
 
-    // カラーテーマ設定（よりソフトなトーンに調整）
+    // -----------------------------------------------------------------
+    // 設定・ヘルパー
+    // -----------------------------------------------------------------
     const themeConfig = {
         blue: {
             hoverBorder: "hover:border-blue-300",
@@ -537,33 +578,39 @@
             activeClass: "ring-2 ring-blue-500 border-transparent",
             badge: "bg-blue-50 text-blue-700 border-blue-100"
         },
-        lime: {
-            hoverBorder: "hover:border-lime-300",
-            strip: "bg-lime-500",
-            activeClass: "ring-2 ring-lime-500 border-transparent",
-            badge: "bg-lime-50 text-lime-700 border-lime-100"
-        },
-        fuchsia: {
-            hoverBorder: "hover:border-fuchsia-300",
-            strip: "bg-fuchsia-500",
-            activeClass: "ring-2 ring-fuchsia-500 border-transparent",
-            badge: "bg-fuchsia-50 text-fuchsia-700 border-fuchsia-100"
-        },
-        gray: {
-            hoverBorder: "hover:border-gray-300",
-            strip: "bg-gray-400", 
-            activeClass: "ring-2 ring-gray-400 border-transparent",
-            badge: "bg-gray-100 text-gray-600 border-gray-200"
-        }
+        // ... (他のテーマはそのまま) ...
+        lime: { hoverBorder: "hover:border-lime-300", strip: "bg-lime-500", activeClass: "ring-2 ring-lime-500 border-transparent", badge: "bg-lime-50 text-lime-700 border-lime-100" },
+        fuchsia: { hoverBorder: "hover:border-fuchsia-300", strip: "bg-fuchsia-500", activeClass: "ring-2 ring-fuchsia-500 border-transparent", badge: "bg-fuchsia-50 text-fuchsia-700 border-fuchsia-100" },
+        gray: { hoverBorder: "hover:border-gray-300", strip: "bg-gray-400", activeClass: "ring-2 ring-gray-400 border-transparent", badge: "bg-gray-100 text-gray-600 border-gray-200" }
     };
+
+    function getStatusStyle(status) {
+        let style = { iconColor: "text-gray-300", bgColor: "bg-gray-50", borderColor: "border-gray-200" };
+        if (status === "完了") {
+            style = { iconColor: "text-green-600", bgColor: "bg-green-50", borderColor: "border-green-200" };
+        } else if (["処理中", "提案中"].includes(status)) {
+            style = { iconColor: "text-blue-600", bgColor: "bg-blue-50", borderColor: "border-blue-200" };
+        } else if (["顧客確認中", "顧客承認中"].includes(status)) {
+            style = { iconColor: "text-orange-500", bgColor: "bg-orange-50", borderColor: "border-orange-200" };
+        } else if (["料金確認中"].includes(status)) {
+            style = { iconColor: "text-purple-500", bgColor: "bg-purple-50", borderColor: "border-purple-200" };
+        }
+        return style;
+    }
 
     // -----------------------------------------------------------------
     // 状態管理 (State)
     // -----------------------------------------------------------------
     const state = {
         keyword: "",
-        selectedStatuses: new Set(),
-        targetDate: null
+        filters: {
+            main: new Set(),
+            basic: new Set(),
+            course: new Set(),
+            site: new Set()
+        },
+        periodFrom: null, // 追加: 期間検索From
+        periodTo: null    // 追加: 期間検索To
     };
 
     // -----------------------------------------------------------------
@@ -571,7 +618,6 @@
     // -----------------------------------------------------------------
     function renderPlanList(data) {
         const container = document.getElementById('plan-list-container');
-        
         if(!container) return;
 
         if (data.length === 0) {
@@ -586,77 +632,108 @@
         const html = data.map(item => {
             const t = themeConfig[item.theme] || themeConfig.gray;
             const visibleAttr = item.visibleFor ? `data-visible-for="${item.visibleFor.join(',')}"` : '';
-            
-            // 左側の色付きストリップライン
-            const stripHtml = (item.theme !== 'gray') 
-                ? `<div class="absolute left-0 top-0 bottom-0 w-1 ${t.strip}"></div>`
-                : '';
+            const stripHtml = (item.theme !== 'gray') ? `<div class="absolute left-0 top-0 bottom-0 w-1 ${t.strip}"></div>` : '';
+            const p = item.progress || { basic: '未着手', course: '未着手', site: '未着手' };
+            const stBasic = getStatusStyle(p.basic);
+            const stCourse = getStatusStyle(p.course);
+            const stSite = getStatusStyle(p.site);
             
             return `
             <button type="button"
-                    class="group block w-full text-left bg-white border border-gray-200 rounded-lg p-4 shadow-[0_1px_2px_rgba(0,0,0,0.05)]
+                    class="group block w-full text-left bg-white border border-gray-200 rounded-lg p-3 shadow-[0_1px_2px_rgba(0,0,0,0.05)]
                     hover:shadow-md ${t.hoverBorder} hover:-translate-y-0.5 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 relative overflow-hidden"
                     ${visibleAttr}>
                 ${stripHtml}
                 <div class="flex items-start justify-between gap-3 pl-2">
                     <div class="flex-1 min-w-0">
-                        <div class="text-sm font-bold text-gray-800 group-hover:text-blue-700 transition-colors truncate">${item.title}</div>
-                        <div class="mt-1 text-xs text-gray-500 font-medium truncate">${item.company}</div>
-                        <div class="mt-2 flex items-center justify-between">
-                            <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium border ${t.badge}">${item.statusLabel}</span>
-                            <span class="text-[10px] text-gray-400 font-mono">${item.period}</span>
+                        <div class="flex justify-between items-start">
+                            <div class="text-sm font-bold text-gray-800 group-hover:text-blue-700 transition-colors truncate mb-0.5">${item.title}</div>
+                            <span class="text-[0.7rem] text-gray-500 font-mono pt-1 ml-2 whitespace-nowrap">${item.period.split(' - ')[0]}〜${item.period.split(' - ')[1]}</span>
+                        </div>
+                        <div class="text-xs text-gray-500 font-medium truncate mb-2">${item.company}</div>
+                        <div class="flex items-center justify-between mt-2 pt-2 border-t border-dashed border-gray-100">
+                            <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium border ${t.badge}">
+                                ${item.statusLabel}
+                            </span>
+                            <div class="flex items-center gap-1.5">
+                                <div class="flex items-center justify-center w-6 h-6 rounded-full border ${stBasic.borderColor} ${stBasic.bgColor}" title="基本情報: ${p.basic}">
+                                    <span class="material-symbols-outlined text-[14px] ${stBasic.iconColor}">info</span>
+                                </div>
+                                <div class="flex items-center justify-center w-6 h-6 rounded-full border ${stCourse.borderColor} ${stCourse.bgColor}" title="コースリスト: ${p.course}">
+                                    <span class="material-symbols-outlined text-[14px] ${stCourse.iconColor}">list_alt</span>
+                                </div>
+                                <div class="flex items-center justify-center w-6 h-6 rounded-full border ${stSite.borderColor} ${stSite.bgColor}" title="募集サイト: ${p.site}">
+                                    <span class="material-symbols-outlined text-[14px] ${stSite.iconColor}">web</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <span class="material-symbols-outlined text-gray-300 group-hover:text-blue-500 transition-colors icon-sm mt-1">chevron_right</span>
                 </div>
             </button>
             `;
         }).join('');
-
         container.innerHTML = html;
-
-        // Role Visibility再適用
         if (window.RoleMock) RoleMock.applyRoleVisibility();
     }
 
     // -----------------------------------------------------------------
     // フィルタリングロジック (Core Logic)
     // -----------------------------------------------------------------
-    function isDateInPeriod(targetDateStr, periodStr) {
-        if (!targetDateStr || !periodStr) return true;
-        const parts = periodStr.split(' - ');
+    /**
+     * 期間の重複チェック (Overlap Logic)
+     * planStart <= filterTo AND planEnd >= filterFrom
+     */
+    function isPeriodOverlap(planPeriodStr, filterFrom, filterTo) {
+        if (!planPeriodStr) return false;
+        if (!filterFrom && !filterTo) return true; // フィルタなし
+
+        const parts = planPeriodStr.split(' - ');
         if (parts.length !== 2) return false;
-        const target = targetDateStr.replace(/-/g, '/');
-        const start = parts[0];
-        const end = parts[1];
-        return target >= start && target <= end;
+        
+        // 文字列比較のためにフォーマットを統一 (YYYY/MM/DD -> YYYY-MM-DD)
+        const planStart = parts[0].replace(/\//g, '-');
+        const planEnd = parts[1].replace(/\//g, '-');
+
+        // From指定あり: 計画の終了日が、Fromより後であること
+        if (filterFrom && planEnd < filterFrom) return false;
+
+        // To指定あり: 計画の開始日が、Toより前であること
+        if (filterTo && planStart > filterTo) return false;
+
+        return true;
     }
 
     function applyFilters() {
         const filtered = planData.filter(item => {
+            // 1. キーワード
             if (state.keyword) {
                 const kw = state.keyword.toLowerCase();
-                const text = (item.title + item.company).toLowerCase();
-                if (!text.includes(kw)) return false;
+                if (!(item.title + item.company).toLowerCase().includes(kw)) return false;
             }
-            if (state.selectedStatuses.size > 0) {
-                if (!state.selectedStatuses.has(item.statusLabel)) return false;
+
+            // 2. ステータス (メイン, 基本, コース, サイト)
+            if (state.filters.main.size > 0 && !state.filters.main.has(item.statusLabel)) return false;
+            const p = item.progress || { basic: '未着手', course: '未着手', site: '未着手' };
+            if (state.filters.basic.size > 0 && !state.filters.basic.has(p.basic)) return false;
+            if (state.filters.course.size > 0 && !state.filters.course.has(p.course)) return false;
+            if (state.filters.site.size > 0 && !state.filters.site.has(p.site)) return false;
+
+            // 3. 期間フィルタ (From - To)
+            if (!isPeriodOverlap(item.period, state.periodFrom, state.periodTo)) {
+                return false;
             }
-            if (state.targetDate) {
-                if (!isDateInPeriod(state.targetDate, item.period)) return false;
-            }
+
             return true;
         });
         renderPlanList(filtered);
     }
 
     // -----------------------------------------------------------------
-    // UIイベントハンドラ
+    // イベントハンドラ
     // -----------------------------------------------------------------
     window.addEventListener('DOMContentLoaded', () => {
         MockUI.injectHeader('#app-header', { userName: 'Test User', brand: 'New SD App', initialRole: 'iec' });
         MockUI.injectSidebar('#app-sidebar');
-        
         renderPlanList(planData);
         RoleMock.applyRoleVisibility();
         ModalIframe.init();
@@ -664,59 +741,89 @@
     });
 
     function setupFilterEvents() {
+        // 各種Input取得
         const searchInput = document.getElementById('search-input');
-        searchInput.addEventListener('input', (e) => {
-            state.keyword = e.target.value.trim();
-            applyFilters();
-        });
+        const dateFromInput = document.getElementById('date-filter-from');
+        const dateToInput = document.getElementById('date-filter-to');
+        const resetBtn = document.getElementById('filter-reset');
+        const filterBtns = document.querySelectorAll('.filter-btn');
 
-        const statusBtns = document.querySelectorAll('.filter-status-btn');
-        statusBtns.forEach(btn => {
+        if (searchInput) {
+            searchInput.addEventListener('input', (e) => {
+                state.keyword = e.target.value.trim();
+                applyFilters();
+            });
+        }
+
+        // From変更時
+        if (dateFromInput) {
+            dateFromInput.addEventListener('change', (e) => {
+                state.periodFrom = e.target.value;
+                applyFilters();
+            });
+        }
+
+        // To変更時
+        if (dateToInput) {
+            dateToInput.addEventListener('change', (e) => {
+                state.periodTo = e.target.value;
+                applyFilters();
+            });
+        }
+
+        // ステータスボタン
+        filterBtns.forEach(btn => {
             btn.addEventListener('click', () => {
-                const val = btn.getAttribute('data-val');
-                if (state.selectedStatuses.has(val)) {
-                    state.selectedStatuses.delete(val);
-                    // スタイル解除
+                const cat = btn.getAttribute('data-cat'); 
+                const val = btn.getAttribute('data-val'); 
+                if (!cat || !state.filters[cat]) return;
+
+                const targetSet = state.filters[cat];
+                if (targetSet.has(val)) {
+                    targetSet.delete(val);
                     btn.classList.remove('bg-blue-50', 'text-blue-700', 'border-blue-200', 'font-bold');
-                    btn.classList.add('bg-white', 'text-gray-600', 'border-gray-200');
+                    btn.classList.add('bg-white', 'text-gray-500', 'border-gray-200');
+                    if(cat === 'main') btn.classList.replace('text-gray-500', 'text-gray-600');
                 } else {
-                    state.selectedStatuses.add(val);
-                    // スタイル適用
-                    btn.classList.remove('bg-white', 'text-gray-600', 'border-gray-200');
+                    targetSet.add(val);
+                    btn.classList.remove('bg-white', 'text-gray-500', 'text-gray-600', 'border-gray-200');
                     btn.classList.add('bg-blue-50', 'text-blue-700', 'border-blue-200', 'font-bold');
                 }
                 applyFilters();
             });
         });
 
-        const dateInput = document.getElementById('date-filter-input');
-        dateInput.addEventListener('change', (e) => {
-            state.targetDate = e.target.value;
-            applyFilters();
-        });
-
-        const resetBtn = document.getElementById('filter-reset');
-        resetBtn.addEventListener('click', () => {
-            state.keyword = "";
-            state.selectedStatuses.clear();
-            state.targetDate = null;
-            searchInput.value = "";
-            dateInput.value = "";
-            statusBtns.forEach(btn => {
-                btn.classList.remove('bg-blue-50', 'text-blue-700', 'border-blue-200', 'font-bold');
-                btn.classList.add('bg-white', 'text-gray-600', 'border-gray-200');
+        // リセット
+        if (resetBtn) {
+            resetBtn.addEventListener('click', () => {
+                state.keyword = "";
+                state.periodFrom = null;
+                state.periodTo = null;
+                Object.values(state.filters).forEach(s => s.clear());
+                
+                if(searchInput) searchInput.value = "";
+                if(dateFromInput) dateFromInput.value = "";
+                if(dateToInput) dateToInput.value = "";
+                
+                filterBtns.forEach(btn => {
+                    btn.classList.remove('bg-blue-50', 'text-blue-700', 'border-blue-200', 'font-bold');
+                    btn.classList.add('bg-white', 'text-gray-500', 'border-gray-200');
+                    if(btn.dataset.cat === 'main') btn.classList.replace('text-gray-500', 'text-gray-600');
+                });
+                applyFilters();
             });
-            applyFilters();
-        });
+        }
 
+        // パネル開閉など既存ロジック
         const btnFilter = document.getElementById("btn-filter");
         const filterPanel = document.getElementById("filter-panel");
         const filterCloseBtn = document.getElementById("filter-close-btn");
+        const notifyClose = document.getElementById("notificationCloseButton");
 
         function toggleFilter() {
+            if(!filterPanel) return;
             const isHidden = filterPanel.classList.contains("hidden");
             filterPanel.classList.toggle("hidden");
-            
             if (isHidden) {
                 btnFilter.classList.add("bg-gray-100", "text-gray-900");
                 btnFilter.classList.remove("text-gray-500");
@@ -726,15 +833,15 @@
             }
         }
 
-        btnFilter.addEventListener("click", toggleFilter);
-        filterCloseBtn.addEventListener("click", toggleFilter);
-        
-        const notifyClose = document.getElementById("notificationCloseButton");
+        if(btnFilter) btnFilter.addEventListener("click", toggleFilter);
+        if(filterCloseBtn) filterCloseBtn.addEventListener("click", toggleFilter);
         if(notifyClose) {
             notifyClose.addEventListener("click", function() {
                 const n = document.getElementById("notifications");
-                n.classList.add("fade-out-up");
-                setTimeout(() => { n.style.display = "none"; }, 300);
+                if(n) {
+                    n.classList.add("fade-out-up");
+                    setTimeout(() => { n.style.display = "none"; }, 300);
+                }
             });
         }
     }
