@@ -21,6 +21,9 @@
                 from { opacity: 1; transform: translateY(0); margin-top: 1.25rem; }
                 to { opacity: 0; transform: translateY(-10px); margin-top: -50px; padding: 0; height: 0; }
             }
+            @keyframes shimmer {
+                100% { transform: translateX(100%); }
+            }
         </style>
     </head>
     <body class="bg-gray-50 h-screen overflow-hidden flex flex-col text-gray-900 antialiased">
@@ -93,7 +96,7 @@
                                 <div>
                                     <div class="flex items-center gap-3 mb-2">
                                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-50 text-blue-700 border border-blue-100">
-                                            基本情報入力
+                                            サイト作成中
                                         </span>
                                         <span class="text-gray-400 text-xs font-mono">ID: 2026-0012</span>
                                     </div>
@@ -146,9 +149,9 @@
                                     </div>
                                 </div>
                             </div>
-
+                            <!-- タスクパネル -->
                             <div class="mt-8 grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-6">
-                                
+                                <!-- 基本情報 -->
                                 <div class="w-full rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-shadow duration-300 flex flex-col overflow-hidden group">
                                     <div class="px-5 py-4 border-b border-gray-100 bg-gray-50/50 flex justify-between items-center">
                                         <div class="flex items-center gap-2">
@@ -158,6 +161,31 @@
                                             <h3 class="text-base font-bold text-gray-800">基本情報</h3>
                                         </div>
                                     </div>
+                                    <!-- 進捗状況表示 -->
+                                    <div class="px-5 py-3 bg-white border-b border-gray-50">
+                                        <div class="flex justify-between items-end mb-2">
+                                            <div>
+                                                <p class="text-[0.6rem] text-gray-400 font-bold uppercase tracking-wider mb-0.5">Status</p>
+                                                <div class="flex items-center gap-2">
+                                                    <span class="relative flex h-2.5 w-2.5">
+                                                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+                                                    <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-blue-600"></span>
+                                                    </span>
+                                                    <span class="text-sm font-bold text-gray-500">処理中</span>
+                                                </div>
+                                            </div>
+                                            <div class="text-right">
+                                                <span class="text-sm font-bold text-blue-600">In Progress</span>
+                                            </div>
+                                        </div>
+
+                                        <div class="flex gap-1 h-1.5 w-full">
+                                            <div class="flex-1 bg-blue-500 rounded-sm relative overflow-hidden">
+                                                <div class="absolute inset-0 bg-white/30 w-full h-full -translate-x-full animate-[shimmer_1.5s_infinite]"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- タスク -->
                                     <div class="p-3 flex flex-col gap-1">
                                         <div class="flex items-center justify-between p-2.5 rounded-lg hover:bg-gray-50 transition-colors">
                                             <div class="flex items-center text-sm font-medium text-gray-700 gap-2">
@@ -218,7 +246,7 @@
                                         </div>
                                     </div>
                                 </div>
-
+                                <!-- コースリスト -->
                                 <div class="w-full rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-shadow duration-300 flex flex-col overflow-hidden group">
                                     <div class="px-5 py-4 border-b border-gray-100 bg-gray-50/50 flex justify-between items-center">
                                         <div class="flex items-center gap-2">
@@ -228,6 +256,28 @@
                                             <h3 class="text-base font-bold text-gray-800">コースリスト</h3>
                                         </div>
                                     </div>
+                                    <!-- 進捗状況表示 -->
+                                    <div class="px-5 py-3 bg-white border-b border-gray-50 opacity-60">
+                                        <div class="flex justify-between items-end mb-2">
+                                            <div>
+                                                <p class="text-[0.6rem] text-gray-400 font-bold uppercase tracking-wider mb-0.5">Status</p>
+                                                <div class="flex items-center gap-2">
+                                                    <span class="h-2.5 w-2.5 rounded-full bg-gray-300"></span>
+                                                    <span class="text-sm font-bold text-gray-500">未着手</span>
+                                                </div>
+                                            </div>
+                                            <div class="text-right">
+                                                <span class="text-sm font-bold text-gray-400">-</span>
+                                                <span class="text-[10px] text-gray-400 font-medium">/ 3</span>
+                                            </div>
+                                        </div>
+                                        <div class="flex gap-1 h-1.5 w-full">
+                                            <div class="flex-1 bg-gray-200 rounded-sm"></div>
+                                            <div class="flex-1 bg-gray-200 rounded-sm"></div>
+                                            <div class="flex-1 bg-gray-200 rounded-sm"></div>
+                                        </div>
+                                    </div>
+                                    <!-- タスク -->
                                     <div class="p-3 flex flex-col gap-1">
                                         <div class="flex items-center justify-between p-2.5 rounded-lg hover:bg-gray-50 transition-colors" data-visible-for="iec">
                                             <div class="flex items-center text-sm font-medium text-gray-700 gap-2">
@@ -242,7 +292,6 @@
                                                 <span class="text-xs ml-1 font-medium">編集</span>
                                             </a>
                                         </div>
-                                        
                                         <div class="flex items-center justify-between p-2.5 rounded-lg hover:bg-gray-50 transition-colors" data-visible-for="supplier">
                                             <div class="flex items-center text-sm font-medium text-gray-700 gap-2">
                                                 <span class="material-symbols-outlined text-orange-400 icon-md">error</span>
@@ -255,7 +304,6 @@
                                                 <span class="text-xs ml-1 font-medium">編集</span>
                                             </a>
                                         </div>
-
                                         <div class="flex items-center justify-between p-2.5 rounded-lg hover:bg-gray-50 transition-colors" data-visible-for="iec">
                                             <div class="flex items-center text-sm font-medium text-gray-700 gap-2">
                                                 <span class="material-symbols-outlined text-gray-300 icon-md">pause_circle</span>
@@ -267,7 +315,6 @@
                                                 <span class="text-xs ml-1 font-medium">依頼</span>
                                             </button>
                                         </div>
-
                                         <div class="flex items-center justify-between p-2.5 rounded-lg hover:bg-gray-50 transition-colors" data-visible-for="iec">
                                             <div class="flex items-center text-sm font-medium text-gray-700 gap-2">
                                                 <span class="material-symbols-outlined text-gray-300 icon-md">pause_circle</span>
@@ -279,7 +326,6 @@
                                                 <span class="text-xs ml-1 font-medium">依頼</span>
                                             </button>
                                         </div>
-
                                         <div class="flex items-center justify-between p-2.5 rounded-lg hover:bg-gray-50 transition-colors" data-visible-for="customer">
                                             <div class="flex items-center text-sm font-medium text-gray-700 gap-2">
                                                 <span class="material-symbols-outlined text-gray-300 icon-md">pause_circle</span>
@@ -291,7 +337,6 @@
                                                 <span class="text-xs ml-1 font-medium">確認</span>
                                             </a>
                                         </div>
-
                                         <div class="flex items-center justify-between p-2.5 rounded-lg hover:bg-gray-50 transition-colors" data-visible-for="iec">
                                             <div class="flex items-center text-sm font-medium text-gray-700 gap-2">
                                                 <span class="material-symbols-outlined text-gray-300 icon-md">pause_circle</span>
@@ -303,7 +348,6 @@
                                                 <span class="text-xs ml-1 font-medium">依頼</span>
                                             </button>
                                         </div>
-
                                         <div class="flex items-center justify-between p-2.5 rounded-lg hover:bg-gray-50 transition-colors" data-visible-for="supplier">
                                             <div class="flex items-center text-sm font-medium text-gray-700 gap-2">
                                                 <span class="material-symbols-outlined text-orange-400 icon-md">error</span>
@@ -317,7 +361,7 @@
                                         </div>
                                     </div>
                                 </div>
-
+                                <!-- 募集サイト -->
                                 <div class="w-full rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-shadow duration-300 flex flex-col overflow-hidden group">
                                     <div class="px-5 py-4 border-b border-gray-100 bg-gray-50/50 flex justify-between items-center">
                                         <div class="flex items-center gap-2">
@@ -327,6 +371,25 @@
                                             <h3 class="text-base font-bold text-gray-800">募集サイト</h3>
                                         </div>
                                     </div>
+                                    <!-- 進捗状況表示 -->
+                                    <div class="px-5 py-3 bg-green-50/50 border-b border-green-50">
+                                        <div class="flex justify-between items-end mb-2">
+                                            <div>
+                                                <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-0.5">Status</p>
+                                                <div class="flex items-center gap-2">
+                                                    <span class="material-symbols-outlined text-green-600 text-[18px]">check_circle</span>
+                                                    <span class="text-sm font-bold text-green-800">承認完了</span>
+                                                </div>
+                                            </div>
+                                            <div class="text-right">
+                                                <span class="text-sm font-bold text-green-600">Done</span>
+                                            </div>
+                                        </div>
+                                        <div class="flex gap-1 h-1.5 w-full">
+                                            <div class="flex-1 bg-green-500 rounded-sm"></div>
+                                        </div>
+                                    </div>
+                                    <!-- タスク -->
                                     <div class="p-3 flex flex-col gap-1">
                                         <div class="flex items-center justify-between p-2.5 rounded-lg hover:bg-gray-50 transition-colors"
                                             data-visible-for="iec, supplier, customer">
