@@ -70,7 +70,7 @@
 
                                     <div>
                                         <div class="flex items-center gap-2 mb-2">
-                                            <span class="material-symbols-outlined text-gray-400 text-[16px]">info</span>
+                                            <span class="material-symbols-outlined text-gray-400 text-base">info</span>
                                             <label class="block text-xs font-bold text-gray-500 uppercase tracking-wide">基本情報</label>
                                         </div>
                                         <div class="flex flex-wrap gap-2">
@@ -82,7 +82,7 @@
 
                                     <div>
                                         <div class="flex items-center gap-2 mb-2">
-                                            <span class="material-symbols-outlined text-gray-400 text-[16px]">list_alt</span>
+                                            <span class="material-symbols-outlined text-gray-400 text-base">list_alt</span>
                                             <label class="block text-xs font-bold text-gray-500 uppercase tracking-wide">コースリスト</label>
                                         </div>
                                         <div class="flex flex-wrap gap-2">
@@ -96,7 +96,7 @@
 
                                     <div>
                                         <div class="flex items-center gap-2 mb-2">
-                                            <span class="material-symbols-outlined text-gray-400 text-[16px]">web</span>
+                                            <span class="material-symbols-outlined text-gray-400 text-base">web</span>
                                             <label class="block text-xs font-bold text-gray-500 uppercase tracking-wide">募集サイト</label>
                                         </div>
                                         <div class="flex flex-wrap gap-2">
@@ -107,13 +107,13 @@
                                     </div>
 
                                    <div>
-    <label class="block text-xs font-bold text-gray-500 mb-2 uppercase tracking-wide">対象期間</label>
-    <div class="flex items-center gap-2">
-        <input id="date-filter-from" type="date" class="w-full text-sm border border-gray-300 rounded-md px-2 py-1.5 text-gray-700 focus:ring-2 focus:ring-blue-500 focus:outline-none placeholder-gray-400">
-        <span class="text-gray-400 text-xs">～</span>
-        <input id="date-filter-to" type="date" class="w-full text-sm border border-gray-300 rounded-md px-2 py-1.5 text-gray-700 focus:ring-2 focus:ring-blue-500 focus:outline-none placeholder-gray-400">
-    </div>
-</div>
+                                        <label class="block text-xs font-bold text-gray-500 mb-2 uppercase tracking-wide">対象期間</label>
+                                        <div class="flex items-center gap-2">
+                                            <input id="date-filter-from" type="date" class="w-full text-sm border border-gray-300 rounded-md px-2 py-1.5 text-gray-700 focus:ring-2 focus:ring-blue-500 focus:outline-none placeholder-gray-400">
+                                            <span class="text-gray-400 text-xs">～</span>
+                                            <input id="date-filter-to" type="date" class="w-full text-sm border border-gray-300 rounded-md px-2 py-1.5 text-gray-700 focus:ring-2 focus:ring-blue-500 focus:outline-none placeholder-gray-400">
+                                        </div>
+                                    </div>
 
                                     <div class="flex justify-end pt-2 gap-2 pb-2">
                                         <button id="filter-reset" class="text-xs text-gray-500 hover:text-gray-800 underline px-2">条件クリア</button>
@@ -204,7 +204,7 @@
                                     <div class="px-5 py-3 bg-white border-b border-gray-50">
                                         <div class="flex justify-between items-end mb-2">
                                             <div>
-                                                <p class="text-[0.6rem] text-gray-400 font-bold uppercase tracking-wider mb-0.5">Status</p>
+                                                <p class="text-[0.625rem] text-gray-400 font-bold uppercase tracking-wider mb-0.5">Status</p>
                                                 <div class="flex items-center gap-2">
                                                     <span class="relative flex h-2.5 w-2.5">
                                                     <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
@@ -299,7 +299,7 @@
                                     <div class="px-5 py-3 bg-white border-b border-gray-50 opacity-60">
                                         <div class="flex justify-between items-end mb-2">
                                             <div>
-                                                <p class="text-[0.6rem] text-gray-400 font-bold uppercase tracking-wider mb-0.5">Status</p>
+                                                <p class="text-[0.625rem] text-gray-400 font-bold uppercase tracking-wider mb-0.5">Status</p>
                                                 <div class="flex items-center gap-2">
                                                     <span class="h-2.5 w-2.5 rounded-full bg-gray-300"></span>
                                                     <span class="text-sm font-bold text-gray-500">未着手</span>
@@ -307,7 +307,7 @@
                                             </div>
                                             <div class="text-right">
                                                 <span class="text-sm font-bold text-gray-400">-</span>
-                                                <span class="text-[10px] text-gray-400 font-medium">/ 3</span>
+                                                <span class="text-[0.625rem] text-gray-400 font-medium">/ 3</span>
                                             </div>
                                         </div>
                                         <div class="flex gap-1 h-1.5 w-full">
@@ -414,9 +414,9 @@
                                     <div class="px-5 py-3 bg-green-50/50 border-b border-green-50">
                                         <div class="flex justify-between items-end mb-2">
                                             <div>
-                                                <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-0.5">Status</p>
+                                                <p class="text-[0.625rem] text-gray-400 font-bold uppercase tracking-wider mb-0.5">Status</p>
                                                 <div class="flex items-center gap-2">
-                                                    <span class="material-symbols-outlined text-green-600 text-[18px]">check_circle</span>
+                                                    <span class="material-symbols-outlined text-green-600 text-base">check_circle</span>
                                                     <span class="text-sm font-bold text-green-800">承認完了</span>
                                                 </div>
                                             </div>
@@ -578,7 +578,6 @@
             activeClass: "ring-2 ring-blue-500 border-transparent",
             badge: "bg-blue-50 text-blue-700 border-blue-100"
         },
-        // ... (他のテーマはそのまま) ...
         lime: { hoverBorder: "hover:border-lime-300", strip: "bg-lime-500", activeClass: "ring-2 ring-lime-500 border-transparent", badge: "bg-lime-50 text-lime-700 border-lime-100" },
         fuchsia: { hoverBorder: "hover:border-fuchsia-300", strip: "bg-fuchsia-500", activeClass: "ring-2 ring-fuchsia-500 border-transparent", badge: "bg-fuchsia-50 text-fuchsia-700 border-fuchsia-100" },
         gray: { hoverBorder: "hover:border-gray-300", strip: "bg-gray-400", activeClass: "ring-2 ring-gray-400 border-transparent", badge: "bg-gray-100 text-gray-600 border-gray-200" }
@@ -652,18 +651,18 @@
                         </div>
                         <div class="text-xs text-gray-500 font-medium truncate mb-2">${item.company}</div>
                         <div class="flex items-center justify-between mt-2 pt-2 border-t border-dashed border-gray-100">
-                            <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium border ${t.badge}">
+                            <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[0.625rem] font-medium border ${t.badge}">
                                 ${item.statusLabel}
                             </span>
                             <div class="flex items-center gap-1.5">
                                 <div class="flex items-center justify-center w-6 h-6 rounded-full border ${stBasic.borderColor} ${stBasic.bgColor}" title="基本情報: ${p.basic}">
-                                    <span class="material-symbols-outlined text-[14px] ${stBasic.iconColor}">info</span>
+                                    <span class="material-symbols-outlined text-[0.875rem] ${stBasic.iconColor}">info</span>
                                 </div>
                                 <div class="flex items-center justify-center w-6 h-6 rounded-full border ${stCourse.borderColor} ${stCourse.bgColor}" title="コースリスト: ${p.course}">
-                                    <span class="material-symbols-outlined text-[14px] ${stCourse.iconColor}">list_alt</span>
+                                    <span class="material-symbols-outlined text-[0.875rem] ${stCourse.iconColor}">list_alt</span>
                                 </div>
                                 <div class="flex items-center justify-center w-6 h-6 rounded-full border ${stSite.borderColor} ${stSite.bgColor}" title="募集サイト: ${p.site}">
-                                    <span class="material-symbols-outlined text-[14px] ${stSite.iconColor}">web</span>
+                                    <span class="material-symbols-outlined text-[0.875rem] ${stSite.iconColor}">web</span>
                                 </div>
                             </div>
                         </div>

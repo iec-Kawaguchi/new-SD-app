@@ -624,6 +624,17 @@ window.addEventListener('DOMContentLoaded', () => {
 
                 ${optionsHtml}
 
+                <div class="flex flex-col justify-between mt-6">
+                    <h4 class="text-xs font-bold text-gray-700 mb-2">公開日設定</h4>
+                    <div class="flex items-center gap-4">
+                     
+                        <input type="date" class="rounded-md border border-gray-300 px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <span class="flex text-sm text-gray-400">〜</span>                        
+                        <input type="date" class="rounded-md border border-gray-300 px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+
+                    
+                    </div>
+                </div>
                 <div class="mt-8 pt-6 border-t border-gray-100 bg-gray-50 -mx-6 -mb-6 px-6 pb-6">
                     <h4 class="text-sm font-bold text-gray-800 mb-2">掲載判断コメント</h4>
                     <textarea id="course-comment" class="w-full min-h-[100px] rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 resize-y bg-white" placeholder="削除希望の理由やメモを記入..."></textarea>
