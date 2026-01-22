@@ -145,6 +145,7 @@ const CourseApp = (() => {
             UI.Carousel.init();
             UI.DeadlineBanner.init();
             UI.SearchClear.init(); // ★ここに追加！
+            UI.ActiveFilters.init();
 
             Modals.Sort.init();
             Modals.Filter.init();
@@ -486,7 +487,130 @@ const CourseApp = (() => {
                 setup('search-input', 'btn-clear-main');
                 setup('filter-keyword', 'btn-clear-filter');
             }
-        }
+        },
+        // --- Active Filters (Chips) ---
+        ActiveFilters: {
+            init: () => {
+                const btnClearAll = document.getElementById('btn-clear-all-filters');
+                if (btnClearAll) {
+                    btnClearAll.addEventListener('click', () => {
+                        Modals.Filter.reset(); // モーダル内のUIをリセット
+                        Modals.Filter.apply(); // 適用（＝全解除）
+                    });
+                }
+            },
+
+            // フィルター条件を受け取り、画面に描画する
+            render: (criteria) => {
+                const container = document.getElementById('active-filters-container');
+                const section = document.getElementById('active-filters-section');
+                const indicator = document.getElementById('filter-indicator');
+                const filterBtn = document.getElementById('btn-filter');
+
+                if (!container || !section) return;
+                container.innerHTML = '';
+
+                const chips = [];
+
+                // 1. キーワード
+                if (criteria.keyword) {
+                    chips.push({ label: `"${criteria.keyword}"`, type: 'keyword' });
+                }
+
+                // 2. NEWのみ
+                if (criteria.isNewOnly) {
+                    chips.push({ label: 'NEWのみ', type: 'new' });
+                }
+
+                // 3. タグ
+                criteria.activeTags.forEach(tag => {
+                    chips.push({ label: tag, type: 'tag', value: tag });
+                });
+
+                // 4. 受講期間 (デフォルト範囲外なら表示)
+                // ※範囲の初期値(1-12)はHTML/JSの設定に依存するため、ここでは簡易的に判定
+                const PERIOD_MIN_DEFAULT = 1;
+                const PERIOD_MAX_DEFAULT = 12;
+                if (criteria.minPeriod > PERIOD_MIN_DEFAULT || criteria.maxPeriod < PERIOD_MAX_DEFAULT) {
+                    chips.push({ 
+                        label: `${criteria.minPeriod}ヶ月〜${criteria.maxPeriod}ヶ月`, 
+                        type: 'period' 
+                    });
+                }
+
+                // 5. 価格 (デフォルト範囲外なら表示)
+                // ※HTMLのinput初期値(0-50000)と連動させる必要があります
+                const PRICE_MIN_DEFAULT = 0;
+                const PRICE_MAX_DEFAULT = 50000;
+                if (criteria.minPrice > PRICE_MIN_DEFAULT || criteria.maxPrice < PRICE_MAX_DEFAULT) {
+                    chips.push({ 
+                        label: `¥${criteria.minPrice.toLocaleString()}〜¥${criteria.maxPrice.toLocaleString()}`, 
+                        type: 'price' 
+                    });
+                }
+
+                // --- 描画処理 ---
+                if (chips.length > 0) {
+                    section.classList.remove('hidden');
+                    if (indicator) indicator.classList.remove('hidden');
+                    if (filterBtn) filterBtn.classList.add('text-sky-600', 'bg-sky-50'); // ボタン自体も色付け
+
+                    chips.forEach(chip => {
+                        const el = document.createElement('button');
+                        el.className = "inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-sky-100 text-sky-700 text-xs font-bold hover:bg-sky-200 transition group";
+                        el.innerHTML = `
+                            <span>${chip.label}</span>
+                            <span class="material-symbols-outlined text-[14px] opacity-60 group-hover:opacity-100">close</span>
+                        `;
+                        // 削除時の動作
+                        el.addEventListener('click', () => UI.ActiveFilters.remove(chip));
+                        container.appendChild(el);
+                    });
+                } else {
+                    section.classList.add('hidden');
+                    if (indicator) indicator.classList.add('hidden');
+                    if (filterBtn) filterBtn.classList.remove('text-sky-600', 'bg-sky-50');
+                }
+            },
+
+            // チップの削除処理（モーダル内のDOMを操作して再Applyする）
+            remove: (chipData) => {
+                const els = Modals.Filter.elements;
+
+                switch (chipData.type) {
+                    case 'keyword':
+                        if (els.keyword) els.keyword.value = '';
+                        if (els.mainSearch) els.mainSearch.value = '';
+                        break;
+                    case 'new':
+                        if (els.newOnly) els.newOnly.checked = false;
+                        break;
+                    case 'tag':
+                        // タグボタンを探して非アクティブにする
+                        const tagBtns = els.tagContainer.querySelectorAll('[data-chip]');
+                        tagBtns.forEach(btn => {
+                            if (btn.textContent.trim() === chipData.value) {
+                                Modals.Filter.setChipState(btn, false);
+                            }
+                        });
+                        break;
+                    case 'period':
+                        // リセット
+                        els.period.min.value = els.period.min.min;
+                        els.period.max.value = els.period.max.max;
+                        Modals.Filter.updateRange('period');
+                        break;
+                    case 'price':
+                        // リセット
+                        els.price.min.value = els.price.min.min;
+                        els.price.max.value = els.price.max.max;
+                        Modals.Filter.updateRange('price');
+                        break;
+                }
+                // 再適用
+                Modals.Filter.apply();
+            }
+        },
     };
 
     // ------------------------------------------------
@@ -735,6 +859,8 @@ const CourseApp = (() => {
                     els.mainSearch.value = els.keyword.value;
                     els.mainSearch.dispatchEvent(new Event('input'));
                 }
+
+                UI.ActiveFilters.render(criteria);
 
                 Core.filter(criteria);
                 Modals.Filter.close();
