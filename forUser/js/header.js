@@ -61,9 +61,13 @@ document.addEventListener("DOMContentLoaded", () => {
                         </p>
                     </div>
                 </div>
-                <div class="p-3 bg-gray-50/50 rounded-b-2xl text-center">
+                <div class="p-3 bg-gray-50/50 rounded-b-2xl text-center border-t border-gray-100">
+                    <div class="flex items-center justify-center gap-2">
+                        <input type="checkbox" id="notice-dont-show" class="w-4 h-4 rounded border-gray-300 text-sky-600 focus:ring-sky-500 cursor-pointer">
+                        <label for="notice-dont-show" class="text-xs text-gray-500 select-none cursor-pointer hover:text-gray-700">次回から自動表示しない</label>
+                    </div>
                 </div>
-            </div>
+                </div>
         </div>
     </div>
 
@@ -147,11 +151,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
 // --- Notice Modal Logic ---
 function initNoticeModal() {
+    // お知らせを特定するための一意のキー（内容を更新したらここを変更する）
+    const NOTICE_ID = 'notice_read_20251202'; 
+
     const dialog = document.getElementById('notice-dialog');
     const backdrop = document.getElementById('notice-backdrop');
     const panel = document.getElementById('notice-panel');
     const btnOpen = document.getElementById('btn-notice');
     const btnClose = document.getElementById('notice-close');
+    const checkbox = document.getElementById('notice-dont-show'); // 追加
 
     if (!btnOpen || !dialog) return;
 
@@ -163,7 +171,13 @@ function initNoticeModal() {
             panel.style.transform = 'translateY(0)';
         });
     }
+
     function closeNotice() {
+        // 閉じる際にチェックボックスの状態を確認して保存
+        if (checkbox && checkbox.checked) {
+            localStorage.setItem(NOTICE_ID, 'true');
+        }
+
         backdrop.style.opacity = '0';
         panel.style.opacity = '0';
         panel.style.transform = 'translateY(1rem)';
@@ -173,6 +187,15 @@ function initNoticeModal() {
     btnOpen.addEventListener('click', openNotice);
     btnClose.addEventListener('click', closeNotice);
     backdrop.addEventListener('click', closeNotice);
+
+    // ▼▼▼ 自動表示ロジックの追加 ▼▼▼
+    const isRead = localStorage.getItem(NOTICE_ID);
+    if (!isRead) {
+        // 少し遅延させて表示（UX向上）
+        setTimeout(() => {
+            openNotice();
+        }, 800);
+    }
 }
 
 // --- Menu Modal Logic ---
@@ -272,7 +295,7 @@ function initFavoritesLogic() {
                 saveFavs(current);
                 renderFavList();
                 updateBadge();
-                updateCardButtons(); // Sync visual state on page
+                updateCardButtons(); 
             });
         });
     }
@@ -297,47 +320,37 @@ function initFavoritesLogic() {
     btnClose?.addEventListener('click', closeFav);
     backdrop?.addEventListener('click', closeFav);
 
-    // 5. Global Click Listener for Favorite Buttons (Fix for Link Transition)
+    // 5. Global Click Listener for Favorite Buttons
     document.addEventListener('click', (e) => {
-        // カード上のハートボタン（クラス: btn-fav）をクリックしたか判定
         const btn = e.target.closest('.btn-fav');
-        
-        // ボタン以外なら無視
         if (!btn) return;
 
-        // ★★★ ここが重要：リンク遷移(aタグ)をキャンセル ★★★
         e.preventDefault();
         e.stopPropagation();
 
-        // データを取得
         const id = btn.dataset.id;
         const title = btn.dataset.title;
         const img = btn.dataset.img;
         const link = btn.dataset.link || '#';
 
-        // 現在の保存状況を確認
         let current = getFavs();
         const exists = current.find(i => i.id === id);
 
         if (exists) {
-            // 削除
             current = current.filter(i => i.id !== id);
             toggleBtnVisual(btn, false);
         } else {
-            // 追加
             current.unshift({ id, title, img, link, date: Date.now() });
             toggleBtnVisual(btn, true);
         }
 
         saveFavs(current);
         updateBadge();
-    }, true); // Use capture phase to ensure we catch it before anchor tag
+    }, true); 
 
     // Helper: Visual Toggle (Animation & Color)
     function toggleBtnVisual(btn, active) {
-        const icon = btn.querySelector('.material-symbols-outlined');
         if (active) {
-            // クラスをつけると top.html の CSSアニメーションが発火
             btn.classList.add('heart-active');
         } else {
             btn.classList.remove('heart-active');
@@ -356,6 +369,5 @@ function initFavoritesLogic() {
         });
     }
 
-    // Init check
     updateCardButtons();
 }

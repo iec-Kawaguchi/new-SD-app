@@ -23,7 +23,7 @@
             <div id="app-sidebar"></div>
             
             <div class="flex-1 overflow-y-auto custom-scrollbar p-8 bg-gray-50">
-                <div class="max-w-6xl mx-auto flex flex-col gap-6 pb-12">
+                <div class="mx-auto flex flex-col gap-6 pb-12">
                     
                     <div class="flex items-start justify-between">
                         <div>
@@ -78,14 +78,6 @@
                                     </div>
                                 </div>
                             </div>
-
-                            <!-- <div class="flex flex-col gap-2">
-                                <span class="text-xs font-bold text-gray-500 uppercase tracking-wide">開講日順（昇順）</span>
-                                <div class="text-xs text-gray-400 bg-gray-50 border border-gray-100 rounded-md p-2.5 flex items-start gap-2 h-[38px] items-center">
-                                    <span class="material-symbols-outlined icon-sm">calendar_month</span>
-                                    将来的に期間指定フィルタを追加可能
-                                </div>
-                            </div> -->
                         </div>
 
                         <div class="flex items-center justify-end pt-2">
@@ -109,6 +101,8 @@
                                         <th class="px-6 py-3 font-semibold">申込締切</th>
                                         <th class="px-6 py-3 font-semibold">顧客名</th>
                                         <th class="px-6 py-3 font-semibold">募集名</th>
+                                        <th class="px-6 py-3 font-semibold text-right">申込件数</th>
+                                        <th class="px-6 py-3 font-semibold">最終DL日時</th>
                                         <th class="px-6 py-3 font-semibold">ステータス</th>
                                         <th class="px-6 py-3 font-semibold text-center">アクション</th>
                                     </tr>
@@ -148,7 +142,9 @@
         deadlineDate: "2026/05/20",
         customerName: "株式会社アルファ",
         recruitmentName: "2026年度上期 SD募集",
-        status: "DL可能"
+        status: "DL可能",
+        applicantCount: 45,
+        lastDownloadDate: "2026/05/21 10:15"
       },
       {
         id: "d002",
@@ -156,7 +152,9 @@
         deadlineDate: "2026/06/10",
         customerName: "株式会社アルファ",
         recruitmentName: "2026年度上期 SD募集",
-        status: "DL可能"
+        status: "DL可能",
+        applicantCount: 12,
+        lastDownloadDate: null
       },
       {
         id: "d003",
@@ -164,7 +162,9 @@
         deadlineDate: "2026/06/15",
         customerName: "株式会社ベータ",
         recruitmentName: "FY26 SD募集",
-        status: "DL不可"
+        status: "DL不可",
+        applicantCount: 0,
+        lastDownloadDate: null
       },
       {
         id: "d004",
@@ -172,7 +172,9 @@
         deadlineDate: "2026/11/10",
         customerName: "株式会社シグマ",
         recruitmentName: "2026年度下期",
-        status: "DL可能"
+        status: "DL可能",
+        applicantCount: 88,
+        lastDownloadDate: "2026/11/11 09:00"
       },
       {
         id: "d005",
@@ -180,7 +182,9 @@
         deadlineDate: "2026/12/20",
         customerName: "株式会社デルタ",
         recruitmentName: "FY26 冬募集",
-        status: "DL不可"
+        status: "DL不可",
+        applicantCount: 5,
+        lastDownloadDate: null
       }
     ];
 
@@ -224,7 +228,7 @@
       if (items.length === 0) {
         const tr = document.createElement("tr");
         tr.innerHTML = `
-          <td class="p-12 text-center text-gray-400" colspan="6">
+          <td class="p-12 text-center text-gray-400" colspan="8">
             <div class="flex flex-col items-center gap-2">
                 <span class="material-symbols-outlined text-4xl text-gray-300">search_off</span>
                 <span class="text-sm font-medium">条件に一致するデータがありません</span>
@@ -238,11 +242,16 @@
       items.forEach(item => {
         const isAvailable = item.status === "DL可能";
         
-        // デザイン調整: Badge style match media-plan-list (squared rounded-md/sm usually)
+        // デザイン調整
         const badgeClass = isAvailable
           ? "bg-blue-50 text-blue-700 border border-blue-100"
           : "bg-gray-100 text-gray-500 border border-gray-200";
         const dotClass = isAvailable ? "bg-blue-500" : "bg-gray-400";
+        
+        // 最終DL日時の表示制御（nullの場合は - を表示）
+        const lastDLDisplay = item.lastDownloadDate 
+            ? `<span class="text-gray-700 text-xs">${item.lastDownloadDate}</span>` 
+            : `<span class="text-gray-400">-</span>`;
 
         const tr = document.createElement("tr");
         tr.className = "hover:bg-gray-50 transition-colors group";
@@ -258,6 +267,12 @@
           </td>
           <td class="px-6 py-4 align-middle text-sm text-gray-600">
             ${item.recruitmentName}
+          </td>
+          <td class="px-6 py-4 align-middle text-sm text-right font-medium text-gray-700">
+            ${item.applicantCount.toLocaleString()} 件
+          </td>
+          <td class="px-6 py-4 align-middle text-sm">
+            ${lastDLDisplay}
           </td>
           <td class="px-6 py-4 align-middle">
             <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded text-xs font-medium ${badgeClass}">
@@ -284,15 +299,14 @@
         rowsBody.appendChild(tr);
       });
 
-      // クリックイベント（モック）
+      // クリックイベント
       rowsBody.querySelectorAll("button[data-download-id]").forEach(btn => {
         btn.addEventListener("click", () => {
           const id = btn.getAttribute("data-download-id");
           const target = DOWNLOAD_ITEMS.find(x => x.id === id);
           if (!target || target.status !== "DL可能") return;
 
-          // 実装時はここでファイルDL API呼び出しなど
-          alert(`モック：${target.customerName}「${target.recruitmentName}」（開講日: ${target.openingDate}）のデータをダウンロードします。`);
+          alert(`モック：${target.customerName}「${target.recruitmentName}」（開講日: ${target.openingDate}）\n申込件数：${target.applicantCount}件 のデータをダウンロードします。`);
         });
       });
     }
