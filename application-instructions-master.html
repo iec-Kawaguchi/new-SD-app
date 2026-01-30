@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="ja" class="h-full bg-gray-50">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>申込指示マスタ - New SD App</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="./css/base-style.css">
+        <script src="./js/role-visibility.js" defer></script>
+        <script src="./js/mock-ui.js" defer></script>
+        
+        <style>
+            /* カスタムスクロールバー */
+            ::-webkit-scrollbar { width: 6px; height: 6px; }
+            ::-webkit-scrollbar-track { background: transparent; }
+            ::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 20px; }
+            ::-webkit-scrollbar-thumb:hover { background-color: #94a3b8; }
+            
+            /* モーダル内のスクロール領域用 */
+            .modal-scroll-area {
+                max-height: calc(100vh - 200px);
+                overflow-y: auto;
+            }
+        </style>
+    </head>
+    <body class="h-full text-gray-900 antialiased flex flex-col">
+        <div id="app-header"></div>
+
+        <div class="flex flex-1 overflow-hidden">
+            <div id="app-sidebar"></div>
+
+            <main class="flex-1 h-full overflow-y-auto bg-gray-50 p-6 lg:p-8">
+                <div class="max-w-7xl mx-auto h-full flex flex-col">
+                    <div class="mb-6 flex items-center justify-between">
+                        <div class="flex flex-col">
+                            <h1 class="text-2xl font-bold text-gray-800 tracking-tight">申込指示マスタ</h1>
+                            <p class="text-sm text-gray-500 mt-1">申込時の運用指示パターンを登録・管理します。</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden flex flex-col flex-1">
+                        
+                        <div class="p-4 border-b border-gray-100 flex flex-col md:flex-row items-center justify-between gap-4 bg-white">
+                            <div class="flex items-center gap-3 w-full md:w-auto flex-1 max-w-2xl">
+                                <div class="relative w-full md:max-w-md">
+                                    <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                        <span class="material-symbols-outlined text-gray-400 icon-sm">search</span>
+                                    </div>
+                                    <input id="searchInput" type="text" class="h-10 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2 leading-tight transition-shadow" placeholder="指示パターン名称で検索...">
+                                </div>
+                            </div>
+
+                            <button id="btnOpenModal" class="h-10 flex items-center justify-center gap-1.5 text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:ring-blue-100 font-medium rounded-md text-sm px-4 transition-all shadow-sm hover:shadow active:scale-95 whitespace-nowrap">
+                                <span class="material-symbols-outlined icon-sm">add</span>
+                                <span>新規登録</span>
+                            </button>
+                        </div>
+
+                        <div class="flex-1 overflow-x-auto">
+                            <table class="min-w-full text-left whitespace-nowrap">
+                                <thead class="bg-gray-50 border-b border-gray-200 sticky top-0 z-50">
+                                    <tr>
+                                        <th class="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">パターン名称</th>
+                                        <th class="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">[101] 教材配送</th>
+                                        <th class="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">[201] 請求区分</th>
+                                        <th class="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">[404] 修了判定</th>
+                                        <th class="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider text-center">アクション</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tableBody" class="divide-y divide-gray-100 bg-white">
+                                    </tbody>
+                            </table>
+                        </div>
+
+                        <div class="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6">
+                            <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+                                <div>
+                                    <p class="text-sm text-gray-700">
+                                        全 <span id="totalCount" class="font-medium">0</span> 件中 
+                                        <span id="startCount" class="font-medium">0</span> から 
+                                        <span id="endCount" class="font-medium">0</span> 件を表示
+                                    </p>
+                                </div>
+                                <div>
+                                    <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+                                        <button id="btnPrev" type="button" class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
+                                            <span class="material-symbols-outlined icon-sm">chevron_left</span>
+                                        </button>
+                                        <span id="pageIndicator" class="z-10 bg-blue-50 border-blue-500 text-blue-600 relative inline-flex items-center px-4 py-2 border text-sm font-medium">1</span>
+                                        <button id="btnNext" type="button" class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
+                                            <span class="material-symbols-outlined icon-sm">chevron_right</span>
+                                        </button>
+                                    </nav>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+
+        <div id="modal" class="fixed inset-0 z-[100] bg-gray-900/50 backdrop-blur-sm flex items-center justify-center hidden transition-all duration-200">
+            <div class="bg-white rounded-xl shadow-2xl w-full max-w-4xl mx-4 overflow-hidden transform transition-all scale-100 border border-gray-100 flex flex-col max-h-[90vh]">
+                
+                <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-white flex-shrink-0">
+                    <h2 id="modalTitle" class="text-lg font-bold text-gray-800 flex items-center gap-2">
+                        <span class="material-symbols-outlined text-blue-600 icon-md">fact_check</span>
+                        <span class="text">指示パターン登録</span>
+                    </h2>
+                    <button id="btnCloseModalHeader" class="text-gray-400 hover:text-gray-600 hover:bg-gray-100 p-1 rounded-full transition-colors">
+                        <span class="material-symbols-outlined icon-md">close</span>
+                    </button>
+                </div>
+
+                <div class="p-6 overflow-y-auto bg-white flex-1">
+                    <input type="hidden" id="inputId">
+                    
+                    <div class="flex flex-col gap-6">
+                        <div class="flex flex-col gap-1.5">
+                            <label for="inputName" class="text-sm font-bold text-gray-700">指示パターン名称 <span class="text-red-500">*</span></label>
+                            <input id="inputName" type="text" class="w-full rounded-md border border-gray-300 px-3 py-2.5 text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 shadow-sm sm:text-sm" placeholder="例：新卒入社者向け、関東エリア配属者用 など">
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-5 bg-slate-50 p-5 rounded-xl border border-slate-100">
+                            
+                            <div class="space-y-1.5">
+                                <label class="text-xs font-bold text-gray-700 uppercase tracking-wider">[101] 教材配送先</label>
+                                <div class="relative">
+                                    <select id="inputShipping" class="h-10 block w-full rounded-md border border-gray-300 pl-3 pr-8 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white hover:border-gray-400 transition-colors cursor-pointer appearance-none">
+                                        <option value="受講生宛">受講生宛</option>
+                                        <option value="企業担当者宛">企業担当者宛</option>
+                                        <option value="各社担当者宛">各社担当者宛</option>
+                                    </select>
+                                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-500">
+                                        <span class="material-symbols-outlined icon-sm">expand_more</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="space-y-1.5">
+                                <label class="text-xs font-bold text-gray-700 uppercase tracking-wider">[106] レポート提出</label>
+                                <div class="relative">
+                                    <select id="inputReportSubmit" class="h-10 block w-full rounded-md border border-gray-300 pl-3 pr-8 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white hover:border-gray-400 transition-colors cursor-pointer appearance-none">
+                                        <option value="受講生→団体">受講生→団体</option>
+                                        <option value="企業担当者→団体">企業担当者→団体</option>
+                                        <option value="各社担当→団体">各社担当→団体</option>
+                                    </select>
+                                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-500">
+                                        <span class="material-symbols-outlined icon-sm">expand_more</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="space-y-1.5">
+                                <label class="text-xs font-bold text-gray-700 uppercase tracking-wider">[107] レポート返却</label>
+                                <div class="relative">
+                                    <select id="inputReportReturn" class="h-10 block w-full rounded-md border border-gray-300 pl-3 pr-8 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white hover:border-gray-400 transition-colors cursor-pointer appearance-none">
+                                        <option value="団体→受講生">団体→受講生</option>
+                                        <option value="団体→企業担当者">団体→企業担当者</option>
+                                        <option value="団体→各社担当">団体→各社担当</option>
+                                    </select>
+                                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-500">
+                                        <span class="material-symbols-outlined icon-sm">expand_more</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="space-y-1.5">
+                                <label class="text-xs font-bold text-gray-700 uppercase tracking-wider">[201] 請求区分</label>
+                                <div class="relative">
+                                    <select id="inputBillingType" class="h-10 block w-full rounded-md border border-gray-300 pl-3 pr-8 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white hover:border-gray-400 transition-colors cursor-pointer appearance-none">
+                                        <option value="会社請求">会社請求</option>
+                                        <option value="受講生請求">受講生請求</option>
+                                        <option value="会社＆受講生請求">会社＆受講生請求</option>
+                                    </select>
+                                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-500">
+                                        <span class="material-symbols-outlined icon-sm">expand_more</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="space-y-1.5">
+                                <label class="text-xs font-bold text-gray-700 uppercase tracking-wider">[202] 請求先</label>
+                                <div class="relative">
+                                    <select id="inputBillingDest" class="h-10 block w-full rounded-md border border-gray-300 pl-3 pr-8 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white hover:border-gray-400 transition-colors cursor-pointer appearance-none">
+                                        <option value="企業担当者宛">企業担当者宛</option>
+                                        <option value="各社担当者宛">各社担当者宛</option>
+                                        <option value="受講生宛">受講生宛</option>
+                                    </select>
+                                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-500">
+                                        <span class="material-symbols-outlined icon-sm">expand_more</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="space-y-1.5">
+                                <label class="text-xs font-bold text-gray-700 uppercase tracking-wider">[203] 請求送付先</label>
+                                <div class="relative">
+                                    <select id="inputBillingSend" class="h-10 block w-full rounded-md border border-gray-300 pl-3 pr-8 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white hover:border-gray-400 transition-colors cursor-pointer appearance-none">
+                                        <option value="企業担当者宛">企業担当者宛</option>
+                                        <option value="各社担当者宛">各社担当者宛</option>
+                                        <option value="受講生宛">受講生宛</option>
+                                    </select>
+                                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-500">
+                                        <span class="material-symbols-outlined icon-sm">expand_more</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="space-y-1.5">
+                                <label class="text-xs font-bold text-gray-700 uppercase tracking-wider">[301,304] 成績報告先</label>
+                                <div class="relative">
+                                    <select id="inputGradeReport" class="h-10 block w-full rounded-md border border-gray-300 pl-3 pr-8 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white hover:border-gray-400 transition-colors cursor-pointer appearance-none">
+                                        <option value="企業担当者宛">企業担当者宛</option>
+                                        <option value="各社担当者宛">各社担当者宛</option>
+                                        <option value="不要">不要</option>
+                                    </select>
+                                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-500">
+                                        <span class="material-symbols-outlined icon-sm">expand_more</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="space-y-1.5">
+                                <label class="text-xs font-bold text-gray-700 uppercase tracking-wider">[404] 修了判定</label>
+                                <div class="relative">
+                                    <select id="inputCompletion" class="h-10 block w-full rounded-md border border-gray-300 pl-3 pr-8 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white hover:border-gray-400 transition-colors cursor-pointer appearance-none">
+                                        <option value="各団体基準">各団体基準</option>
+                                        <option value="基準指定">基準指定</option>
+                                    </select>
+                                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-500">
+                                        <span class="material-symbols-outlined icon-sm">expand_more</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="space-y-1.5">
+                                <label class="text-xs font-bold text-gray-700 uppercase tracking-wider">再受講可否</label>
+                                <div class="relative">
+                                    <select id="inputRetake" class="h-10 block w-full rounded-md border border-gray-300 pl-3 pr-8 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white hover:border-gray-400 transition-colors cursor-pointer appearance-none">
+                                        <option value="可">可</option>
+                                        <option value="不可">不可</option>
+                                    </select>
+                                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-500">
+                                        <span class="material-symbols-outlined icon-sm">expand_more</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div> <div>
+                            <div class="flex justify-between items-end mb-1.5">
+                                <label for="inputNote" class="text-xs font-bold text-gray-700 uppercase tracking-wide">その他特記事項</label>
+                                <div class="text-[10px] text-gray-400 font-mono">
+                                    <span id="charCount" class="font-bold text-gray-600">0</span> / 500
+                                </div>
+                            </div>
+                            <textarea id="inputNote" rows="3" maxlength="500"
+                                class="block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white transition-all resize-none"
+                                placeholder="備考があれば記載してください"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="px-6 py-4 bg-gray-50 flex gap-3 justify-end border-t border-gray-100 flex-shrink-0">
+                    <button id="btnCloseModal" class="px-4 py-2 rounded-md bg-white border border-gray-300 text-gray-700 font-medium hover:bg-gray-50 hover:border-gray-400 transition-all shadow-sm">キャンセル</button>
+                    <button id="btnSubmit" class="px-4 py-2 rounded-md bg-blue-600 text-white font-bold hover:bg-blue-700 shadow-sm hover:shadow transition-all">登録する</button>
+                </div>
+            </div>
+        </div>
+
+<script type="module">
+    // --- Mock Data: マスタデータとして扱う ---
+    const mockInstructions = [
+        {
+            id: '1',
+            name: '標準パターンA（受講生直送）',
+            shipping: '受講生宛',
+            reportSubmit: '受講生→団体',
+            reportReturn: '団体→受講生',
+            billingType: '会社請求',
+            billingDest: '企業担当者宛',
+            billingSend: '企業担当者宛',
+            gradeReport: '企業担当者宛',
+            completion: '各団体基準',
+            retake: '可',
+            note: '一般的な新入社員研修で使用されるパターンです。'
+        },
+        {
+            id: '2',
+            name: '自己啓発支援（個人請求）',
+            shipping: '受講生宛',
+            reportSubmit: '受講生→団体',
+            reportReturn: '団体→受講生',
+            billingType: '受講生請求',
+            billingDest: '受講生宛',
+            billingSend: '受講生宛',
+            gradeReport: '不要',
+            completion: '各団体基準',
+            retake: '不可',
+            note: ''
+        },
+        {
+            id: '3',
+            name: '拠点一括配送パターン',
+            shipping: '各社担当者宛',
+            reportSubmit: '各社担当→団体',
+            reportReturn: '団体→各社担当',
+            billingType: '会社請求',
+            billingDest: '各社担当者宛',
+            billingSend: '各社担当者宛',
+            gradeReport: '各社担当者宛',
+            completion: '基準指定',
+            retake: '可',
+            note: '各支店・工場での取りまとめがある場合に使用。'
+        }
+    ];
+
+    window.addEventListener('DOMContentLoaded', () => {
+        // --- MockUI初期化 ---
+        if (typeof MockUI !== 'undefined') {
+            MockUI.injectHeader('#app-header', {
+                userName: 'Test User',
+                brand: 'New SD App',
+                initialRole: 'iec',
+            });
+            MockUI.injectSidebar('#app-sidebar');
+        }
+
+        // --- 状態管理変数 ---
+        let currentData = [...mockInstructions];
+        let currentPage = 1;
+        const itemsPerPage = 10;
+
+        // --- DOM要素取得 ---
+        const modal = document.getElementById('modal');
+        const btnOpenModal = document.getElementById('btnOpenModal');
+        const btnCloseModal = document.getElementById('btnCloseModal');
+        const btnCloseModalHeader = document.getElementById('btnCloseModalHeader');
+        const btnSubmit = document.getElementById('btnSubmit');
+        const modalTitle = document.getElementById('modalTitle');
+        const tableBody = document.getElementById('tableBody');
+        const searchInput = document.getElementById('searchInput');
+
+        // ページネーション要素
+        const totalCountEl = document.getElementById('totalCount');
+        const startCountEl = document.getElementById('startCount');
+        const endCountEl = document.getElementById('endCount');
+        const btnPrev = document.getElementById('btnPrev');
+        const btnNext = document.getElementById('btnNext');
+        const pageIndicator = document.getElementById('pageIndicator');
+
+        // フォーム要素
+        const inputId = document.getElementById('inputId');
+        const inputName = document.getElementById('inputName');
+        const inputShipping = document.getElementById('inputShipping');
+        const inputReportSubmit = document.getElementById('inputReportSubmit');
+        const inputReportReturn = document.getElementById('inputReportReturn');
+        const inputBillingType = document.getElementById('inputBillingType');
+        const inputBillingDest = document.getElementById('inputBillingDest');
+        const inputBillingSend = document.getElementById('inputBillingSend');
+        const inputGradeReport = document.getElementById('inputGradeReport');
+        const inputCompletion = document.getElementById('inputCompletion');
+        const inputRetake = document.getElementById('inputRetake');
+        const inputNote = document.getElementById('inputNote');
+        const charCount = document.getElementById('charCount');
+
+        // --- バッジ生成関数 ---
+        // 配送先用バッジ
+        const getShippingBadge = (val) => {
+            const isIndividual = val.includes('受講生');
+            const bg = isIndividual ? 'bg-green-100' : 'bg-gray-100';
+            const text = isIndividual ? 'text-green-800' : 'text-gray-800';
+            const icon = isIndividual ? 'person' : 'business';
+            return `<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium ${bg} ${text}">
+                <span class="material-symbols-outlined text-[14px]">${icon}</span>${val}
+            </span>`;
+        };
+
+        // 請求区分用バッジ
+        const getBillingBadge = (val) => {
+            const isCompany = val.includes('会社');
+            const bg = isCompany ? 'bg-blue-100' : 'bg-orange-100';
+            const text = isCompany ? 'text-blue-800' : 'text-orange-800';
+            return `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${bg} ${text}">${val}</span>`;
+        };
+
+        // --- ロジック関数 ---
+        const updatePaginationUI = () => {
+            const total = currentData.length;
+            const start = total === 0 ? 0 : (currentPage - 1) * itemsPerPage + 1;
+            const end = Math.min(currentPage * itemsPerPage, total);
+            const totalPages = Math.ceil(total / itemsPerPage);
+
+            totalCountEl.textContent = total;
+            startCountEl.textContent = start;
+            endCountEl.textContent = end;
+            pageIndicator.textContent = total === 0 ? 0 : currentPage;
+
+            btnPrev.disabled = currentPage === 1 || total === 0;
+            btnNext.disabled = currentPage === totalPages || total === 0;
+        };
+
+        const renderTable = () => {
+            if (!tableBody) return;
+
+            const startIndex = (currentPage - 1) * itemsPerPage;
+            const endIndex = startIndex + itemsPerPage;
+            const slicedData = currentData.slice(startIndex, endIndex);
+
+            if (slicedData.length === 0) {
+                tableBody.innerHTML = `<tr><td colspan="5" class="px-6 py-10 text-center text-gray-500">データが見つかりませんでした</td></tr>`;
+                updatePaginationUI();
+                return;
+            }
+
+            const html = slicedData.map(item => {
+                return `
+                <tr class="hover:bg-gray-50 transition-colors cursor-pointer js-row group relative" data-id="${item.id}">
+                    <td class="px-6 py-4 text-sm text-gray-900 font-bold">${item.name}</td>
+                    <td class="px-6 py-4">${getShippingBadge(item.shipping)}</td>
+                    <td class="px-6 py-4">${getBillingBadge(item.billingType)}</td>
+                    <td class="px-6 py-4 text-sm text-gray-600">${item.completion}</td>
+                    <td class="px-6 py-4 text-center">
+                        <div class="inline-block text-left">
+                            <button type="button" class="flex menu-trigger p-2 rounded-full text-gray-400 hover:text-gray-600 hover:bg-gray-100 focus:outline-none transition-colors z-10 relative">
+                                <span class="material-symbols-outlined icon-md">more_horiz</span>
+                            </button>
+                            <div class="menu hidden absolute right-8 mt-[-10px] w-48 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-20">
+                                <div class="py-1">
+                                    <a href="#" class="group flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-gray-900 js-edit-action">
+                                        <span class="material-symbols-outlined icon-sm mr-3 text-gray-400 group-hover:text-gray-500">edit</span>
+                                        編集する
+                                    </a>
+                                    <a href="#" class="group flex items-center px-4 py-2 text-sm text-red-600 hover:bg-red-50 js-delete-action">
+                                        <span class="material-symbols-outlined icon-sm mr-3 text-red-400 group-hover:text-red-500">delete</span>
+                                        削除する
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                `;
+            }).join('');
+
+            tableBody.innerHTML = html;
+            updatePaginationUI();
+        };
+
+        const filterData = () => {
+            const keyword = searchInput.value.trim().toLowerCase();
+            currentData = mockInstructions.filter(item => {
+                return !keyword || item.name.toLowerCase().includes(keyword);
+            });
+            currentPage = 1;
+            renderTable();
+        };
+
+        // --- モーダル関連処理 ---
+        const closeAllMenus = () => {
+            document.querySelectorAll(".menu").forEach(m => m.classList.add("hidden"));
+        };
+
+        const openModal = (mode, id = null) => {
+            closeAllMenus();
+            modal.classList.remove('hidden');
+
+            if (mode === 'edit' && id) {
+                // 編集モード
+                modalTitle.querySelector('.text').textContent = '指示パターン編集';
+                modalTitle.querySelector('.material-symbols-outlined').textContent = 'edit_note';
+                btnSubmit.textContent = '更新する';
+
+                const data = mockInstructions.find(item => item.id === id);
+                if (data) {
+                    inputId.value = data.id;
+                    inputName.value = data.name;
+                    inputShipping.value = data.shipping;
+                    inputReportSubmit.value = data.reportSubmit;
+                    inputReportReturn.value = data.reportReturn;
+                    inputBillingType.value = data.billingType;
+                    inputBillingDest.value = data.billingDest;
+                    inputBillingSend.value = data.billingSend;
+                    inputGradeReport.value = data.gradeReport;
+                    inputCompletion.value = data.completion;
+                    inputRetake.value = data.retake;
+                    inputNote.value = data.note;
+                }
+            } else {
+                // 新規モード
+                modalTitle.querySelector('.text').textContent = '指示パターン登録';
+                modalTitle.querySelector('.material-symbols-outlined').textContent = 'fact_check';
+                btnSubmit.textContent = '登録する';
+
+                // フォームリセット
+                inputId.value = '';
+                inputName.value = '';
+                inputNote.value = '';
+                // セレクトボックスはデフォルト値（最初のoption）に戻る
+                [inputShipping, inputReportSubmit, inputReportReturn, inputBillingType, 
+                 inputBillingDest, inputBillingSend, inputGradeReport, inputCompletion, inputRetake]
+                 .forEach(el => el.selectedIndex = 0);
+            }
+            
+            // 文字数カウント更新
+            charCount.textContent = inputNote.value.length;
+        };
+
+        const closeModal = () => modal.classList.add('hidden');
+
+        // --- イベントリスナー ---
+        
+        // 検索
+        searchInput.addEventListener('input', filterData);
+
+        // ページネーション
+        btnPrev.addEventListener('click', () => { if(currentPage > 1) { currentPage--; renderTable(); }});
+        btnNext.addEventListener('click', () => { if(currentPage * itemsPerPage < currentData.length) { currentPage++; renderTable(); }});
+
+        // テーブル操作
+        tableBody.addEventListener('click', (e) => {
+            const target = e.target;
+            
+            // メニュートリガー
+            const menuTrigger = target.closest('.menu-trigger');
+            if (menuTrigger) {
+                e.stopPropagation();
+                const menu = menuTrigger.nextElementSibling;
+                const isHidden = menu.classList.contains('hidden');
+                closeAllMenus();
+                if (isHidden) menu.classList.remove('hidden');
+                return;
+            }
+
+            // 編集アクション
+            const editAction = target.closest('.js-edit-action');
+            if (editAction) {
+                e.preventDefault();
+                e.stopPropagation();
+                const row = target.closest('tr');
+                openModal('edit', row.dataset.id);
+                return;
+            }
+
+            // 削除アクション（モック）
+            const deleteAction = target.closest('.js-delete-action');
+            if (deleteAction) {
+                e.preventDefault();
+                e.stopPropagation();
+                if(confirm('本当に削除しますか？')) {
+                    const row = target.closest('tr');
+                    const id = row.dataset.id;
+                    const index = mockInstructions.findIndex(m => m.id === id);
+                    if(index > -1) {
+                        mockInstructions.splice(index, 1);
+                        filterData(); // 再描画
+                        closeAllMenus();
+                    }
+                }
+                return;
+            }
+
+            // 行クリックで編集
+            const row = target.closest('tr');
+            if (row && !target.closest('.menu')) {
+                openModal('edit', row.dataset.id);
+            }
+        });
+
+        // モーダル操作
+        btnOpenModal.addEventListener('click', () => openModal('new'));
+        btnCloseModal.addEventListener('click', closeModal);
+        btnCloseModalHeader.addEventListener('click', closeModal);
+        modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
+
+        // 文字数カウント
+        inputNote.addEventListener('input', () => {
+            charCount.textContent = inputNote.value.length;
+        });
+
+        // グローバルクリック（メニュー閉じる）
+        document.addEventListener("click", () => closeAllMenus());
+        document.addEventListener('click', (e) => {
+            if (e.target.closest('.menu')) e.stopPropagation();
+        }, true);
+
+        // 初期表示
+        renderTable();
+    });
+</script>
+    </body>
+</html>

@@ -268,7 +268,7 @@
                                                 <span class="text-xs ml-1 font-medium">編集</span>
                                             </button>
                                         </div>
-                                        <div class="flex items-center justify-between p-2.5 rounded-lg hover:bg-gray-50 transition-colors"
+                                        <!-- <div class="flex items-center justify-between p-2.5 rounded-lg hover:bg-gray-50 transition-colors"
                                             data-visible-for="iec,supplier, customer">
                                             <div class="flex items-center text-sm font-medium text-gray-700 gap-2">
                                                 <span class="material-symbols-outlined text-emerald-500 icon-md" data-visible-for="iec,customer">check_circle</span>
@@ -282,6 +282,19 @@
                                                 <span class="material-symbols-outlined icon-sm">edit</span>
                                                 <span class="text-xs ml-1 font-medium">編集</span>
                                             </button>
+                                        </div> -->
+                                        <div class="flex items-center justify-between p-2.5 rounded-lg hover:bg-gray-50 transition-colors" data-visible-for="iec,supplier, customer">
+                                            <div class="flex items-center text-sm font-medium text-gray-700 gap-2">
+                                                <span class="material-symbols-outlined text-orange-400 icon-md" data-visible-for="iec, customer">error</span>
+                                                <span class="material-symbols-outlined text-gray-300 icon-md" data-visible-for="supplier">check_circle</span>
+                                                <span>申込指示設定</span>
+                                            </div>
+                                            <a href="org-application-mapping.html"
+                                                class="flex items-center text-gray-400 hover:text-blue-600 hover:bg-blue-50 px-2 py-1 rounded transition-all" 
+                                                data-visible-for="iec, customer">
+                                                <span class="material-symbols-outlined icon-sm">edit</span>
+                                                <span class="text-xs ml-1 font-medium">編集</span>
+                                            </a>
                                         </div>
                                     </div>
                                 </div>

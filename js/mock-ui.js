@@ -85,7 +85,11 @@
                         </a>
                         <a href="org-master.html" data-visible-for="iec, customer" class="js-nav-item">
                             <span class="${STYLES.icon}">apartment</span>
-                            <span class="text-sm">組織マスタ</span>
+                            <span class="text-sm">組織階層管理</span>
+                        </a>
+                        <a href="application-instructions-master.html" data-visible-for="iec, customer" class="js-nav-item">
+                            <span class="${STYLES.icon}">order_approve</span>
+                            <span class="text-sm">申込指示管理</span>
                         </a>
                         <a href="tag-master.html" data-visible-for="iec, customer" class="js-nav-item">
                             <span class="${STYLES.icon}">tag</span>

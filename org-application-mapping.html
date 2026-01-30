@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="ja" class="h-full bg-gray-50">
+    <head>
+        <meta charset="UTF-8" />
+        <title>申込指示・担当設定 - New SD App</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <script src="https://cdn.tailwindcss.com"></script>
+        <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+        
+        <link rel="stylesheet" href="./css/base-style.css">
+        <script src="./js/role-visibility.js" defer></script>
+        <script src="./js/mock-ui.js" defer></script>
+
+        <style>
+            body { font-family: 'Noto Sans JP', sans-serif; }
+            .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+            .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+            .custom-scrollbar::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 20px; }
+            .icon-sm { font-size: 20px !important; }
+            .icon-md { font-size: 24px !important; }
+            
+            .fade-in { animation: fadeIn 0.2s ease-in-out; }
+            @keyframes fadeIn {
+                from { opacity: 0; transform: translateY(5px); }
+                to { opacity: 1; transform: translateY(0); }
+            }
+        </style>
+    </head>
+    <body class="h-full text-gray-900 antialiased flex flex-col">
+        <div id="app-header"></div>
+        
+        <div class="flex flex-1 overflow-hidden">
+            <div id="app-sidebar"></div>
+            
+            <main class="flex-1 flex flex-col min-w-0 bg-gray-50 h-full overflow-hidden">
+                <div class="px-6 py-6 lg:px-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 shrink-0">
+                    <div>
+                        <h1 class="text-2xl font-bold text-gray-800 tracking-tight">申込指示・担当設定 <span class="    text-gray-500">●●食品株式会社 FY26 SD募集</span></h1>
+                        <p class="text-sm text-gray-500 mt-1">組織階層ごとの申込指示パターンおよび顧客担当者の紐付けを管理します。</p>
+                    </div>
+                </div>
+
+                <div class="flex-1 px-6 lg:px-8 pb-6 overflow-hidden flex flex-col">
+                    <div class="flex-1 bg-white border border-gray-200 rounded-xl shadow-sm flex overflow-hidden relative">
+                        
+                        <div class="flex-1 flex flex-col min-w-[320px] border-r border-gray-100 relative">
+                            <div class="px-4 py-3 bg-gray-50 border-b border-gray-200 flex items-center justify-between">
+                                <span class="text-sm font-semibold text-gray-500 uppercase tracking-wider">階層レベル 1</span>
+                                <span class="bg-white border border-gray-200 text-gray-600 text-sm px-2 py-0.5 rounded-full font-bold shadow-sm" id="count-lvl1">0</span>
+                            </div>
+                            <div class="flex-1 overflow-y-auto custom-scrollbar p-3 space-y-1" id="list-lvl1"></div>
+                        </div>
+
+                        <div class="flex-1 flex flex-col min-w-[320px] border-r border-gray-100 bg-white relative">
+                            <div class="px-4 py-3 bg-gray-50 border-b border-gray-200 flex items-center justify-between">
+                                <span class="text-sm font-semibold text-gray-500 uppercase tracking-wider">階層レベル 2</span>
+                                <span class="bg-white border border-gray-200 text-gray-600 text-sm px-2 py-0.5 rounded-full font-bold shadow-sm" id="count-lvl2">-</span>
+                            </div>
+                            <div class="flex-1 overflow-y-auto custom-scrollbar p-3 space-y-1 relative" id="list-lvl2">
+                                <div class="absolute inset-0 flex flex-col items-center justify-center text-gray-400 pointer-events-none p-4 text-center">
+                                    <span class="material-symbols-outlined text-4xl mb-2 text-gray-300">arrow_back</span>
+                                    <span class="text-sm">左側の「階層レベル 1」を選択してください</span>
+                                </div>
+                            </div>
+                            <div id="overlay-lvl2" class="absolute inset-0 bg-white/60 backdrop-blur-[1px] z-10 cursor-not-allowed mt-[50px]"></div>
+                        </div>
+
+                        <div class="flex-1 flex flex-col min-w-[320px] relative">
+                            <div class="px-4 py-3 bg-gray-50 border-b border-gray-200 flex items-center justify-between">
+                                <span class="text-sm font-semibold text-gray-500 uppercase tracking-wider">階層レベル 3</span>
+                                <span class="bg-white border border-gray-200 text-gray-600 text-sm px-2 py-0.5 rounded-full font-bold shadow-sm" id="count-lvl3">-</span>
+                            </div>
+                            <div class="flex-1 overflow-y-auto custom-scrollbar p-3 space-y-1 relative" id="list-lvl3">
+                                <div class="absolute inset-0 flex flex-col items-center justify-center text-gray-400 pointer-events-none p-4 text-center">
+                                    <span class="material-symbols-outlined text-4xl mb-2 text-gray-300">arrow_back</span>
+                                    <span class="text-sm">左側の「階層レベル 2」を選択してください</span>
+                                </div>
+                            </div>
+                            <div id="overlay-lvl3" class="absolute inset-0 bg-white/60 backdrop-blur-[1px] z-10 cursor-not-allowed mt-[50px]"></div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="px-6 py-4 bg-white border-t border-gray-200 flex justify-between gap-3 shrink-0 lg:px-8">
+                    <a href="./media-plan-list.html">
+                            <button class="px-5 py-2.5 text-sm font-medium rounded-md border border-gray-300 text-gray-700 hover:bg-gray-50 transition-colors">
+                            戻る
+                        </button>
+                    </a>
+                    <div class="flex gap-3">
+                        <button type="button" class="px-4 py-2 rounded-md bg-white border border-gray-300 text-gray-700 font-medium hover:bg-gray-50 hover:border-gray-400 transition-all shadow-sm">
+                        変更を破棄
+                    </button>
+                    <button type="button" class="px-4 py-2 rounded-md bg-blue-600 text-white font-medium hover:bg-blue-700 shadow-sm hover:shadow transition-all">
+                        全変更を保存する
+                    </button>
+                    </div>
+                    
+                </div>
+            </main>
+        </div>
+
+        <div id="edit-modal" class="fixed inset-0 z-50 hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+            <div class="fixed inset-0 bg-gray-900/60 transition-opacity backdrop-blur-sm" onclick="closeEditModal()"></div>
+    
+            <div class="fixed inset-0 z-10 overflow-y-auto pointer-events-none">
+                <div class="flex min-h-full items-center justify-center p-4 text-center pointer-events-auto">
+                    <div class="relative transform rounded-xl bg-white text-left shadow-2xl transition-all w-full max-w-lg overflow-hidden border border-gray-100">
+                        
+                        <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-white">
+                            <h3 class="text-lg font-bold text-gray-800 flex items-center gap-2">
+                                <span class="material-symbols-outlined text-blue-600">settings_account_box</span>
+                                設定の編集
+                            </h3>
+                            <button onclick="closeEditModal()" class="text-gray-400 hover:text-gray-600 hover:bg-gray-100 p-1 rounded-full transition-colors">
+                                <span class="material-symbols-outlined icon-md">close</span>
+                            </button>
+                        </div>
+
+                        <form id="edit-form" onsubmit="return false;">
+                            <div class="px-6 py-6 space-y-6 max-h-[70vh] overflow-y-auto">
+                                
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">対象組織</label>
+                                    <div class="flex items-center gap-2 p-3 bg-gray-50 border border-gray-200 rounded-lg">
+                                        <span class="material-symbols-outlined text-gray-400">corporate_fare</span>
+                                        <span id="display-org-name" class="font-bold text-gray-800 text-lg">組織名称</span>
+                                    </div>
+                                </div>
+
+                                <div class="bg-blue-50 rounded-lg p-4 border border-blue-100">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <label for="edit-instruction" class="block text-sm font-bold text-blue-900 flex items-center gap-1.5">
+                                            <span class="material-symbols-outlined icon-sm text-blue-600">fact_check</span>
+                                            申込指示パターン
+                                        </label>
+                                        <span class="text-xs text-blue-600 font-medium cursor-pointer hover:underline">マスタ管理へ</span>
+                                    </div>
+                                    <p class="text-xs text-blue-800 mb-3 opacity-80">この組織のメンバーが申し込む際に適用されるルールです。</p>
+                                    
+                                    <select id="edit-instruction" class="bg-white block w-full rounded-md border-gray-300 text-gray-900 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm h-10 border px-3 mb-3">
+                                        <option value="">(設定なし - 親組織の設定を継承)</option>
+                                    </select>
+
+                                    <div id="instruction-preview" class="hidden fade-in">
+                                        <div class="bg-white border border-blue-200 rounded-md p-3 text-xs shadow-sm">
+                                            <div class="flex items-center gap-2 mb-2 pb-2 border-b border-gray-100">
+                                                <span class="font-bold text-gray-700" id="preview-name">パターン名</span>
+                                            </div>
+                                            <div class="grid grid-cols-2 gap-2 text-gray-600">
+                                                <div><span class="text-gray-400 block text-[10px]">教材配送</span><span id="preview-shipping" class="font-medium"></span></div>
+                                                <div><span class="text-gray-400 block text-[10px]">請求区分</span><span id="preview-billing" class="font-medium"></span></div>
+                                                <div><span class="text-gray-400 block text-[10px]">請求書送付</span><span id="preview-bill-send" class="font-medium"></span></div>
+                                                <div><span class="text-gray-400 block text-[10px]">修了判定</span><span id="preview-completion" class="font-medium"></span></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+    
+                                <div class="bg-green-50 rounded-lg p-4 border border-green-100">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <label for="edit-rep" class="block text-sm font-bold text-green-900 flex items-center gap-1.5">
+                                            <span class="material-symbols-outlined icon-sm text-green-600">person</span>
+                                            顧客担当者
+                                        </label>
+                                    </div>
+                                    <p class="text-xs text-green-800 mb-3 opacity-80">
+                                        この組織の申込状況を確認できる担当者を指定します。
+                                    </p>
+                                    <select id="edit-rep" class="bg-white block w-full rounded-md border-green-200 text-gray-900 shadow-sm focus:border-green-500 focus:ring-green-500 text-sm h-10 border px-3">
+                                        <option value="">(設定なし - 親組織の設定を継承)</option>
+                                        </select>
+                                </div>
+
+                            </div>
+                            
+                            <div class="px-6 py-4 bg-gray-50 flex gap-3 justify-end border-t border-gray-100 rounded-b-xl">
+                                <button type="button" onclick="closeEditModal()" class="px-4 py-2 rounded-md bg-white border border-gray-300 text-gray-700 font-medium hover:bg-gray-50 transition-all shadow-sm">キャンセル</button>
+                                <button type="button" id="btn-save-edit" class="px-4 py-2 rounded-md bg-blue-600 text-white font-bold hover:bg-blue-700 shadow-sm hover:shadow transition-all">保存する</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            // --- 0. Utility & Definitions ---
+            
+            // A. 顧客担当者マスター (旧: 事業所マスターの代わり)
+            const customerRepData = [
+                { id: 'rep_01', name: '佐藤 太郎' },
+                { id: 'rep_02', name: '鈴木 一郎' },
+                { id: 'rep_03', name: '田中 花子' },
+                { id: 'rep_04', name: '高橋 健太' }
+            ];
+
+            // B. 申込指示マスタ
+            const instructionMasterData = [
+                {
+                    id: 'inst_01', 
+                    name: '標準パターン（受講生直送）', 
+                    shipping: '受講生宛', 
+                    billingType: '会社請求', 
+                    billingSend: '企業担当者宛',
+                    completion: '各団体基準'
+                },
+                {
+                    id: 'inst_02', 
+                    name: '自己啓発支援（個人請求）', 
+                    shipping: '受講生宛', 
+                    billingType: '受講生請求', 
+                    billingSend: '受講生宛',
+                    completion: '各団体基準'
+                },
+                {
+                    id: 'inst_03', 
+                    name: '拠点一括配送パターン', 
+                    shipping: '各社担当者宛', 
+                    billingType: '会社請求', 
+                    billingSend: '各社担当者宛',
+                    completion: '基準指定'
+                }
+            ];
+
+            // C. 組織データ (officeId を customerRepId に変更)
+            const orgData = [
+                {
+                    // ルート組織に担当者がいるケース
+                    id: '1', name: '営業本部', customerRepId: 'rep_01', instructionId: 'inst_01', children: [
+                        { id: '1-1', name: '第一営業部', customerRepId: 'rep_01', children: [
+                            { id: '1-1-1', name: '営業一課' }, 
+                            { id: '1-1-2', name: '営業二課', instructionId: 'inst_03' } // rep未設定＝継承
+                        ]},
+                        { id: '1-2', name: '第二営業部', customerRepId: 'rep_04', children: [] }
+                    ]
+                },
+                {
+                    id: '2', name: '管理本部', customerRepId: 'rep_03', instructionId: 'inst_01', children: [
+                        { id: '2-1', name: '人事総務部', children: [
+                            { id: '2-1-1', name: '採用チーム' },
+                            { id: '2-1-2', name: '労務チーム' }
+                        ]},
+                        { id: '2-2', name: '経理部', children: [] }
+                    ]
+                },
+                { id: '3', name: 'DX推進室', customerRepId: '', instructionId: 'inst_02', children: [] }
+            ];
+
+            // State
+            let currentLvl1 = null; 
+            let currentLvl2 = null; 
+            let editingTarget = null;
+            let renderCallback = null;
+
+            // DOM Elements (will be populated on load)
+            let els = {};
+
+            // --- 1. Initialization ---
+
+            document.addEventListener('DOMContentLoaded', () => {
+                // MockUI check
+                if (typeof MockUI !== 'undefined') {
+                    MockUI.injectHeader('#app-header', { userName: 'Test User', brand: 'New SD App' });
+                    MockUI.injectSidebar('#app-sidebar');
+                } else {
+                    document.getElementById('app-header').innerHTML = `<div class="bg-white border-b border-gray-200 h-14 flex items-center px-4 font-bold text-blue-600">New SD App</div>`;
+                }
+                
+                // Cache DOM elements
+                els = {
+                    list1: document.getElementById('list-lvl1'),
+                    list2: document.getElementById('list-lvl2'),
+                    list3: document.getElementById('list-lvl3'),
+                    count1: document.getElementById('count-lvl1'),
+                    count2: document.getElementById('count-lvl2'),
+                    count3: document.getElementById('count-lvl3'),
+                    overlay2: document.getElementById('overlay-lvl2'),
+                    overlay3: document.getElementById('overlay-lvl3'),
+                    // Modal
+                    modal: document.getElementById('edit-modal'),
+                    modalNameDisplay: document.getElementById('display-org-name'),
+                    modalRep: document.getElementById('edit-rep'), // New Element
+                    modalInst: document.getElementById('edit-instruction'),
+                    instPreview: document.getElementById('instruction-preview'),
+                    btnSave: document.getElementById('btn-save-edit')
+                };
+
+                initSelectBoxes();
+                renderLvl1();
+                
+                // Event Listeners
+                els.modalInst.addEventListener('change', updateInstructionPreview);
+                els.btnSave.addEventListener('click', saveEdit);
+            });
+
+            function initSelectBoxes() {
+                // 顧客担当者 Select
+                els.modalRep.innerHTML = '<option value="">(設定なし - 親組織の設定を継承)</option>';
+                customerRepData.forEach(rep => {
+                    const opt = document.createElement('option');
+                    opt.value = rep.id;
+                    opt.textContent = rep.name;
+                    els.modalRep.appendChild(opt);
+                });
+
+                // 申込指示 Select
+                els.modalInst.innerHTML = '<option value="">(設定なし - 親組織の設定を継承)</option>';
+                instructionMasterData.forEach(inst => {
+                    const opt = document.createElement('option');
+                    opt.value = inst.id;
+                    opt.textContent = inst.name;
+                    els.modalInst.appendChild(opt);
+                });
+            }
+
+            function updateInstructionPreview() {
+                const id = els.modalInst.value;
+                const data = instructionMasterData.find(d => d.id === id);
+                
+                if (data) {
+                    els.instPreview.classList.remove('hidden');
+                    document.getElementById('preview-name').textContent = data.name;
+                    document.getElementById('preview-shipping').textContent = data.shipping;
+                    document.getElementById('preview-billing').textContent = data.billingType;
+                    document.getElementById('preview-bill-send').textContent = data.billingSend;
+                    document.getElementById('preview-completion').textContent = data.completion;
+                } else {
+                    els.instPreview.classList.add('hidden');
+                }
+            }
+
+            // --- 2. Render Functions ---
+
+            function getInstructionBadge(instructionId) {
+                if (!instructionId) return '';
+                const inst = instructionMasterData.find(i => i.id === instructionId);
+                if (!inst) return '';
+
+                let icon = 'inventory_2';
+                let colorClass = 'bg-gray-100 text-gray-700 border-gray-200';
+                
+                if (inst.shipping.includes('受講生')) {
+                    icon = 'person';
+                    colorClass = 'bg-blue-50 text-blue-700 border-blue-200';
+                } else if (inst.shipping.includes('担当者')) {
+                    icon = 'business_center';
+                    colorClass = 'bg-purple-50 text-purple-700 border-purple-200';
+                }
+
+                return `<span class="ml-2 inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-medium border ${colorClass} whitespace-nowrap" title="申込指示: ${inst.name}">
+                    <span class="material-symbols-outlined text-[12px]">${icon}</span>${inst.name.substring(0, 6)}...
+                </span>`;
+            }
+
+            // 新: 顧客担当バッジ
+            function getRepBadge(repId) {
+                if (!repId) return ''; // 設定がなければ表示しない（継承を意味する）
+                const rep = customerRepData.find(r => r.id === repId);
+                if (!rep) return '';
+                
+                // 緑系のバッジで表示
+                return `<span class="ml-1 inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[10px] font-medium bg-green-50 text-green-700 border border-green-200 whitespace-nowrap" title="顧客担当: ${rep.name}">
+                    <span class="material-symbols-outlined text-[12px]">person</span>${rep.name.split(' ')[0]}
+                </span>`;
+            }
+
+            function createItemElement(data, isActive) {
+                const div = document.createElement('div');
+                div.className = `group flex justify-between items-center p-3 rounded-lg cursor-pointer transition-all border mb-1 ${
+                    isActive 
+                    ? 'bg-blue-50 border-blue-200 shadow-sm z-10' 
+                    : 'bg-white border-transparent hover:bg-gray-50 hover:border-gray-200'
+                }`;
+                
+                const instBadge = getInstructionBadge(data.instructionId);
+                // 顧客担当IDを使用してバッジ生成
+                const repBadge = getRepBadge(data.customerRepId);
+
+                div.innerHTML = `
+                    <div class="flex items-center gap-2 min-w-0 overflow-hidden">
+                        <span class="material-symbols-outlined icon-sm flex-shrink-0 ${isActive ? 'text-blue-600' : 'text-gray-400 group-hover:text-gray-500'}">
+                            ${isActive ? 'folder_open' : 'folder'}
+                        </span>
+                        <div class="flex flex-col min-w-0">
+                            <span class="font-bold text-sm truncate ${isActive ? 'text-blue-900' : 'text-gray-700'}">
+                                ${data.name}
+                            </span>
+                            <div class="flex items-center flex-wrap gap-1 mt-0.5 h-5">
+                                ${instBadge}
+                                ${repBadge}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity ${isActive ? 'opacity-100' : ''} flex-shrink-0 ml-2">
+                        <button type="button" data-edit class="p-1.5 text-gray-400 hover:text-blue-600 rounded-md hover:bg-blue-50 transition" title="設定編集">
+                            <span class="material-symbols-outlined text-lg">settings</span>
+                        </button>
+                        ${isActive ? '<span class="material-symbols-outlined text-blue-400 text-lg ml-1">chevron_right</span>' : ''}
+                    </div>
+                `;
+                return div;
+            }
+
+            function renderLvl1() {
+                els.list1.innerHTML = '';
+                els.count1.textContent = orgData.length;
+                orgData.forEach(item => {
+                    const el = createItemElement(item, item.id === currentLvl1);
+                    el.onclick = () => selectLvl1(item.id);
+                    setupItemActions(el, item, () => { renderLvl1(); renderLvl2(); renderLvl3(); });
+                    els.list1.appendChild(el);
+                });
+            }
+
+            function renderLvl2() {
+                els.list2.innerHTML = '';
+                if (!currentLvl1) {
+                    els.count2.textContent = '-';
+                    els.overlay2.classList.remove('hidden');
+                    return;
+                }
+                const parent = orgData.find(d => d.id === currentLvl1);
+                const items = parent ? parent.children : [];
+                els.count2.textContent = items.length;
+                els.overlay2.classList.add('hidden');
+                items.forEach(item => {
+                    const el = createItemElement(item, item.id === currentLvl2);
+                    el.onclick = () => selectLvl2(item.id);
+                    setupItemActions(el, item, () => { renderLvl2(); renderLvl3(); });
+                    els.list2.appendChild(el);
+                });
+            }
+
+            function renderLvl3() {
+                els.list3.innerHTML = '';
+                if (!currentLvl1 || !currentLvl2) {
+                    els.count3.textContent = '-';
+                    els.overlay3.classList.remove('hidden');
+                    return;
+                }
+                const parent1 = orgData.find(d => d.id === currentLvl1);
+                const parent2 = parent1.children.find(d => d.id === currentLvl2);
+                const items = parent2 ? parent2.children : [];
+                els.count3.textContent = items.length;
+                els.overlay3.classList.add('hidden');
+                items.forEach(item => {
+                    const el = createItemElement(item, false); 
+                    setupItemActions(el, item, () => { renderLvl3(); });
+                    els.list3.appendChild(el);
+                });
+            }
+
+            function setupItemActions(el, item, renderFn) {
+                const editBtn = el.querySelector('[data-edit]');
+                if(editBtn) editBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    openEditModal(item, renderFn);
+                };
+            }
+
+            function selectLvl1(id) {
+                currentLvl1 = id;
+                currentLvl2 = null; 
+                renderLvl1(); renderLvl2(); renderLvl3();
+            }
+            function selectLvl2(id) {
+                currentLvl2 = id;
+                renderLvl2(); renderLvl3();
+            }
+
+            // --- 3. Modal Logic ---
+
+            function openEditModal(data, callback) {
+                editingTarget = data;
+                renderCallback = callback;
+                
+                // 名前
+                els.modalNameDisplay.textContent = data.name;
+
+                // 担当者 (存在しなければ空文字＝継承)
+                els.modalRep.value = data.customerRepId || '';
+                
+                // 申込指示
+                els.modalInst.value = data.instructionId || '';
+                
+                updateInstructionPreview(); 
+                els.modal.classList.remove('hidden');
+            }
+
+            function closeEditModal() {
+                els.modal.classList.add('hidden');
+                editingTarget = null;
+                renderCallback = null;
+            }
+
+            function saveEdit() {
+                if (!editingTarget) return;
+                
+                // Update Data
+                editingTarget.instructionId = els.modalInst.value;
+                editingTarget.customerRepId = els.modalRep.value; // 顧客担当IDを保存
+
+                if (renderCallback) renderCallback();
+                closeEditModal();
+            }
+
+            window.closeEditModal = closeEditModal;
+
+        </script>
+    </body>
+</html>
