@@ -638,7 +638,7 @@ window.addEventListener('DOMContentLoaded', () => {
                 <div class="mt-8 pt-6 border-t border-gray-100 bg-gray-50 -mx-6 -mb-6 px-6 pb-6">
                     <h4 class="text-sm font-bold text-gray-800 mb-2">掲載判断コメント</h4>
                     <textarea id="course-comment" class="w-full min-h-[100px] rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 resize-y bg-white" placeholder="削除希望の理由やメモを記入..."></textarea>
-                    <div class="mt-4 flex justify-end gap-2">
+                    <div class="mt-4 flex justify-end gap-2" data-visible-for="iec,customer">
                          <button class="px-4 py-2 rounded-md bg-white border border-gray-300 text-gray-700 text-sm hover:bg-gray-50 shadow-sm">リセット</button>
                         <button class="px-4 py-2 rounded-md bg-blue-600 text-white text-sm font-bold hover:bg-blue-700 shadow-sm">保存する</button>
                     </div>
