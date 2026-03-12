@@ -79,7 +79,7 @@
                             <span class="${STYLES.icon}">book_2</span>
                             <span class="text-sm">コース管理</span>
                         </a>
-                        <a href="topics-master-list.html" data-visible-for="iec, customer" class="js-nav-item">
+                        <a href="topics-master.html" data-visible-for="iec, customer" class="js-nav-item">
                             <span class="${STYLES.icon}">view_agenda</span>
                             <span class="text-sm">特集ページ管理</span>
                         </a>
