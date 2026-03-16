@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const html = `
     <header class="sticky top-0 z-40 border-b border-gray-200/70 bg-white/85 backdrop-blur">
         <div class="max-w-6xl mx-auto h-14 flex items-center px-4 sm:px-6">
-            <a href="top.html" class="font-bold text-lg tracking-tight text-slate-900 flex items-center gap-2">
+            <a href="top2.html" class="font-bold text-lg tracking-tight text-slate-900 flex items-center gap-2">
                 <span class="material-symbols-outlined text-sky-600 text-[22px]">school</span>
                 Course Catalog
             </a>
