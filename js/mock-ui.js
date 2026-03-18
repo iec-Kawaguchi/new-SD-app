@@ -71,6 +71,10 @@
                         <span id="menu-2-arrow" class="material-symbols-outlined text-[1rem] group-hover/head:text-gray-600 transition-transform">keyboard_arrow_up</span>
                     </h2>
                     <div id="menu-items-2" class="space-y-1">
+                        <a href="company-master.html" data-visible-for="iec, customer" class="js-nav-item">
+                            <span class="${STYLES.icon}">apartment</span>
+                            <span class="text-sm">企業管理</span>
+                        </a>
                         <a href="user-master.html" data-visible-for="iec, supplier, customer" class="js-nav-item">
                             <span class="${STYLES.icon}">person</span>
                             <span class="text-sm">ユーザー管理</span>
@@ -84,7 +88,7 @@
                             <span class="text-sm">特集ページ管理</span>
                         </a>
                         <a href="org-master.html" data-visible-for="iec, customer" class="js-nav-item">
-                            <span class="${STYLES.icon}">apartment</span>
+                            <span class="${STYLES.icon}">account_tree</span>
                             <span class="text-sm">組織階層管理</span>
                         </a>
                         <a href="application-instructions-master.html" data-visible-for="iec, customer" class="js-nav-item">
@@ -95,6 +99,7 @@
                             <span class="${STYLES.icon}">tag</span>
                             <span class="text-sm">タグ管理</span>
                         </a>
+                       
                         
                     </div>
                 </div>

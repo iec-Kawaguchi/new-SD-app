@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="ja">
+    <head>
+        <meta charset="UTF-8" />
+        <title>募集要項登録</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <script src="https://cdn.tailwindcss.com"></script>
+        <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+        
+        <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+        <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
+
+        <style>
+            /* カスタムスクロールバー */
+            ::-webkit-scrollbar { width: 6px; height: 6px; }
+            ::-webkit-scrollbar-track { background: transparent; }
+            ::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 20px; }
+            ::-webkit-scrollbar-thumb:hover { background-color: #94a3b8; }
+
+            /* Quillのスタイル調整 */
+            .ql-toolbar.ql-snow {
+                border-color: #d1d5db !important; 
+                border-top-left-radius: 0.5rem;
+                border-top-right-radius: 0.5rem;
+                background-color: #f9fafb; 
+                padding: 8px !important;
+            }
+            .ql-container.ql-snow {
+                border-color: #d1d5db !important;
+                border-bottom-left-radius: 0.5rem;
+                border-bottom-right-radius: 0.5rem;
+                background-color: #fff;
+                font-family: 'Noto Sans JP', sans-serif !important;
+            }
+            .ql-editor {
+                min-height: 150px;
+                font-size: 0.875rem; 
+                line-height: 1.6;
+                color: #374151; 
+            }
+            .ql-editor.ql-blank::before {
+                color: #9ca3af;
+                font-style: normal;
+            }
+            
+            /* Quill カスタムブロックのスタイル */
+            .info-box {
+                border-left: 4px solid #06b6d4; 
+                background-color: #ecfeff; 
+                padding: 1rem;
+                margin: 1rem 0;
+                border-radius: 0 0.375rem 0.375rem 0;
+                font-weight: bold;
+                color: #0e7490; 
+            }
+        </style>
+    </head>
+    <body class="bg-gray-50 text-gray-900 antialiased">
+        <div class="min-h-dvh flex flex-col">
+        
+        <header class="sticky top-0 z-20 bg-white/95 backdrop-blur-sm border-b border-gray-100 px-6 py-4">
+            <div class="flex items-center gap-2 mb-1">
+                <span class="material-symbols-outlined text-blue-600">description</span>
+                <h1 class="text-lg font-bold text-gray-800 tracking-tight">募集要項登録</h1>
+            </div>
+            <p class="text-xs text-gray-500 ml-8">本募集の募集要項を登録してください。複数ある場合は項目を追加して管理できます。</p>
+        </header>
+
+        <main class="flex-1 px-6 py-6 space-y-6 pb-32 max-w-5xl mx-auto w-full">
+            
+            <section class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                <div class="bg-gray-50/50 px-5 py-3 border-b border-gray-100 flex items-center justify-between">
+                    <h2 class="text-sm font-bold text-gray-700 flex items-center gap-2">
+                        <span class="material-symbols-outlined text-gray-400" style="font-size: 1.25rem;">settings</span>
+                        全体設定
+                    </h2>
+                </div>
+                <div class="p-6">
+                    <label class="block text-xs font-bold text-gray-700 mb-4 flex items-center gap-1">
+                        <span class="material-symbols-outlined text-gray-500" style="font-size: 1rem;">policy</span>
+                        キャンセル規定
+                    </label>
+                    
+                    <div class="flex flex-wrap items-center gap-6">
+                        <label class="flex items-center gap-2 cursor-pointer group">
+                            <input type="radio" name="global-policy" value="normal" checked class="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500">
+                            <span class="text-sm text-gray-700 group-hover:text-gray-900 transition-colors">キャンセル可能</span>
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer group">
+                            <input type="radio" name="global-policy" value="strict" class="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500">
+                            <span class="text-sm text-gray-700 group-hover:text-gray-900 transition-colors">キャンセル不可</span>
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer group">
+                            <input type="radio" name="global-policy" value="none" class="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500">
+                            <span class="text-sm text-gray-700 group-hover:text-gray-900 transition-colors">企業オリジナル</span>
+                        </label>
+                    </div>
+
+                </div>
+            </section>
+
+            <section class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                <div class="bg-gray-50/50 px-5 py-3 border-b border-gray-100 flex items-center justify-between">
+                    <h2 class="text-sm font-bold text-gray-700 flex items-center gap-2">
+                        <span class="material-symbols-outlined text-gray-400" style="font-size: 1.25rem;">article</span>
+                        募集詳細・規定
+                    </h2>
+                </div>
+                
+                <div class="p-6">
+                    <p class="text-xs text-gray-500 mb-4">概要・対象などを項目ごとに分けて入力してください。</p>
+                    
+                    <div id="guidelines-container" class="space-y-6">
+                        </div>
+
+                    <button type="button" onclick="addGuideline()" class="mt-6 w-full py-3 rounded-lg border-2 border-dashed border-gray-300 text-sm font-bold text-gray-500 hover:text-blue-600 hover:border-blue-400 hover:bg-blue-50/50 transition-all flex items-center justify-center gap-1">
+                        <span class="material-symbols-outlined" style="font-size: 1.25rem;">add</span>
+                        項目を追加する
+                    </button>
+                </div>
+            </section>
+
+        </main>
+
+        <div class="fixed bottom-0 inset-x-0 z-50 bg-white border-t border-gray-200 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
+            <div class="mx-auto px-6 py-4 flex items-center justify-end gap-3 max-w-5xl">
+                <button class="px-5 py-2.5 rounded-lg border border-gray-300 bg-white text-sm font-bold text-gray-600 hover:bg-gray-50 hover:text-gray-800 transition-colors">
+                    キャンセル
+                </button>
+                <button onclick="submitMock()" class="px-6 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-bold hover:bg-blue-700 shadow-sm hover:shadow active:scale-[0.98] transition-all flex items-center">
+                    <span>登録する</span>
+                </button>
+            </div>
+        </div>
+        </div>
+
+        <script>
+            // --- Quill設定: カスタムブロック ---
+            const Block = Quill.import('blots/block');
+            class InfoBox extends Block {
+                static create(value) {
+                    const node = super.create();
+                    node.setAttribute('class', 'info-box');
+                    return node;
+                }
+            }
+            InfoBox.blotName = 'info-box';
+            InfoBox.tagName = 'div';
+            Quill.register(InfoBox);
+
+            // --- Quill設定: ツールバー ---
+            const toolbarOptions = {
+                container: [
+                    [{ 'header': [2, 3, false] }],
+                    ['bold', 'underline', 'strike'],
+                    [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                    [{ 'color': [] }, { 'background': [] }],
+                    ['info-box'],
+                    ['link', 'clean']
+                ],
+                handlers: {
+                    'info-box': function() {
+                        this.quill.format('info-box', true);
+                    }
+                }
+            };
+
+            // --- 募集詳細（複数項目）の管理 ---
+            const guidelinesContainer = document.getElementById('guidelines-container');
+            let guidelinesData = []; 
+
+            function addGuideline() {
+                const id = `guideline-${Date.now()}`;
+
+                const wrapper = document.createElement('div');
+                wrapper.className = 'bg-gray-50 border border-gray-200 p-4 rounded-lg relative group space-y-4';
+                wrapper.innerHTML = `
+                    <div class="flex justify-between items-start">
+                        <div class="w-full md:w-3/4 space-y-3">
+                            <div>
+                                <label for="internal-${id}" class="block text-xs font-bold text-gray-700 mb-1 flex items-center gap-1">
+                                    <span class="material-symbols-outlined text-gray-400" style="font-size: 1rem;">settings</span>
+                                    内部管理用名称 <span class="text-red-500">*</span>
+                                </label>
+                                <input type="text" id="internal-${id}" class="h-9 w-full rounded border border-gray-300 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white placeholder-gray-400" placeholder="例）26新卒向け（※ユーザーには見えません）">
+                            </div>
+                            
+                            <div>
+                                <label for="title-${id}" class="block text-xs font-bold text-gray-700 mb-1 flex items-center gap-1">
+                                    <span class="material-symbols-outlined text-gray-400" style="font-size: 1rem;">visibility</span>
+                                    公開タイトル <span class="text-red-500">*</span>
+                                </label>
+                                <input type="text" id="title-${id}" class="h-10 w-full rounded border border-gray-300 px-3 text-sm font-bold text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white placeholder-gray-400" placeholder="例）2026年度 新入社員研修 概要">
+                            </div>
+                        </div>
+
+                        <button type="button" onclick="removeGuideline('${id}')" class="text-gray-400 hover:text-red-500 ml-4 mt-6 transition-colors p-1 rounded hover:bg-red-50 flex items-center justify-center shrink-0" title="この項目を削除">
+                            <span class="material-symbols-outlined" style="font-size: 1.25rem;">delete</span>
+                        </button>
+                    </div>
+                    
+                    <div class="bg-white">
+                        <div id="editor-${id}"></div>
+                    </div>
+                `;
+                guidelinesContainer.appendChild(wrapper);
+
+                const quill = new Quill(`#editor-${id}`, {
+                    theme: 'snow',
+                    modules: { toolbar: toolbarOptions },
+                    placeholder: '詳細内容を入力してください...'
+                });
+
+                guidelinesData.push({
+                    id: id,
+                    internalNameInput: document.getElementById(`internal-${id}`), 
+                    titleInput: document.getElementById(`title-${id}`),
+                    quillInstance: quill,
+                    wrapper: wrapper
+                });
+            }
+
+            function removeGuideline(id) {
+                const index = guidelinesData.findIndex(item => item.id === id);
+                if (index > -1) {
+                    guidelinesData[index].wrapper.remove();
+                    guidelinesData.splice(index, 1);
+                }
+            }
+
+            document.addEventListener('DOMContentLoaded', () => {
+                addGuideline();
+            });
+
+            // --- 送信モック ---
+            function submitMock() {
+                const details = guidelinesData.map(item => ({
+                    internalName: item.internalNameInput.value,
+                    displayTitle: item.titleInput.value,
+                    contentHTML: item.quillInstance.root.innerHTML
+                }));
+
+                // 標準のラジオボタンから選択されている値を取得
+                const selectedPolicy = document.querySelector('input[name="global-policy"]:checked')?.value || '';
+
+                const data = {
+                    globalPolicy: selectedPolicy,
+                    guidelines: details
+                };
+                
+                console.log('送信データ:', data);
+                alert('コンソールに送信データを出力しました。F12キー等でご確認ください。');
+            }
+        </script>
+    </body>
+</html>
