@@ -42,16 +42,46 @@
                             <input type="checkbox" id="toggle-lock" class="accent-amber-500">
                             <span>ロック状態（確認用）</span>
                         </label>
-                        <!-- 対象企業コンボ（IECのみ） -->
+                        <!-- 対象企業コンボボックス（IECのみ） -->
                         <div class="flex items-center gap-3 w-full md:w-auto" data-visible-for="iec">
                             <span class="text-sm font-bold text-gray-700 whitespace-nowrap">対象企業:</span>
-                            <div class="relative w-full md:w-64">
-                                <select id="company-select" class="h-10 appearance-none bg-gray-50 border border-gray-300 text-gray-700 text-sm rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 block w-full pl-3 pr-8 leading-tight transition-colors">
-                                    <option value="1">○○食品株式会社</option>
-                                    <option value="2">テスト企業A</option>
-                                </select>
-                                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-500">
-                                    <span class="material-symbols-outlined icon-sm">expand_more</span>
+                            <div class="relative w-full md:w-72" id="company-combobox">
+                                <!-- 表示欄 -->
+                                <button type="button" id="company-combo-btn"
+                                    class="h-10 w-full flex items-center justify-between gap-2 bg-white border border-gray-300 text-gray-700 text-sm rounded-md px-3 hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors">
+                                    <span id="company-combo-label" class="truncate text-left">○○食品株式会社</span>
+                                    <span class="material-symbols-outlined icon-sm text-gray-400 shrink-0">expand_more</span>
+                                </button>
+                                <!-- ドロップダウン -->
+                                <div id="company-combo-dropdown"
+                                    class="hidden absolute z-30 mt-1 w-full bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden">
+                                    <!-- 検索欄 -->
+                                    <div class="p-2 border-b border-gray-100">
+                                        <div class="relative">
+                                            <span class="material-symbols-outlined absolute left-2 top-1/2 -translate-y-1/2 text-gray-400 icon-sm">search</span>
+                                            <input type="text" id="company-combo-search" placeholder="企業名を検索..."
+                                                class="h-8 w-full bg-gray-50 border border-gray-200 rounded text-sm pl-8 pr-3 focus:outline-none focus:ring-1 focus:ring-blue-400 focus:border-blue-400">
+                                        </div>
+                                    </div>
+                                    <!-- 選択肢リスト -->
+                                    <ul id="company-combo-list" class="max-h-48 overflow-y-auto py-1 text-sm text-gray-700">
+                                        <li data-value="1" class="px-3 py-2 hover:bg-blue-50 cursor-pointer flex items-center gap-2 company-combo-item">
+                                            <span class="material-symbols-outlined text-blue-500 icon-sm">check</span>○○食品株式会社
+                                        </li>
+                                        <li data-value="2" class="px-3 py-2 hover:bg-blue-50 cursor-pointer flex items-center gap-2 company-combo-item">
+                                            <span class="material-symbols-outlined text-transparent icon-sm">check</span>テスト企業A
+                                        </li>
+                                        <li data-value="3" class="px-3 py-2 hover:bg-blue-50 cursor-pointer flex items-center gap-2 company-combo-item">
+                                            <span class="material-symbols-outlined text-transparent icon-sm">check</span>△△商事株式会社
+                                        </li>
+                                        <li data-value="4" class="px-3 py-2 hover:bg-blue-50 cursor-pointer flex items-center gap-2 company-combo-item">
+                                            <span class="material-symbols-outlined text-transparent icon-sm">check</span>□□製造株式会社
+                                        </li>
+                                        <li data-value="5" class="px-3 py-2 hover:bg-blue-50 cursor-pointer flex items-center gap-2 company-combo-item">
+                                            <span class="material-symbols-outlined text-transparent icon-sm">check</span>◇◇ホールディングス
+                                        </li>
+                                    </ul>
+                                    <p id="company-combo-empty" class="hidden px-3 py-3 text-sm text-gray-400 text-center">該当する企業がありません</p>
                                 </div>
                             </div>
                         </div>
@@ -342,12 +372,8 @@
                     applyLockState();
                 });
 
-                // 企業切替（未保存変更がある場合は確認）
-                document.getElementById('company-select').addEventListener('change', () => {
-                    if (confirm('変更を破棄して企業を切り替えますか？')) {
-                        renderAll();
-                    }
-                });
+                // 企業コンボボックスの初期化
+                initCompanyCombobox();
 
                 // フッターボタン
                 document.getElementById('btn-discard').addEventListener('click', () => {
@@ -776,6 +802,78 @@
 
                 renderAll();
                 closeEditModal();
+            }
+
+            // ===================================================
+            // 9. 企業コンボボックス
+            // ===================================================
+            function initCompanyCombobox() {
+                const btn        = document.getElementById('company-combo-btn');
+                const dropdown   = document.getElementById('company-combo-dropdown');
+                const search     = document.getElementById('company-combo-search');
+                const list       = document.getElementById('company-combo-list');
+                const label      = document.getElementById('company-combo-label');
+                const emptyMsg   = document.getElementById('company-combo-empty');
+                const items      = list.querySelectorAll('.company-combo-item');
+
+                let selectedValue = '1';
+
+                // ドロップダウン開閉
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const isOpen = !dropdown.classList.contains('hidden');
+                    dropdown.classList.toggle('hidden', isOpen);
+                    if (!isOpen) {
+                        search.value = '';
+                        filterList('');
+                        search.focus();
+                    }
+                });
+
+                // 外側クリックで閉じる
+                document.addEventListener('click', () => {
+                    dropdown.classList.add('hidden');
+                });
+                dropdown.addEventListener('click', (e) => e.stopPropagation());
+
+                // 検索フィルタ
+                search.addEventListener('input', () => filterList(search.value));
+
+                function filterList(query) {
+                    const q = query.trim().toLowerCase();
+                    let visibleCount = 0;
+                    items.forEach(item => {
+                        const text = item.textContent.trim().toLowerCase();
+                        const match = text.includes(q);
+                        item.classList.toggle('hidden', !match);
+                        if (match) visibleCount++;
+                    });
+                    emptyMsg.classList.toggle('hidden', visibleCount > 0);
+                }
+
+                // 選択
+                items.forEach(item => {
+                    item.addEventListener('click', () => {
+                        const newValue = item.dataset.value;
+                        if (newValue === selectedValue) {
+                            dropdown.classList.add('hidden');
+                            return;
+                        }
+                        if (confirm('変更を破棄して企業を切り替えますか？')) {
+                            selectedValue = newValue;
+                            // チェックマーク更新
+                            items.forEach(i => {
+                                i.querySelector('.material-symbols-outlined').classList.toggle('text-blue-500', i.dataset.value === selectedValue);
+                                i.querySelector('.material-symbols-outlined').classList.toggle('text-transparent', i.dataset.value !== selectedValue);
+                            });
+                            label.textContent = item.textContent.trim();
+                            currentLvl1 = null;
+                            currentLvl2 = null;
+                            renderAll();
+                        }
+                        dropdown.classList.add('hidden');
+                    });
+                });
             }
 
         </script>
