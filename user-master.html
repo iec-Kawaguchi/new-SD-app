@@ -10,9 +10,7 @@
         <link rel="stylesheet" href="./css/base-style.css">
         <script src="./js/role-visibility.js" defer></script>
         <script src="./js/mock-ui.js" defer></script>
-        
-        <style>
-        </style>
+        <script src="./js/components/combobox.js" defer></script>
     </head>
     <body class="h-full text-gray-900 antialiased flex flex-col">
         <div id="app-header"></div>
@@ -28,23 +26,69 @@
                     </div>
 
                     <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden flex flex-col flex-1">
-                        
-                        <div class="p-4 border-b border-gray-100 flex flex-col md:flex-row items-center justify-between gap-4 bg-white">
-                            <div class="flex items-center gap-3 w-full md:w-auto flex-1 max-w-2xl">
-                                <div class="relative w-full md:max-w-md">
+
+                        <!-- ========== リストヘッダー ========== -->
+                        <div class="p-4 border-b border-gray-100 flex flex-col gap-3 bg-white">
+
+                            <!-- 1行目：検索・ユーザー種別・所属先・新規登録 -->
+                            <div class="flex flex-wrap items-center gap-3">
+
+                                <!-- 名前・メールアドレス検索 -->
+                                <div class="relative flex-1 min-w-[200px] max-w-sm">
                                     <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                                         <span class="material-symbols-outlined text-gray-400 icon-sm">search</span>
                                     </div>
-                                    <input type="text" class="h-10 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2 leading-tight transition-shadow" placeholder="名前、メールアドレスで検索...">
+                                    <input
+                                        id="searchInput"
+                                        type="text"
+                                        class="h-10 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 pr-3 py-2 leading-tight transition-shadow"
+                                        placeholder="名前、メールアドレスで検索...">
                                 </div>
+
+                                <!-- ユーザー種別絞り込み（IECのみ） -->
+                                <div class="relative" data-visible-for="iec">
+                                    <select
+                                        id="filterUserType"
+                                        class="appearance-none h-10 bg-gray-50 border border-gray-300 text-gray-700 text-sm rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 pl-3 pr-8 py-2 shadow-sm transition-shadow">
+                                        <option value="">ユーザー種別（すべて）</option>
+                                        <option value="iec">IEC</option>
+                                        <option value="vendor">他団体</option>
+                                        <option value="customer">顧客</option>
+                                    </select>
+                                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-500">
+                                        <span class="material-symbols-outlined icon-sm">expand_more</span>
+                                    </div>
+                                </div>
+
+                                <!-- 所属先絞り込みコンボボックス（IECのみ） -->
+                                <div data-visible-for="iec" id="filterOrgCombobox" class="min-w-40"></div>
+
+                                <!-- スペーサー -->
+                                <div class="flex-1"></div>
+
+                                <!-- 新規登録ボタン -->
+                                <button id="btnOpenModal" class="h-10 flex items-center justify-center gap-1.5 text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:ring-blue-100 font-medium rounded-md text-sm px-4 transition-all shadow-sm hover:shadow active:scale-95 whitespace-nowrap">
+                                    <span class="material-symbols-outlined icon-sm">add</span>
+                                    <span>新規登録</span>
+                                </button>
                             </div>
 
-                            <button id="btnOpenModal" class="h-10 flex items-center justify-center gap-1.5 text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:ring-blue-100 font-medium rounded-md text-sm px-4 transition-all shadow-sm hover:shadow active:scale-95 whitespace-nowrap">
-                                <span class="material-symbols-outlined icon-sm">add</span>
-                                <span>新規登録</span>
-                            </button>
+                            <!-- 2行目：無効ユーザーを含む・クリア -->
+                            <div class="flex items-center gap-4">
+                                <label class="flex items-center gap-2 cursor-pointer select-none">
+                                    <input
+                                        id="chkIncludeInactive"
+                                        type="checkbox"
+                                        class="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                                    <span class="text-sm text-gray-600">無効なユーザーも含む</span>
+                                </label>
+                                <button id="btnClear" class="text-sm text-gray-500 hover:text-gray-700 underline underline-offset-2 transition-colors">
+                                    クリア
+                                </button>
+                            </div>
                         </div>
 
+                        <!-- ========== 登録済みリスト ========== -->
                         <div class="flex-1 overflow-x-auto">
                             <table class="min-w-full text-left whitespace-nowrap">
                                 <thead class="bg-gray-50 border-b border-gray-200">
@@ -57,14 +101,16 @@
                                     </tr>
                                 </thead>
                                 <tbody class="divide-y divide-gray-100 bg-white">
-                                    <tr class="hover:bg-gray-50 transition-colors cursor-pointer js-row group" data-visible-for="iec">
+
+                                    <!-- 有効・IECユーザー -->
+                                    <tr class="hover:bg-gray-50 transition-colors" data-visible-for="iec" data-user-type="iec">
                                         <td class="px-6 py-4 text-sm text-gray-600" data-visible-for="iec">株式会社アイ・イーシー</td>
                                         <td class="px-6 py-4 text-sm text-gray-900 font-medium">川口 研哉</td>
                                         <td class="px-6 py-4 text-sm text-gray-500">kawaguchi@iec.co.jp</td>
                                         <td class="px-6 py-4 text-center">
                                             <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-green-50 text-green-700 border border-green-100">
                                                 <span class="w-1.5 h-1.5 bg-green-500 rounded-full"></span>
-                                                登録済
+                                                有効
                                             </span>
                                         </td>
                                         <td class="px-6 py-4 text-center relative">
@@ -74,16 +120,13 @@
                                                 </button>
                                                 <div id="row-1-items" class="menu hidden absolute right-0 mt-2 w-48 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-10">
                                                     <div class="py-1">
-                                                        <a href="#" class="group flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
+                                                        <a href="#" class="group flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50" data-action="edit">
                                                             <span class="material-symbols-outlined icon-sm mr-3 text-gray-400 group-hover:text-gray-500">edit</span>
                                                             編集する
                                                         </a>
-                                                    </div>
-                                                    <div class="border-t border-gray-100 my-1"></div>
-                                                    <div class="py-1">
-                                                        <a href="#" class="group flex items-center px-4 py-2 text-sm text-red-600 hover:bg-red-50">
-                                                            <span class="material-symbols-outlined icon-sm mr-3 text-red-400 group-hover:text-red-500">delete</span>
-                                                            削除する
+                                                        <a href="#" class="group flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50" data-action="deactivate">
+                                                            <span class="material-symbols-outlined icon-sm mr-3 text-orange-400 group-hover:text-orange-500">block</span>
+                                                            無効にする
                                                         </a>
                                                     </div>
                                                 </div>
@@ -91,14 +134,15 @@
                                         </td>
                                     </tr>
 
-                                    <tr class="hover:bg-gray-50 transition-colors cursor-pointer js-row group" data-visible-for="iec,supplier">
+                                    <!-- 有効・Vendorユーザー -->
+                                    <tr class="hover:bg-gray-50 transition-colors" data-visible-for="iec,supplier" data-user-type="vendor">
                                         <td class="px-6 py-4 text-sm text-gray-600" data-visible-for="iec">産業能率大学</td>
                                         <td class="px-6 py-4 text-sm text-gray-900 font-medium">産能 太郎</td>
                                         <td class="px-6 py-4 text-sm text-gray-500">taro.sannou@sannou.ac.jp</td>
                                         <td class="px-6 py-4 text-center">
                                             <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-green-50 text-green-700 border border-green-100">
                                                 <span class="w-1.5 h-1.5 bg-green-500 rounded-full"></span>
-                                                登録済
+                                                有効
                                             </span>
                                         </td>
                                         <td class="px-6 py-4 text-center relative">
@@ -108,13 +152,13 @@
                                                 </button>
                                                 <div id="row-2-items" class="menu hidden absolute right-0 mt-2 w-48 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-10">
                                                     <div class="py-1">
-                                                        <a href="#" class="group flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
+                                                        <a href="#" class="group flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50" data-action="edit">
                                                             <span class="material-symbols-outlined icon-sm mr-3 text-gray-400 group-hover:text-gray-500">edit</span>
                                                             編集する
                                                         </a>
-                                                        <a href="#" class="group flex items-center px-4 py-2 text-sm text-red-600 hover:bg-red-50">
-                                                            <span class="material-symbols-outlined icon-sm mr-3 text-red-400 group-hover:text-red-500">delete</span>
-                                                            削除する
+                                                        <a href="#" class="group flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50" data-action="deactivate">
+                                                            <span class="material-symbols-outlined icon-sm mr-3 text-orange-400 group-hover:text-orange-500">block</span>
+                                                            無効にする
                                                         </a>
                                                     </div>
                                                 </div>
@@ -122,14 +166,15 @@
                                         </td>
                                     </tr>
 
-                                    <tr class="hover:bg-gray-50 transition-colors cursor-pointer js-row group" data-visible-for="iec,supplier">
+                                    <!-- 有効・Vendorユーザー -->
+                                    <tr class="hover:bg-gray-50 transition-colors" data-visible-for="iec,supplier" data-user-type="vendor">
                                         <td class="px-6 py-4 text-sm text-gray-600" data-visible-for="iec">産業能率大学</td>
                                         <td class="px-6 py-4 text-sm text-gray-900 font-medium">産能 二郎</td>
                                         <td class="px-6 py-4 text-sm text-gray-500">jiro.sannou@sannou.ac.jp</td>
                                         <td class="px-6 py-4 text-center">
                                             <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-green-50 text-green-700 border border-green-100">
                                                 <span class="w-1.5 h-1.5 bg-green-500 rounded-full"></span>
-                                                登録済
+                                                有効
                                             </span>
                                         </td>
                                         <td class="px-6 py-4 text-center relative">
@@ -139,13 +184,13 @@
                                                 </button>
                                                 <div id="row-3-items" class="menu hidden absolute right-0 mt-2 w-48 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-10">
                                                     <div class="py-1">
-                                                        <a href="#" class="group flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
+                                                        <a href="#" class="group flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50" data-action="edit">
                                                             <span class="material-symbols-outlined icon-sm mr-3 text-gray-400 group-hover:text-gray-500">edit</span>
                                                             編集する
                                                         </a>
-                                                        <a href="#" class="group flex items-center px-4 py-2 text-sm text-red-600 hover:bg-red-50">
-                                                            <span class="material-symbols-outlined icon-sm mr-3 text-red-400 group-hover:text-red-500">delete</span>
-                                                            削除する
+                                                        <a href="#" class="group flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50" data-action="deactivate">
+                                                            <span class="material-symbols-outlined icon-sm mr-3 text-orange-400 group-hover:text-orange-500">block</span>
+                                                            無効にする
                                                         </a>
                                                     </div>
                                                 </div>
@@ -153,14 +198,15 @@
                                         </td>
                                     </tr>
 
-                                    <tr class="hover:bg-gray-50 transition-colors cursor-pointer js-row group" data-visible-for="iec,supplier">
-                                        <td class="px-6 py-4 text-sm text-gray-600" data-visible-for="iec">産業能率大学</td>
-                                        <td class="px-6 py-4 text-sm text-gray-900 font-medium">関東_申込担当</td>
-                                        <td class="px-6 py-4 text-sm text-gray-500">order.east@sannou.ac.jp</td>
+                                    <!-- 有効・Customerユーザー -->
+                                    <tr class="hover:bg-gray-50 transition-colors" data-visible-for="iec,customer" data-user-type="customer">
+                                        <td class="px-6 py-4 text-sm text-gray-600" data-visible-for="iec">○○食品株式会社</td>
+                                        <td class="px-6 py-4 text-sm text-gray-900 font-medium">食品 耕夫</td>
+                                        <td class="px-6 py-4 text-sm text-gray-500">sukio.shokuhin@marushoku.co.jp</td>
                                         <td class="px-6 py-4 text-center">
                                             <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-green-50 text-green-700 border border-green-100">
                                                 <span class="w-1.5 h-1.5 bg-green-500 rounded-full"></span>
-                                                登録済
+                                                有効
                                             </span>
                                         </td>
                                         <td class="px-6 py-4 text-center relative">
@@ -170,13 +216,13 @@
                                                 </button>
                                                 <div id="row-4-items" class="menu hidden absolute right-0 mt-2 w-48 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-10">
                                                     <div class="py-1">
-                                                        <a href="#" class="group flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
+                                                        <a href="#" class="group flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50" data-action="edit">
                                                             <span class="material-symbols-outlined icon-sm mr-3 text-gray-400 group-hover:text-gray-500">edit</span>
                                                             編集する
                                                         </a>
-                                                        <a href="#" class="group flex items-center px-4 py-2 text-sm text-red-600 hover:bg-red-50">
-                                                            <span class="material-symbols-outlined icon-sm mr-3 text-red-400 group-hover:text-red-500">delete</span>
-                                                            削除する
+                                                        <a href="#" class="group flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50" data-action="deactivate">
+                                                            <span class="material-symbols-outlined icon-sm mr-3 text-orange-400 group-hover:text-orange-500">block</span>
+                                                            無効にする
                                                         </a>
                                                     </div>
                                                 </div>
@@ -184,14 +230,15 @@
                                         </td>
                                     </tr>
 
-                                    <tr class="hover:bg-gray-50 transition-colors cursor-pointer js-row group" data-visible-for="iec,customer">
+                                    <!-- 招待中・Customerユーザー（削除可） -->
+                                    <tr class="hover:bg-gray-50 transition-colors" data-visible-for="iec,customer" data-user-type="customer">
                                         <td class="px-6 py-4 text-sm text-gray-600" data-visible-for="iec">○○食品株式会社</td>
-                                        <td class="px-6 py-4 text-sm text-gray-900 font-medium">食品 耕夫</td>
-                                        <td class="px-6 py-4 text-sm text-gray-500">sukio.shokuhin@marushoku.co.jp</td>
+                                        <td class="px-6 py-4 text-sm text-gray-900 font-medium">食品 花子</td>
+                                        <td class="px-6 py-4 text-sm text-gray-500">hanako.shokuhin@marushoku.co.jp</td>
                                         <td class="px-6 py-4 text-center">
-                                            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-green-50 text-green-700 border border-green-100">
-                                                <span class="w-1.5 h-1.5 bg-green-500 rounded-full"></span>
-                                                登録済
+                                            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-600 border border-gray-200">
+                                                <span class="w-1.5 h-1.5 bg-gray-400 rounded-full"></span>
+                                                招待中
                                             </span>
                                         </td>
                                         <td class="px-6 py-4 text-center relative">
@@ -201,11 +248,18 @@
                                                 </button>
                                                 <div id="row-5-items" class="menu hidden absolute right-0 mt-2 w-48 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-10">
                                                     <div class="py-1">
-                                                        <a href="#" class="group flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
+                                                        <a href="#" class="group flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50" data-action="edit">
                                                             <span class="material-symbols-outlined icon-sm mr-3 text-gray-400 group-hover:text-gray-500">edit</span>
                                                             編集する
                                                         </a>
-                                                        <a href="#" class="group flex items-center px-4 py-2 text-sm text-red-600 hover:bg-red-50">
+                                                        <a href="#" class="group flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50" data-action="resend">
+                                                            <span class="material-symbols-outlined icon-sm mr-3 text-blue-400 group-hover:text-blue-500">send</span>
+                                                            招待を再送する
+                                                        </a>
+                                                    </div>
+                                                    <div class="border-t border-gray-100 my-1"></div>
+                                                    <div class="py-1">
+                                                        <a href="#" class="group flex items-center px-4 py-2 text-sm text-red-600 hover:bg-red-50" data-action="delete">
                                                             <span class="material-symbols-outlined icon-sm mr-3 text-red-400 group-hover:text-red-500">delete</span>
                                                             削除する
                                                         </a>
@@ -215,14 +269,15 @@
                                         </td>
                                     </tr>
 
-                                    <tr class="hover:bg-gray-50 transition-colors cursor-pointer js-row group" data-visible-for="iec,customer">
-                                        <td class="px-6 py-4 text-sm text-gray-600" data-visible-for="iec">○○食品株式会社</td>
-                                        <td class="px-6 py-4 text-sm text-gray-900 font-medium">食品 耕夫</td>
-                                        <td class="px-6 py-4 text-sm text-gray-500">sukio.shokuhin@marushoku.co.jp</td>
+                                    <!-- 無効ユーザー（削除可） -->
+                                    <tr class="hover:bg-gray-50 transition-colors" data-visible-for="iec,supplier" data-user-type="vendor">
+                                        <td class="px-6 py-4 text-sm text-gray-600" data-visible-for="iec">産業能率大学</td>
+                                        <td class="px-6 py-4 text-sm text-gray-500 line-through">産能 旧担当</td>
+                                        <td class="px-6 py-4 text-sm text-gray-400 line-through">old.sannou@sannou.ac.jp</td>
                                         <td class="px-6 py-4 text-center">
-                                            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-600 border border-gray-200">
-                                                <span class="w-1.5 h-1.5 bg-gray-400 rounded-full"></span>
-                                                招待中
+                                            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-red-50 text-red-600 border border-red-100">
+                                                <span class="w-1.5 h-1.5 bg-red-400 rounded-full"></span>
+                                                無効
                                             </span>
                                         </td>
                                         <td class="px-6 py-4 text-center relative">
@@ -232,15 +287,18 @@
                                                 </button>
                                                 <div id="row-6-items" class="menu hidden absolute right-0 mt-2 w-48 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-10">
                                                     <div class="py-1">
-                                                        <a href="#" class="group flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
+                                                        <a href="#" class="group flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50" data-action="edit">
                                                             <span class="material-symbols-outlined icon-sm mr-3 text-gray-400 group-hover:text-gray-500">edit</span>
                                                             編集する
                                                         </a>
-                                                        <a href="#" class="group flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
-                                                            <span class="material-symbols-outlined icon-sm mr-3 text-blue-400 group-hover:text-blue-500">send</span>
-                                                            招待を再送
+                                                        <a href="#" class="group flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50" data-action="activate">
+                                                            <span class="material-symbols-outlined icon-sm mr-3 text-green-500 group-hover:text-green-600">check_circle</span>
+                                                            有効にする
                                                         </a>
-                                                        <a href="#" class="group flex items-center px-4 py-2 text-sm text-red-600 hover:bg-red-50">
+                                                    </div>
+                                                    <div class="border-t border-gray-100 my-1"></div>
+                                                    <div class="py-1">
+                                                        <a href="#" class="group flex items-center px-4 py-2 text-sm text-red-600 hover:bg-red-50" data-action="delete">
                                                             <span class="material-symbols-outlined icon-sm mr-3 text-red-400 group-hover:text-red-500">delete</span>
                                                             削除する
                                                         </a>
@@ -253,132 +311,381 @@
                                 </tbody>
                             </table>
                         </div>
+
+                        <!-- ========== リストフッター（ページネーション） ========== -->
+                        <div class="px-4 py-3 border-t border-gray-100 bg-white flex items-center justify-between">
+                            <div class="text-sm text-gray-500">
+                                <span id="paginationInfo">1〜6件 / 全6件</span>
+                            </div>
+                            <div class="flex items-center gap-1">
+                                <button id="btnPrevPage" disabled class="flex items-center justify-center w-9 h-9 rounded-md border border-gray-300 text-gray-500 hover:bg-gray-50 hover:text-gray-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors">
+                                    <span class="material-symbols-outlined icon-sm">chevron_left</span>
+                                </button>
+                                <span class="px-3 py-1 text-sm font-medium text-gray-700 border border-blue-500 bg-blue-50 rounded-md min-w-[2.5rem] text-center" id="currentPage">1</span>
+                                <button id="btnNextPage" disabled class="flex items-center justify-center w-9 h-9 rounded-md border border-gray-300 text-gray-500 hover:bg-gray-50 hover:text-gray-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors">
+                                    <span class="material-symbols-outlined icon-sm">chevron_right</span>
+                                </button>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
             </main>
         </div>
 
+        <!-- ========== 新規登録・編集モーダル ========== -->
         <div id="modal" class="fixed inset-0 z-[100] bg-gray-900/50 backdrop-blur-sm flex items-center justify-center hidden transition-all duration-200">
-            <div class="bg-white rounded-xl shadow-2xl w-full max-w-lg mx-4 overflow-hidden transform transition-all scale-100 border border-gray-100">
+            <div class="bg-white rounded-xl shadow-2xl w-full max-w-lg mx-4 overflow-hidden transform transition-all border border-gray-100">
+
+                <!-- モーダルヘッダー -->
                 <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-white">
                     <h2 class="text-lg font-bold text-gray-800 flex items-center gap-2">
-                        <span class="material-symbols-outlined text-blue-600 icon-md">person_add</span>
-                        ユーザー新規登録
+                        <span class="material-symbols-outlined text-blue-600 icon-md" id="modalIcon">person_add</span>
+                        <span id="modalTitle">ユーザー新規登録</span>
                     </h2>
                     <button id="btnCloseModalHeader" class="text-gray-400 hover:text-gray-600 hover:bg-gray-100 p-1 rounded-full transition-colors">
                         <span class="material-symbols-outlined icon-md">close</span>
                     </button>
                 </div>
-                
+
+                <!-- モーダルボディ -->
                 <div class="p-6 flex flex-col gap-5 bg-white max-h-[70vh] overflow-y-auto">
-                    
-                    <div class="flex flex-col gap-1.5" data-visible-for="iec">
-                        <label class="text-sm font-bold text-gray-700">企業 <span class="text-red-500">*</span></label>
-                        <div class="relative">
-                            <select class="appearance-none w-full rounded-md border border-gray-300 px-3 py-2.5 text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white shadow-sm sm:text-sm transition-shadow pr-8">
-                                <option value="">企業を選択してください</option>
-                                <option value="corp-1">IEC</option>
-                                <option value="corp-2">産業能率大学</option>
-                                <option value="corp-3">JTEX</option>
-                                <option value="corp-4">○○食品株式会社</option>
-                            </select>
-                            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-500">
-                                <span class="material-symbols-outlined icon-sm">expand_more</span>
-                            </div>
+
+                    <!-- ユーザー種別ラジオ（IECのみ表示。編集時は読み取り専用） -->
+                    <div class="flex flex-col gap-2" id="fieldUserType" data-visible-for="iec">
+                        <label class="text-sm font-bold text-gray-700">ユーザー種別 <span class="text-red-500">*</span></label>
+                        <div class="flex gap-6" id="userTypeRadioGroup">
+                            <label class="flex items-center gap-2 cursor-pointer">
+                                <input type="radio" name="userType" value="iec" class="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500">
+                                <span class="text-sm text-gray-700">IEC</span>
+                            </label>
+                            <label class="flex items-center gap-2 cursor-pointer">
+                                <input type="radio" name="userType" value="vendor" class="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500">
+                                <span class="text-sm text-gray-700">他団体</span>
+                            </label>
+                            <label class="flex items-center gap-2 cursor-pointer">
+                                <input type="radio" name="userType" value="customer" class="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500">
+                                <span class="text-sm text-gray-700">顧客</span>
+                            </label>
+                        </div>
+                        <!-- 編集時の読み取り専用表示 -->
+                        <div id="userTypeReadonly" class="hidden text-sm text-gray-700 px-3 py-2 bg-gray-50 rounded-md border border-gray-200"></div>
+                    </div>
+
+                    <!-- 社員コード（IECユーザー種別選択時のみ表示） -->
+                    <div class="flex flex-col gap-1.5 hidden" id="fieldSyainCd">
+                        <label class="text-sm font-bold text-gray-700">社員コード <span class="text-red-500">*</span></label>
+                        <input
+                            id="inputSyainCd"
+                            type="text"
+                            maxlength="5"
+                            class="w-full rounded-md border border-gray-300 px-3 py-2.5 text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 shadow-sm sm:text-sm transition-shadow"
+                            placeholder="例：12345">
+                        <p class="text-xs text-gray-400">5桁以内の半角数字</p>
+                    </div>
+
+                    <!-- 教育団体コンボボックス（他団体選択時のみ表示） -->
+                    <div class="flex flex-col gap-1.5 hidden" id="fieldEduOrg">
+                        <label class="text-sm font-bold text-gray-700">教育団体 <span class="text-red-500">*</span></label>
+                        <div id="eduOrgSelectWrapper"></div>
+                        <!-- 編集時の読み取り専用表示 -->
+                        <div id="eduOrgReadonly" class="hidden text-sm text-gray-700 px-3 py-2 bg-gray-50 rounded-md border border-gray-200"></div>
+                    </div>
+
+                    <!-- 顧客企業コンボボックス（顧客選択時のみ表示） -->
+                    <div class="flex flex-col gap-1.5 hidden" id="fieldCorpOrg">
+                        <label class="text-sm font-bold text-gray-700">顧客企業 <span class="text-red-500">*</span></label>
+                        <div id="corpOrgSelectWrapper"></div>
+                        <!-- 編集時の読み取り専用表示 -->
+                        <div id="corpOrgReadonly" class="hidden text-sm text-gray-700 px-3 py-2 bg-gray-50 rounded-md border border-gray-200"></div>
+                    </div>
+
+                    <!-- 姓・名（横並び） -->
+                    <div class="flex gap-3">
+                        <div class="flex flex-col gap-1.5 flex-1">
+                            <label class="text-sm font-bold text-gray-700">姓 <span class="text-red-500">*</span></label>
+                            <input
+                                id="inputLastName"
+                                type="text"
+                                class="w-full rounded-md border border-gray-300 px-3 py-2.5 text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 shadow-sm sm:text-sm transition-shadow"
+                                placeholder="例：山田">
+                        </div>
+                        <div class="flex flex-col gap-1.5 flex-1">
+                            <label class="text-sm font-bold text-gray-700">名 <span class="text-red-500">*</span></label>
+                            <input
+                                id="inputFirstName"
+                                type="text"
+                                class="w-full rounded-md border border-gray-300 px-3 py-2.5 text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 shadow-sm sm:text-sm transition-shadow"
+                                placeholder="例：太郎">
                         </div>
                     </div>
 
-                    <div class="flex flex-col gap-1.5">
-                        <label class="text-sm font-bold text-gray-700">名前 <span class="text-red-500">*</span></label>
-                        <input type="text" class="w-full rounded-md border border-gray-300 px-3 py-2.5 text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 shadow-sm sm:text-sm transition-shadow" placeholder="例：山田 太郎">
-                    </div>
-
+                    <!-- メールアドレス（編集時は読み取り専用） -->
                     <div class="flex flex-col gap-1.5">
                         <label class="text-sm font-bold text-gray-700">メールアドレス <span class="text-red-500">*</span></label>
-                        <input type="email" class="w-full rounded-md border border-gray-300 px-3 py-2.5 text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 shadow-sm sm:text-sm transition-shadow" placeholder="例：yamada@example.com">
-                    </div>
-
-                    <div class="flex flex-col gap-1.5" data-visible-for="iec, supplier">
-                        <label class="text-sm font-bold text-gray-700">アクセス元IP指定</label>
-                        <input type="text" class="w-full rounded-md border border-gray-300 px-3 py-2.5 text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 shadow-sm sm:text-sm transition-shadow" placeholder="例：192.168.1.1/24">
+                        <input
+                            id="inputEmail"
+                            type="email"
+                            class="w-full rounded-md border border-gray-300 px-3 py-2.5 text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 shadow-sm sm:text-sm transition-shadow"
+                            placeholder="例：yamada@example.com">
                     </div>
 
                 </div>
+
+                <!-- モーダルフッター -->
                 <div class="px-6 py-4 bg-gray-50 flex gap-3 justify-end border-t border-gray-100">
                     <button id="btnCloseModal" class="px-4 py-2 rounded-md bg-white border border-gray-300 text-gray-700 font-medium hover:bg-gray-50 hover:border-gray-400 transition-all shadow-sm">キャンセル</button>
-                    <button class="px-4 py-2 rounded-md bg-blue-600 text-white font-bold hover:bg-blue-700 shadow-sm hover:shadow transition-all">登録する</button>
+                    <button id="btnSubmitModal" class="px-4 py-2 rounded-md bg-blue-600 text-white font-bold hover:bg-blue-700 shadow-sm hover:shadow transition-all">登録する</button>
                 </div>
             </div>
         </div>
+
+        <!-- ========== 削除確認ダイアログ ========== -->
+        <div id="deleteConfirmDialog" class="fixed inset-0 z-[200] bg-gray-900/50 backdrop-blur-sm flex items-center justify-center hidden">
+            <div class="bg-white rounded-xl shadow-2xl w-full max-w-sm mx-4 overflow-hidden border border-gray-100">
+                <div class="px-6 py-5 flex flex-col gap-3">
+                    <div class="flex items-start gap-3">
+                        <span class="material-symbols-outlined text-red-500 mt-0.5">warning</span>
+                        <div>
+                            <h3 class="text-base font-bold text-gray-800">削除の確認</h3>
+                            <p class="text-sm text-gray-600 mt-1">この操作は取り消せません。削除しますか？</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="px-6 py-4 bg-gray-50 flex gap-3 justify-end border-t border-gray-100">
+                    <button id="btnDeleteCancel" class="px-4 py-2 rounded-md bg-white border border-gray-300 text-gray-700 font-medium hover:bg-gray-50 transition-all shadow-sm">キャンセル</button>
+                    <button id="btnDeleteConfirm" class="px-4 py-2 rounded-md bg-red-600 text-white font-bold hover:bg-red-700 shadow-sm transition-all">削除する</button>
+                </div>
+            </div>
+        </div>
+
     </body>
 </html>
 <script>
   window.addEventListener('DOMContentLoaded', () => {
-    // 初期ロールやブランド名・ユーザー名は自由に
     MockUI.injectHeader('#app-header', {
       userName: 'Test User',
       brand: 'New SD App',
-      initialRole: 'iec', // 初回roleが未指定ならiecをセット
+      initialRole: 'iec',
     });
     MockUI.injectSidebar('#app-sidebar');
-
-    // サイドバー挿入直後に data-visible-for を反映
     RoleMock.applyRoleVisibility();
 
-    // メニューをすべて閉じる
+    // ========== メニュー開閉 ==========
     const closeAllMenus = () => {
-        document.querySelectorAll(".menu").forEach(m => m.classList.add("hidden"));
+        document.querySelectorAll('.menu').forEach(m => m.classList.add('hidden'));
     };
 
-    const modal = document.getElementById('modal');
-    const btnOpenModal = document.getElementById('btnOpenModal');
-    const btnCloseModal = document.getElementById('btnCloseModal');
-    const btnCloseModalHeader = document.getElementById('btnCloseModalHeader');
+    document.querySelectorAll('.menu-trigger').forEach(trigger => {
+        trigger.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const isOpen = !document.getElementById(`row-${trigger.dataset.row}-items`).classList.contains('hidden');
+            closeAllMenus();
+            if (!isOpen) {
+                document.getElementById(`row-${trigger.dataset.row}-items`).classList.remove('hidden');
+            }
+        });
+    });
+    document.querySelectorAll('.menu').forEach(m => m.addEventListener('click', e => e.stopPropagation()));
+    document.addEventListener('click', closeAllMenus);
 
-    // モーダル操作
-    const openModal = () => {
+    // ========== モーダル ==========
+    const modal = document.getElementById('modal');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalIcon = document.getElementById('modalIcon');
+    const btnSubmit = document.getElementById('btnSubmitModal');
+    let isEditMode = false;
+
+    const openModal = (editMode = false, userType = null) => {
         closeAllMenus();
+        isEditMode = editMode;
+        modalTitle.textContent = editMode ? 'ユーザー編集' : 'ユーザー新規登録';
+        modalIcon.textContent = editMode ? 'manage_accounts' : 'person_add';
+        btnSubmit.textContent = editMode ? '更新する' : '登録する';
+
+        const emailInput = document.getElementById('inputEmail');
+        emailInput.readOnly = editMode;
+        emailInput.classList.toggle('bg-gray-50', editMode);
+        emailInput.classList.toggle('text-gray-500', editMode);
+
+        if (editMode) {
+            if (userType === 'iec') {
+                setUserTypeReadonly('iec', 'IEC');
+                document.getElementById('fieldSyainCd').classList.remove('hidden');
+                document.getElementById('inputSyainCd').value = '12345';
+            } else if (userType === 'vendor') {
+                setUserTypeReadonly('vendor', '他団体');
+                document.getElementById('fieldEduOrg').classList.remove('hidden');
+                document.getElementById('eduOrgSelectWrapper').classList.add('hidden');
+                document.getElementById('eduOrgReadonly').classList.remove('hidden');
+                document.getElementById('eduOrgReadonly').textContent = '産業能率大学';
+            } else if (userType === 'customer') {
+                setUserTypeReadonly('customer', '顧客');
+                document.getElementById('fieldCorpOrg').classList.remove('hidden');
+                document.getElementById('corpOrgSelectWrapper').classList.add('hidden');
+                document.getElementById('corpOrgReadonly').classList.remove('hidden');
+                document.getElementById('corpOrgReadonly').textContent = '○○食品株式会社';
+            }
+        } else {
+            resetUserTypeFields();
+        }
+
         modal.classList.remove('hidden');
     };
+
     const closeModal = () => {
         modal.classList.add('hidden');
+        resetUserTypeFields();
     };
 
-    btnOpenModal.addEventListener('click', openModal);
-    btnCloseModal.addEventListener('click', closeModal);
-    btnCloseModalHeader.addEventListener('click', closeModal);
-    
-    // 背景クリックで閉じる
-    modal.addEventListener('click', (e) => {
-        if(e.target === modal) closeModal();
-    });
+    const setUserTypeReadonly = (value, label) => {
+        document.getElementById('userTypeRadioGroup').classList.add('hidden');
+        const ro = document.getElementById('userTypeReadonly');
+        ro.classList.remove('hidden');
+        ro.textContent = label;
+    };
 
-    // すべてのトリガーを取得
-    const triggers = document.querySelectorAll(".menu-trigger");
-    const menus = document.querySelectorAll(".menu");
+    const resetUserTypeFields = () => {
+        // ラジオをすべて解除
+        document.querySelectorAll('input[name="userType"]').forEach(r => r.checked = false);
+        document.getElementById('userTypeRadioGroup').classList.remove('hidden');
+        document.getElementById('userTypeReadonly').classList.add('hidden');
 
-    triggers.forEach(trigger => {
-        trigger.addEventListener("click", (e) => {
-        e.stopPropagation(); // 外部クリック処理を止める
+        // 種別依存フィールドをすべて非表示
+        document.getElementById('fieldSyainCd').classList.add('hidden');
+        document.getElementById('fieldEduOrg').classList.add('hidden');
+        document.getElementById('fieldCorpOrg').classList.add('hidden');
 
-        // 他のメニューを閉じる
-        menus.forEach(menu => menu.classList.add("hidden"));
+        // 読み取り専用表示をリセット
+        document.getElementById('eduOrgSelectWrapper').classList.remove('hidden');
+        document.getElementById('eduOrgReadonly').classList.add('hidden');
+        document.getElementById('corpOrgSelectWrapper').classList.remove('hidden');
+        document.getElementById('corpOrgReadonly').classList.add('hidden');
+        eduOrgCombo.reset();
+        corpOrgCombo.reset();
+        document.getElementById('inputSyainCd').value = '';
 
-        // 対応するメニューを開閉
-        const rowId = trigger.dataset.row;
-        const menu = document.getElementById(`row-${rowId}-items`);
-        menu.classList.toggle("hidden");
+        // メールアドレスをリセット
+        const emailInput = document.getElementById('inputEmail');
+        emailInput.readOnly = false;
+        emailInput.classList.remove('bg-gray-50', 'text-gray-500');
+        emailInput.value = '';
+        document.getElementById('inputLastName').value = '';
+        document.getElementById('inputFirstName').value = '';
+    };
+
+    // 新規登録ボタン
+    document.getElementById('btnOpenModal').addEventListener('click', () => openModal(false));
+
+    // 編集メニュー
+    document.querySelectorAll('[data-action="edit"]').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            const userType = btn.closest('tr').dataset.userType || null;
+            openModal(true, userType);
         });
     });
 
-    // メニュー内クリックでは閉じない
-    menus.forEach(menu => {
-        menu.addEventListener("click", (e) => e.stopPropagation());
+    // モーダルを閉じる
+    document.getElementById('btnCloseModal').addEventListener('click', closeModal);
+    document.getElementById('btnCloseModalHeader').addEventListener('click', closeModal);
+    modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
+
+    // ========== ユーザー種別ラジオ連動 ==========
+    document.querySelectorAll('input[name="userType"]').forEach(radio => {
+        radio.addEventListener('change', () => {
+            const val = radio.value;
+            document.getElementById('fieldSyainCd').classList.toggle('hidden', val !== 'iec');
+            document.getElementById('fieldEduOrg').classList.toggle('hidden', val !== 'vendor');
+            document.getElementById('fieldCorpOrg').classList.toggle('hidden', val !== 'customer');
+
+            // 切替時に関連入力値をリセット
+            if (val !== 'iec') document.getElementById('inputSyainCd').value = '';
+            if (val !== 'vendor') eduOrgCombo.reset();
+            if (val !== 'customer') corpOrgCombo.reset();
+        });
     });
 
-    // 領域外クリックで全部閉じる
-    document.addEventListener("click", () => {
-        closeAllMenus();
+    // ========== 教育団体コンボボックス ==========
+    const eduOrgCombo = initCombobox(document.getElementById('eduOrgSelectWrapper'), {
+        items: [
+            { value: 'sannou', label: '産業能率大学' },
+            { value: 'jtex',   label: 'JTEX' },
+            { value: 'noma',   label: 'NOMA' },
+        ],
+        placeholder:       '教育団体を選択してください',
+        searchPlaceholder: '教育団体を検索...',
+        emptyMessage:      '該当する教育団体がありません',
     });
+
+    // ========== 顧客企業コンボボックス ==========
+    const corpOrgCombo = initCombobox(document.getElementById('corpOrgSelectWrapper'), {
+        items: [
+            { value: 'marushoku', label: '○○食品株式会社' },
+            { value: 'techcorp',  label: '△△テクノロジー株式会社' },
+        ],
+        placeholder:       '顧客企業を選択してください',
+        searchPlaceholder: '顧客企業を検索...',
+        emptyMessage:      '該当する顧客企業がありません',
+    });
+
+    // ========== 所属先絞り込みコンボボックス（IEC用フィルタ） ==========
+    const filterUserType = document.getElementById('filterUserType');
+
+    const vendorOrgItems = [
+        { value: '',       label: '所属先（すべて）' },
+        { value: 'sannou', label: '産業能率大学' },
+        { value: 'jtex',   label: 'JTEX' },
+        { value: 'noma',   label: 'NOMA' },
+    ];
+    const customerOrgItems = [
+        { value: '',           label: '所属先（すべて）' },
+        { value: 'marushoku',  label: '○○食品株式会社' },
+        { value: 'techcorp',   label: '△△テクノロジー株式会社' },
+    ];
+
+    const filterOrgCombo = initCombobox(document.getElementById('filterOrgCombobox'), {
+        placeholder: '所属先（すべて）',
+        disabled: true,
+    });
+
+    filterUserType.addEventListener('change', () => {
+        const val = filterUserType.value;
+        filterOrgCombo.reset();
+        if (val === 'vendor') {
+            filterOrgCombo.setItems(vendorOrgItems);
+            filterOrgCombo.setDisabled(false);
+        } else if (val === 'customer') {
+            filterOrgCombo.setItems(customerOrgItems);
+            filterOrgCombo.setDisabled(false);
+        } else {
+            filterOrgCombo.setItems([]);
+            filterOrgCombo.setDisabled(true);
+        }
+    });
+
+    // ========== クリアボタン ==========
+    document.getElementById('btnClear').addEventListener('click', () => {
+        document.getElementById('searchInput').value = '';
+        filterUserType.value = '';
+        filterOrgCombo.setItems([]);
+        filterOrgCombo.setDisabled(true);
+        document.getElementById('chkIncludeInactive').checked = false;
+    });
+
+    // ========== 削除確認ダイアログ ==========
+    const deleteDialog = document.getElementById('deleteConfirmDialog');
+
+    document.querySelectorAll('[data-action="delete"]').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            closeAllMenus();
+            deleteDialog.classList.remove('hidden');
+        });
+    });
+    document.getElementById('btnDeleteCancel').addEventListener('click', () => deleteDialog.classList.add('hidden'));
+    document.getElementById('btnDeleteConfirm').addEventListener('click', () => deleteDialog.classList.add('hidden'));
+    deleteDialog.addEventListener('click', (e) => { if (e.target === deleteDialog) deleteDialog.classList.add('hidden'); });
+
   });
 </script>
