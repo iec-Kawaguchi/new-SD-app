@@ -310,6 +310,7 @@
             const html = slicedData.map(tag => {
                 const statusMenuLabel = tag.status === 'Active' ? '無効にする' : '有効にする';
                 const statusMenuIcon = tag.status === 'Active' ? 'block' : 'check_circle';
+                const statusMenuIconColor = tag.status === 'Active' ? 'text-orange-400 group-hover:text-orange-500' : 'text-green-500 group-hover:text-green-600';
                 return `
                 <tr class="hover:bg-gray-50 transition-colors cursor-pointer js-row group relative"
                     data-id="${tag.id}"
@@ -338,7 +339,7 @@
                                         編集する
                                     </a>
                                     <a href="#" class="group flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-gray-900 js-toggle-status">
-                                        <span class="material-symbols-outlined icon-sm mr-3 text-gray-400 group-hover:text-gray-500">${statusMenuIcon}</span>
+                                        <span class="material-symbols-outlined icon-sm mr-3 ${statusMenuIconColor}">${statusMenuIcon}</span>
                                         ${statusMenuLabel}
                                     </a>
                                 </div>
