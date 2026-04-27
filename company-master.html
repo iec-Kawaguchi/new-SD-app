@@ -7,18 +7,18 @@
         <script src="https://cdn.tailwindcss.com"></script>
         <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
         <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
-        
+
         <link rel="stylesheet" href="./css/base-style.css">
         <script src="./js/role-visibility.js" defer></script>
         <script src="./js/mock-ui.js" defer></script>
-        
+
         <style>
             /* カスタムスクロールバー */
             ::-webkit-scrollbar { width: 6px; height: 6px; }
             ::-webkit-scrollbar-track { background: transparent; }
             ::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 20px; }
             ::-webkit-scrollbar-thumb:hover { background-color: #94a3b8; }
-            
+
             /* アイコンサイズの調整ユーティリティ */
             .icon-sm { font-size: 20px; }
             .icon-md { font-size: 24px; }
@@ -32,13 +32,13 @@
 
             <main class="flex-1 h-full overflow-y-auto bg-gray-50 p-6 lg:p-8">
                 <div class="max-w-6xl mx-auto h-full flex flex-col">
-                    
+
                     <div class="mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
                         <div class="flex flex-col">
                             <h1 class="text-2xl font-bold text-gray-800 tracking-tight">CORP-00123.〇〇食品株式会社</h1>
                             <p class="text-sm text-gray-500 mt-1">システムで利用する企業ロゴやキャンセルポリシーを設定します。</p>
                         </div>
-                        
+
                         <div class="flex items-center gap-3 w-full md:w-auto bg-white p-2 md:p-0 md:bg-transparent rounded-lg md:rounded-none shadow-sm md:shadow-none border md:border-none border-gray-200" data-visible-for="iec">
                             <span class="text-sm font-bold text-gray-700 whitespace-nowrap hidden md:inline">対象企業:</span>
                             <div class="relative w-full md:w-64">
@@ -53,30 +53,6 @@
                         </div>
                     </div>
 
-                    <!-- <div class="bg-white rounded-xl shadow-sm border border-gray-200 flex flex-col mb-6">
-                        <div class="p-5 border-b border-gray-100 bg-gray-50/50">
-                            <h2 class="text-base font-bold text-gray-800 flex items-center gap-2">
-                                <span class="material-symbols-outlined text-gray-400 icon-sm">domain</span>
-                                基本情報
-                            </h2>
-                            <p class="text-xs text-gray-500 mt-1 ml-7">※企業名などの基本情報は基幹システムと連携しているため、ここでは編集できません。</p>
-                        </div>
-                        <div class="p-6 grid grid-cols-1 md:grid-cols-3 gap-6">
-                            <div class="col-span-1 md:col-span-1">
-                                <span class="block text-sm font-bold text-gray-700 mb-1.5">企業ID</span>
-                                <div class="text-gray-600 bg-gray-50 px-3 py-2.5 rounded-md border border-gray-200 text-sm font-mono">
-                                    CORP-00123
-                                </div>
-                            </div>
-                            <div class="col-span-1 md:col-span-2">
-                                <span class="block text-sm font-bold text-gray-700 mb-1.5">企業名</span>
-                                <div class="text-gray-900 bg-gray-50 px-3 py-2.5 rounded-md border border-gray-200 text-sm font-medium">
-                                    〇〇食品株式会社
-                                </div>
-                            </div>
-                        </div>
-                    </div> -->
-
                     <div class="bg-white rounded-xl shadow-sm border border-gray-200 flex flex-col mb-6">
                         <div class="p-5 border-b border-gray-100">
                             <h2 class="text-base font-bold text-gray-800 flex items-center gap-2">
@@ -89,12 +65,22 @@
                             <div class="flex flex-col md:flex-row gap-8 items-start">
                                 <div class="flex flex-col gap-2 w-full md:w-56 shrink-0">
                                     <span class="text-sm font-bold text-gray-700">現在のロゴ</span>
-                                    <div class="w-full aspect-video bg-gray-50 border border-gray-200 rounded-lg flex items-center justify-center overflow-hidden relative group">
+                                    <!-- ロゴ登録済みの場合 -->
+                                    <div id="logo-preview" class="w-full aspect-video bg-gradient-to-r from-blue-600 to-indigo-600 border border-gray-200 rounded-lg flex items-center justify-center overflow-hidden">
+                                        <span class="text-white font-bold text-lg tracking-wide">〇〇食品</span>
+                                    </div>
+                                    <!-- ロゴ未登録の場合（CompanyLogoData が NULL のとき表示） -->
+                                    <div id="logo-placeholder" class="hidden w-full aspect-video bg-gray-50 border border-gray-200 rounded-lg flex items-center justify-center overflow-hidden">
                                         <div class="flex flex-col items-center justify-center text-gray-400">
                                             <span class="material-symbols-outlined text-4xl mb-1">hide_image</span>
                                             <span class="text-xs">未登録</span>
                                         </div>
                                     </div>
+                                    <!-- ロゴを削除ボタン（CompanyLogoData が NULL でない場合に表示） -->
+                                    <button id="btn-delete-logo" type="button" class="flex items-center justify-center gap-1.5 w-full px-3 py-2 rounded-md border border-red-200 text-red-600 text-sm font-medium hover:bg-red-50 transition-colors">
+                                        <span class="material-symbols-outlined icon-sm">delete_outline</span>
+                                        ロゴを削除
+                                    </button>
                                 </div>
 
                                 <div class="flex flex-col gap-2 w-full flex-1">
@@ -127,16 +113,10 @@
                             <p class="text-sm text-gray-500 mt-1 ml-7">独自キャンセルポリシーを登録できます。未設定の場合は標準のキャンセルポリシーが適用されます。</p>
                         </div>
                         <div class="p-6 flex flex-col gap-5">
-                            
-                            <!-- <div class="flex flex-col gap-1.5">
-                                <label for="policyTitle" class="text-sm font-bold text-gray-700">タイトル <span class="text-red-500">*</span></label>
-                                <input id="policyTitle" type="text" class="w-full rounded-md border border-gray-300 px-3 py-2.5 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 shadow-sm sm:text-sm transition-shadow" placeholder="例：研修受講のキャンセルについて" value="キャンセルポリシー">
-                            </div> -->
-                            
+
                             <div class="flex flex-col gap-1.5">
-                                <!-- <label for="policyBody" class="text-sm font-bold text-gray-700">本文 <span class="text-red-500">*</span></label> -->
                                 <div class="border border-gray-300 rounded-md shadow-sm overflow-hidden focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-blue-500 transition-shadow">
-                                    
+
                                     <div class="bg-gray-50 border-b border-gray-300 px-2 py-1.5 flex items-center gap-1 overflow-x-auto">
                                         <button type="button" class="p-1.5 text-gray-500 hover:text-gray-800 hover:bg-gray-200 rounded transition-colors" title="太字"><span class="material-symbols-outlined icon-sm">format_bold</span></button>
                                         <button type="button" class="p-1.5 text-gray-500 hover:text-gray-800 hover:bg-gray-200 rounded transition-colors" title="斜体"><span class="material-symbols-outlined icon-sm">format_italic</span></button>
@@ -146,7 +126,7 @@
                                         <div class="w-px h-5 bg-gray-300 mx-1"></div>
                                         <button type="button" class="p-1.5 text-gray-500 hover:text-gray-800 hover:bg-gray-200 rounded transition-colors" title="リンク"><span class="material-symbols-outlined icon-sm">link</span></button>
                                     </div>
-                                    
+
                                     <textarea id="policyBody" rows="10" class="w-full px-4 py-3 text-gray-900 focus:outline-none sm:text-sm border-0 resize-y" placeholder="キャンセルポリシーを入力してください。"></textarea>
                                 </div>
                             </div>
@@ -179,6 +159,32 @@
                     });
                     MockUI.injectSidebar('#app-sidebar');
                 }
+
+                // --- ロゴ削除ボタンの動作 ---
+                const btnDeleteLogo = document.getElementById('btn-delete-logo');
+                const logoPreview = document.getElementById('logo-preview');
+                const logoPlaceholder = document.getElementById('logo-placeholder');
+
+                btnDeleteLogo.addEventListener('click', () => {
+                    logoPreview.classList.add('hidden');
+                    logoPlaceholder.classList.remove('hidden');
+                    btnDeleteLogo.classList.add('hidden');
+                });
+
+                // --- ファイル選択時のプレビュー更新 ---
+                const fileInput = document.getElementById('file-upload');
+                fileInput.addEventListener('change', (e) => {
+                    const file = e.target.files[0];
+                    if (!file) return;
+                    const reader = new FileReader();
+                    reader.onload = (ev) => {
+                        logoPreview.innerHTML = `<img src="${ev.target.result}" alt="ロゴプレビュー" class="max-h-full max-w-full object-contain p-2">`;
+                        logoPreview.classList.remove('hidden');
+                        logoPlaceholder.classList.add('hidden');
+                        btnDeleteLogo.classList.remove('hidden');
+                    };
+                    reader.readAsDataURL(file);
+                });
             });
         </script>
     </body>
