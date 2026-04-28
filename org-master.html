@@ -2,7 +2,7 @@
 <html lang="ja" class="h-full bg-gray-50">
     <head>
         <meta charset="UTF-8" />
-        <title>組織構成マスター管理 - New SD App</title>
+        <title>組織構成マスター管理 v2 - New SD App</title>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <script src="https://cdn.tailwindcss.com"></script>
         <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
@@ -10,6 +10,7 @@
         <link rel="stylesheet" href="./css/base-style.css">
         <script src="./js/role-visibility.js" defer></script>
         <script src="./js/mock-ui.js" defer></script>
+        <script src="./js/components/combobox.js" defer></script>
 
         <style>
             body { font-family: 'Noto Sans JP', sans-serif; }
@@ -18,53 +19,56 @@
             .custom-scrollbar::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 20px; }
             .icon-sm { font-size: 20px !important; }
             .icon-md { font-size: 24px !important; }
+            /* ボタン非活性スタイル */
+            button:disabled { opacity: 0.4; cursor: not-allowed; }
         </style>
     </head>
     <body class="h-full text-gray-900 antialiased flex flex-col">
         <div id="app-header"></div>
-        
+
         <div class="flex flex-1 overflow-hidden">
             <div id="app-sidebar"></div>
-            
+
             <main class="flex-1 flex flex-col min-w-0 bg-gray-50 h-full overflow-hidden">
+
+                <!-- ページヘッダー -->
                 <div class="px-6 py-6 lg:px-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 shrink-0">
                     <div>
                         <h1 class="text-2xl font-bold text-gray-800 tracking-tight">組織構成マスター管理</h1>
                         <p class="text-sm text-gray-500 mt-1">組織の階層構造（Level 1〜3）を定義・管理します。</p>
                     </div>
-                    <div class="flex items-center gap-3 w-full md:w-auto" data-visible-for="iec">
-                        <span class="text-sm font-bold text-gray-700 whitespace-nowrap">対象企業:</span>
-                        <div class="relative w-full md:w-64">
-                            <select class="h-10 appearance-none bg-gray-50 border border-gray-300 text-gray-700 text-sm rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 block w-full pl-3 pr-8 leading-tight transition-colors">
-                                <option value="1">○○食品株式会社</option>
-                                <option value="2">テスト企業A</option>
-                            </select>
-                            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-500">
-                                <span class="material-symbols-outlined icon-sm">expand_more</span>
-                            </div>
+                    <div class="flex items-center gap-4 w-full md:w-auto">
+                        <!-- 対象企業コンボボックス（IECのみ） -->
+                        <div class="flex items-center gap-3 w-full md:w-auto" data-visible-for="iec">
+                            <span class="text-sm font-bold text-gray-700 whitespace-nowrap">対象企業:</span>
+                            <div class="w-full md:w-72" id="company-combobox"></div>
                         </div>
                     </div>
                 </div>
 
                 <div class="flex-1 px-6 lg:px-8 pb-6 overflow-hidden flex flex-col">
+
+                    <!-- 3カラム階層エリア -->
                     <div class="flex-1 bg-white border border-gray-200 rounded-xl shadow-sm flex overflow-hidden relative">
-                        
+
+                        <!-- 階層レベル 1 -->
                         <div class="flex-1 flex flex-col min-w-[280px] border-r border-gray-100">
                             <div class="px-4 py-3 bg-gray-50 border-b border-gray-200 flex items-center justify-between">
                                 <span class="text-sm font-semibold text-gray-500 uppercase tracking-wider">階層レベル 1</span>
                                 <span class="bg-white border border-gray-200 text-gray-600 text-sm px-2 py-0.5 rounded-full font-bold shadow-sm" id="count-lvl1">0</span>
                             </div>
                             <div class="flex-1 overflow-y-auto custom-scrollbar p-3 space-y-1" id="list-lvl1"></div>
-                            <div class="p-3 border-t border-gray-100 bg-white">
+                            <div class="p-3 border-t border-gray-100 bg-white" data-visible-for="iec">
                                 <form id="form-lvl1" class="flex gap-2" onsubmit="return false;">
-                                    <input type="text" placeholder="名称..." class="h-10 flex-1 min-w-0 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 block px-3 transition-shadow" required>
-                                    <button type="submit" class="h-10 flex items-center justify-center p-2 bg-white border border-gray-300 text-blue-600 rounded-md hover:bg-blue-50 hover:border-blue-200 transition shadow-sm">
+                                    <input type="text" id="input-lvl1" placeholder="名称..." class="h-10 flex-1 min-w-0 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 block px-3 transition-shadow" required>
+                                    <button type="submit" id="btn-add-lvl1" class="h-10 flex items-center justify-center p-2 bg-white border border-gray-300 text-blue-600 rounded-md hover:bg-blue-50 hover:border-blue-200 transition shadow-sm">
                                         <span class="material-symbols-outlined icon-md">add</span>
                                     </button>
                                 </form>
                             </div>
                         </div>
 
+                        <!-- 階層レベル 2 -->
                         <div class="flex-1 flex flex-col min-w-[280px] border-r border-gray-100 bg-white">
                             <div class="px-4 py-3 bg-gray-50 border-b border-gray-200 flex items-center justify-between">
                                 <span class="text-sm font-semibold text-gray-500 uppercase tracking-wider">階層レベル 2</span>
@@ -76,17 +80,18 @@
                                     <span class="text-sm">左側の「階層レベル 1」を選択してください</span>
                                 </div>
                             </div>
-                            <div class="p-3 border-t border-gray-100 bg-white relative">
+                            <div class="p-3 border-t border-gray-100 bg-white relative" data-visible-for="iec">
                                 <div id="overlay-lvl2" class="absolute inset-0 bg-white/60 backdrop-blur-[1px] z-10 cursor-not-allowed"></div>
                                 <form id="form-lvl2" class="flex gap-2" onsubmit="return false;">
-                                    <input type="text" placeholder="名称..." class="h-10 flex-1 min-w-0 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 block px-3 transition-shadow">
-                                    <button type="submit" class="h-10 flex items-center justify-center p-2 bg-white border border-gray-300 text-blue-600 rounded-md hover:bg-blue-50 hover:border-blue-200 transition shadow-sm">
+                                    <input type="text" id="input-lvl2" placeholder="名称..." class="h-10 flex-1 min-w-0 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 block px-3 transition-shadow">
+                                    <button type="submit" id="btn-add-lvl2" class="h-10 flex items-center justify-center p-2 bg-white border border-gray-300 text-blue-600 rounded-md hover:bg-blue-50 hover:border-blue-200 transition shadow-sm">
                                         <span class="material-symbols-outlined icon-md">add</span>
                                     </button>
                                 </form>
                             </div>
                         </div>
 
+                        <!-- 階層レベル 3 -->
                         <div class="flex-1 flex flex-col min-w-[280px]">
                             <div class="px-4 py-3 bg-gray-50 border-b border-gray-200 flex items-center justify-between">
                                 <span class="text-sm font-semibold text-gray-500 uppercase tracking-wider">階層レベル 3</span>
@@ -98,68 +103,94 @@
                                     <span class="text-sm">左側の「階層レベル 2」を選択してください</span>
                                 </div>
                             </div>
-                            <div class="p-3 border-t border-gray-100 bg-white relative">
+                            <div class="p-3 border-t border-gray-100 bg-white relative" data-visible-for="iec">
                                 <div id="overlay-lvl3" class="absolute inset-0 bg-white/60 backdrop-blur-[1px] z-10 cursor-not-allowed"></div>
                                 <form id="form-lvl3" class="flex gap-2" onsubmit="return false;">
-                                    <input type="text" placeholder="名称..." class="h-10 flex-1 min-w-0 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 block px-3 transition-shadow">
-                                    <button type="submit" class="h-10 flex items-center justify-center p-2 bg-white border border-gray-300 text-blue-600 rounded-md hover:bg-blue-50 hover:border-blue-200 transition shadow-sm">
+                                    <input type="text" id="input-lvl3" placeholder="名称..." class="h-10 flex-1 min-w-0 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 block px-3 transition-shadow">
+                                    <button type="submit" id="btn-add-lvl3" class="h-10 flex items-center justify-center p-2 bg-white border border-gray-300 text-blue-600 rounded-md hover:bg-blue-50 hover:border-blue-200 transition shadow-sm">
                                         <span class="material-symbols-outlined icon-md">add</span>
                                     </button>
                                 </form>
                             </div>
                         </div>
 
-                    </div>
+                    </div><!-- /3カラム -->
                 </div>
 
-                <div class="px-6 py-4 bg-white border-t border-gray-200 flex justify-end gap-3 shrink-0 lg:px-8">
-                    <button type="button" class="px-4 py-2 rounded-md bg-white border border-gray-300 text-gray-700 font-medium hover:bg-gray-50 hover:border-gray-400 transition-all shadow-sm">
+                <!-- フッターアクションバー -->
+                <div class="px-6 py-4 bg-white border-t border-gray-200 flex justify-end gap-3 shrink-0 lg:px-8" data-visible-for="iec">
+                    <button type="button" id="btn-discard" class="px-4 py-2 rounded-md bg-white border border-gray-300 text-gray-700 font-medium hover:bg-gray-50 hover:border-gray-400 transition-all shadow-sm">
                         変更を破棄
                     </button>
-                    <button type="button" class="px-4 py-2 rounded-md bg-blue-600 text-white font-medium hover:bg-blue-700 shadow-sm hover:shadow transition-all">
+                    <button type="button" id="btn-save-all" class="px-4 py-2 rounded-md bg-blue-600 text-white font-medium hover:bg-blue-700 shadow-sm hover:shadow transition-all">
                         全変更を保存する
                     </button>
                 </div>
+
             </main>
         </div>
 
+        <!-- 編集モーダル -->
         <div id="edit-modal" class="fixed inset-0 z-50 hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
-            <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity backdrop-blur-sm" onclick="closeEditModal()"></div>
-    
+            <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity backdrop-blur-sm" id="modal-backdrop"></div>
+
             <div class="fixed inset-0 z-10 overflow-y-auto pointer-events-none">
                 <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0 pointer-events-auto">
                     <div class="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
                         <form id="edit-form" onsubmit="return false;">
                             <div class="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
                                 <h3 class="text-lg font-semibold leading-6 text-gray-900 mb-4" id="modal-title">組織情報の編集</h3>
-                                
+
                                 <div class="space-y-4">
+                                    <!-- 組織名称 -->
                                     <div>
-                                        <label for="edit-name" class="block text-sm font-medium text-gray-700">組織名称</label>
+                                        <label for="edit-name" class="block text-sm font-medium text-gray-700">組織名称 <span class="text-red-500">*</span></label>
                                         <input type="text" id="edit-name" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm h-10 border px-3" required>
                                     </div>
-    
-                                    <div class="p-4 bg-blue-50 rounded-md border border-blue-100 transition-all duration-300" data-visible-for="iec">
+
+                                    <!-- 事業所マスター紐付け（IECのみ） -->
+                                    <div class="p-4 bg-blue-50 rounded-md border border-blue-100" data-visible-for="iec">
                                         <div class="flex items-center gap-2 mb-2">
                                             <div class="p-1 bg-blue-100 rounded text-blue-700">
                                                 <span class="material-symbols-outlined icon-sm block">domain</span>
                                             </div>
-                                            <label for="edit-office" class="block text-sm font-bold text-blue-900">事業所マスター紐付け</label>
+                                            <label class="block text-sm font-bold text-blue-900">事業所マスター紐付け</label>
                                             <span class="text-[10px] bg-blue-600 text-white px-2 py-0.5 rounded-full ml-auto font-medium">IEC Admin Only</span>
                                         </div>
                                         <p class="text-xs text-blue-700 mb-3 leading-relaxed">
                                             基幹システムの「事業所マスター」とこの組織をリンクさせます。<br>
                                             <span class="opacity-75">※この設定は一般ユーザーには表示されません。</span>
                                         </p>
-                                        <select id="edit-office" class="bg-white block w-full rounded-md border-gray-300 text-gray-900 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm h-10 border px-3">
+
+                                        <!-- 事業所設定モード（Level 1 以外に表示） -->
+                                        <div id="office-mode-section" class="mb-3 space-y-1.5">
+                                            <label class="flex items-center gap-2 cursor-pointer">
+                                                <input type="radio" name="office-mode" id="radio-inherit" value="inherit" class="accent-blue-600">
+                                                <span class="text-sm text-gray-700">親から継承する</span>
+                                            </label>
+                                            <label class="flex items-center gap-2 cursor-pointer">
+                                                <input type="radio" name="office-mode" id="radio-explicit" value="explicit" class="accent-blue-600">
+                                                <span class="text-sm text-gray-700">このノードで設定する</span>
+                                            </label>
+                                        </div>
+
+                                        <!-- 「親から継承する」時：継承元の事業所名を参考表示 -->
+                                        <div id="inherited-office-display" class="hidden mb-2 flex items-center gap-1.5 text-xs text-indigo-400">
+                                            <span class="material-symbols-outlined text-xs">subdirectory_arrow_right</span>
+                                            <span>継承元：</span>
+                                            <span id="inherited-office-name" class="italic">（なし）</span>
+                                        </div>
+
+                                        <!-- 事業所コンボ（「このノードで設定する」時に活性） -->
+                                        <select id="edit-office" class="bg-white block w-full rounded-md border-gray-300 text-gray-900 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm h-10 border px-3 disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed">
                                             <option value="">(紐付けなし)</option>
-                                            </select>
+                                        </select>
                                     </div>
                                 </div>
                             </div>
-                            <div class="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
+                            <div class="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6 gap-2">
                                 <button type="button" id="btn-save-edit" class="inline-flex w-full justify-center rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 sm:ml-3 sm:w-auto">保存する</button>
-                                <button type="button" onclick="closeEditModal()" class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto">キャンセル</button>
+                                <button type="button" id="btn-cancel-edit" class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto">キャンセル</button>
                             </div>
                         </form>
                     </div>
@@ -168,12 +199,16 @@
         </div>
 
         <script>
-            // Mock Data Generator
+            // ===================================================
+            // 0. ユーティリティ
+            // ===================================================
             const generateId = () => Math.random().toString(36).substr(2, 9);
-            
-            // --- 1. Master Data Definitions ---
 
-            // 基幹システム側の事業所マスター (Mock)
+            // ===================================================
+            // 1. マスターデータ（モック）
+            // ===================================================
+
+            // 事業所マスター（基幹DB m_jigyo に相当）
             const officeMasterData = [
                 { id: 'off_01', name: '東京本社 (HQ)' },
                 { id: 'off_02', name: '大阪支店' },
@@ -182,38 +217,45 @@
                 { id: 'off_05', name: 'R&Dセンター' }
             ];
 
-            // 組織データ (officeIdを追加)
-            const orgData = [
+            // 組織ノードデータ
+            // jigyoCode: null = 親から継承, 文字列 = 明示的に設定済み
+            let orgData = [
                 {
-                    id: '1', name: '営業本部', officeId: 'off_01', children: [
-                        { id: '1-1', name: '第一営業部', officeId: 'off_01', children: [
-                            { id: '1-1-1', name: '営業一課' },
-                            { id: '1-1-2', name: '営業二課' }
+                    id: '1', name: '営業本部', jigyoCode: 'off_01', children: [
+                        { id: '1-1', name: '第一営業部', jigyoCode: 'off_02', children: [
+                            { id: '1-1-1', name: '営業一課', jigyoCode: null, children: [] },
+                            { id: '1-1-2', name: '営業二課', jigyoCode: null, children: [] }
                         ]},
-                        { id: '1-2', name: '第二営業部', officeId: 'off_02', children: [] }
+                        { id: '1-2', name: '第二営業部', jigyoCode: null, children: [] }
                     ]
                 },
                 {
-                    id: '2', name: '管理本部', officeId: 'off_01', children: [
-                        { id: '2-1', name: '人事総務部', children: [
-                            { id: '2-1-1', name: '採用チーム' },
-                            { id: '2-1-2', name: '労務チーム' }
+                    id: '2', name: '管理本部', jigyoCode: 'off_01', children: [
+                        { id: '2-1', name: '人事総務部', jigyoCode: null, children: [
+                            { id: '2-1-1', name: '採用チーム', jigyoCode: null, children: [] },
+                            { id: '2-1-2', name: '労務チーム', jigyoCode: null, children: [] }
                         ]},
-                        { id: '2-2', name: '経理部', children: [] }
+                        { id: '2-2', name: '経理部', jigyoCode: null, children: [] }
                     ]
                 },
-                { id: '3', name: 'DX推進室', officeId: 'off_05', children: [] }
+                { id: '3', name: 'DX推進室', jigyoCode: 'off_05', children: [] }
             ];
 
-            // State
-            let currentLvl1 = null; 
-            let currentLvl2 = null; 
+            // ===================================================
+            // 2. アプリケーション状態
+            // ===================================================
+            let currentLvl1 = null;
+            let currentLvl2 = null;
 
-            // Modal State
+            // 編集モーダル用
             let editingTarget = null;
+            let editingLevel = null;
+            let editingAncestors = [];
             let renderCallback = null;
 
-            // DOM Elements
+            // ===================================================
+            // 3. DOM要素の参照
+            // ===================================================
             const els = {
                 list1: document.getElementById('list-lvl1'),
                 list2: document.getElementById('list-lvl2'),
@@ -226,30 +268,40 @@
                 form1: document.getElementById('form-lvl1'),
                 form2: document.getElementById('form-lvl2'),
                 form3: document.getElementById('form-lvl3'),
-                // Modal
+                input1: document.getElementById('input-lvl1'),
+                input2: document.getElementById('input-lvl2'),
+                input3: document.getElementById('input-lvl3'),
+                btnAdd1: document.getElementById('btn-add-lvl1'),
+                btnAdd2: document.getElementById('btn-add-lvl2'),
+                btnAdd3: document.getElementById('btn-add-lvl3'),
                 modal: document.getElementById('edit-modal'),
                 modalName: document.getElementById('edit-name'),
                 modalOffice: document.getElementById('edit-office'),
-                btnSave: document.getElementById('btn-save-edit')
+                radioInherit: document.getElementById('radio-inherit'),
+                radioExplicit: document.getElementById('radio-explicit'),
+                officeModeSection: document.getElementById('office-mode-section'),
+                inheritedDisplay: document.getElementById('inherited-office-display'),
+                inheritedName: document.getElementById('inherited-office-name'),
+                btnSaveEdit: document.getElementById('btn-save-edit'),
+                btnCancelEdit: document.getElementById('btn-cancel-edit'),
+                modalBackdrop: document.getElementById('modal-backdrop'),
             };
 
-            // --- 2. Initialization ---
-
+            // ===================================================
+            // 4. 初期化
+            // ===================================================
             window.addEventListener('DOMContentLoaded', () => {
-                // MockUI Setup (External JS)
                 if (typeof MockUI !== 'undefined') {
                     MockUI.injectHeader('#app-header', { userName: 'Test User', brand: 'New SD App' });
                     MockUI.injectSidebar('#app-sidebar');
                 }
-                
-                // Role Visibility Setup (External JS)
-                // data-visible-for属性を持つ要素の初期制御
                 if (typeof RoleMock !== 'undefined') {
                     RoleMock.applyRoleVisibility();
                 }
 
                 initOfficeSelect();
-                renderLvl1();
+                renderAll();
+                setupEventListeners();
             });
 
             function initOfficeSelect() {
@@ -262,259 +314,430 @@
                 });
             }
 
-            // --- 3. Render Functions ---
+            function setupEventListeners() {
+                // 企業コンボボックスの初期化
+                let prevCompanyValue = '1';
+                const companyCombo = initCombobox(document.getElementById('company-combobox'), {
+                    items: [
+                        { value: '1', label: '○○食品株式会社' },
+                        { value: '2', label: 'テスト企業A' },
+                        { value: '3', label: '△△商事株式会社' },
+                        { value: '4', label: '□□製造株式会社' },
+                        { value: '5', label: '◇◇ホールディングス' },
+                    ],
+                    initialValue:      '1',
+                    searchPlaceholder: '企業名を検索...',
+                    emptyMessage:      '該当する企業がありません',
+                    onSelect(value) {
+                        if (!confirm('変更を破棄して企業を切り替えますか？')) {
+                            companyCombo.setValue(prevCompanyValue);
+                            return;
+                        }
+                        prevCompanyValue = value;
+                        currentLvl1 = null;
+                        currentLvl2 = null;
+                        renderAll();
+                    },
+                });
+
+                // フッターボタン
+                document.getElementById('btn-discard').addEventListener('click', () => {
+                    if (confirm('未保存の変更をすべて破棄しますか？')) {
+                        currentLvl1 = null;
+                        currentLvl2 = null;
+                        renderAll();
+                    }
+                });
+                document.getElementById('btn-save-all').addEventListener('click', () => {
+                    alert('【モック】全変更を保存しました。');
+                });
+
+                // 追加フォーム
+                els.form1.addEventListener('submit', () => {
+                    if (!els.input1.value.trim()) return;
+                    orgData.push({ id: generateId(), name: els.input1.value.trim(), jigyoCode: null, children: [] });
+                    els.input1.value = '';
+                    renderAll();
+                });
+                els.form2.addEventListener('submit', () => {
+                    if (!currentLvl1 || !els.input2.value.trim()) return;
+                    const parent = findNode(orgData, currentLvl1);
+                    if (parent) {
+                        parent.children.push({ id: generateId(), name: els.input2.value.trim(), jigyoCode: null, children: [] });
+                        els.input2.value = '';
+                        renderAll();
+                    }
+                });
+                els.form3.addEventListener('submit', () => {
+                    if (!currentLvl2 || !els.input3.value.trim()) return;
+                    const parent = findNode(orgData, currentLvl2);
+                    if (parent) {
+                        parent.children.push({ id: generateId(), name: els.input3.value.trim(), jigyoCode: null, children: [] });
+                        els.input3.value = '';
+                        renderAll();
+                    }
+                });
+
+                // モーダルイベント
+                els.btnCancelEdit.addEventListener('click', closeEditModal);
+                els.modalBackdrop.addEventListener('click', closeEditModal);
+                els.btnSaveEdit.addEventListener('click', saveEditModal);
+
+                // 事業所設定モード ラジオ切替
+                els.radioInherit.addEventListener('change', updateOfficeModeUI);
+                els.radioExplicit.addEventListener('change', updateOfficeModeUI);
+            }
+
+            // ===================================================
+            // 5. 業務ロジック
+            // ===================================================
+
+            /** ノードをIDで検索（再帰） */
+            function findNode(nodes, id) {
+                for (const node of nodes) {
+                    if (node.id === id) return node;
+                    if (node.children) {
+                        const found = findNode(node.children, id);
+                        if (found) return found;
+                    }
+                }
+                return null;
+            }
+
+            /** 事業所コード解決処理（継承ロジック） */
+            function resolveJigyoCode(node, ancestors) {
+                if (node.jigyoCode) {
+                    return { jigyoCode: node.jigyoCode, isInherited: false };
+                }
+                for (let i = ancestors.length - 1; i >= 0; i--) {
+                    if (ancestors[i].jigyoCode) {
+                        return { jigyoCode: ancestors[i].jigyoCode, isInherited: true, inheritFrom: ancestors[i].name };
+                    }
+                }
+                return { jigyoCode: null, isInherited: false };
+            }
+
+            function getOfficeName(jigyoCode) {
+                const office = officeMasterData.find(o => o.id === jigyoCode);
+                return office ? office.name : jigyoCode;
+            }
+
+            // ===================================================
+            // 6. 描画関数
+            // ===================================================
+
+            function renderAll() {
+                renderLvl1();
+                renderLvl2();
+                renderLvl3();
+                applyOverlays();
+            }
+
+            /** オーバーレイ（入力欄の上のマスク）の表示制御 */
+            function applyOverlays() {
+                const l1Selected = !!currentLvl1;
+                const l2Selected = !!currentLvl2;
+
+                els.overlay2.classList.toggle('hidden', l1Selected);
+                els.overlay3.classList.toggle('hidden', l2Selected);
+
+                [els.input2, els.btnAdd2].forEach(el => { el.disabled = !l1Selected; });
+                [els.input3, els.btnAdd3].forEach(el => { el.disabled = !l2Selected; });
+            }
 
             function renderLvl1() {
                 els.list1.innerHTML = '';
                 els.count1.textContent = orgData.length;
 
-                orgData.forEach(item => {
-                    const el = createItemElement(item, item.id === currentLvl1);
-                    el.onclick = () => selectLvl1(item.id);
-                    
-                    // Edit
-                    const editBtn = el.querySelector('[data-edit]');
-                    if(editBtn) editBtn.onclick = (e) => {
-                        e.stopPropagation();
-                        openEditModal(item, () => { renderLvl1(); renderLvl2(); renderLvl3(); });
-                    };
-
-                    // Delete
-                    const delBtn = el.querySelector('[data-delete]');
-                    if(delBtn) delBtn.onclick = (e) => {
-                        e.stopPropagation();
-                        if(confirm('削除しますか？')) {
-                            const idx = orgData.findIndex(d => d.id === item.id);
-                            orgData.splice(idx, 1);
-                            if(currentLvl1 === item.id) { currentLvl1 = null; currentLvl2 = null; renderLvl2(); renderLvl3(); }
-                            renderLvl1();
-                        }
-                    };
+                orgData.forEach((item, idx) => {
+                    const el = createItemElement({
+                        node: item,
+                        isActive: item.id === currentLvl1,
+                        ancestors: [],
+                        level: 1,
+                        siblings: orgData,
+                        index: idx
+                    });
+                    el.addEventListener('click', () => selectLvl1(item.id));
                     els.list1.appendChild(el);
                 });
 
-                // 【修正】新しく生成された要素に対して権限表示制御を再適用する
                 if (typeof RoleMock !== 'undefined') RoleMock.applyRoleVisibility();
             }
 
             function renderLvl2() {
                 els.list2.innerHTML = '';
-                
+
                 if (!currentLvl1) {
                     els.count2.textContent = '-';
-                    els.overlay2.classList.remove('hidden');
-                    els.list2.innerHTML = `<div class="absolute inset-0 flex flex-col items-center justify-center text-gray-400 pointer-events-none p-4 text-center"><span class="material-symbols-outlined text-4xl mb-2 text-gray-300">arrow_back</span><span class="text-sm">左側の「階層レベル 1」を選択してください</span></div>`;
+                    els.list2.innerHTML = `<div class="absolute inset-0 flex flex-col items-center justify-center text-gray-400 pointer-events-none p-4 text-center">
+                        <span class="material-symbols-outlined text-4xl mb-2 text-gray-300">arrow_back</span>
+                        <span class="text-sm">左側の「階層レベル 1」を選択してください</span>
+                    </div>`;
                     return;
                 }
 
-                const parent = orgData.find(d => d.id === currentLvl1);
+                const parent = findNode(orgData, currentLvl1);
                 const items = parent ? parent.children : [];
                 els.count2.textContent = items.length;
-                els.overlay2.classList.add('hidden');
 
-                items.forEach(item => {
-                    const el = createItemElement(item, item.id === currentLvl2);
-                    el.onclick = () => selectLvl2(item.id);
-                    
-                    const editBtn = el.querySelector('[data-edit]');
-                    if(editBtn) editBtn.onclick = (e) => {
-                        e.stopPropagation();
-                        openEditModal(item, () => { renderLvl2(); renderLvl3(); });
-                    };
-
-                    const delBtn = el.querySelector('[data-delete]');
-                    if(delBtn) delBtn.onclick = (e) => {
-                        e.stopPropagation();
-                        if(confirm('削除しますか？')) {
-                            const idx = items.findIndex(d => d.id === item.id);
-                            items.splice(idx, 1);
-                            if(currentLvl2 === item.id) { currentLvl2 = null; renderLvl3(); }
-                            renderLvl2();
-                        }
-                    };
+                items.forEach((item, idx) => {
+                    const el = createItemElement({
+                        node: item,
+                        isActive: item.id === currentLvl2,
+                        ancestors: [parent],
+                        level: 2,
+                        siblings: items,
+                        index: idx
+                    });
+                    el.addEventListener('click', () => selectLvl2(item.id));
                     els.list2.appendChild(el);
                 });
 
-                // 【修正】新しく生成された要素に対して権限表示制御を再適用する
                 if (typeof RoleMock !== 'undefined') RoleMock.applyRoleVisibility();
             }
 
             function renderLvl3() {
                 els.list3.innerHTML = '';
-                
+
                 if (!currentLvl1 || !currentLvl2) {
                     els.count3.textContent = '-';
-                    els.overlay3.classList.remove('hidden');
-                    els.list3.innerHTML = `<div class="absolute inset-0 flex flex-col items-center justify-center text-gray-400 pointer-events-none p-4 text-center"><span class="material-symbols-outlined text-4xl mb-2 text-gray-300">arrow_back</span><span class="text-sm">左側の「階層レベル 2」を選択してください</span></div>`;
+                    els.list3.innerHTML = `<div class="absolute inset-0 flex flex-col items-center justify-center text-gray-400 pointer-events-none p-4 text-center">
+                        <span class="material-symbols-outlined text-4xl mb-2 text-gray-300">arrow_back</span>
+                        <span class="text-sm">左側の「階層レベル 2」を選択してください</span>
+                    </div>`;
                     return;
                 }
 
-                const parent1 = orgData.find(d => d.id === currentLvl1);
-                const parent2 = parent1.children.find(d => d.id === currentLvl2);
+                const parent1 = findNode(orgData, currentLvl1);
+                const parent2 = findNode(parent1.children, currentLvl2);
                 const items = parent2 ? parent2.children : [];
-                
                 els.count3.textContent = items.length;
-                els.overlay3.classList.add('hidden');
 
-                items.forEach(item => {
-                    const el = createItemElement(item, false); 
-                    
-                    const editBtn = el.querySelector('[data-edit]');
-                    if(editBtn) editBtn.onclick = (e) => {
-                        e.stopPropagation();
-                        openEditModal(item, () => { renderLvl3(); });
-                    };
-
-                    const delBtn = el.querySelector('[data-delete]');
-                    if(delBtn) delBtn.onclick = (e) => {
-                        e.stopPropagation();
-                        const idx = items.findIndex(d => d.id === item.id);
-                        items.splice(idx, 1);
-                        renderLvl3();
-                    };
+                items.forEach((item, idx) => {
+                    const el = createItemElement({
+                        node: item,
+                        isActive: false,  // Level 3 は選択しない（最下位）
+                        ancestors: [parent1, parent2],
+                        level: 3,
+                        siblings: items,
+                        index: idx
+                    });
                     els.list3.appendChild(el);
                 });
 
-                // 【修正】新しく生成された要素に対して権限表示制御を再適用する
                 if (typeof RoleMock !== 'undefined') RoleMock.applyRoleVisibility();
             }
 
-            // --- 4. Logic Helpers ---
-
-            function selectLvl1(id) {
-                currentLvl1 = id;
-                currentLvl2 = null; 
-                renderLvl1(); 
-                renderLvl2();
-                renderLvl3();
-            }
-
-            function selectLvl2(id) {
-                currentLvl2 = id;
-                renderLvl2(); 
-                renderLvl3();
-            }
-
-            function createItemElement(data, isActive) {
+            /**
+             * リストアイテムDOMを生成する
+             * @param {object} params
+             *   node        - ノードデータ
+             *   isActive    - 選択中か
+             *   ancestors   - 上位ノードの配列（継承解決用）
+             *   level       - 階層レベル (1/2/3)
+             *   siblings    - 同一レベルの兄弟配列（並び替え用）
+             *   index       - siblings内のインデックス
+             */
+            function createItemElement({ node, isActive, ancestors, level, siblings, index }) {
                 const div = document.createElement('div');
                 div.className = `group flex justify-between items-center p-3 rounded-lg cursor-pointer transition-all border ${
-                    isActive 
-                    ? 'bg-blue-50 border-blue-200 shadow-sm z-10' 
+                    isActive
+                    ? 'bg-blue-50 border-blue-200 shadow-sm z-10'
                     : 'bg-white border-transparent hover:bg-gray-50 hover:border-gray-100'
                 }`;
-                
-                // 紐付けバッジ (Link Badge)
-                const linkedOffice = officeMasterData.find(o => o.id === data.officeId);
-                const officeBadge = linkedOffice 
-                    ? `<span data-visible-for="iec" class="ml-2 inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-xs font-medium bg-indigo-50 text-indigo-700 border border-indigo-100" title="事業所: ${linkedOffice.name}">
-                        <span class="material-symbols-outlined text-xs">domain</span>${linkedOffice.name}
-                    </span>` 
-                    : '';
+
+                // 事業所バッジ（IECのみ）
+                const resolved = resolveJigyoCode(node, ancestors);
+                let officeBadgeHtml = '';
+                if (resolved.jigyoCode) {
+                    const officeName = getOfficeName(resolved.jigyoCode);
+                    if (resolved.isInherited) {
+                        // 継承バッジ（薄い青紫 + ↑アイコン）
+                        officeBadgeHtml = `<span data-visible-for="iec" class="ml-1.5 inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-xs font-medium bg-indigo-50/60 text-indigo-400 border border-indigo-100" title="事業所（継承）: ${officeName} ← ${resolved.inheritFrom}">
+                            <span class="material-symbols-outlined" style="font-size:11px">subdirectory_arrow_right</span>${officeName}
+                        </span>`;
+                    } else {
+                        // 明示的設定バッジ（青紫）
+                        officeBadgeHtml = `<span data-visible-for="iec" class="ml-1.5 inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-xs font-medium bg-indigo-50 text-indigo-700 border border-indigo-100" title="事業所: ${officeName}">
+                            <span class="material-symbols-outlined" style="font-size:11px">domain</span>${officeName}
+                        </span>`;
+                    }
+                }
+
+                const isFirst = index === 0;
+                const isLast = index === siblings.length - 1;
+
+                // 上へ/下へボタン（並び替え）
+                const moveUpBtn = `<button type="button" data-move-up data-visible-for="iec" class="p-1 text-gray-400 hover:text-blue-600 rounded hover:bg-white transition" title="上へ移動" ${isFirst ? 'disabled' : ''}>
+                    <span class="material-symbols-outlined text-base">arrow_upward</span>
+                </button>`;
+                const moveDownBtn = `<button type="button" data-move-down data-visible-for="iec" class="p-1 text-gray-400 hover:text-blue-600 rounded hover:bg-white transition" title="下へ移動" ${isLast ? 'disabled' : ''}>
+                    <span class="material-symbols-outlined text-base">arrow_downward</span>
+                </button>`;
+                const editBtn = `<button type="button" data-edit data-visible-for="iec" class="p-1 text-gray-400 hover:text-blue-600 rounded hover:bg-white transition" title="編集">
+                    <span class="material-symbols-outlined text-base">edit</span>
+                </button>`;
+                const deleteBtn = `<button type="button" data-delete data-visible-for="iec" class="p-1 text-gray-400 hover:text-red-500 rounded hover:bg-white transition" title="削除">
+                    <span class="material-symbols-outlined text-base">delete</span>
+                </button>`;
 
                 div.innerHTML = `
-                    <div class="flex items-center gap-2 min-w-0">
+                    <div class="flex items-center gap-1.5 min-w-0">
                         <span class="material-symbols-outlined icon-sm ${isActive ? 'text-blue-600' : 'text-gray-400 group-hover:text-gray-500'}">
                             ${isActive ? 'folder_open' : 'folder'}
                         </span>
                         <span class="font-medium text-sm truncate ${isActive ? 'text-blue-900' : 'text-gray-700'}">
-                            ${data.name}
+                            ${node.name}
                         </span>
-                        ${officeBadge}
+                        ${officeBadgeHtml}
                     </div>
-                    <div class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity ${isActive ? 'opacity-100' : ''}">
-                        <button type="button" data-edit class="p-1 text-gray-400 hover:text-blue-600 rounded hover:bg-white transition" title="編集">
-                            <span class="material-symbols-outlined text-base">edit</span>
-                        </button>
-                        <button type="button" data-delete class="p-1 text-gray-400 hover:text-red-500 rounded hover:bg-white transition" title="削除">
-                            <span class="material-symbols-outlined text-base">delete</span>
-                        </button>
-                        ${isActive ? '<span class="material-symbols-outlined text-blue-400 text-base">chevron_right</span>' : ''}
+                    <div class="flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity ${isActive ? '!opacity-100' : ''}">
+                        ${moveUpBtn}
+                        ${moveDownBtn}
+                        ${editBtn}
+                        ${deleteBtn}
+                        ${isActive ? '<span class="material-symbols-outlined text-blue-400 text-base ml-0.5">chevron_right</span>' : ''}
                     </div>
                 `;
+
+                // ボタンイベント（クリックが親に伝播しないよう stopPropagation）
+                div.querySelector('[data-move-up]').addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    if (index > 0) {
+                        [siblings[index - 1], siblings[index]] = [siblings[index], siblings[index - 1]];
+                        renderAll();
+                    }
+                });
+                div.querySelector('[data-move-down]').addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    if (index < siblings.length - 1) {
+                        [siblings[index], siblings[index + 1]] = [siblings[index + 1], siblings[index]];
+                        renderAll();
+                    }
+                });
+                div.querySelector('[data-edit]').addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    openEditModal({ node, level, ancestors });
+                });
+                div.querySelector('[data-delete]').addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    if (confirm(`「${node.name}」を削除しますか？\n配下のノードもすべて削除されます。`)) {
+                        const idx = siblings.findIndex(d => d.id === node.id);
+                        siblings.splice(idx, 1);
+                        // 削除されたノードが選択中だった場合は選択をリセット
+                        if (level === 1 && currentLvl1 === node.id) { currentLvl1 = null; currentLvl2 = null; }
+                        if (level === 2 && currentLvl2 === node.id) { currentLvl2 = null; }
+                        renderAll();
+                    }
+                });
+
                 return div;
             }
 
-            // --- 5. Modal & Form Handlers ---
+            // ===================================================
+            // 7. 階層選択
+            // ===================================================
 
-            function openEditModal(data, callback) {
-                editingTarget = data;
-                renderCallback = callback;
-                
-                els.modalName.value = data.name;
-                els.modalOffice.value = data.officeId || '';
-                
+            function selectLvl1(id) {
+                currentLvl1 = id;
+                currentLvl2 = null;
+                renderAll();
+            }
+
+            function selectLvl2(id) {
+                currentLvl2 = id;
+                renderLvl2();
+                renderLvl3();
+                applyOverlays();
+            }
+
+            // ===================================================
+            // 8. 編集モーダル
+            // ===================================================
+
+            function openEditModal({ node, level, ancestors }) {
+                editingTarget = node;
+                editingLevel = level;
+                editingAncestors = ancestors;
+
+                // 名称
+                els.modalName.value = node.name;
+
+                // Level 1 の場合は「継承する」ラジオを非表示
+                els.officeModeSection.style.display = level === 1 ? 'none' : '';
+
+                // ラジオの初期値
+                if (level !== 1) {
+                    const isInherit = !node.jigyoCode;
+                    els.radioInherit.checked = isInherit;
+                    els.radioExplicit.checked = !isInherit;
+                }
+
+                // 事業所コンボ
+                els.modalOffice.value = node.jigyoCode || '';
+
+                updateOfficeModeUI();
+
                 els.modal.classList.remove('hidden');
+                if (typeof RoleMock !== 'undefined') RoleMock.applyRoleVisibility();
+            }
 
-                // 重要: モーダルが開いたタイミングで可視性制御を再適用する
-                // RoleMockがグローバルにある前提
-                if (typeof RoleMock !== 'undefined') {
-                    RoleMock.applyRoleVisibility();
+            function updateOfficeModeUI() {
+                const isLevel1 = editingLevel === 1;
+                const isExplicit = isLevel1 || els.radioExplicit.checked;
+
+                // コンボボックスの活性・非活性
+                els.modalOffice.disabled = !isExplicit;
+
+                // 継承元表示エリア
+                if (!isLevel1 && els.radioInherit.checked) {
+                    els.inheritedDisplay.classList.remove('hidden');
+                    // 継承元の事業所名を親から解決
+                    let inheritedOfficeName = '（なし）';
+                    for (let i = editingAncestors.length - 1; i >= 0; i--) {
+                        if (editingAncestors[i].jigyoCode) {
+                            inheritedOfficeName = getOfficeName(editingAncestors[i].jigyoCode);
+                            break;
+                        }
+                    }
+                    els.inheritedName.textContent = inheritedOfficeName;
+                } else {
+                    els.inheritedDisplay.classList.add('hidden');
                 }
             }
 
             function closeEditModal() {
                 els.modal.classList.add('hidden');
                 editingTarget = null;
-                renderCallback = null;
+                editingLevel = null;
+                editingAncestors = [];
             }
 
-            // Save Handler
-            els.btnSave.addEventListener('click', () => {
+            function saveEditModal() {
                 if (!editingTarget) return;
-                
+
                 const newName = els.modalName.value.trim();
                 if (!newName) {
-                    alert('名称を入力してください');
+                    alert('名称を入力してください。');
+                    els.modalName.focus();
                     return;
                 }
 
-                // 名称更新
                 editingTarget.name = newName;
-                
-                // 事業所ID更新 (Roleによって入力欄が隠れている場合は更新しない、あるいは既存値を維持する判断が必要)
-                // ここでは「隠れていたら触らない」制御を入れる
-                const officeContainer = els.modalOffice.closest('[data-visible-for]');
-                const isHidden = officeContainer && window.getComputedStyle(officeContainer).display === 'none';
 
+                // 事業所設定（IECのみ反映。非表示の場合は変更しない）
+                const officeSection = els.modalOffice.closest('[data-visible-for]');
+                const isHidden = officeSection && window.getComputedStyle(officeSection).display === 'none';
                 if (!isHidden) {
-                    editingTarget.officeId = els.modalOffice.value;
+                    const isLevel1 = editingLevel === 1;
+                    const isExplicit = isLevel1 || els.radioExplicit.checked;
+                    editingTarget.jigyoCode = isExplicit ? (els.modalOffice.value || null) : null;
                 }
 
-                if (renderCallback) renderCallback();
+                renderAll();
                 closeEditModal();
-            });
-
-            // Add Form Handlers
-            els.form1.addEventListener('submit', (e) => {
-                const input = e.target.querySelector('input');
-                if(!input.value.trim()) return;
-                orgData.push({ id: generateId(), name: input.value, children: [] });
-                input.value = '';
-                renderLvl1();
-            });
-
-            els.form2.addEventListener('submit', (e) => {
-                const input = e.target.querySelector('input');
-                if(!input.value.trim()) return;
-                const parent = orgData.find(d => d.id === currentLvl1);
-                if(parent) {
-                    parent.children.push({ id: generateId(), name: input.value, children: [] });
-                    input.value = '';
-                    renderLvl2();
-                }
-            });
-
-            els.form3.addEventListener('submit', (e) => {
-                const input = e.target.querySelector('input');
-                if(!input.value.trim()) return;
-                const parent1 = orgData.find(d => d.id === currentLvl1);
-                const parent2 = parent1.children.find(d => d.id === currentLvl2);
-                if(parent2) {
-                    parent2.children.push({ id: generateId(), name: input.value });
-                    input.value = '';
-                    renderLvl3();
-                }
-            });
+            }
 
         </script>
     </body>

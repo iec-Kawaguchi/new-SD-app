@@ -87,7 +87,7 @@
                             <span class="${STYLES.icon}">view_agenda</span>
                             <span class="text-sm">特集ページ管理</span>
                         </a>
-                        <a href="org-master2.html" data-visible-for="iec, customer" class="js-nav-item">
+                        <a href="org-master.html" data-visible-for="iec, customer" class="js-nav-item">
                             <span class="${STYLES.icon}">account_tree</span>
                             <span class="text-sm">組織階層管理</span>
                         </a>

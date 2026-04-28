@@ -38,11 +38,6 @@
                         <p class="text-sm text-gray-500 mt-1">組織の階層構造（Level 1〜3）を定義・管理します。</p>
                     </div>
                     <div class="flex items-center gap-4 w-full md:w-auto">
-                        <!-- [モック確認用] ロック状態トグル -->
-                        <label class="flex items-center gap-2 text-xs text-gray-400 border border-dashed border-gray-300 rounded px-2 py-1 cursor-pointer select-none" title="モック確認用：操作ロック状態の切り替え">
-                            <input type="checkbox" id="toggle-lock" class="accent-amber-500">
-                            <span>ロック状態（確認用）</span>
-                        </label>
                         <!-- 対象企業コンボボックス（IECのみ） -->
                         <div class="flex items-center gap-3 w-full md:w-auto" data-visible-for="iec">
                             <span class="text-sm font-bold text-gray-700 whitespace-nowrap">対象企業:</span>
@@ -52,12 +47,6 @@
                 </div>
 
                 <div class="flex-1 px-6 lg:px-8 pb-6 overflow-hidden flex flex-col">
-
-                    <!-- 操作ロック通知バナー（ロック中のみ表示） -->
-                    <div id="lock-banner" class="hidden mb-3 flex items-center gap-3 px-4 py-3 bg-amber-50 border border-amber-200 rounded-lg text-amber-800 text-sm shrink-0">
-                        <span class="material-symbols-outlined text-amber-500 shrink-0">lock</span>
-                        <span>現在進行中または公開中の募集があるため、組織構成の追加・編集・削除はできません。</span>
-                    </div>
 
                     <!-- 3カラム階層エリア -->
                     <div class="flex-1 bg-white border border-gray-200 rounded-xl shadow-sm flex overflow-hidden relative">
@@ -69,7 +58,7 @@
                                 <span class="bg-white border border-gray-200 text-gray-600 text-sm px-2 py-0.5 rounded-full font-bold shadow-sm" id="count-lvl1">0</span>
                             </div>
                             <div class="flex-1 overflow-y-auto custom-scrollbar p-3 space-y-1" id="list-lvl1"></div>
-                            <div class="p-3 border-t border-gray-100 bg-white">
+                            <div class="p-3 border-t border-gray-100 bg-white" data-visible-for="iec">
                                 <form id="form-lvl1" class="flex gap-2" onsubmit="return false;">
                                     <input type="text" id="input-lvl1" placeholder="名称..." class="h-10 flex-1 min-w-0 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 block px-3 transition-shadow" required>
                                     <button type="submit" id="btn-add-lvl1" class="h-10 flex items-center justify-center p-2 bg-white border border-gray-300 text-blue-600 rounded-md hover:bg-blue-50 hover:border-blue-200 transition shadow-sm">
@@ -91,7 +80,7 @@
                                     <span class="text-sm">左側の「階層レベル 1」を選択してください</span>
                                 </div>
                             </div>
-                            <div class="p-3 border-t border-gray-100 bg-white relative">
+                            <div class="p-3 border-t border-gray-100 bg-white relative" data-visible-for="iec">
                                 <div id="overlay-lvl2" class="absolute inset-0 bg-white/60 backdrop-blur-[1px] z-10 cursor-not-allowed"></div>
                                 <form id="form-lvl2" class="flex gap-2" onsubmit="return false;">
                                     <input type="text" id="input-lvl2" placeholder="名称..." class="h-10 flex-1 min-w-0 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 block px-3 transition-shadow">
@@ -114,7 +103,7 @@
                                     <span class="text-sm">左側の「階層レベル 2」を選択してください</span>
                                 </div>
                             </div>
-                            <div class="p-3 border-t border-gray-100 bg-white relative">
+                            <div class="p-3 border-t border-gray-100 bg-white relative" data-visible-for="iec">
                                 <div id="overlay-lvl3" class="absolute inset-0 bg-white/60 backdrop-blur-[1px] z-10 cursor-not-allowed"></div>
                                 <form id="form-lvl3" class="flex gap-2" onsubmit="return false;">
                                     <input type="text" id="input-lvl3" placeholder="名称..." class="h-10 flex-1 min-w-0 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 block px-3 transition-shadow">
@@ -129,7 +118,7 @@
                 </div>
 
                 <!-- フッターアクションバー -->
-                <div class="px-6 py-4 bg-white border-t border-gray-200 flex justify-end gap-3 shrink-0 lg:px-8">
+                <div class="px-6 py-4 bg-white border-t border-gray-200 flex justify-end gap-3 shrink-0 lg:px-8" data-visible-for="iec">
                     <button type="button" id="btn-discard" class="px-4 py-2 rounded-md bg-white border border-gray-300 text-gray-700 font-medium hover:bg-gray-50 hover:border-gray-400 transition-all shadow-sm">
                         変更を破棄
                     </button>
@@ -255,7 +244,6 @@
             // ===================================================
             // 2. アプリケーション状態
             // ===================================================
-            let isLocked = false;
             let currentLvl1 = null;
             let currentLvl2 = null;
 
@@ -286,8 +274,6 @@
                 btnAdd1: document.getElementById('btn-add-lvl1'),
                 btnAdd2: document.getElementById('btn-add-lvl2'),
                 btnAdd3: document.getElementById('btn-add-lvl3'),
-                lockBanner: document.getElementById('lock-banner'),
-                toggleLock: document.getElementById('toggle-lock'),
                 modal: document.getElementById('edit-modal'),
                 modalName: document.getElementById('edit-name'),
                 modalOffice: document.getElementById('edit-office'),
@@ -329,12 +315,6 @@
             }
 
             function setupEventListeners() {
-                // ロック状態トグル（モック確認用）
-                els.toggleLock.addEventListener('change', () => {
-                    isLocked = els.toggleLock.checked;
-                    applyLockState();
-                });
-
                 // 企業コンボボックスの初期化
                 let prevCompanyValue = '1';
                 const companyCombo = initCombobox(document.getElementById('company-combobox'), {
@@ -374,13 +354,13 @@
 
                 // 追加フォーム
                 els.form1.addEventListener('submit', () => {
-                    if (isLocked || !els.input1.value.trim()) return;
+                    if (!els.input1.value.trim()) return;
                     orgData.push({ id: generateId(), name: els.input1.value.trim(), jigyoCode: null, children: [] });
                     els.input1.value = '';
                     renderAll();
                 });
                 els.form2.addEventListener('submit', () => {
-                    if (isLocked || !currentLvl1 || !els.input2.value.trim()) return;
+                    if (!currentLvl1 || !els.input2.value.trim()) return;
                     const parent = findNode(orgData, currentLvl1);
                     if (parent) {
                         parent.children.push({ id: generateId(), name: els.input2.value.trim(), jigyoCode: null, children: [] });
@@ -389,7 +369,7 @@
                     }
                 });
                 els.form3.addEventListener('submit', () => {
-                    if (isLocked || !currentLvl2 || !els.input3.value.trim()) return;
+                    if (!currentLvl2 || !els.input3.value.trim()) return;
                     const parent = findNode(orgData, currentLvl2);
                     if (parent) {
                         parent.children.push({ id: generateId(), name: els.input3.value.trim(), jigyoCode: null, children: [] });
@@ -442,27 +422,6 @@
                 return office ? office.name : jigyoCode;
             }
 
-            /** ロック状態に応じて入力UIを切替 */
-            function applyLockState() {
-                els.lockBanner.classList.toggle('hidden', !isLocked);
-
-                // 追加フォームの非活性制御
-                [els.input1, els.btnAdd1].forEach(el => { el.disabled = isLocked; });
-                if (!currentLvl1) {
-                    [els.input2, els.btnAdd2].forEach(el => { el.disabled = true; });
-                } else {
-                    [els.input2, els.btnAdd2].forEach(el => { el.disabled = isLocked; });
-                }
-                if (!currentLvl2) {
-                    [els.input3, els.btnAdd3].forEach(el => { el.disabled = true; });
-                } else {
-                    [els.input3, els.btnAdd3].forEach(el => { el.disabled = isLocked; });
-                }
-
-                // リスト再描画（編集・削除・移動ボタンのdisabled状態が変わるため）
-                renderAll();
-            }
-
             // ===================================================
             // 6. 描画関数
             // ===================================================
@@ -479,20 +438,11 @@
                 const l1Selected = !!currentLvl1;
                 const l2Selected = !!currentLvl2;
 
-                if (!l1Selected || isLocked) {
-                    els.overlay2.classList.remove('hidden');
-                } else {
-                    els.overlay2.classList.add('hidden');
-                }
-                if (!l2Selected || isLocked) {
-                    els.overlay3.classList.remove('hidden');
-                } else {
-                    els.overlay3.classList.add('hidden');
-                }
+                els.overlay2.classList.toggle('hidden', l1Selected);
+                els.overlay3.classList.toggle('hidden', l2Selected);
 
-                [els.input2, els.btnAdd2].forEach(el => { el.disabled = !l1Selected || isLocked; });
-                [els.input3, els.btnAdd3].forEach(el => { el.disabled = !l2Selected || isLocked; });
-                [els.input1, els.btnAdd1].forEach(el => { el.disabled = isLocked; });
+                [els.input2, els.btnAdd2].forEach(el => { el.disabled = !l1Selected; });
+                [els.input3, els.btnAdd3].forEach(el => { el.disabled = !l2Selected; });
             }
 
             function renderLvl1() {
@@ -619,16 +569,16 @@
                 const isLast = index === siblings.length - 1;
 
                 // 上へ/下へボタン（並び替え）
-                const moveUpBtn = `<button type="button" data-move-up class="p-1 text-gray-400 hover:text-blue-600 rounded hover:bg-white transition" title="上へ移動" ${isFirst ? 'disabled' : ''}>
+                const moveUpBtn = `<button type="button" data-move-up data-visible-for="iec" class="p-1 text-gray-400 hover:text-blue-600 rounded hover:bg-white transition" title="上へ移動" ${isFirst ? 'disabled' : ''}>
                     <span class="material-symbols-outlined text-base">arrow_upward</span>
                 </button>`;
-                const moveDownBtn = `<button type="button" data-move-down class="p-1 text-gray-400 hover:text-blue-600 rounded hover:bg-white transition" title="下へ移動" ${isLast ? 'disabled' : ''}>
+                const moveDownBtn = `<button type="button" data-move-down data-visible-for="iec" class="p-1 text-gray-400 hover:text-blue-600 rounded hover:bg-white transition" title="下へ移動" ${isLast ? 'disabled' : ''}>
                     <span class="material-symbols-outlined text-base">arrow_downward</span>
                 </button>`;
-                const editBtn = `<button type="button" data-edit class="p-1 text-gray-400 hover:text-blue-600 rounded hover:bg-white transition" title="編集" ${isLocked ? 'disabled' : ''}>
+                const editBtn = `<button type="button" data-edit data-visible-for="iec" class="p-1 text-gray-400 hover:text-blue-600 rounded hover:bg-white transition" title="編集">
                     <span class="material-symbols-outlined text-base">edit</span>
                 </button>`;
-                const deleteBtn = `<button type="button" data-delete class="p-1 text-gray-400 hover:text-red-500 rounded hover:bg-white transition" title="削除" ${isLocked ? 'disabled' : ''}>
+                const deleteBtn = `<button type="button" data-delete data-visible-for="iec" class="p-1 text-gray-400 hover:text-red-500 rounded hover:bg-white transition" title="削除">
                     <span class="material-symbols-outlined text-base">delete</span>
                 </button>`;
 
@@ -668,11 +618,11 @@
                 });
                 div.querySelector('[data-edit]').addEventListener('click', (e) => {
                     e.stopPropagation();
-                    if (!isLocked) openEditModal({ node, level, ancestors });
+                    openEditModal({ node, level, ancestors });
                 });
                 div.querySelector('[data-delete]').addEventListener('click', (e) => {
                     e.stopPropagation();
-                    if (!isLocked && confirm(`「${node.name}」を削除しますか？\n配下のノードもすべて削除されます。`)) {
+                    if (confirm(`「${node.name}」を削除しますか？\n配下のノードもすべて削除されます。`)) {
                         const idx = siblings.findIndex(d => d.id === node.id);
                         siblings.splice(idx, 1);
                         // 削除されたノードが選択中だった場合は選択をリセット

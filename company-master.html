@@ -70,7 +70,7 @@
                                         <span class="text-white font-bold text-lg tracking-wide">〇〇食品</span>
                                     </div>
                                     <!-- ロゴ未登録の場合（CompanyLogoData が NULL のとき表示） -->
-                                    <div id="logo-placeholder" class="hidden w-full aspect-video bg-gray-50 border border-gray-200 rounded-lg flex items-center justify-center overflow-hidden">
+                                    <div id="logo-placeholder" class="hidden w-full aspect-video bg-gray-50 border border-gray-200 rounded-lg items-center justify-center overflow-hidden">
                                         <div class="flex flex-col items-center justify-center text-gray-400">
                                             <span class="material-symbols-outlined text-4xl mb-1">hide_image</span>
                                             <span class="text-xs">未登録</span>
@@ -168,6 +168,7 @@
                 btnDeleteLogo.addEventListener('click', () => {
                     logoPreview.classList.add('hidden');
                     logoPlaceholder.classList.remove('hidden');
+                    logoPlaceholder.classList.add('flex');
                     btnDeleteLogo.classList.add('hidden');
                 });
 
@@ -181,6 +182,7 @@
                         logoPreview.innerHTML = `<img src="${ev.target.result}" alt="ロゴプレビュー" class="max-h-full max-w-full object-contain p-2">`;
                         logoPreview.classList.remove('hidden');
                         logoPlaceholder.classList.add('hidden');
+                        logoPlaceholder.classList.remove('flex');
                         btnDeleteLogo.classList.remove('hidden');
                     };
                     reader.readAsDataURL(file);

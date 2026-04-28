@@ -81,7 +81,7 @@
                                         data-entity-status="Active"
                                         data-content-type="zip">
                                         <td class="px-6 py-4">
-                                            <div class="h-14 w-24 rounded-md bg-gray-100 border border-gray-200 overflow-hidden">
+                                            <div class="h-14 w-14 rounded-md bg-gray-100 border border-gray-200 overflow-hidden">
                                                 <img src="./img/slide1.webp" alt="" class="h-full w-full object-cover" onerror="this.style.display='none';this.parentElement.classList.add('flex','items-center','justify-center');this.parentElement.innerHTML='<span class=\'material-symbols-outlined text-gray-300\'>image</span>'">
                                             </div>
                                         </td>
@@ -116,7 +116,7 @@
                                         data-entity-status="Inactive"
                                         data-content-type="pdf">
                                         <td class="px-6 py-4">
-                                            <div class="h-14 w-24 rounded-md bg-gray-100 border border-gray-200 overflow-hidden">
+                                            <div class="h-14 w-14 rounded-md bg-gray-100 border border-gray-200 overflow-hidden">
                                                 <img src="./img/slide2.webp" alt="" class="h-full w-full object-cover" onerror="this.style.display='none';this.parentElement.classList.add('flex','items-center','justify-center');this.parentElement.innerHTML='<span class=\'material-symbols-outlined text-gray-300\'>image</span>'">
                                             </div>
                                         </td>
@@ -151,7 +151,7 @@
                                         data-entity-status="Active"
                                         data-content-type="zip">
                                         <td class="px-6 py-4">
-                                            <div class="h-14 w-24 rounded-md bg-gray-100 border border-gray-200 overflow-hidden flex items-center justify-center">
+                                            <div class="h-14 w-14 rounded-md bg-gray-100 border border-gray-200 overflow-hidden flex items-center justify-center">
                                                 <span class="material-symbols-outlined text-gray-300">image</span>
                                             </div>
                                         </td>
@@ -191,7 +191,7 @@
                                         data-entity-status="Active"
                                         data-content-type="zip">
                                         <td class="px-6 py-4">
-                                            <div class="h-14 w-24 rounded-md bg-gray-100 border border-gray-200 overflow-hidden">
+                                            <div class="h-14 w-14 rounded-md bg-gray-100 border border-gray-200 overflow-hidden">
                                                 <img src="./img/slide1.webp" alt="" class="h-full w-full object-cover" onerror="this.style.display='none';this.parentElement.classList.add('flex','items-center','justify-center');this.parentElement.innerHTML='<span class=\'material-symbols-outlined text-gray-300\'>image</span>'">
                                             </div>
                                         </td>
@@ -353,6 +353,7 @@
                                 <label class="text-sm font-bold text-gray-700">サムネイル画像</label>
                                 <button class="text-xs text-blue-600 hover:text-blue-700 font-medium hover:underline" id="btnChangeThumbnail">変更する</button>
                             </div>
+                            <p class="text-xs text-gray-400">推奨サイズ: 正方形（例: 400×400px）。非正方形でも登録可能ですが、一覧では正方形にトリミングされて表示されます。</p>
                             <div class="border border-gray-200 rounded-lg p-4 bg-gray-50 flex flex-col items-start gap-3" id="thumbnailPreviewContainer"></div>
                         </div>
 
@@ -465,8 +466,8 @@
                     if (isEdit) {
                         btn.textContent = '変更する';
                         container.innerHTML = `
-                            <div class="relative group rounded-lg overflow-hidden border border-gray-200 shadow-sm max-w-[200px]">
-                                <img src="img/slide1.webp" alt="現在のサムネイル" class="w-full h-auto object-cover" onerror="this.src='https://placehold.co/600x400?text=No+Image'">
+                            <div class="relative group rounded-lg overflow-hidden border border-gray-200 shadow-sm w-[200px] h-[200px]">
+                                <img src="img/slide1.webp" alt="現在のサムネイル" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/400x400?text=No+Image'">
                             </div>
                             <div class="flex items-center gap-2 text-xs text-gray-500">
                                 <span class="material-symbols-outlined icon-sm text-gray-400">image</span>

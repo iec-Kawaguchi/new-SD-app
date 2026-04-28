@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8" />
+    <title>キャンセルポリシー設定</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+    <script src="../js/role-visibility.js"></script>
+
+    <style>
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 20px; }
+        ::-webkit-scrollbar-thumb:hover { background-color: #94a3b8; }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-900 antialiased">
+    <div class="min-h-dvh flex flex-col">
+
+        <!-- ヘッダー -->
+        <header class="sticky top-0 z-10 bg-white/95 backdrop-blur-sm border-b border-gray-100 px-6 py-4">
+            <div class="flex items-center justify-between mb-1">
+                <div class="flex items-center gap-2">
+                    <span class="material-symbols-outlined text-blue-600">policy</span>
+                    <h1 class="text-lg font-bold text-gray-800 tracking-tight">キャンセルポリシー設定</h1>
+                </div>
+                <!-- ロール切替（モックのみ） -->
+                <div class="relative">
+                    <select id="role-select" class="appearance-none pl-3 pr-8 py-1.5 rounded-md border border-gray-300 bg-gray-50 text-sm text-gray-700 hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors cursor-pointer">
+                        <option value="iec">IEC (管理者)</option>
+                        <option value="supplier">他団体</option>
+                        <option value="customer">顧客</option>
+                    </select>
+                    <span class="material-symbols-outlined absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 text-sm pointer-events-none">expand_more</span>
+                </div>
+            </div>
+            <p class="text-xs text-gray-500 ml-8">本募集のキャンセルポリシーを設定します。募集サイト上に表示されます。</p>
+
+            <!-- 参照モード案内（supplier / customer） -->
+            <div data-visible-for="supplier,customer" class="hidden mt-3 ml-8 rounded-lg bg-blue-50 border border-blue-100 px-4 py-3">
+                <div class="flex items-start gap-2">
+                    <span class="material-symbols-outlined text-blue-500 shrink-0 mt-0.5" style="font-size: 18px;">info</span>
+                    <p class="text-sm text-blue-700">この画面は閲覧専用です。IECが設定したキャンセルポリシーを確認できます。</p>
+                </div>
+            </div>
+        </header>
+
+        <main class="flex-1 px-6 py-6 space-y-6 pb-32 max-w-3xl mx-auto w-full">
+
+            <!-- ポリシー種別選択（IEC のみ） -->
+            <section data-visible-for="iec" class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                <div class="bg-gray-50/50 px-5 py-3 border-b border-gray-100 flex items-center gap-2">
+                    <span class="material-symbols-outlined text-gray-400" style="font-size: 1.25rem;">tune</span>
+                    <h2 class="text-sm font-bold text-gray-700">ポリシー種別</h2>
+                </div>
+                <div class="p-5">
+                    <div class="grid grid-cols-2 gap-4">
+                        <!-- 標準 -->
+                        <label id="card-standard"
+                            class="relative flex flex-col gap-3 rounded-xl border-2 border-blue-500 bg-blue-50 p-5 cursor-pointer transition-all hover:shadow-md ring-0">
+                            <input type="radio" name="policy-type" value="standard" class="sr-only" checked>
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-2.5">
+                                    <div class="flex items-center justify-center w-9 h-9 rounded-full bg-blue-100 text-blue-600">
+                                        <span class="material-symbols-outlined" style="font-size: 20px;">article</span>
+                                    </div>
+                                    <span class="text-base font-bold text-gray-800">標準</span>
+                                </div>
+                                <span id="check-standard" class="flex items-center justify-center w-5 h-5 rounded-full bg-blue-500 text-white">
+                                    <span class="material-symbols-outlined" style="font-size: 14px;">check</span>
+                                </span>
+                            </div>
+                            <p class="text-xs text-gray-500 leading-relaxed">IECが定めた標準のキャンセルポリシーを使用します。</p>
+                        </label>
+
+                        <!-- オリジナル -->
+                        <label id="card-original"
+                            class="relative flex flex-col gap-3 rounded-xl border-2 border-gray-200 bg-white p-5 cursor-pointer transition-all hover:border-blue-300 hover:shadow-md">
+                            <input type="radio" name="policy-type" value="original" class="sr-only">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-2.5">
+                                    <div class="flex items-center justify-center w-9 h-9 rounded-full bg-gray-100 text-gray-500">
+                                        <span class="material-symbols-outlined" style="font-size: 20px;">edit_document</span>
+                                    </div>
+                                    <span class="text-base font-bold text-gray-800">オリジナル</span>
+                                </div>
+                                <span id="check-original" class="hidden items-center justify-center w-5 h-5 rounded-full bg-blue-500 text-white">
+                                    <span class="material-symbols-outlined" style="font-size: 14px;">check</span>
+                                </span>
+                            </div>
+                            <p class="text-xs text-gray-500 leading-relaxed">企業管理に登録されたキャンセルポリシーを使用します。</p>
+                        </label>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ポリシー本文 -->
+            <section class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                <div class="bg-gray-50/50 px-5 py-3 border-b border-gray-100 flex items-center gap-2">
+                    <span class="material-symbols-outlined text-gray-400" style="font-size: 1.25rem;">subject</span>
+                    <h2 class="text-sm font-bold text-gray-700">ポリシー本文</h2>
+                </div>
+                <div class="p-5">
+
+                    <!-- 標準テキスト（read-only 表示、標準選択時に表示） -->
+                    <div id="text-standard" class="space-y-3">
+                        <div class="rounded-lg border border-gray-200 bg-gray-50 px-5 py-4 text-sm text-gray-700 leading-loose whitespace-pre-wrap font-mono">【キャンセルポリシー】
+
+・受講申込後のキャンセルは、開講日の7日前（必着）までにご連絡ください。
+・開講日の7日前から3日前までのキャンセルは、受講料の50%をキャンセル料として申し受けます。
+・開講日の3日前以降のキャンセルおよび当日欠席の場合は、受講料の全額をキャンセル料として申し受けます。
+・キャンセルのご連絡はお申込み確認メールへの返信にてお受けします。
+・やむを得ない事情による代理受講は開講日の前日までご連絡いただければ承ります。</div>
+                        
+                    </div>
+
+                    <!-- オリジナルテキスト（全ロール読み取り専用、オリジナル選択時に表示） -->
+                    <div id="text-original" class="hidden space-y-3">
+                        <div class="rounded-lg border border-gray-200 bg-gray-50 px-5 py-4 text-sm text-gray-700 leading-loose whitespace-pre-wrap font-mono">【キャンセルポリシー】
+
+・（企業管理に登録されたオリジナルポリシーがここに表示されます）</div>
+
+                        
+                    </div>
+
+                </div>
+            </section>
+
+        </main>
+
+        <!-- フッター -->
+        <div class="fixed bottom-0 inset-x-0 z-50 bg-white border-t border-gray-200 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
+            <div class="mx-auto px-6 py-4 flex items-center justify-end gap-3">
+                <!-- IEC のみ -->
+                <button data-visible-for="iec"
+                    class="px-5 py-2.5 rounded-lg border border-gray-300 bg-white text-sm font-bold text-gray-600 hover:bg-gray-50 hover:text-gray-800 transition-colors">
+                    キャンセル
+                </button>
+                <button data-visible-for="iec" id="btn-save"
+                    class="px-6 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-bold hover:bg-blue-700 shadow-sm hover:shadow active:scale-[0.98] transition-all">
+                    保存する
+                </button>
+                <!-- supplier / customer のみ -->
+                <button data-visible-for="supplier,customer"
+                    class="hidden px-6 py-2.5 rounded-lg border border-gray-300 bg-white text-sm font-bold text-gray-600 hover:bg-gray-50 hover:text-gray-800 transition-colors">
+                    閉じる
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const STANDARD_TEXT = `【キャンセルポリシー】
+
+・受講申込後のキャンセルは、開講日の7日前（必着）までにご連絡ください。
+・開講日の7日前から3日前までのキャンセルは、受講料の50%をキャンセル料として申し受けます。
+・開講日の3日前以降のキャンセルおよび当日欠席の場合は、受講料の全額をキャンセル料として申し受けます。
+・キャンセルのご連絡はお申込み確認メールへの返信にてお受けします。
+・やむを得ない事情による代理受講は開講日の前日までご連絡いただければ承ります。`;
+
+        // 現在の選択状態
+        let currentType = 'standard';
+
+        function updateTypeSelection(type) {
+            currentType = type;
+            const isStandard = type === 'standard';
+
+            // カードの見た目切替
+            const cardStd = document.getElementById('card-standard');
+            const cardOri = document.getElementById('card-original');
+            cardStd.classList.toggle('border-blue-500', isStandard);
+            cardStd.classList.toggle('bg-blue-50', isStandard);
+            cardStd.classList.toggle('border-gray-200', !isStandard);
+            cardStd.classList.toggle('bg-white', !isStandard);
+            cardOri.classList.toggle('border-blue-500', !isStandard);
+            cardOri.classList.toggle('bg-blue-50', !isStandard);
+            cardOri.classList.toggle('border-gray-200', isStandard);
+            cardOri.classList.toggle('bg-white', isStandard);
+
+            // チェックマーク切替（hidden と flex を同時制御して競合を避ける）
+            const checkStd = document.getElementById('check-standard');
+            const checkOri = document.getElementById('check-original');
+            checkStd.classList.toggle('hidden', !isStandard);
+            checkStd.classList.toggle('flex', isStandard);
+            checkOri.classList.toggle('hidden', isStandard);
+            checkOri.classList.toggle('flex', !isStandard);
+
+            // 本文エリア切替
+            document.getElementById('text-standard').classList.toggle('hidden', !isStandard);
+            document.getElementById('text-original').classList.toggle('hidden', isStandard);
+        }
+
+        // ラジオ変更時
+        document.querySelectorAll('input[name="policy-type"]').forEach(radio => {
+            radio.addEventListener('change', e => updateTypeSelection(e.target.value));
+        });
+
+        // 保存ボタン
+        document.getElementById('btn-save').addEventListener('click', () => {
+            const label = currentType === 'standard' ? '標準' : 'オリジナル';
+            alert(`（ダミー）キャンセルポリシーを「${label}」で保存しました。`);
+        });
+
+        // 初期化
+        if (!new URLSearchParams(location.search).get('role')) {
+            RoleMock.setRoleInUrl('iec');
+        }
+        RoleMock.init({ roleSelect: '#role-select' });
+    </script>
+</body>
+</html>
