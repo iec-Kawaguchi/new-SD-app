@@ -27,6 +27,11 @@ export const tagData = [
     { id: 5, type: 'level', name: '基礎・初級', corpId: '201129', corpName: '○○食品株式会社', status: 'public' },
     { id: 20, type: 'level', name: '応用・実践', corpId: '201129', corpName: '○○食品株式会社', status: 'public' },
 
+    // --- 受講形態 (Format) ---
+    { id: 23, type: 'format', name: 'eラーニング', corpId: '201129', corpName: '○○食品株式会社', status: 'public' },
+    { id: 24, type: 'format', name: '郵便添削', corpId: '201129', corpName: '○○食品株式会社', status: 'public' },
+    { id: 25, type: 'format', name: 'WEB添削', corpId: '201129', corpName: '○○食品株式会社', status: 'public' },
+
     // --- その他 (Other) ---
     { id: 2, type: 'other', name: '50％補助', corpId: '201129', corpName: '○○食品株式会社', status: 'public' },
     { id: 3, type: 'other', name: '100％補助', corpId: '201129', corpName: '○○食品株式会社', status: 'public' },
