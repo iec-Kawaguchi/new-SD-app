@@ -28,22 +28,28 @@
 			<main class="flex-1 px-6 py-6 space-y-8 pb-32">
 				<section class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
 					<div class="bg-gray-50/50 px-5 py-3 border-b border-gray-100 flex items-center justify-between">
-						<h2 class="text-sm font-bold text-gray-700 flex items-center gap-2">
-						<span class="material-symbols-outlined icon-md text-gray-400">person_add</span>
-						新規ユーザーを追加
+						<h2 id="form-section-title" class="text-sm font-bold text-gray-700 flex items-center gap-2">
+							<span class="material-symbols-outlined icon-md text-gray-400">person_add</span>
+							新規ユーザーを追加
 						</h2>
 					</div>
-					
+
 					<div class="p-6">
+						<!-- 編集モードバナー（編集モード時のみ表示） -->
+						<div id="edit-mode-banner" class="hidden mb-5 bg-blue-50 border border-blue-200 rounded-lg px-4 py-2.5 flex items-center gap-2 text-sm text-blue-700">
+							<span class="material-symbols-outlined text-[18px]">edit</span>
+							<span>編集モード中です。変更を加えて「更新する」を押してください。</span>
+						</div>
+
 						<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-x-4 gap-y-6 items-start">
-							
+
 							<div class="lg:col-span-3">
-								<label for="name" class="block text-sm font-bold text-gray-700 mb-1.5">名前</label>
+								<label for="name" class="block text-sm font-bold text-gray-700 mb-1.5">名前 <span class="text-red-500 text-[11px]">必須</span></label>
 								<input id="name" type="text" class="block w-full rounded-md border border-gray-300 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50/50 transition-shadow hover:bg-white placeholder-gray-400" placeholder="例）営業部 共有アカウント" />
 							</div>
 
 							<div class="lg:col-span-3">
-								<label for="uid" class="block text-sm font-bold text-gray-700 mb-1.5">ログインID</label>
+								<label for="uid" class="block text-sm font-bold text-gray-700 mb-1.5">ログインID <span class="text-red-500 text-[11px]">必須</span></label>
 								<div class="relative flex items-center">
 									<input id="uid" type="text" class="block w-full rounded-md border border-gray-300 pl-3 pr-10 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50/50 transition-shadow hover:bg-white font-mono placeholder-gray-400" placeholder="user_01" />
 									<button id="gen-id" type="button" class="absolute right-1 p-1.5 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded transition-colors" title="IDを自動生成">
@@ -53,7 +59,7 @@
 							</div>
 
 							<div class="lg:col-span-3">
-								<label for="pwd" class="block text-sm font-bold text-gray-700 mb-1.5">パスワード</label>
+								<label for="pwd" class="block text-sm font-bold text-gray-700 mb-1.5">パスワード <span class="text-red-500 text-[11px]">必須</span></label>
 								<div class="relative flex items-center">
 									<input id="pwd" type="password" class="block w-full rounded-md border border-gray-300 pl-3 pr-10 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50/50 transition-shadow hover:bg-white font-mono placeholder-gray-400" placeholder="••••••••" />
 									<button id="toggle-pwd" type="button" class="absolute right-1 p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded transition-colors" title="表示/非表示">
@@ -67,22 +73,22 @@
 								<div class="relative">
 									<select id="instruction-select" class="block w-full rounded-md border border-gray-300 pl-3 pr-8 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50/50 transition-shadow hover:bg-white appearance-none cursor-pointer text-gray-700">
 										<option value="">選択しない</option>
-										<option value="pat1" selected>SD（本社）</option>
+										<option value="pat1">SD（本社）</option>
 										<option value="pat2">SD（グループ企業）</option>
-										<option value="pat2">選抜教育</option>
+										<option value="pat3">選抜教育</option>
 									</select>
 									<div class="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
 										<span class="material-symbols-outlined text-gray-400 text-[18px]">expand_more</span>
 									</div>
 								</div>
-                                <p class="text-[10px] text-gray-500 mt-1.5 flex items-center gap-1">
+								<p class="text-[10px] text-gray-500 mt-1.5 flex items-center gap-1">
 									<span class="material-symbols-outlined text-[14px]">info</span>
 									申込指示マスターで作成したパターンを適用します。
 								</p>
 							</div>
 
 							<div class="lg:col-span-6">
-								<label for="guideline-select" class="block text-sm font-bold text-gray-700 mb-1.5">募集要項</label>
+								<label for="guideline-select" class="block text-sm font-bold text-gray-700 mb-1.5">募集要項 <span class="text-red-500 text-[11px]">必須</span></label>
 								<div class="relative">
 									<select id="guideline-select" class="block w-full rounded-md border border-gray-300 pl-3 pr-8 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50/50 transition-shadow hover:bg-white appearance-none cursor-pointer text-gray-700">
 										<option value="本社向け">本社向け</option>
@@ -117,22 +123,34 @@
 								</p>
 							</div>
 
-							
 						</div>
-                        <div class="lg:col-span-12 flex justify-center mt-4 pt-6 border-t border-gray-100">
-								<button id="add" class="h-10 w-full sm:w-auto sm:min-w-[240px] px-8 rounded-lg bg-blue-600 text-white text-sm font-bold hover:bg-blue-700 hover:shadow active:scale-[0.98] transition-all flex items-center justify-center gap-2">
-									<span class="material-symbols-outlined text-[20px]">add</span>
-									リストに追加
+
+						<!-- フォームアクション -->
+						<div class="flex justify-center mt-4 pt-6 border-t border-gray-100 gap-3">
+							<!-- 追加モード -->
+							<button id="add" class="h-10 w-full sm:w-auto sm:min-w-[240px] px-8 rounded-lg bg-blue-600 text-white text-sm font-bold hover:bg-blue-700 hover:shadow active:scale-[0.98] transition-all flex items-center justify-center gap-2">
+								<span class="material-symbols-outlined text-[20px]">add</span>
+								リストに追加
+							</button>
+							<!-- 編集モード（初期非表示） -->
+							<div id="edit-actions" class="hidden flex gap-3 w-full sm:w-auto">
+								<button id="edit-cancel" class="h-10 flex-1 sm:flex-none sm:min-w-[120px] px-5 rounded-lg border border-gray-300 bg-white text-sm font-bold text-gray-600 hover:bg-gray-50 hover:text-gray-800 transition-colors flex items-center justify-center gap-1.5">
+									<span class="material-symbols-outlined text-[18px]">close</span>
+									編集キャンセル
+								</button>
+								<button id="update" class="h-10 flex-1 sm:flex-none sm:min-w-[160px] px-8 rounded-lg bg-green-600 text-white text-sm font-bold hover:bg-green-700 hover:shadow active:scale-[0.98] transition-all flex items-center justify-center gap-1.5">
+									<span class="material-symbols-outlined text-[18px]">check</span>
+									更新する
 								</button>
 							</div>
-
+						</div>
 					</div>
 				</section>
-				
+
 				<section>
 					<div class="flex items-center justify-between mb-3 px-1">
 						<h2 class="text-sm font-bold text-gray-500 uppercase tracking-wide flex items-center gap-2">
-							追加予定のユーザー
+							サイトユーザー
 							<span id="count-badge" class="bg-gray-200 text-gray-600 text-[10px] px-1.5 py-0.5 rounded-full hidden">0</span>
 						</h2>
 					</div>
@@ -169,7 +187,7 @@
 					<div class="shrink-0 mt-1">
 						<span class="avatar inline-grid place-items-center size-10 rounded-full bg-blue-50 text-blue-600 font-bold text-sm border border-blue-100 shadow-sm">U</span>
 					</div>
-					
+
 					<div class="min-w-0 flex-1">
 						<div class="flex flex-wrap items-center gap-2 mb-1.5">
 							<p class="name text-sm font-bold text-gray-800 truncate group-hover:text-blue-700 transition-colors">ユーザー名</p>
@@ -177,7 +195,7 @@
 								パターン名
 							</span>
 						</div>
-						
+
 						<div class="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-gray-500 font-mono mb-3">
 							<div class="flex items-center gap-1 bg-gray-50 px-1.5 py-0.5 rounded border border-gray-100">
 								<span class="material-symbols-outlined text-[14px] text-gray-400">badge</span>
@@ -197,14 +215,14 @@
 								<span class="material-symbols-outlined text-[16px] text-gray-400 shrink-0">description</span>
 								<div>
 									<span class="block text-[10px] text-gray-400 font-bold mb-0.5">閲覧可能な募集要項</span>
-									<span class="guideline-list leading-relaxed">指定なし</span>
+									<span class="guideline-label leading-relaxed">指定なし</span>
 								</div>
 							</div>
 							<div class="flex items-start gap-1.5">
 								<span class="material-symbols-outlined text-[16px] text-gray-400 shrink-0">manage_accounts</span>
 								<div>
 									<span class="block text-[10px] text-gray-400 font-bold mb-0.5">担当者（申込閲覧）</span>
-									<span class="manager-list leading-relaxed">指定なし</span>
+									<span class="manager-label leading-relaxed">指定なし</span>
 								</div>
 							</div>
 						</div>
@@ -212,6 +230,10 @@
 				</div>
 
 				<div class="flex items-start justify-end gap-2 mt-2 sm:mt-0 w-full sm:w-auto border-t sm:border-t-0 border-gray-100 pt-2 sm:pt-0">
+					<!-- 編集ボタン（v2追加） -->
+					<button class="edit flex items-center justify-center size-8 rounded-full text-gray-400 hover:text-blue-600 hover:bg-blue-50 transition-colors" title="編集">
+						<span class="material-symbols-outlined text-[20px]">edit</span>
+					</button>
 					<button class="remove flex items-center justify-center size-8 rounded-full text-gray-400 hover:text-red-600 hover:bg-red-50 transition-colors" title="削除">
 						<span class="material-symbols-outlined text-[20px]">delete</span>
 					</button>
@@ -221,117 +243,249 @@
 
 		<script>
 			// --- UI Logic (Mock) ---
-			
-			// 1. Password Visibility Toggle (Main Form)
+
 			const pwdInput = document.getElementById('pwd');
 			const toggleBtn = document.getElementById('toggle-pwd');
+			const idInput = document.getElementById('uid');
+			const genBtn = document.getElementById('gen-id');
+			const nameInput = document.getElementById('name');
+			const instructionSelect = document.getElementById('instruction-select');
+			const guidelineSelect = document.getElementById('guideline-select');
+			const managerSelect = document.getElementById('manager-select');
+			const addBtn = document.getElementById('add');
+			const editActions = document.getElementById('edit-actions');
+			const updateBtn = document.getElementById('update');
+			const editCancelBtn = document.getElementById('edit-cancel');
+			const editModeBanner = document.getElementById('edit-mode-banner');
+			const formSectionTitle = document.getElementById('form-section-title');
+			const listContainer = document.getElementById('list');
+			const emptyState = document.getElementById('empty');
+			const countBadge = document.getElementById('count-badge');
+			const template = document.getElementById('row-tpl');
+
+			let editingRow = null;
+
+			// パスワード表示切替（フォーム）
 			toggleBtn.addEventListener('click', () => {
 				const isPassword = pwdInput.type === 'password';
 				pwdInput.type = isPassword ? 'text' : 'password';
 				toggleBtn.querySelector('span').textContent = isPassword ? 'visibility_off' : 'visibility';
 			});
 
-			// 2. ID Auto Generation (Mock)
-			const idInput = document.getElementById('uid');
-			const genBtn = document.getElementById('gen-id');
+			// ログインID自動生成
 			genBtn.addEventListener('click', () => {
 				const random = Math.random().toString(36).substring(2, 8);
 				idInput.value = `user_${random}`;
 			});
 
-			// 3. Add User & List Rendering
-			const addBtn = document.getElementById('add');
-			const nameInput = document.getElementById('name');
-			const instructionSelect = document.getElementById('instruction-select');
-			const guidelineSelect = document.getElementById('guideline-select');
-			const managerSelect = document.getElementById('manager-select');
-			const listContainer = document.getElementById('list');
-			const emptyState = document.getElementById('empty');
-			const countBadge = document.getElementById('count-badge');
-			const template = document.getElementById('row-tpl');
-
+			// 一覧の件数・Empty State を更新
 			const updateListState = () => {
-				const hasItems = listContainer.children.length > 0;
-				emptyState.classList.toggle('hidden', hasItems);
-				countBadge.textContent = listContainer.children.length;
-				countBadge.classList.toggle('hidden', !hasItems);
+				const count = listContainer.children.length;
+				emptyState.classList.toggle('hidden', count > 0);
+				countBadge.textContent = count;
+				countBadge.classList.toggle('hidden', count === 0);
 			};
 
-			addBtn.addEventListener('click', () => {
-				const name = nameInput.value.trim();
-				const id = idInput.value.trim();
-				const pwd = pwdInput.value.trim();
-				
-				const patternVal = instructionSelect.value;
-				const patternText = instructionSelect.options[instructionSelect.selectedIndex].text;
-				
-				const guidelineVal = guidelineSelect.value;
-				const guidelineText = guidelineSelect.options[guidelineSelect.selectedIndex].text;
+			// 追加モードに戻す
+			const switchToAddMode = () => {
+				editingRow = null;
+				addBtn.classList.remove('hidden');
+				editActions.classList.add('hidden');
+				editModeBanner.classList.add('hidden');
+				formSectionTitle.innerHTML = '<span class="material-symbols-outlined icon-md text-gray-400">person_add</span> 新規ユーザーを追加';
+				// フォームリセット
+				nameInput.value = '';
+				idInput.value = '';
+				pwdInput.value = '';
+				pwdInput.type = 'password';
+				toggleBtn.querySelector('span').textContent = 'visibility';
+				instructionSelect.value = '';
+				guidelineSelect.value = guidelineSelect.options[0]?.value || '';
+				managerSelect.value = '';
+				// カードハイライト解除
+				listContainer.querySelectorAll('.card-editing').forEach(el => {
+					el.classList.remove('card-editing', 'ring-2', 'ring-blue-400', 'border-blue-300', 'shadow-md');
+				});
+			};
 
-				const managerVal = managerSelect.value;
-				const managerText = managerSelect.options[managerSelect.selectedIndex].text;
-
-				if (!name || !id || !pwd) {
-					alert('名前、ID、パスワードは必須です');
-					return;
+			// 行データからカード表示を更新
+			const applyRowData = (row, data) => {
+				row._userData = data;
+				row.querySelector('.name').textContent = data.name;
+				row.querySelector('.avatar').textContent = data.name.charAt(0);
+				row.querySelector('.id').textContent = data.id;
+				row.querySelector('.guideline-label').textContent = data.guidelineText || '指定なし';
+				row.querySelector('.manager-label').textContent = data.managerVal ? data.managerText : '指定なし';
+				const badge = row.querySelector('.instruction-badge');
+				if (data.patternVal) {
+					badge.textContent = data.patternText;
+					badge.classList.remove('hidden');
+				} else {
+					badge.classList.add('hidden');
 				}
+				// パスワード表示（データ更新時にパスワードがある場合のみ更新）
+				if (data.pwd) {
+					row._pwd = data.pwd;
+				}
+				const pwdDisplay = row.querySelector('.pwd-display');
+				pwdDisplay.textContent = '••••••';
+			};
 
-				// Clone Template
+			// 行を新規作成してリストに追加
+			const createRow = (data) => {
 				const clone = template.content.cloneNode(true);
 				const row = clone.querySelector('div');
-				
-				// Set Data
-				row.querySelector('.name').textContent = name;
-				row.querySelector('.avatar').textContent = name.charAt(0);
-				row.querySelector('.id').textContent = id;
-				
-				// 募集要項・担当者のセット
-				row.querySelector('.guideline-list').textContent = guidelineVal ? guidelineText : '指定なし（すべて閲覧可能）';
-				row.querySelector('.manager-list').textContent = managerVal ? managerText : '指定なし';
 
-				// Pattern Badge
-				const badge = row.querySelector('.instruction-badge');
-				if (patternVal) {
-					badge.textContent = patternText;
-					badge.classList.remove('hidden');
-				}
+				applyRowData(row, data);
 
-				// Row Password Toggle
+				// カード内パスワード表示切替
 				const rowPwdDisplay = row.querySelector('.pwd-display');
 				const rowToggleBtn = row.querySelector('.toggle-row-pwd');
 				let isRowPwdVisible = false;
 				rowToggleBtn.addEventListener('click', () => {
 					isRowPwdVisible = !isRowPwdVisible;
-					rowPwdDisplay.textContent = isRowPwdVisible ? pwd : '••••••';
+					rowPwdDisplay.textContent = isRowPwdVisible ? (row._pwd || '••••••') : '••••••';
 					rowToggleBtn.querySelector('span').textContent = isRowPwdVisible ? 'visibility_off' : 'visibility';
 					rowToggleBtn.classList.toggle('text-blue-600', isRowPwdVisible);
 				});
 
-				// Remove Action
+				// 編集ボタン
+				row.querySelector('.edit').addEventListener('click', () => {
+					// 他のカードのハイライト解除
+					listContainer.querySelectorAll('.card-editing').forEach(el => {
+						el.classList.remove('card-editing', 'ring-2', 'ring-blue-400', 'border-blue-300', 'shadow-md');
+					});
+					// 対象カードをハイライト
+					row.classList.add('card-editing', 'ring-2', 'ring-blue-400', 'border-blue-300', 'shadow-md');
+					editingRow = row;
+					// フォームに現在値をセット
+					const d = row._userData;
+					nameInput.value = d.name;
+					idInput.value = d.id;
+					pwdInput.value = ''; // パスワードは空欄（仕様書セクション4）
+					pwdInput.type = 'password';
+					toggleBtn.querySelector('span').textContent = 'visibility';
+					instructionSelect.value = d.patternVal || '';
+					guidelineSelect.value = d.guidelineVal || (guidelineSelect.options[0]?.value || '');
+					managerSelect.value = d.managerVal || '';
+					// 編集モードに切替
+					addBtn.classList.add('hidden');
+					editActions.classList.remove('hidden');
+					editModeBanner.classList.remove('hidden');
+					formSectionTitle.innerHTML = '<span class="material-symbols-outlined icon-md text-blue-500">edit</span> ユーザーを編集';
+					// フォームまでスクロール
+					formSectionTitle.closest('section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+				});
+
+				// 削除ボタン
 				row.querySelector('.remove').addEventListener('click', () => {
-					if(confirm('削除しますか？')) {
+					if (confirm('削除しますか？')) {
+						if (editingRow === row) switchToAddMode();
 						row.remove();
 						updateListState();
 					}
 				});
 
+				return row;
+			};
+
+			// 「リストに追加」ボタン
+			addBtn.addEventListener('click', () => {
+				const name = nameInput.value.trim();
+				const id = idInput.value.trim();
+				const pwd = pwdInput.value.trim();
+				const guidelineVal = guidelineSelect.value;
+
+				if (!name || !id || !pwd || !guidelineVal) {
+					alert('名前、ログインID、パスワード、募集要項は必須です');
+					return;
+				}
+
+				const data = {
+					name,
+					id,
+					pwd,
+					patternVal: instructionSelect.value,
+					patternText: instructionSelect.options[instructionSelect.selectedIndex].text,
+					guidelineVal,
+					guidelineText: guidelineSelect.options[guidelineSelect.selectedIndex].text,
+					managerVal: managerSelect.value,
+					managerText: managerSelect.options[managerSelect.selectedIndex].text,
+				};
+
+				const row = createRow(data);
 				listContainer.appendChild(row);
-				
-				// Reset Form
-				nameInput.value = '';
-				idInput.value = '';
-				pwdInput.value = '';
-				instructionSelect.value = '';
-				guidelineSelect.value = '';
-				managerSelect.value = '';
-				
+				switchToAddMode();
 				updateListState();
 			});
 
-			// Initial State
-			updateListState();
-			emptyState.classList.remove('hidden');
+			// 「更新する」ボタン
+			updateBtn.addEventListener('click', () => {
+				if (!editingRow) return;
 
+				const name = nameInput.value.trim();
+				const id = idInput.value.trim();
+				const guidelineVal = guidelineSelect.value;
+
+				if (!name || !id || !guidelineVal) {
+					alert('名前、ログインID、募集要項は必須です');
+					return;
+				}
+
+				const newPwd = pwdInput.value.trim();
+				const data = {
+					name,
+					id,
+					pwd: newPwd || editingRow._pwd, // 空欄なら既存パスワードを維持
+					patternVal: instructionSelect.value,
+					patternText: instructionSelect.options[instructionSelect.selectedIndex].text,
+					guidelineVal,
+					guidelineText: guidelineSelect.options[guidelineSelect.selectedIndex].text,
+					managerVal: managerSelect.value,
+					managerText: managerSelect.options[managerSelect.selectedIndex].text,
+				};
+
+				applyRowData(editingRow, data);
+				switchToAddMode();
+			});
+
+			// 「編集キャンセル」ボタン
+			editCancelBtn.addEventListener('click', () => {
+				switchToAddMode();
+			});
+
+			// 初期ダミーデータ（既登録ユーザー）
+			const initialUsers = [
+				{
+					name: '本社 総務部',
+					id: 'user_a1b2c3',
+					pwd: 'pass1234',
+					patternVal: 'pat1',
+					patternText: 'SD（本社）',
+					guidelineVal: '本社向け',
+					guidelineText: '本社向け',
+					managerVal: '山田 太郎',
+					managerText: '山田 太郎（管理者）',
+				},
+				{
+					name: '海外グループ 人事',
+					id: 'user_x9y8z7',
+					pwd: 'secure99',
+					patternVal: 'pat2',
+					patternText: 'SD（グループ企業）',
+					guidelineVal: 'グループ企業向け',
+					guidelineText: 'グループ企業向け',
+					managerVal: '鈴木 花子',
+					managerText: '鈴木 花子',
+				},
+			];
+
+			initialUsers.forEach(data => {
+				const row = createRow(data);
+				listContainer.appendChild(row);
+			});
+
+			updateListState();
 		</script>
 	</body>
 </html>
