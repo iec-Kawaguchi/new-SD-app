@@ -10,19 +10,13 @@
         <link rel="stylesheet" href="./css/base-style.css">
         <script src="./js/role-visibility.js" defer></script>
         <script src="./js/mock-ui.js" defer></script>
-        
+
         <style>
             /* カスタムスクロールバー */
             ::-webkit-scrollbar { width: 6px; height: 6px; }
             ::-webkit-scrollbar-track { background: transparent; }
             ::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 20px; }
             ::-webkit-scrollbar-thumb:hover { background-color: #94a3b8; }
-            
-            /* モーダル内のスクロール領域用 */
-            .modal-scroll-area {
-                max-height: calc(100vh - 200px);
-                overflow-y: auto;
-            }
         </style>
     </head>
     <body class="h-full text-gray-900 antialiased flex flex-col">
@@ -41,7 +35,8 @@
                     </div>
 
                     <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden flex flex-col flex-1">
-                        
+
+                        <!-- ツールバー -->
                         <div class="p-4 border-b border-gray-100 flex flex-col md:flex-row items-center justify-between gap-4 bg-white">
                             <div class="flex items-center gap-3 w-full md:w-auto flex-1 max-w-2xl">
                                 <div class="relative w-full md:max-w-md">
@@ -50,6 +45,11 @@
                                     </div>
                                     <input id="searchInput" type="text" class="h-10 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2 leading-tight transition-shadow" placeholder="指示パターン名称で検索...">
                                 </div>
+                                <!-- 無効も含むチェックボックス（仕様追加） -->
+                                <label class="flex items-center gap-2 cursor-pointer select-none">
+                                    <input id="showInactive" type="checkbox" class="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                                    <span class="text-sm text-gray-600">無効なパターンも含む</span>
+                                </label>
                             </div>
 
                             <button id="btnOpenModal" class="h-10 flex items-center justify-center gap-1.5 text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:ring-blue-100 font-medium rounded-md text-sm px-4 transition-all shadow-sm hover:shadow active:scale-95 whitespace-nowrap">
@@ -66,20 +66,23 @@
                                         <th class="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">[101] 教材配送</th>
                                         <th class="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">[201] 請求区分</th>
                                         <th class="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">[404] 修了判定</th>
+                                        <!-- ステータス列（仕様追加） -->
+                                        <th class="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">ステータス</th>
                                         <th class="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider text-center">アクション</th>
                                     </tr>
                                 </thead>
                                 <tbody id="tableBody" class="divide-y divide-gray-100 bg-white">
-                                    </tbody>
+                                </tbody>
                             </table>
                         </div>
 
+                        <!-- ページネーション -->
                         <div class="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6">
                             <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
                                 <div>
                                     <p class="text-sm text-gray-700">
-                                        全 <span id="totalCount" class="font-medium">0</span> 件中 
-                                        <span id="startCount" class="font-medium">0</span> から 
+                                        全 <span id="totalCount" class="font-medium">0</span> 件中
+                                        <span id="startCount" class="font-medium">0</span> から
                                         <span id="endCount" class="font-medium">0</span> 件を表示
                                     </p>
                                 </div>
@@ -101,9 +104,10 @@
             </main>
         </div>
 
+        <!-- モーダル -->
         <div id="modal" class="fixed inset-0 z-[100] bg-gray-900/50 backdrop-blur-sm flex items-center justify-center hidden transition-all duration-200">
             <div class="bg-white rounded-xl shadow-2xl w-full max-w-4xl mx-4 overflow-hidden transform transition-all scale-100 border border-gray-100 flex flex-col max-h-[90vh]">
-                
+
                 <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-white flex-shrink-0">
                     <h2 id="modalTitle" class="text-lg font-bold text-gray-800 flex items-center gap-2">
                         <span class="material-symbols-outlined text-blue-600 icon-md">fact_check</span>
@@ -116,15 +120,16 @@
 
                 <div class="p-6 overflow-y-auto bg-white flex-1">
                     <input type="hidden" id="inputId">
-                    
+
                     <div class="flex flex-col gap-6">
                         <div class="flex flex-col gap-1.5">
                             <label for="inputName" class="text-sm font-bold text-gray-700">指示パターン名称 <span class="text-red-500">*</span></label>
-                            <input id="inputName" type="text" class="w-full rounded-md border border-gray-300 px-3 py-2.5 text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 shadow-sm sm:text-sm" placeholder="例：新卒入社者向け、関東エリア配属者用 など">
+                            <input id="inputName" type="text" maxlength="50" class="w-full rounded-md border border-gray-300 px-3 py-2.5 text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 shadow-sm sm:text-sm" placeholder="例：新卒入社者向け、関東エリア配属者用 など">
+                            <p id="inputNameError" class="text-xs text-red-500 hidden">指示パターン名称は必須です。</p>
                         </div>
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-5 bg-slate-50 p-5 rounded-xl border border-slate-100">
-                            
+
                             <div class="space-y-1.5">
                                 <label class="text-xs font-bold text-gray-700 uppercase tracking-wider">[101] 教材配送先</label>
                                 <div class="relative">
@@ -249,7 +254,9 @@
                                 </div>
                             </div>
 
-                        </div> <div>
+                        </div>
+
+                        <div>
                             <div class="flex justify-between items-end mb-1.5">
                                 <label for="inputNote" class="text-xs font-bold text-gray-700 uppercase tracking-wide">その他特記事項</label>
                                 <div class="text-[10px] text-gray-400 font-mono">
@@ -260,6 +267,35 @@
                                 class="block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white transition-all resize-none"
                                 placeholder="備考があれば記載してください"></textarea>
                         </div>
+
+                        <!-- ステータス（新規登録時のみ）: ピル型ラジオボタン -->
+                        <div id="statusRadioGroup" class="space-y-1.5">
+                            <label class="text-sm font-bold text-gray-700">ステータス</label>
+                            <div class="flex w-full bg-gray-100 rounded-lg p-1">
+                                <label class="flex-1 cursor-pointer">
+                                    <input type="radio" name="statusRadio" value="Active" class="peer sr-only" checked>
+                                    <div class="text-center py-2 rounded-md text-sm font-medium text-gray-500 peer-checked:bg-white peer-checked:text-green-700 peer-checked:shadow-sm transition-all flex items-center justify-center gap-1.5 whitespace-nowrap">
+                                        <span class="material-symbols-outlined icon-sm">check_circle</span>
+                                        有効
+                                    </div>
+                                </label>
+                                <label class="flex-1 cursor-pointer">
+                                    <input type="radio" name="statusRadio" value="Inactive" class="peer sr-only">
+                                    <div class="text-center py-2 rounded-md text-sm font-medium text-gray-500 peer-checked:bg-white peer-checked:text-gray-800 peer-checked:shadow-sm transition-all flex items-center justify-center gap-1.5 whitespace-nowrap">
+                                        <span class="material-symbols-outlined icon-sm">block</span>
+                                        無効
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- ステータス（編集時のみ）: 読み取り専用バッジ -->
+                        <div id="statusBadgeGroup" class="hidden space-y-1.5">
+                            <label class="text-sm font-bold text-gray-700">ステータス</label>
+                            <div id="statusBadge"></div>
+                            <p class="text-xs text-gray-400">変更はアクションメニューの「有効にする」「無効にする」から行ってください。</p>
+                        </div>
+
                     </div>
                 </div>
 
@@ -271,7 +307,7 @@
         </div>
 
 <script type="module">
-    // --- Mock Data: マスタデータとして扱う ---
+    // --- Mock Data ---
     const mockInstructions = [
         {
             id: '1',
@@ -285,7 +321,8 @@
             gradeReport: '企業担当者宛',
             completion: '各団体基準',
             retake: '可',
-            note: '一般的な新入社員研修で使用されるパターンです。'
+            note: '一般的な新入社員研修で使用されるパターンです。',
+            status: 'Active'
         },
         {
             id: '2',
@@ -299,7 +336,8 @@
             gradeReport: '不要',
             completion: '各団体基準',
             retake: '不可',
-            note: ''
+            note: '',
+            status: 'Active'
         },
         {
             id: '3',
@@ -313,7 +351,23 @@
             gradeReport: '各社担当者宛',
             completion: '基準指定',
             retake: '可',
-            note: '各支店・工場での取りまとめがある場合に使用。'
+            note: '各支店・工場での取りまとめがある場合に使用。',
+            status: 'Active'
+        },
+        {
+            id: '4',
+            name: '旧パターン（廃止済み）',
+            shipping: '企業担当者宛',
+            reportSubmit: '企業担当者→団体',
+            reportReturn: '団体→企業担当者',
+            billingType: '会社請求',
+            billingDest: '企業担当者宛',
+            billingSend: '企業担当者宛',
+            gradeReport: '企業担当者宛',
+            completion: '各団体基準',
+            retake: '不可',
+            note: '廃止済みパターン。参照用として無効化。',
+            status: 'Inactive'
         }
     ];
 
@@ -329,9 +383,9 @@
         }
 
         // --- 状態管理変数 ---
-        let currentData = [...mockInstructions];
+        let currentData = [];
         let currentPage = 1;
-        const itemsPerPage = 10;
+        const itemsPerPage = 20;
 
         // --- DOM要素取得 ---
         const modal = document.getElementById('modal');
@@ -342,8 +396,8 @@
         const modalTitle = document.getElementById('modalTitle');
         const tableBody = document.getElementById('tableBody');
         const searchInput = document.getElementById('searchInput');
+        const showInactiveCheckbox = document.getElementById('showInactive');
 
-        // ページネーション要素
         const totalCountEl = document.getElementById('totalCount');
         const startCountEl = document.getElementById('startCount');
         const endCountEl = document.getElementById('endCount');
@@ -351,9 +405,9 @@
         const btnNext = document.getElementById('btnNext');
         const pageIndicator = document.getElementById('pageIndicator');
 
-        // フォーム要素
         const inputId = document.getElementById('inputId');
         const inputName = document.getElementById('inputName');
+        const inputNameError = document.getElementById('inputNameError');
         const inputShipping = document.getElementById('inputShipping');
         const inputReportSubmit = document.getElementById('inputReportSubmit');
         const inputReportReturn = document.getElementById('inputReportReturn');
@@ -365,9 +419,11 @@
         const inputRetake = document.getElementById('inputRetake');
         const inputNote = document.getElementById('inputNote');
         const charCount = document.getElementById('charCount');
+        const statusRadioGroup = document.getElementById('statusRadioGroup');
+        const statusBadgeGroup = document.getElementById('statusBadgeGroup');
+        const statusBadge = document.getElementById('statusBadge');
 
         // --- バッジ生成関数 ---
-        // 配送先用バッジ
         const getShippingBadge = (val) => {
             const isIndividual = val.includes('受講生');
             const bg = isIndividual ? 'bg-green-100' : 'bg-gray-100';
@@ -378,7 +434,6 @@
             </span>`;
         };
 
-        // 請求区分用バッジ
         const getBillingBadge = (val) => {
             const isCompany = val.includes('会社');
             const bg = isCompany ? 'bg-blue-100' : 'bg-orange-100';
@@ -386,7 +441,14 @@
             return `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${bg} ${text}">${val}</span>`;
         };
 
-        // --- ロジック関数 ---
+        const getStatusBadge = (status) => {
+            if (status === 'Active') {
+                return `<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-green-50 text-green-700 border border-green-100"><span class="w-1.5 h-1.5 bg-green-500 rounded-full"></span>有効</span>`;
+            }
+            return `<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-600 border border-gray-200"><span class="w-1.5 h-1.5 bg-gray-400 rounded-full"></span>無効</span>`;
+        };
+
+        // --- ページネーション更新 ---
         const updatePaginationUI = () => {
             const total = currentData.length;
             const start = total === 0 ? 0 : (currentPage - 1) * itemsPerPage + 1;
@@ -402,26 +464,38 @@
             btnNext.disabled = currentPage === totalPages || total === 0;
         };
 
+        // --- テーブル描画 ---
         const renderTable = () => {
             if (!tableBody) return;
 
             const startIndex = (currentPage - 1) * itemsPerPage;
-            const endIndex = startIndex + itemsPerPage;
-            const slicedData = currentData.slice(startIndex, endIndex);
+            const slicedData = currentData.slice(startIndex, startIndex + itemsPerPage);
 
             if (slicedData.length === 0) {
-                tableBody.innerHTML = `<tr><td colspan="5" class="px-6 py-10 text-center text-gray-500">データが見つかりませんでした</td></tr>`;
+                tableBody.innerHTML = `<tr><td colspan="6" class="px-6 py-10 text-center text-gray-500">データが見つかりませんでした</td></tr>`;
                 updatePaginationUI();
                 return;
             }
 
             const html = slicedData.map(item => {
+                const isActive = item.status === 'Active';
+                const toggleMenuItem = isActive
+                    ? `<a href="#" class="group flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-gray-900 js-deactivate-action">
+                           <span class="material-symbols-outlined icon-sm mr-3 text-orange-400 group-hover:text-orange-500">block</span>
+                           無効にする
+                       </a>`
+                    : `<a href="#" class="group flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-gray-900 js-activate-action">
+                           <span class="material-symbols-outlined icon-sm mr-3 text-green-500 group-hover:text-green-600">check_circle</span>
+                           有効にする
+                       </a>`;
+
                 return `
                 <tr class="hover:bg-gray-50 transition-colors cursor-pointer js-row group relative" data-id="${item.id}">
                     <td class="px-6 py-4 text-sm text-gray-900 font-bold">${item.name}</td>
                     <td class="px-6 py-4">${getShippingBadge(item.shipping)}</td>
                     <td class="px-6 py-4">${getBillingBadge(item.billingType)}</td>
                     <td class="px-6 py-4 text-sm text-gray-600">${item.completion}</td>
+                    <td class="px-6 py-4">${getStatusBadge(item.status)}</td>
                     <td class="px-6 py-4 text-center">
                         <div class="inline-block text-left">
                             <button type="button" class="flex menu-trigger p-2 rounded-full text-gray-400 hover:text-gray-600 hover:bg-gray-100 focus:outline-none transition-colors z-10 relative">
@@ -433,10 +507,18 @@
                                         <span class="material-symbols-outlined icon-sm mr-3 text-gray-400 group-hover:text-gray-500">edit</span>
                                         編集する
                                     </a>
-                                    <a href="#" class="group flex items-center px-4 py-2 text-sm text-red-600 hover:bg-red-50 js-delete-action">
-                                        <span class="material-symbols-outlined icon-sm mr-3 text-red-400 group-hover:text-red-500">delete</span>
-                                        削除する
-                                    </a>
+                                    ${toggleMenuItem}
+                                    <div class="border-t border-gray-100 my-1"></div>
+                                    ${isActive
+                                        ? `<span class="flex items-center px-4 py-2 text-sm text-gray-300 cursor-not-allowed">
+                                               <span class="material-symbols-outlined icon-sm mr-3 text-gray-300">delete</span>
+                                               削除する
+                                           </span>`
+                                        : `<a href="#" class="group flex items-center px-4 py-2 text-sm text-red-600 hover:bg-red-50 js-delete-action">
+                                               <span class="material-symbols-outlined icon-sm mr-3 text-red-400 group-hover:text-red-500">delete</span>
+                                               削除する
+                                           </a>`
+                                    }
                                 </div>
                             </div>
                         </div>
@@ -449,29 +531,41 @@
             updatePaginationUI();
         };
 
+        // --- フィルタリング ---
         const filterData = () => {
             const keyword = searchInput.value.trim().toLowerCase();
+            const showInactive = showInactiveCheckbox.checked;
+
             currentData = mockInstructions.filter(item => {
-                return !keyword || item.name.toLowerCase().includes(keyword);
+                if (item.status === 'Deleted') return false;
+                if (!showInactive && item.status === 'Inactive') return false;
+                if (keyword && !item.name.toLowerCase().includes(keyword)) return false;
+                return true;
             });
             currentPage = 1;
             renderTable();
         };
 
-        // --- モーダル関連処理 ---
+        // --- メニュー操作 ---
         const closeAllMenus = () => {
-            document.querySelectorAll(".menu").forEach(m => m.classList.add("hidden"));
+            document.querySelectorAll('.menu').forEach(m => m.classList.add('hidden'));
         };
 
+        // --- モーダル操作 ---
         const openModal = (mode, id = null) => {
             closeAllMenus();
+            inputNameError.classList.add('hidden');
+            inputName.classList.remove('border-red-500');
             modal.classList.remove('hidden');
 
             if (mode === 'edit' && id) {
-                // 編集モード
                 modalTitle.querySelector('.text').textContent = '指示パターン編集';
                 modalTitle.querySelector('.material-symbols-outlined').textContent = 'edit_note';
                 btnSubmit.textContent = '更新する';
+
+                // 新規用ラジオを非表示、編集用バッジを表示
+                statusRadioGroup.classList.add('hidden');
+                statusBadgeGroup.classList.remove('hidden');
 
                 const data = mockInstructions.find(item => item.id === id);
                 if (data) {
@@ -487,43 +581,44 @@
                     inputCompletion.value = data.completion;
                     inputRetake.value = data.retake;
                     inputNote.value = data.note;
+                    charCount.textContent = data.note.length;
+
+                    statusBadge.innerHTML = data.status === 'Active'
+                        ? `<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-green-50 text-green-700 border border-green-100"><span class="w-1.5 h-1.5 bg-green-500 rounded-full"></span>有効</span>`
+                        : `<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-600 border border-gray-200"><span class="w-1.5 h-1.5 bg-gray-400 rounded-full"></span>無効</span>`;
                 }
             } else {
-                // 新規モード
                 modalTitle.querySelector('.text').textContent = '指示パターン登録';
                 modalTitle.querySelector('.material-symbols-outlined').textContent = 'fact_check';
                 btnSubmit.textContent = '登録する';
 
-                // フォームリセット
+                // 新規用ラジオを表示、編集用バッジを非表示
+                statusRadioGroup.classList.remove('hidden');
+                statusBadgeGroup.classList.add('hidden');
+
                 inputId.value = '';
                 inputName.value = '';
                 inputNote.value = '';
-                // セレクトボックスはデフォルト値（最初のoption）に戻る
-                [inputShipping, inputReportSubmit, inputReportReturn, inputBillingType, 
+                charCount.textContent = '0';
+                document.querySelector('input[name="statusRadio"][value="Active"]').checked = true;
+                [inputShipping, inputReportSubmit, inputReportReturn, inputBillingType,
                  inputBillingDest, inputBillingSend, inputGradeReport, inputCompletion, inputRetake]
                  .forEach(el => el.selectedIndex = 0);
             }
-            
-            // 文字数カウント更新
-            charCount.textContent = inputNote.value.length;
         };
 
         const closeModal = () => modal.classList.add('hidden');
 
         // --- イベントリスナー ---
-        
-        // 検索
         searchInput.addEventListener('input', filterData);
+        showInactiveCheckbox.addEventListener('change', filterData);
 
-        // ページネーション
-        btnPrev.addEventListener('click', () => { if(currentPage > 1) { currentPage--; renderTable(); }});
-        btnNext.addEventListener('click', () => { if(currentPage * itemsPerPage < currentData.length) { currentPage++; renderTable(); }});
+        btnPrev.addEventListener('click', () => { if (currentPage > 1) { currentPage--; renderTable(); } });
+        btnNext.addEventListener('click', () => { if (currentPage * itemsPerPage < currentData.length) { currentPage++; renderTable(); } });
 
-        // テーブル操作
         tableBody.addEventListener('click', (e) => {
             const target = e.target;
-            
-            // メニュートリガー
+
             const menuTrigger = target.closest('.menu-trigger');
             if (menuTrigger) {
                 e.stopPropagation();
@@ -534,7 +629,6 @@
                 return;
             }
 
-            // 編集アクション
             const editAction = target.closest('.js-edit-action');
             if (editAction) {
                 e.preventDefault();
@@ -544,50 +638,96 @@
                 return;
             }
 
-            // 削除アクション（モック）
-            const deleteAction = target.closest('.js-delete-action');
-            if (deleteAction) {
+            // 無効にする
+            const deactivateAction = target.closest('.js-deactivate-action');
+            if (deactivateAction) {
                 e.preventDefault();
                 e.stopPropagation();
-                if(confirm('本当に削除しますか？')) {
-                    const row = target.closest('tr');
-                    const id = row.dataset.id;
-                    const index = mockInstructions.findIndex(m => m.id === id);
-                    if(index > -1) {
-                        mockInstructions.splice(index, 1);
-                        filterData(); // 再描画
-                        closeAllMenus();
-                    }
+                const row = target.closest('tr');
+                const id = row.dataset.id;
+                const item = mockInstructions.find(m => m.id === id);
+                if (item) {
+                    item.status = 'Inactive';
+                    filterData();
                 }
                 return;
             }
 
-            // 行クリックで編集
+            // 有効にする
+            const activateAction = target.closest('.js-activate-action');
+            if (activateAction) {
+                e.preventDefault();
+                e.stopPropagation();
+                const row = target.closest('tr');
+                const id = row.dataset.id;
+                const item = mockInstructions.find(m => m.id === id);
+                if (item) {
+                    item.status = 'Active';
+                    filterData();
+                }
+                return;
+            }
+
+            const deleteAction = target.closest('.js-delete-action');
+            if (deleteAction) {
+                e.preventDefault();
+                e.stopPropagation();
+                const row = target.closest('tr');
+                const id = row.dataset.id;
+                const item = mockInstructions.find(m => m.id === id);
+                if (!item) return;
+
+                if (confirm('この操作は取り消せません。このパターンを削除しますか？')) {
+                    item.status = 'Deleted';
+                    filterData();
+                }
+                return;
+            }
+
             const row = target.closest('tr');
             if (row && !target.closest('.menu')) {
                 openModal('edit', row.dataset.id);
             }
         });
 
-        // モーダル操作
         btnOpenModal.addEventListener('click', () => openModal('new'));
         btnCloseModal.addEventListener('click', closeModal);
         btnCloseModalHeader.addEventListener('click', closeModal);
         modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
 
-        // 文字数カウント
+        // バリデーション付き保存
+        btnSubmit.addEventListener('click', () => {
+            if (!inputName.value.trim()) {
+                inputNameError.classList.remove('hidden');
+                inputName.classList.add('border-red-500');
+                inputName.focus();
+                return;
+            }
+            inputNameError.classList.add('hidden');
+            inputName.classList.remove('border-red-500');
+            // モックのため実際のAPI呼び出しは省略
+            closeModal();
+            filterData();
+        });
+
         inputNote.addEventListener('input', () => {
             charCount.textContent = inputNote.value.length;
         });
 
-        // グローバルクリック（メニュー閉じる）
-        document.addEventListener("click", () => closeAllMenus());
+        inputName.addEventListener('input', () => {
+            if (inputName.value.trim()) {
+                inputNameError.classList.add('hidden');
+                inputName.classList.remove('border-red-500');
+            }
+        });
+
+        document.addEventListener('click', () => closeAllMenus());
         document.addEventListener('click', (e) => {
             if (e.target.closest('.menu')) e.stopPropagation();
         }, true);
 
         // 初期表示
-        renderTable();
+        filterData();
     });
 </script>
     </body>
