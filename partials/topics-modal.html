@@ -8,6 +8,9 @@
 		<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
 		<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
 		<link rel="stylesheet" href="./css/base-style.css">
+		<script src="../js/role-visibility.js"></script>
+		<script src="../js/components/combobox.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15/Sortable.min.js"></script>
 
 		<style>
 			/* カスタムスクロールバー */
@@ -20,15 +23,29 @@
 	<body class="bg-gray-50 text-gray-900 antialiased">
 		<div class="min-h-dvh flex flex-col">
 			<header class="sticky top-0 z-20 bg-white/95 backdrop-blur-sm border-b border-gray-100 px-6 py-4">
-				<div class="flex items-center gap-2 mb-1">
-					<span class="material-symbols-outlined text-blue-600">collections_bookmark</span>
-					<h1 class="text-lg font-bold text-gray-800 tracking-tight">特集ページ登録</h1>
+				<div class="flex items-center justify-between">
+					<div>
+						<div class="flex items-center gap-2 mb-1">
+							<span class="material-symbols-outlined text-blue-600">collections_bookmark</span>
+							<h1 class="text-lg font-bold text-gray-800 tracking-tight">特集ページ登録</h1>
+						</div>
+						<p class="text-xs text-gray-500 ml-8">募集一覧画面などでピックアップ表示する特集ページを登録します。</p>
+					</div>
+					<!-- ロール切替（モックのみ） -->
+					<div class="relative">
+						<select id="role-select" class="appearance-none pl-3 pr-8 py-1.5 rounded-md border border-gray-300 bg-gray-50 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+							<option value="iec">IEC (管理者)</option>
+							<option value="customer">顧客</option>
+						</select>
+						<span class="material-symbols-outlined absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 text-sm pointer-events-none">expand_more</span>
+					</div>
 				</div>
-				<p class="text-xs text-gray-500 ml-8">募集一覧画面などでピックアップ表示する特集コンテンツを登録します。</p>
 			</header>
+
 			<main class="flex-1 px-6 py-6 space-y-8 pb-32">
-				<section class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-					<div class="bg-gray-50/50 px-5 py-3 border-b border-gray-100 flex items-center justify-between">
+				<!-- 特集追加セクション -->
+				<section class="bg-white rounded-xl shadow-sm border border-gray-200">
+					<div class="bg-gray-50/50 px-5 py-3 border-b border-gray-100 rounded-t-xl flex items-center justify-between">
 						<h2 class="text-sm font-bold text-gray-700 flex items-center gap-2">
 							<span class="material-symbols-outlined icon-md text-gray-400">playlist_add</span>
 							特集を追加
@@ -37,38 +54,28 @@
 					<div class="p-5">
 						<div class="flex flex-col md:flex-row gap-4 items-end">
 							<div class="flex-1 w-full">
-								<label for="topic-select" class="block text-sm font-bold text-gray-700 mb-1.5">特集コンテンツを選択</label>
-								<div class="relative">
-									<select id="topic-select" class="block w-full rounded-md border border-gray-300 pl-3 pr-8 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50/50 transition-shadow hover:bg-white appearance-none cursor-pointer text-gray-700">
-										<option value="">選択してください...</option>
-										<option value="topic-1" data-thumb="https://placehold.jp/30/e0e7ff/3b82f6/320x180.png?text=Topic%20A" data-title="最近のだらしないマネジャーの原因は？">特集A：最近のだらしないマネジャーの原因は？</option>
-										<option value="topic-2" data-thumb="https://placehold.jp/30/dcfce7/22c55e/320x180.png?text=Topic%20B" data-title="新入社員のメンタルヘルス対策">特集B：新入社員のメンタルヘルス対策</option>
-										<option value="topic-3" data-thumb="https://placehold.jp/30/fef3c7/f59e0b/320x180.png?text=Topic%20C" data-title="DX人材育成のロードマップ">特集C：DX人材育成のロードマップ</option>
-									</select>
-									<div class="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
-										<span class="material-symbols-outlined text-gray-400 icon-sm">expand_more</span>
-									</div>
-								</div>
+								<label class="block text-sm font-bold text-gray-700 mb-1.5">特集ページを選択</label>
+								<div id="topic-combobox"></div>
 							</div>
 							<button id="add-btn" class="h-10 w-full md:w-auto shrink-0 px-6 rounded-lg bg-blue-600 text-white text-sm font-bold hover:bg-blue-700 hover:shadow active:scale-[0.98] transition-all flex items-center justify-center gap-2">
 								<span class="material-symbols-outlined icon-sm">add</span>
 								追加する
 							</button>
 						</div>
-						<p class="mt-2 text-xs text-gray-400">※マスター登録済みの特集コンテンツから選択してください。</p>
 					</div>
 				</section>
+
+				<!-- 登録済み特集セクション -->
 				<section>
 					<div class="flex items-center justify-between mb-3 px-1">
 						<h2 class="text-sm font-bold text-gray-500 uppercase tracking-wide flex items-center gap-2">
 							登録済み特集
-							<span id="count-badge" class="bg-blue-100 text-blue-700 text-[10px] font-bold px-2 py-0.5 rounded-full">3</span>
+							<span id="count-badge" class="bg-blue-100 text-blue-700 text-[10px] font-bold px-2 py-0.5 rounded-full hidden">0</span>
 						</h2>
 						<span class="text-xs text-gray-400">ドラッグまたはボタンで並び替え可能</span>
 					</div>
 
-					<div id="feature-list" class="space-y-3">
-					</div>
+					<div id="feature-list" class="space-y-3"></div>
 
 					<div id="empty" class="rounded-xl border-2 border-dashed border-gray-200 bg-gray-50 py-12 flex flex-col items-center justify-center text-center hidden">
 						<div class="flex bg-white p-3 rounded-full shadow-sm mb-3">
@@ -80,14 +87,15 @@
 				</section>
 			</main>
 
+			<!-- フッター -->
 			<div class="fixed bottom-0 inset-x-0 z-50 bg-white border-t border-gray-200 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
 				<div class="mx-auto px-6 py-4 flex items-center justify-end gap-3">
-				<button class="px-5 py-2.5 rounded-lg border border-gray-300 bg-white text-sm font-bold text-gray-600 hover:bg-gray-50 hover:text-gray-800 transition-colors">
-					キャンセル
-				</button>
-				<button class="px-6 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-bold hover:bg-blue-700 shadow-sm hover:shadow active:scale-[0.98] transition-all flex items-center gap-2">
-					<span>登録する</span>
-				</button>
+					<button class="px-5 py-2.5 rounded-lg border border-gray-300 bg-white text-sm font-bold text-gray-600 hover:bg-gray-50 hover:text-gray-800 transition-colors">
+						キャンセル
+					</button>
+					<button class="px-6 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-bold hover:bg-blue-700 shadow-sm hover:shadow active:scale-[0.98] transition-all flex items-center gap-2">
+						<span>登録する</span>
+					</button>
 				</div>
 			</div>
 		</div>
@@ -99,7 +107,7 @@
 				</div>
 
 				<div class="shrink-0 pl-0 sm:pl-8 w-full sm:w-auto">
-					<div class="aspect-video w-full sm:w-40 rounded-lg bg-gray-100 border border-gray-200 overflow-hidden relative group-hover:border-blue-100 transition-colors">
+					<div class="aspect-square w-full sm:w-20 rounded-lg bg-gray-100 border border-gray-200 overflow-hidden relative group-hover:border-blue-100 transition-colors">
 						<img src="" alt="" class="thumb-img w-full h-full object-cover">
 						<div class="thumb-placeholder absolute inset-0 flex items-center justify-center text-gray-400 bg-gray-50 hidden">
 							<span class="material-symbols-outlined">image_not_supported</span>
@@ -109,59 +117,96 @@
 
 				<div class="min-w-0 flex-1 w-full">
 					<p class="title font-bold text-gray-800 text-sm truncate group-hover:text-blue-700 transition-colors">特集タイトル</p>
-					<div class="flex items-center gap-3 mt-1.5">
-						<span class="id-badge bg-gray-100 text-gray-500 text-[10px] px-1.5 py-0.5 rounded border border-gray-200 font-mono">FT-001</span>
-						<span class="text-[10px] text-gray-400">最終更新: 2026/01/02</span>
+					<div class="flex items-center gap-3 mt-1.5 flex-wrap">
+						<span class="type-badge text-[10px] px-1.5 py-0.5 rounded border font-medium"></span>
+						<span class="updated-at text-[10px] text-gray-400"></span>
 					</div>
 				</div>
 
 				<div class="flex items-center justify-end gap-2 w-full sm:w-auto mt-2 sm:mt-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-gray-100">
-					<div class="flex rounded-lg border border-gray-200 bg-white overflow-hidden shadow-sm">
-						<button class="px-2 py-1.5 hover:bg-gray-50 text-gray-500 hover:text-blue-600 border-r border-gray-200 transition-colors" data-move="up" title="上へ">
-							<span class="material-symbols-outlined icon-sm block">keyboard_arrow_up</span>
+					<!-- 並び替えボタン（縦並びグループ） -->
+					<div class="flex flex-col rounded-md border border-gray-200 overflow-hidden shadow-sm shrink-0">
+						<button class="px-2 py-1 hover:bg-blue-50 text-gray-400 hover:text-blue-600 border-b border-gray-200 transition-colors disabled:opacity-30 disabled:cursor-not-allowed" data-move="up" title="上へ移動">
+							<span class="material-symbols-outlined text-base leading-none">arrow_upward</span>
 						</button>
-						<button class="px-2 py-1.5 hover:bg-gray-50 text-gray-500 hover:text-blue-600 transition-colors" data-move="down" title="下へ">
-							<span class="material-symbols-outlined icon-sm block">keyboard_arrow_down</span>
+						<button class="px-2 py-1 hover:bg-blue-50 text-gray-400 hover:text-blue-600 transition-colors disabled:opacity-30 disabled:cursor-not-allowed" data-move="down" title="下へ移動">
+							<span class="material-symbols-outlined text-base leading-none">arrow_downward</span>
 						</button>
 					</div>
-				
-					<button class="remove ml-2 flex items-center justify-center size-8 rounded-full text-gray-400 hover:text-red-600 hover:bg-red-50 transition-colors" title="削除">
-						<span class="material-symbols-outlined icon-md">delete</span>
+					<!-- セパレーター -->
+					<div class="h-8 w-px bg-gray-200 shrink-0"></div>
+					<!-- プレビュー -->
+					<button class="preview p-1.5 text-gray-400 hover:text-blue-600 rounded-lg hover:bg-blue-50 transition-colors disabled:opacity-40 disabled:cursor-not-allowed" title="プレビュー">
+						<span class="material-symbols-outlined text-base">open_in_new</span>
+					</button>
+					<!-- 削除 -->
+					<button class="remove p-1.5 text-gray-400 hover:text-red-600 rounded-lg hover:bg-red-50 transition-colors" title="削除">
+						<span class="material-symbols-outlined text-base">delete</span>
 					</button>
 				</div>
 			</article>
 		</template>
 
 		<script>
-			// Mock Initial Data
-			const initialData = [
-				{ id: 'FT-001', title: '最近のだらしないマネジャーの原因は？', thumb: 'https://placehold.jp/30/e0e7ff/3b82f6/320x180.png?text=Topic%20A' },
-				{ id: 'FT-002', title: '新入社員のメンタルヘルス対策', thumb: 'https://placehold.jp/30/dcfce7/22c55e/320x180.png?text=Topic%20B' },
-				{ id: 'FT-003', title: 'DX人材育成のロードマップ', thumb: 'https://placehold.jp/30/fef3c7/f59e0b/320x180.png?text=Topic%20C' },
+			// 特集マスターデータ（モック）
+			const topicMasterItems = [
+				{ value: 'topic-1', label: '特集A：最近のだらしないマネジャーの原因は？',        title: '最近のだらしないマネジャーの原因は？',        thumb: 'https://placehold.jp/30/e0e7ff/3b82f6/320x180.png?text=Topic%20A', isPublic: true,  updatedAt: '2026/03/15' },
+				{ value: 'topic-2', label: '特集B：新入社員のメンタルヘルス対策',                  title: '新入社員のメンタルヘルス対策',                  thumb: 'https://placehold.jp/30/dcfce7/22c55e/320x180.png?text=Topic%20B', isPublic: true,  updatedAt: '2026/02/20' },
+				{ value: 'topic-3', label: '特集C：DX人材育成のロードマップ',                      title: 'DX人材育成のロードマップ',                      thumb: 'https://placehold.jp/30/fef3c7/f59e0b/320x180.png?text=Topic%20C', isPublic: false, updatedAt: '2026/04/01' },
+				{ value: 'topic-4', label: '特集D：〇〇企業限定：役員向けリーダーシップ研修',    title: '〇〇企業限定：役員向けリーダーシップ研修',    thumb: '',                                                                  isPublic: false, updatedAt: '2026/01/10' },
 			];
 
+			// 初期表示データ（topic-1〜3 を登録済みとして表示）
+			const initialData = topicMasterItems.slice(0, 3).map(t => ({
+				id: t.value, title: t.title, thumb: t.thumb, isPublic: t.isPublic, updatedAt: t.updatedAt,
+			}));
+
 			const list = document.getElementById('feature-list');
-			const empty = document.getElementById('empty');
+			const emptyEl = document.getElementById('empty');
 			const badge = document.getElementById('count-badge');
 			const tpl = document.getElementById('card-tpl');
 
-			// Render Item
 			const renderItem = (data) => {
 				const clone = tpl.content.cloneNode(true);
 				const card = clone.querySelector('.feature-card');
-				
+
+				card.dataset.id = data.id;
 				card.querySelector('.title').textContent = data.title;
-				card.querySelector('.id-badge').textContent = data.id;
-				
+
+				// サムネイル
 				const img = card.querySelector('.thumb-img');
-				if(data.thumb) {
+				if (data.thumb) {
 					img.src = data.thumb;
 				} else {
 					img.classList.add('hidden');
 					card.querySelector('.thumb-placeholder').classList.remove('hidden');
 				}
 
-				// Move Logic
+				// 種別バッジ（IsPublic）
+				const typeBadge = card.querySelector('.type-badge');
+				if (data.isPublic) {
+					typeBadge.textContent = '全企業公開';
+					typeBadge.classList.add('bg-blue-50', 'text-blue-700', 'border-blue-200');
+				} else {
+					typeBadge.textContent = '企業限定';
+					typeBadge.classList.add('bg-gray-100', 'text-gray-600', 'border-gray-200');
+				}
+
+				// 最終更新日
+				card.querySelector('.updated-at').textContent = '最終更新: ' + (data.updatedAt || '----/--/--');
+
+				// プレビューボタン（コンテンツ未登録時は非活性）
+				const previewBtn = card.querySelector('.preview');
+				if (!data.thumb) {
+					previewBtn.disabled = true;
+					previewBtn.classList.add('opacity-40', 'cursor-not-allowed', 'pointer-events-none');
+				} else {
+					previewBtn.addEventListener('click', () => {
+						window.open(data.thumb, '_blank');
+					});
+				}
+
+				// 上下移動
 				card.querySelectorAll('button[data-move]').forEach(btn => {
 					btn.addEventListener('click', (e) => {
 						const move = btn.getAttribute('data-move');
@@ -172,12 +217,13 @@
 						if (move === 'down' && current.nextElementSibling) {
 							list.insertBefore(current.nextElementSibling, current);
 						}
+						updateState();
 					});
 				});
 
-				// Delete Logic
+				// 削除
 				card.querySelector('.remove').addEventListener('click', () => {
-					if(confirm('削除しますか？')){
+					if (confirm('この特集ページをリストから削除しますか？')) {
 						card.remove();
 						updateState();
 					}
@@ -186,41 +232,69 @@
 				return card;
 			};
 
-			// Update UI State
+			// 先頭・末尾カードの上下ボタン活性状態を更新
+			const updateMoveButtons = () => {
+				const cards = list.querySelectorAll('.feature-card');
+				cards.forEach((card, i) => {
+					card.querySelector('[data-move="up"]').disabled = (i === 0);
+					card.querySelector('[data-move="down"]').disabled = (i === cards.length - 1);
+				});
+			};
+
 			const updateState = () => {
 				const count = list.children.length;
-				if(count === 0) {
-					empty.classList.remove('hidden');
+				if (count === 0) {
+					emptyEl.classList.remove('hidden');
 					badge.classList.add('hidden');
 				} else {
-					empty.classList.add('hidden');
+					emptyEl.classList.add('hidden');
 					badge.classList.remove('hidden');
 					badge.textContent = count;
 				}
+				updateMoveButtons();
 			};
 
-			// Add Button Logic
-			const select = document.getElementById('topic-select');
+			// コンボボックス初期化
+			const topicCombo = initCombobox(document.getElementById('topic-combobox'), {
+				items: topicMasterItems.map(t => ({ value: t.value, label: t.label })),
+				placeholder: '選択してください...',
+			});
+
+			// 追加ボタン
 			document.getElementById('add-btn').addEventListener('click', () => {
-				const val = select.value;
-				if(!val) return;
-				
-				const option = select.options[select.selectedIndex];
-				const newItem = {
-					id: 'FT-' + Math.floor(Math.random() * 1000), // mock ID
-					title: option.dataset.title,
-					thumb: option.dataset.thumb
-				};
-				
-				list.appendChild(renderItem(newItem));
-				select.value = "";
+				const val = topicCombo.getValue();
+				if (!val) return;
+
+				const master = topicMasterItems.find(t => t.value === val);
+				if (!master) return;
+
+				list.appendChild(renderItem({
+					id: master.value,
+					title: master.title,
+					thumb: master.thumb,
+					isPublic: master.isPublic,
+					updatedAt: master.updatedAt,
+				}));
+				topicCombo.reset();
 				updateState();
 			});
 
-			// Initial Render
+			// 初期描画
 			initialData.forEach(d => list.appendChild(renderItem(d)));
 			updateState();
 
+			// ドラッグ＆ドロップ（PCのみ）
+			Sortable.create(list, {
+				handle: '[title="並び替え"]',
+				animation: 150,
+				onEnd: () => updateState(),
+			});
+
+			// ロール切替の初期化
+			if (!new URLSearchParams(location.search).get('role')) {
+				RoleMock.setRoleInUrl('iec');
+			}
+			RoleMock.init({ roleSelect: '#role-select' });
 		</script>
 	</body>
 </html>
