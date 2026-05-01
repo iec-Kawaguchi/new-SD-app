@@ -65,11 +65,14 @@
 
                 <div class="grid grid-cols-1 md:grid-cols-[200px_1fr] items-center gap-4 p-5 hover:bg-gray-50/50 transition-colors">
                     <div>
-                        <div class="text-sm font-bold text-gray-800">所属（会社・部署）</div>
-                        <div class="text-xs text-gray-400 mt-0.5">名簿作成用</div>
+                        <div class="text-sm font-bold text-gray-800">所属</div>
+                        <div class="text-xs text-gray-400 mt-0.5">システム必須項目。「組織階層管理」で登録された組織情報から所属選択をさせます。</div>
                     </div>
                     <div>
-                        <segment-control name="org_req" value="required"></segment-control>
+                        <span class="inline-flex items-center px-2.5 py-1 rounded-md bg-blue-50 text-blue-700 text-xs font-medium border border-blue-100">
+                            <span class="material-symbols-outlined text-[14px] mr-1">check_circle</span>
+                            必須固定
+                        </span>
                     </div>
                 </div>
 
@@ -129,7 +132,7 @@
 
             </div>
             </section>
-
+<!-- 
             <section class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
             <div class="bg-gray-50/50 px-5 py-3 border-b border-gray-100 flex items-center justify-between">
                 <h2 class="text-sm font-bold text-gray-700 flex items-center gap-2">
@@ -149,7 +152,7 @@
                     </div>
                 </div>
             </div>
-            </section>
+            </section> -->
 
         </main>
 
