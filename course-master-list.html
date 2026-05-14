@@ -10,13 +10,16 @@
         <link rel="stylesheet" href="./css/base-style.css">
         <script src="./js/role-visibility.js" defer></script>
         <script src="./js/mock-ui.js" defer></script>
-        
         <style>
-             /* カスタムスクロールバー */
             ::-webkit-scrollbar { width: 6px; height: 6px; }
             ::-webkit-scrollbar-track { background: transparent; }
             ::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 20px; }
             ::-webkit-scrollbar-thumb:hover { background-color: #94a3b8; }
+            input[readonly], textarea[readonly] {
+                background-color: #f9fafb;
+                cursor: default;
+            }
+            button:disabled { opacity: 0.4; cursor: not-allowed; }
         </style>
     </head>
     <body class="h-full text-gray-900 antialiased flex flex-col">
@@ -27,355 +30,640 @@
 
             <main class="flex-1 h-full overflow-y-auto bg-gray-50 p-6 lg:p-8">
                 <div class="max-w-7xl mx-auto h-full flex flex-col">
+
                     <div class="flex flex-col mb-6">
                         <h1 class="text-2xl font-bold text-gray-800 tracking-tight">コース一覧</h1>
-                        <p class="text-sm text-gray-500 mt-1">コース情報を管理します。</p>
+                        <p class="text-sm text-gray-500 mt-1">
+                            <span data-visible-for="supplier">自社のコース情報を管理します。</span>
+                            <span data-visible-for="iec">各団体のコース（フライヤー）情報を参照します。</span>
+                        </p>
                     </div>
 
                     <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden flex flex-col flex-1">
-                        
-                        <div class="p-4 border-b border-gray-100 flex flex-col md:flex-row items-center justify-between gap-4 bg-white">
-                            <div class="flex items-center gap-3 w-full md:w-auto flex-1 max-w-2xl">
-                                <div class="relative w-full md:max-w-md">
-                                    <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                                        <span class="material-symbols-outlined text-gray-400 icon-sm">search</span>
-                                    </div>
-                                    <input id="searchInput" type="text" class="h-10 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2 leading-tight transition-shadow" placeholder="コース名、管理コードで検索...">
+
+                        <!-- ツールバー -->
+                        <div class="p-4 border-b border-gray-100 flex flex-wrap items-center gap-3 bg-white">
+                            <div class="relative flex-1 min-w-[200px] max-w-sm">
+                                <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                    <span class="material-symbols-outlined text-gray-400 icon-sm">search</span>
+                                </div>
+                                <input id="searchInput" type="text"
+                                    class="h-10 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 pr-3 py-2 leading-tight transition-shadow"
+                                    placeholder="コース名・自社管理コードで検索...">
+                            </div>
+
+                            <!-- 団体フィルタ（IECのみ） -->
+                            <div class="relative" data-visible-for="iec">
+                                <select id="filterOrg"
+                                    class="appearance-none h-10 bg-gray-50 border border-gray-300 text-gray-700 text-sm rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 pl-3 pr-8 py-2 shadow-sm transition-shadow">
+                                    <option value="">団体（すべて）</option>
+                                    <option value="EDU001">産業能率大学</option>
+                                    <option value="EDU002">JMAM</option>
+                                    <option value="EDU003">JTEX</option>
+                                </select>
+                                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-500">
+                                    <span class="material-symbols-outlined icon-sm">expand_more</span>
                                 </div>
                             </div>
 
-                            <button id="btnOpenModal" class="h-10 flex items-center justify-center gap-1.5 text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:ring-blue-100 font-medium rounded-md text-sm px-4 transition-all shadow-sm hover:shadow active:scale-95 whitespace-nowrap">
+                            <!-- 無効なコースも含む -->
+                            <label class="flex items-center gap-2 cursor-pointer select-none text-sm text-gray-700 whitespace-nowrap" data-visible-for="iec,supplier">
+                                <input id="showInactive" type="checkbox" class="w-4 h-4 text-blue-600 bg-gray-50 border-gray-300 rounded focus:ring-blue-500 focus:ring-2 cursor-pointer">
+                                <span>無効なコースも含む</span>
+                            </label>
+
+                            <div class="flex-1"></div>
+
+                            <!-- 新規登録（Vendorのみ） -->
+                            <button id="btnOpenNew" data-visible-for="iec,supplier"
+                                class="h-10 flex items-center justify-center gap-1.5 text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:ring-blue-100 font-medium rounded-md text-sm px-4 transition-all shadow-sm hover:shadow active:scale-95 whitespace-nowrap">
                                 <span class="material-symbols-outlined icon-sm">add</span>
                                 <span>新規登録</span>
                             </button>
                         </div>
 
+                        <!-- テーブル -->
                         <div class="flex-1 overflow-x-auto">
-                            <table class="min-w-full text-left whitespace-nowrap">
+                            <table class="min-w-full text-left">
                                 <thead class="bg-gray-50 border-b border-gray-200 sticky top-0 z-50">
                                     <tr>
-                                        <th class="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">団体</th>
-                                        <th class="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">コース名</th>
-                                        <th class="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">団体管理CD</th>
+                                        <th class="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">コース名 / 自社管理コード</th>
+                                        <th class="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider" data-visible-for="iec">団体</th>
                                         <th class="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider text-center">HTML</th>
-                                        <th class="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider text-center">版下</th>
-                                        <th class="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider text-center">Op数</th>
-                                        <th class="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider text-center">最終更新日</th>
+                                        <th class="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider text-center">版下PDF</th>
+                                        <th class="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider text-center whitespace-nowrap">オプション</th>
+                                        <th class="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider text-center whitespace-nowrap">最終更新日</th>
+                                        <th class="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider text-center">ステータス</th>
                                         <th class="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider text-center">アクション</th>
                                     </tr>
                                 </thead>
-                                <tbody id="courseTableBody" class="divide-y divide-gray-100 bg-white">
-                                    </tbody>
+                                <tbody id="courseTableBody" class="divide-y divide-gray-100 bg-white"></tbody>
                             </table>
                         </div>
-                        
+
+                        <!-- ページネーション -->
                         <div class="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6">
                             <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
                                 <div>
                                     <p class="text-sm text-gray-700">
-                                        全 <span id="totalCount" class="font-medium">0</span> 件中 
-                                        <span id="startCount" class="font-medium">0</span> から 
+                                        全 <span id="totalCount" class="font-medium">0</span> 件中
+                                        <span id="startCount" class="font-medium">0</span> から
                                         <span id="endCount" class="font-medium">0</span> 件を表示
                                     </p>
                                 </div>
                                 <div>
                                     <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
-                                        <button id="btnPrev" type="button" class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
-                                            <span class="sr-only">Previous</span>
+                                        <button id="btnPrev" type="button"
+                                            class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
+                                            <span class="sr-only">前へ</span>
                                             <span class="material-symbols-outlined icon-sm">chevron_left</span>
                                         </button>
-                                        
-                                        <span id="pageIndicator" class="z-10 bg-blue-50 border-blue-500 text-blue-600 relative inline-flex items-center px-4 py-2 border text-sm font-medium">
-                                            1
-                                        </span>
-
-                                        <button id="btnNext" type="button" class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
-                                            <span class="sr-only">Next</span>
+                                        <span id="pageIndicator"
+                                            class="z-10 bg-blue-50 border-blue-500 text-blue-600 relative inline-flex items-center px-4 py-2 border text-sm font-medium">1</span>
+                                        <button id="btnNext" type="button"
+                                            class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
+                                            <span class="sr-only">次へ</span>
                                             <span class="material-symbols-outlined icon-sm">chevron_right</span>
                                         </button>
                                     </nav>
                                 </div>
                             </div>
                         </div>
-
-                        <div class="p-4 bg-yellow-50 border-t border-yellow-100 flex gap-3 text-yellow-800 text-sm">
-                            <span class="material-symbols-outlined icon-md text-yellow-600">lightbulb</span>
-                            <div class="flex flex-col gap-1">
-                                <strong class="font-bold">解説メモ</strong>
-                                <p class="text-yellow-700 leading-relaxed">
-                                    フライヤーマスタと同じ想定。
-                                </p>
-                            </div>
-                        </div>
-
                     </div>
                 </div>
             </main>
         </div>
 
-        <div id="modal" class="fixed inset-0 z-[100] bg-gray-900/50 backdrop-blur-sm flex items-center justify-center hidden transition-all duration-200">
-            <div class="bg-white rounded-xl shadow-2xl w-full max-w-lg mx-4 overflow-hidden transform transition-all scale-100 border border-gray-100">
-                <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-white">
-                    <h2 class="text-lg font-bold text-gray-800 flex items-center gap-2">
+        <!-- ==================== コース新規登録 / 編集 / 詳細モーダル ==================== -->
+        <div id="modal" class="fixed inset-0 z-[100] bg-gray-900/50 backdrop-blur-sm flex items-center justify-center hidden">
+            <div class="bg-white rounded-xl shadow-2xl w-full max-w-3xl mx-4 flex flex-col max-h-[90vh] border border-gray-100">
+
+                <!-- モーダルヘッダー -->
+                <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center shrink-0">
+                    <h2 id="modalTitle" class="text-lg font-bold text-gray-800 flex items-center gap-2">
                         <span class="material-symbols-outlined text-blue-600 icon-md">library_add</span>
                         コース新規登録
                     </h2>
-                    <button id="btnCloseModalHeader" class="text-gray-400 hover:text-gray-600 hover:bg-gray-100 p-1 rounded-full transition-colors">
+                    <button id="btnCloseModalHeader"
+                        class="text-gray-400 hover:text-gray-600 hover:bg-gray-100 p-1 rounded-full transition-colors">
                         <span class="material-symbols-outlined icon-md">close</span>
                     </button>
                 </div>
-                
-                <div class="p-6 flex flex-col gap-5 bg-white max-h-[70vh] overflow-y-auto">
-                    <div class="flex flex-col gap-1.5">
-                        <label class="text-sm font-bold text-gray-700">団体 <span class="text-red-500">*</span></label>
-                        <div class="relative">
-                            <select class="appearance-none w-full rounded-md border border-gray-300 px-3 py-2.5 text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white shadow-sm sm:text-sm transition-shadow pr-8">
-                                <option value="">団体を選択してください</option>
-                                <option value="corp-1">産業能率大学</option>
-                                <option value="corp-2">JMAM</option>
-                                <option value="corp-3">JTEX</option>
-                            </select>
-                            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-500">
-                                <span class="material-symbols-outlined icon-sm">expand_more</span>
+
+                <!-- モーダルボディ（スクロール） -->
+                <div class="overflow-y-auto flex-1 p-6 flex flex-col gap-6">
+
+                    <!-- ── 基本情報 ─────────────────────────────── -->
+                    <div class="flex flex-col gap-4">
+                        <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">基本情報</p>
+
+                        <!-- コース名 -->
+                        <div class="flex flex-col gap-1.5">
+                            <label class="text-sm font-bold text-gray-700">
+                                コース名（フライヤー名）
+                                <span class="text-red-500" data-visible-for="iec,supplier">*</span>
+                            </label>
+                            <input id="mName" type="text"
+                                class="w-full rounded-md border border-gray-300 px-3 py-2.5 text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 shadow-sm text-sm transition-shadow"
+                                placeholder="例：新入社員のためのビジネスマナー基礎">
+                        </div>
+
+                        <!-- 自社管理コード -->
+                        <div class="flex flex-col gap-1.5">
+                            <label class="text-sm font-bold text-gray-700">
+                                自社管理コード
+                            </label>
+                            <input id="mHanCode" type="text"
+                                class="w-full rounded-md border border-gray-300 px-3 py-2.5 text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 shadow-sm text-sm transition-shadow font-mono"
+                                placeholder="例：SAN-BM-001">
+                        </div>
+
+                        <!-- 備考 -->
+                        <div class="flex flex-col gap-1.5">
+                            <label class="text-sm font-bold text-gray-700">備考</label>
+                            <textarea id="mNote" rows="2"
+                                class="w-full rounded-md border border-gray-300 px-3 py-2.5 text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 shadow-sm text-sm transition-shadow resize-none"
+                                placeholder="補足情報があれば入力してください"></textarea>
+                        </div>
+
+                        <!-- 添付ファイル -->
+                        <div class="flex flex-col gap-2">
+                            <label class="text-sm font-bold text-gray-700">添付ファイル</label>
+                            <div class="flex flex-col gap-3">
+                                <div class="flex flex-col gap-1">
+                                    <label class="text-xs text-gray-500">HTML（ZIPファイル）</label>
+                                    <input id="mHtmlZipFile" type="file" accept=".zip"
+                                        class="block w-full text-sm text-gray-700 file:mr-3 file:py-1.5 file:px-3 file:rounded file:border-0 file:text-xs file:font-medium file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 border border-gray-300 rounded-md cursor-pointer px-2 py-1.5">
+                                </div>
+                                <div class="flex flex-col gap-1">
+                                    <label class="text-xs text-gray-500">版下PDF</label>
+                                    <input id="mPdfFile" type="file" accept=".pdf"
+                                        class="block w-full text-sm text-gray-700 file:mr-3 file:py-1.5 file:px-3 file:rounded file:border-0 file:text-xs file:font-medium file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 border border-gray-300 rounded-md cursor-pointer px-2 py-1.5">
+                                </div>
                             </div>
                         </div>
                     </div>
 
-                    <div class="flex flex-col gap-1.5">
-                        <label class="text-sm font-bold text-gray-700">コース名 <span class="text-red-500">*</span></label>
-                        <input type="text" class="w-full rounded-md border border-gray-300 px-3 py-2.5 text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 shadow-sm sm:text-sm transition-shadow" placeholder="例：新入社員向けビジネスマナー">
-                    </div>
-
-                    <div class="flex flex-col gap-1.5">
-                        <label class="text-sm font-bold text-gray-700">団体管理コード</label>
-                        <input type="text" class="w-full rounded-md border border-gray-300 px-3 py-2.5 text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 shadow-sm sm:text-sm transition-shadow" placeholder="例：SN-001">
-                    </div>
-
-                    <div class="flex gap-6">
-                         <div class="flex items-center">
-                            <input id="check-html" type="checkbox" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
-                            <label for="check-html" class="ml-2 block text-sm text-gray-700 font-medium">HTML教材あり</label>
+                    <!-- ── オプション ─────────────────────────────── -->
+                    <div class="flex flex-col gap-3">
+                        <div class="flex items-center justify-between">
+                            <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider flex items-center gap-1.5">
+                                オプション
+                                <span id="mCourseCountBadge"
+                                    class="inline-flex items-center px-1.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-600">0</span>
+                            </p>
+                            <button id="btnAddCourse" data-visible-for="iec,supplier"
+                                class="h-7 flex items-center gap-1 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-md px-2 text-xs font-medium transition-colors">
+                                <span class="material-symbols-outlined icon-sm">add</span>
+                                オプションを追加
+                            </button>
                         </div>
-                        <div class="flex items-center">
-                            <input id="check-plate" type="checkbox" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
-                            <label for="check-plate" class="ml-2 block text-sm text-gray-700 font-medium">版下あり</label>
-                        </div>
-                    </div>
 
-                    <div class="flex flex-col gap-1.5">
-                         <label class="text-sm font-bold text-gray-700">オプション数</label>
-                         <input type="number" class="w-full rounded-md border border-gray-300 px-3 py-2.5 text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 shadow-sm sm:text-sm transition-shadow" value="0">
+                        <div class="border border-gray-200 rounded-lg overflow-hidden">
+                            <table class="min-w-full">
+                                <thead class="bg-gray-50 border-b border-gray-200">
+                                    <tr>
+                                        <th class="px-3 py-2 text-xs font-semibold text-gray-500 w-12 text-center">順</th>
+                                        <th class="px-3 py-2 text-xs font-semibold text-gray-500">オプション名</th>
+                                        <th class="px-3 py-2 text-xs font-semibold text-gray-500 w-28 text-right">価格（円）</th>
+                                        <th class="px-3 py-2 text-xs font-semibold text-gray-500 w-28">受講期間（か月）</th>
+                                        <th class="px-3 py-2 w-8" data-visible-for="iec,supplier"></th>
+                                    </tr>
+                                </thead>
+                                <tbody id="mCourseRowsBody" class="divide-y divide-gray-100 bg-white"></tbody>
+                            </table>
+                            <div id="mEmptyCourseState" class="hidden px-4 py-6 text-center text-xs text-gray-400">
+                                オプションが登録されていません
+                            </div>
+                        </div>
                     </div>
 
                 </div>
+
+                <!-- モーダルフッター -->
+                <div class="px-6 py-4 bg-gray-50 flex gap-3 justify-end border-t border-gray-100 shrink-0">
+                    <button id="btnCloseModal" data-visible-for="iec,supplier"
+                        class="px-4 py-2 rounded-md bg-white border border-gray-300 text-gray-700 font-medium hover:bg-gray-50 hover:border-gray-400 transition-all shadow-sm text-sm">
+                        キャンセル
+                    </button>
+                    <button id="btnSave" data-visible-for="iec,supplier"
+                        class="px-4 py-2 rounded-md bg-blue-600 text-white font-bold hover:bg-blue-700 shadow-sm hover:shadow transition-all text-sm">
+                        保存する
+                    </button>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ==================== 削除確認ダイアログ ==================== -->
+        <div id="deleteConfirmDialog" class="fixed inset-0 z-[200] bg-gray-900/50 backdrop-blur-sm flex items-center justify-center hidden">
+            <div class="bg-white rounded-xl shadow-2xl w-full max-w-sm mx-4 overflow-hidden border border-gray-100">
+                <div class="px-6 py-5 flex flex-col gap-3">
+                    <div class="flex items-start gap-3">
+                        <span class="material-symbols-outlined text-red-500 mt-0.5">warning</span>
+                        <div>
+                            <h3 class="text-base font-bold text-gray-800">削除の確認</h3>
+                            <p class="text-sm text-gray-600 mt-1">この操作は取り消せません。削除しますか？</p>
+                        </div>
+                    </div>
+                </div>
                 <div class="px-6 py-4 bg-gray-50 flex gap-3 justify-end border-t border-gray-100">
-                    <button id="btnCloseModal" class="px-4 py-2 rounded-md bg-white border border-gray-300 text-gray-700 font-medium hover:bg-gray-50 hover:border-gray-400 transition-all shadow-sm">キャンセル</button>
-                    <button class="px-4 py-2 rounded-md bg-blue-600 text-white font-bold hover:bg-blue-700 shadow-sm hover:shadow transition-all">登録する</button>
+                    <button id="btnDeleteCancel" class="px-4 py-2 rounded-md bg-white border border-gray-300 text-gray-700 font-medium hover:bg-gray-50 transition-all shadow-sm">キャンセル</button>
+                    <button id="btnDeleteConfirm" class="px-4 py-2 rounded-md bg-red-600 text-white font-bold hover:bg-red-700 shadow-sm transition-all">削除する</button>
                 </div>
             </div>
         </div>
 
         <script type="module">
-            // ここで同じ階層にある course-master-data.js をインポートします
             import { courseMasterData } from './js/data/course-master-data.js';
 
+            const ITEMS_PER_PAGE    = 20;
+            const SUPPLIER_EDU_CODE = 'EDU001'; // 産業能率大学（Vendorのデモユーザー）
+
+            const getRole = () => new URLSearchParams(location.search).get('role') || 'supplier';
+
+            // ── 一覧管理 ────────────────────────────────────────────
+            let filtered    = [];
+            let currentPage = 1;
+
+            const searchInput   = document.getElementById('searchInput');
+            const filterOrg     = document.getElementById('filterOrg');
+            const showInactive  = document.getElementById('showInactive');
+            const tableBody     = document.getElementById('courseTableBody');
+            const totalCountEl  = document.getElementById('totalCount');
+            const startCountEl  = document.getElementById('startCount');
+            const endCountEl    = document.getElementById('endCount');
+            const btnPrev       = document.getElementById('btnPrev');
+            const btnNext       = document.getElementById('btnNext');
+            const pageIndicator = document.getElementById('pageIndicator');
+
+            const badge = (isTrue) => isTrue
+                ? `<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-50 text-blue-700 border border-blue-100">あり</span>`
+                : `<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-400 border border-gray-200">なし</span>`;
+
+            const statusBadge = (status) => status === 'Active'
+                ? `<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-green-50 text-green-700 border border-green-100"><span class="w-1.5 h-1.5 bg-green-500 rounded-full"></span>有効</span>`
+                : `<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-600 border border-gray-200"><span class="w-1.5 h-1.5 bg-gray-400 rounded-full"></span>無効</span>`;
+
+            const filterData = () => {
+                const role           = getRole();
+                const keyword        = searchInput.value.trim().toLowerCase();
+                const org            = filterOrg ? filterOrg.value : '';
+                const includeInactive = showInactive ? showInactive.checked : false;
+
+                filtered = courseMasterData.filter(c => {
+                    if (role === 'supplier' && c.eduCode !== SUPPLIER_EDU_CODE) return false;
+                    if (org && c.eduCode !== org) return false;
+                    if (!includeInactive && c.status !== 'Active') return false;
+                    if (keyword) {
+                        return c.name.toLowerCase().includes(keyword)
+                            || c.hanCode.toLowerCase().includes(keyword);
+                    }
+                    return true;
+                });
+                currentPage = 1;
+                renderList();
+            };
+
+            const updatePagination = () => {
+                const total      = filtered.length;
+                const totalPages = Math.ceil(total / ITEMS_PER_PAGE);
+                const start      = total === 0 ? 0 : (currentPage - 1) * ITEMS_PER_PAGE + 1;
+                const end        = Math.min(currentPage * ITEMS_PER_PAGE, total);
+
+                totalCountEl.textContent  = total;
+                startCountEl.textContent  = start;
+                endCountEl.textContent    = end;
+                pageIndicator.textContent = total === 0 ? 0 : currentPage;
+                btnPrev.disabled = currentPage === 1 || total === 0;
+                btnNext.disabled = currentPage === totalPages || total === 0;
+            };
+
+            const renderList = () => {
+                const isIec = getRole() === 'iec';
+                const slice = filtered.slice(
+                    (currentPage - 1) * ITEMS_PER_PAGE,
+                    currentPage * ITEMS_PER_PAGE
+                );
+
+                if (slice.length === 0) {
+                    tableBody.innerHTML = `<tr><td colspan="${isIec ? 8 : 7}" class="px-6 py-12 text-center text-gray-500">コースが見つかりませんでした</td></tr>`;
+                    updatePagination();
+                    return;
+                }
+
+                tableBody.innerHTML = slice.map(c => {
+                    const orgCell = isIec
+                        ? `<td class="px-6 py-4 text-sm text-gray-600 whitespace-nowrap">${c.org}</td>`
+                        : '';
+                    const isActive = c.status !== 'Inactive';
+                    const statusMenuLabel     = isActive ? '無効にする' : '有効にする';
+                    const statusMenuIcon      = isActive ? 'block' : 'check_circle';
+                    const statusMenuIconColor = isActive ? 'text-orange-400 group-hover:text-orange-500' : 'text-green-500 group-hover:text-green-600';
+                    const deleteItem = isActive
+                        ? `<a href="#" class="flex items-center px-4 py-2 text-sm text-gray-400 cursor-not-allowed" title="先に無効にしてから削除してください"><span class="material-symbols-outlined icon-sm mr-3 text-gray-300">delete</span>削除する</a>`
+                        : `<a href="#" class="js-delete-action group flex items-center px-4 py-2 text-sm text-red-600 hover:bg-red-50" data-id="${c.id}"><span class="material-symbols-outlined icon-sm mr-3 text-red-400 group-hover:text-red-500">delete</span>削除する</a>`;
+                    const menuItems = `<div class="py-1">
+                               <a href="#" class="js-open-modal group flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-gray-900" data-id="${c.id}">
+                                   <span class="material-symbols-outlined icon-sm mr-3 text-gray-400 group-hover:text-gray-500">edit</span>
+                                   編集する
+                               </a>
+                               <a href="#" class="js-toggle-status group flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-gray-900" data-id="${c.id}">
+                                   <span class="material-symbols-outlined icon-sm mr-3 ${statusMenuIconColor}">${statusMenuIcon}</span>
+                                   ${statusMenuLabel}
+                               </a>
+                           </div>
+                           <div class="border-t border-gray-100 my-1"></div>
+                           <div class="py-1">
+                               ${deleteItem}
+                           </div>`;
+                    return `
+                        <tr class="hover:bg-gray-50 transition-colors">
+                            <td class="px-6 py-4">
+                                <div class="text-sm font-medium text-gray-900">${c.name}</div>
+                                <div class="text-xs text-gray-400 mt-0.5 font-mono">${c.hanCode}</div>
+                            </td>
+                            ${orgCell}
+                            <td class="px-6 py-4 text-center">${badge(!!c.htmlUrl)}</td>
+                            <td class="px-6 py-4 text-center">${badge(!!c.pdfUrl)}</td>
+                            <td class="px-6 py-4 text-sm text-center font-medium text-gray-700">${c.courses.length}</td>
+                            <td class="px-6 py-4 text-sm text-center text-gray-500 whitespace-nowrap">${c.updatedAt}</td>
+                            <td class="px-6 py-4 text-center">${statusBadge(c.status)}</td>
+                            <td class="px-6 py-4 text-center relative">
+                                <div class="relative inline-block text-left">
+                                    <button class="menu-trigger flex p-2 rounded-full text-gray-400 hover:text-gray-600 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors">
+                                        <span class="material-symbols-outlined icon-md">more_horiz</span>
+                                    </button>
+                                    <div class="menu hidden absolute right-0 mt-2 w-44 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 z-10 text-left">
+                                        ${menuItems}
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>`;
+                }).join('');
+
+                updatePagination();
+            };
+
+            // ── モーダル管理 ────────────────────────────────────────
+            const modal       = document.getElementById('modal');
+            const modalTitle  = document.getElementById('modalTitle');
+
+            let modalCourseRows = [];
+            let nextRid = 0;
+
+            const applyFieldReadonly = () => {
+                // IEC・Vendor ともに編集可能のため制御なし
+            };
+
+            // オプションテーブル描画
+            const renderModalCourseRows = () => {
+                const tbody      = document.getElementById('mCourseRowsBody');
+                const emptyState = document.getElementById('mEmptyCourseState');
+                const countBadge = document.getElementById('mCourseCountBadge');
+
+                countBadge.textContent = modalCourseRows.length;
+
+                if (modalCourseRows.length === 0) {
+                    tbody.innerHTML = '';
+                    emptyState.classList.remove('hidden');
+                    return;
+                }
+                emptyState.classList.add('hidden');
+
+                tbody.innerHTML = modalCourseRows.map((r, i) => `
+                        <tr data-rid="${r._rid}">
+                            <td class="px-3 py-2">
+                                <div class="flex items-center gap-0.5">
+                                    <button class="btn-move-up p-0.5 rounded text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors" data-rid="${r._rid}" ${i === 0 ? 'disabled' : ''}>
+                                        <span class="material-symbols-outlined icon-sm">arrow_upward</span>
+                                    </button>
+                                    <button class="btn-move-down p-0.5 rounded text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors" data-rid="${r._rid}" ${i === modalCourseRows.length - 1 ? 'disabled' : ''}>
+                                        <span class="material-symbols-outlined icon-sm">arrow_downward</span>
+                                    </button>
+                                </div>
+                            </td>
+                            <td class="px-3 py-2">
+                                <input type="text" value="${r.name || ''}" placeholder="例：WEB版" data-field="name"
+                                    class="w-full rounded border border-gray-300 px-2 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500">
+                            </td>
+                            <td class="px-3 py-2">
+                                <input type="number" min="0" value="${r.price !== undefined && r.price !== '' ? r.price : ''}" placeholder="17600" data-field="price"
+                                    class="w-full rounded border border-gray-300 px-2 py-1.5 text-sm text-right focus:outline-none focus:ring-1 focus:ring-blue-500">
+                            </td>
+                            <td class="px-3 py-2">
+                                <input type="number" min="1" value="${r.period !== undefined && r.period !== '' ? r.period : ''}" placeholder="例：3" data-field="period"
+                                    class="w-full rounded border border-gray-300 px-2 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500">
+                            </td>
+                            <td class="px-3 py-2 text-center">
+                                <button class="btn-del-row p-1 rounded text-red-400 hover:text-red-600 hover:bg-red-50 transition-colors" data-rid="${r._rid}">
+                                    <span class="material-symbols-outlined icon-sm">close</span>
+                                </button>
+                            </td>
+                        </tr>`).join('');
+            };
+
+            const openModal = (data = null) => {
+                const isNew = !data;
+
+                // タイトル
+                const icon = isNew ? 'library_add' : 'edit';
+                const label = isNew ? 'コース新規登録' : 'コース編集';
+                modalTitle.innerHTML = `
+                    <span class="material-symbols-outlined text-blue-600 icon-md">${icon}</span>
+                    ${label}`;
+
+                // フォーム値セット
+                document.getElementById('mName').value    = data?.name    || '';
+                document.getElementById('mHanCode').value = data?.hanCode || '';
+                document.getElementById('mNote').value    = data?.note    || '';
+                // file input は value のセット不可（セキュリティ制限）
+
+                // オプションコピー
+                modalCourseRows = data
+                    ? data.courses.map((c, i) => ({ ...c, _rid: i }))
+                    : [];
+                nextRid = modalCourseRows.length;
+
+                applyFieldReadonly();
+                renderModalCourseRows();
+                modal.classList.remove('hidden');
+            };
+
+            const closeModal = () => {
+                modal.classList.add('hidden');
+            };
+
+            // ── イベント：一覧 ──────────────────────────────────────
+            searchInput.addEventListener('input', filterData);
+            if (filterOrg)     filterOrg.addEventListener('change', filterData);
+            if (showInactive)  showInactive.addEventListener('change', filterData);
+
+            btnPrev.addEventListener('click', () => { if (currentPage > 1) { currentPage--; renderList(); } });
+            btnNext.addEventListener('click', () => {
+                const total = Math.ceil(filtered.length / ITEMS_PER_PAGE);
+                if (currentPage < total) { currentPage++; renderList(); }
+            });
+
+            const closeAllMenus = () => document.querySelectorAll('.menu').forEach(m => m.classList.add('hidden'));
+
+            let pendingDeleteId = null;
+            const deleteDialog = document.getElementById('deleteConfirmDialog');
+
+            tableBody.addEventListener('click', e => {
+                const trigger = e.target.closest('.menu-trigger');
+                if (trigger) {
+                    e.stopPropagation();
+                    closeAllMenus();
+                    trigger.nextElementSibling.classList.remove('hidden');
+                    return;
+                }
+                const openBtn = e.target.closest('.js-open-modal');
+                if (openBtn) {
+                    e.preventDefault();
+                    closeAllMenus();
+                    const id   = parseInt(openBtn.dataset.id, 10);
+                    const data = courseMasterData.find(c => c.id === id);
+                    openModal(data);
+                    return;
+                }
+                const toggleBtn = e.target.closest('.js-toggle-status');
+                if (toggleBtn) {
+                    e.preventDefault();
+                    closeAllMenus();
+                    const id     = parseInt(toggleBtn.dataset.id, 10);
+                    const course = courseMasterData.find(c => c.id === id);
+                    if (course) {
+                        course.status = course.status === 'Active' ? 'Inactive' : 'Active';
+                        filterData();
+                    }
+                    return;
+                }
+                const deleteBtn = e.target.closest('.js-delete-action');
+                if (deleteBtn) {
+                    e.preventDefault();
+                    closeAllMenus();
+                    pendingDeleteId = parseInt(deleteBtn.dataset.id, 10);
+                    deleteDialog.classList.remove('hidden');
+                }
+            });
+
+            document.getElementById('btnDeleteCancel').addEventListener('click', () => deleteDialog.classList.add('hidden'));
+            document.getElementById('btnDeleteConfirm').addEventListener('click', () => {
+                alert('（モック）削除しました。');
+                deleteDialog.classList.add('hidden');
+                pendingDeleteId = null;
+            });
+            deleteDialog.addEventListener('click', e => { if (e.target === deleteDialog) deleteDialog.classList.add('hidden'); });
+
+            document.addEventListener('click', closeAllMenus);
+
+            // 新規登録ボタン
+            document.getElementById('btnOpenNew').addEventListener('click', () => openModal(null));
+
+            // ── イベント：モーダル ──────────────────────────────────
+            document.getElementById('btnCloseModalHeader').addEventListener('click', closeModal);
+            document.getElementById('btnCloseModal').addEventListener('click', closeModal);
+            modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
+
+            document.getElementById('btnAddCourse').addEventListener('click', () => {
+                modalCourseRows.push({
+                    sortNo: modalCourseRows.length + 1,
+                    name: '', price: '', period: '',
+                    _rid: nextRid++,
+                });
+                renderModalCourseRows();
+            });
+
+            // 入力中の値をmodalCourseRowsに同期する（移動・削除前に呼ぶ）
+            const syncInputValues = () => {
+                document.getElementById('mCourseRowsBody').querySelectorAll('tr[data-rid]').forEach(tr => {
+                    const rid = parseInt(tr.dataset.rid, 10);
+                    const row = modalCourseRows.find(r => r._rid === rid);
+                    if (!row) return;
+                    tr.querySelectorAll('[data-field]').forEach(input => {
+                        const field = input.dataset.field;
+                        row[field] = (field === 'price' || field === 'period') ? Number(input.value) : input.value;
+                    });
+                });
+            };
+
+            document.getElementById('mCourseRowsBody').addEventListener('click', e => {
+                const delBtn = e.target.closest('.btn-del-row');
+                if (delBtn) {
+                    syncInputValues();
+                    modalCourseRows = modalCourseRows.filter(r => r._rid !== parseInt(delBtn.dataset.rid, 10));
+                    renderModalCourseRows();
+                    return;
+                }
+                const upBtn = e.target.closest('.btn-move-up');
+                if (upBtn && !upBtn.disabled) {
+                    syncInputValues();
+                    const rid = parseInt(upBtn.dataset.rid, 10);
+                    const idx = modalCourseRows.findIndex(r => r._rid === rid);
+                    if (idx > 0) {
+                        [modalCourseRows[idx - 1], modalCourseRows[idx]] = [modalCourseRows[idx], modalCourseRows[idx - 1]];
+                        renderModalCourseRows();
+                    }
+                    return;
+                }
+                const downBtn = e.target.closest('.btn-move-down');
+                if (downBtn && !downBtn.disabled) {
+                    syncInputValues();
+                    const rid = parseInt(downBtn.dataset.rid, 10);
+                    const idx = modalCourseRows.findIndex(r => r._rid === rid);
+                    if (idx < modalCourseRows.length - 1) {
+                        [modalCourseRows[idx], modalCourseRows[idx + 1]] = [modalCourseRows[idx + 1], modalCourseRows[idx]];
+                        renderModalCourseRows();
+                    }
+                    return;
+                }
+            });
+
+            document.getElementById('mCourseRowsBody').addEventListener('change', e => {
+                const input = e.target.closest('[data-field]');
+                if (!input) return;
+                const rid   = parseInt(input.closest('tr').dataset.rid, 10);
+                const field = input.dataset.field;
+                const row   = modalCourseRows.find(r => r._rid === rid);
+                if (!row) return;
+                row[field] = (field === 'price' || field === 'period') ? Number(input.value) : input.value;
+            });
+
+            document.getElementById('btnSave').addEventListener('click', () => {
+                const name    = document.getElementById('mName').value.trim();
+                const hanCode = document.getElementById('mHanCode').value.trim();
+                if (!name || !hanCode) {
+                    alert('コース名と自社管理コードは必須です。');
+                    return;
+                }
+                alert('（モック）保存しました。');
+                closeModal();
+            });
+
+            // ロール切替時に再描画
+            document.addEventListener('change', e => {
+                if (e.target.id !== 'role-select') return;
+                setTimeout(() => {
+                    filterData();
+                    if (!modal.classList.contains('hidden')) {
+                        applyFieldReadonly();
+                        renderModalCourseRows();
+                    }
+                }, 0);
+            });
+
+            // ── 初期化 ──────────────────────────────────────────────
             window.addEventListener('DOMContentLoaded', () => {
-                // --- MockUI 初期化 ---
                 if (typeof MockUI !== 'undefined') {
                     MockUI.injectHeader('#app-header', {
                         userName: 'Test User',
                         brand: 'New SD App',
-                        initialRole: 'iec', // IEC権限で表示
+                        initialRole: 'supplier',
                     });
                     MockUI.injectSidebar('#app-sidebar');
                 }
-
-                // --- 状態管理変数 ---
-                let currentCourses = [...courseMasterData];
-                let currentPage = 1;
-                const itemsPerPage = 10;
-
-                // --- DOM要素の取得 ---
-                const searchInput = document.getElementById('searchInput');
-                const tableBody = document.getElementById('courseTableBody');
-                
-                // ページネーション用
-                const totalCountEl = document.getElementById('totalCount');
-                const startCountEl = document.getElementById('startCount');
-                const endCountEl = document.getElementById('endCount');
-                const btnPrev = document.getElementById('btnPrev');
-                const btnNext = document.getElementById('btnNext');
-                const pageIndicator = document.getElementById('pageIndicator');
-
-                // --- バッジ生成関数 (デモ用にランダム or 仮データを表示) ---
-                const getBooleanBadge = (isTrue, trueText = 'あり', falseText = 'なし') => {
-                    if (isTrue) {
-                        return `<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-50 text-blue-700 border border-blue-100">${trueText}</span>`;
-                    } else {
-                        return `<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-400 border border-gray-200">${falseText}</span>`;
-                    }
-                };
-                
-                // --- ロジック関数 ---
-
-                // ページネーションUI更新
-                const updatePaginationUI = () => {
-                    const total = currentCourses.length;
-                    const start = total === 0 ? 0 : (currentPage - 1) * itemsPerPage + 1;
-                    const end = Math.min(currentPage * itemsPerPage, total);
-                    const totalPages = Math.ceil(total / itemsPerPage);
-
-                    totalCountEl.textContent = total;
-                    startCountEl.textContent = start;
-                    endCountEl.textContent = end;
-                    pageIndicator.textContent = total === 0 ? 0 : currentPage;
-
-                    btnPrev.disabled = currentPage === 1 || total === 0;
-                    btnNext.disabled = currentPage === totalPages || total === 0;
-                };
-
-                // テーブル描画
-                const renderCourses = () => {
-                    if (!tableBody) return;
-
-                    const startIndex = (currentPage - 1) * itemsPerPage;
-                    const endIndex = startIndex + itemsPerPage;
-                    const slicedData = currentCourses.slice(startIndex, endIndex);
-
-                    if (slicedData.length === 0) {
-                        tableBody.innerHTML = `<tr><td colspan="8" class="px-6 py-10 text-center text-gray-500">データが見つかりませんでした</td></tr>`;
-                        updatePaginationUI();
-                        return;
-                    }
-
-                    const html = slicedData.map(course => {
-                        // データにない項目はデモ用に生成（本来はAPIやDBから取得）
-                        // ※ランダム性を排除するため、IDの偶奇で仮決定
-                        const hasHtml = (course.id % 2 === 0); 
-                        const hasPlate = (course.id % 3 !== 0); 
-                        const lastUpdated = "2024/01/" + (10 + (course.id % 20)); // 仮の日付
-
-                        // オプション数
-                        const optionCount = course.options ? course.options.length : 0;
-
-                        return `
-                        <tr class="hover:bg-gray-50 transition-colors cursor-pointer js-row group relative">
-                            <td class="px-6 py-4 text-sm text-gray-600">${course.org}</td>
-                            <td class="px-6 py-4 text-sm text-gray-900 font-medium">
-                                ${course.title}
-                                <div class="text-xs text-gray-400 mt-0.5">${course.stdTag}</div>
-                            </td>
-                            <td class="px-6 py-4 text-sm text-gray-500 font-mono">${course.code}</td>
-                            <td class="px-6 py-4 text-center">${getBooleanBadge(hasHtml)}</td>
-                            <td class="px-6 py-4 text-center">${getBooleanBadge(hasPlate)}</td>
-                            <td class="px-6 py-4 text-sm text-center text-gray-600">${optionCount}</td>
-                            <td class="px-6 py-4 text-sm text-center text-gray-500">${lastUpdated}</td>
-                            <td class="px-6 py-4 text-center relative">
-                                <div class="relative inline-block text-left">
-                                    <button class="flex menu-trigger p-2 rounded-full text-gray-400 hover:text-gray-600 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors">
-                                        <span class="material-symbols-outlined icon-md">more_horiz</span>
-                                    </button>
-                                    <div class="menu hidden absolute right-0 mt-2 w-48 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-10 text-left">
-                                        <div class="py-1">
-                                            <a href="#" class="group flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
-                                                <span class="material-symbols-outlined icon-sm mr-3 text-gray-400 group-hover:text-gray-500">edit</span>
-                                                編集する
-                                            </a>
-                                            <a href="#" class="group flex items-center px-4 py-2 text-sm text-red-600 hover:bg-red-50">
-                                                <span class="material-symbols-outlined icon-sm mr-3 text-red-400 group-hover:text-red-500">delete</span>
-                                                削除する
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </td>
-                        </tr>
-                        `;
-                    }).join('');
-
-                    tableBody.innerHTML = html;
-                    updatePaginationUI();
-                    
-                    // 動的描画後にRoleMockなどを再適用する場合
-                    if (typeof RoleMock !== 'undefined') {
-                        // RoleMock.applyRoleVisibility(); 
-                    }
-                };
-
-                // フィルタリング処理
-                const filterData = () => {
-                    const keyword = searchInput.value.trim().toLowerCase();
-
-                    currentCourses = courseMasterData.filter(course => {
-                        if (!keyword) return true;
-                        // コース名 または 管理コード で検索
-                        return course.title.toLowerCase().includes(keyword) || 
-                               course.code.toLowerCase().includes(keyword);
-                    });
-
-                    currentPage = 1; // 検索時は1ページ目に戻す
-                    renderCourses();
-                };
-
-                // --- イベントリスナー ---
-
-                // 検索入力
-                searchInput.addEventListener('input', filterData);
-
-                // ページネーション
-                btnPrev.addEventListener('click', () => {
-                    if (currentPage > 1) {
-                        currentPage--;
-                        renderCourses();
-                    }
-                });
-
-                btnNext.addEventListener('click', () => {
-                    const totalPages = Math.ceil(currentCourses.length / itemsPerPage);
-                    if (currentPage < totalPages) {
-                        currentPage++;
-                        renderCourses();
-                    }
-                });
-
-                // モーダル制御（既存コードの移植）
-                const modal = document.getElementById('modal');
-                const btnOpenModal = document.getElementById('btnOpenModal');
-                const btnCloseModal = document.getElementById('btnCloseModal');
-                const btnCloseModalHeader = document.getElementById('btnCloseModalHeader');
-
-                const openModal = () => {
-                    closeAllMenus();
-                    modal.classList.remove('hidden');
-                };
-                const closeModal = () => modal.classList.add('hidden');
-                const closeAllMenus = () => {
-                     document.querySelectorAll(".menu").forEach(m => m.classList.add("hidden"));
-                };
-
-                btnOpenModal.addEventListener('click', openModal);
-                btnCloseModal.addEventListener('click', closeModal);
-                btnCloseModalHeader.addEventListener('click', closeModal);
-                modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
-
-                // テーブル内のメニュー操作（動的要素への委譲）
-                tableBody.addEventListener('click', (e) => {
-                    const trigger = e.target.closest('.menu-trigger');
-                    if (trigger) {
-                        e.stopPropagation();
-                        // 他を閉じる
-                        closeAllMenus();
-                        // 自分のメニューを開く
-                        const menu = trigger.nextElementSibling;
-                        menu.classList.remove('hidden');
-                    }
-                });
-
-                // 画面クリックでメニューを閉じる
-                document.addEventListener('click', () => closeAllMenus());
-
-                // 初期描画
-                renderCourses();
+                filterData();
             });
         </script>
     </body>
