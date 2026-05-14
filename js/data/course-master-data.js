@@ -1,210 +1,185 @@
+// m_flyer_tk + m_course_flyer_tk のモックデータ
+// courses[] は m_course_flyer_tk レコードに相当
 export const courseMasterData = [
+
+  // ── 産業能率大学 (EDU001) ──────────────────────────────────────
   {
-    "id": 101,
-    "title": "新人のためのビジネスマナー基礎",
-    "code": "MF2001-90001",
-    "org": "他団体A",
-    "stdTag": "マナー",
-    "options": [
-      { "id": 1, "name": "郵便版", "price": 17600, "length": "2か月" },
-      { "id": 2, "name": "WEB版", "price": 17600, "length": "2か月" }
-    ]
+    id: 101,
+    tkfCode: "TKF-SAN-001",
+    name: "新入社員のためのビジネスマナー基礎",
+    hanCode: "SAN-BM-001",
+    eduCode: "EDU001",
+    org: "産業能率大学",
+    status: "Active",
+    note: "社会人1〜3年目向け。ビジネス文書・電話応対・身だしなみを含む。",
+    htmlUrl: "https://example.com/courses/san-bm-001",
+    pdfUrl:  "https://example.com/pdfs/san-bm-001.pdf",
+    zipUrl:  "",
+    updatedAt: "2026/03/10",
+    courses: [
+      { sortNo: 1, name: "郵便版", price: 17600, period: 2 },
+      { sortNo: 2, name: "WEB版",  price: 17600, period: 2 },
+    ],
   },
   {
-    "id": 102,
-    "title": "Excel実務で使えるショートカット大全",
-    "code": "MF2002-90002",
-    "org": "他団体B",
-    "stdTag": "PCスキル",
-    "options": [
-      { "id": 1, "name": "WEB版", "price": 18920, "length": "3か月" }
-    ]
+    id: 102,
+    tkfCode: "TKF-SAN-002",
+    name: "非財務出身者のための決算書の読み方",
+    hanCode: "SAN-FN-002",
+    eduCode: "EDU001",
+    org: "産業能率大学",
+    status: "Active",
+    note: "",
+    htmlUrl: "",
+    pdfUrl:  "https://example.com/pdfs/san-fn-002.pdf",
+    zipUrl:  "",
+    updatedAt: "2026/02/28",
+    courses: [
+      { sortNo: 1, name: "標準版", price: 23100, period: 3 },
+    ],
   },
   {
-    "id": 103,
-    "title": "入門マーケティングリサーチ",
-    "code": "MF2003-90003",
-    "org": "他団体C",
-    "stdTag": "マーケティング",
-    "options": [
-      { "id": 1, "name": "通常版", "price": 21450, "length": "3か月" },
-      { "id": 2, "name": "ケーススタディ版", "price": 24640, "length": "4か月" }
-    ]
+    id: 103,
+    tkfCode: "TKF-SAN-003",
+    name: "人事担当者のための労務トラブル事例集",
+    hanCode: "SAN-HR-003",
+    eduCode: "EDU001",
+    org: "産業能率大学",
+    status: "Inactive",
+    note: "2026年版に改訂。最新の法改正（育休・時間外規制）に対応。",
+    htmlUrl: "",
+    pdfUrl:  "",
+    zipUrl:  "",
+    updatedAt: "2026/01/20",
+    courses: [
+      { sortNo: 1, name: "標準版", price: 23650, period: 3 },
+    ],
   },
   {
-    "id": 104,
-    "title": "伝わるメール・チャットの書き方",
-    "code": "MF2004-90004",
-    "org": "IEC",
-    "stdTag": "コミュニケーション",
-    "options": [
-      { "id": 1, "name": "WEB版", "price": 16500, "length": "1か月" }
-    ]
+    id: 104,
+    tkfCode: "TKF-SAN-004",
+    name: "デザイン思考で考える新規事業アイデア",
+    hanCode: "SAN-DT-004",
+    eduCode: "EDU001",
+    org: "産業能率大学",
+    status: "Active",
+    note: "",
+    htmlUrl: "https://example.com/courses/san-dt-004",
+    pdfUrl:  "",
+    zipUrl:  "",
+    updatedAt: "2026/03/05",
+    courses: [
+      { sortNo: 1, name: "WEB版", price: 25300, period: 3 },
+    ],
+  },
+
+  // ── JMAM (EDU002) ─────────────────────────────────────────────
+  {
+    id: 201,
+    tkfCode: "TKF-JMM-001",
+    name: "Excel実務で使えるショートカット大全",
+    hanCode: "JMM-PC-001",
+    eduCode: "EDU002",
+    org: "JMAM",
+    status: "Active",
+    note: "Excel 2021以降対応。",
+    htmlUrl: "https://example.com/courses/jmm-pc-001",
+    pdfUrl:  "",
+    zipUrl:  "",
+    updatedAt: "2026/02/18",
+    courses: [
+      { sortNo: 1, name: "WEB版", price: 18920, period: 3 },
+    ],
   },
   {
-    "id": 105,
-    "title": "非財務出身者のための決算書の読み方",
-    "code": "MF2005-90005",
-    "org": "他団体A",
-    "stdTag": "会計",
-    "options": [
-      { "id": 1, "name": "", "price": 23100, "length": "3か月" }
-    ]
+    id: 202,
+    tkfCode: "TKF-JMM-002",
+    name: "若手リーダーのためのタイムマネジメント",
+    hanCode: "JMM-LM-002",
+    eduCode: "EDU002",
+    org: "JMAM",
+    status: "Active",
+    note: "",
+    htmlUrl: "",
+    pdfUrl:  "https://example.com/pdfs/jmm-lm-002.pdf",
+    zipUrl:  "",
+    updatedAt: "2026/01/30",
+    courses: [
+      { sortNo: 1, name: "通常版",   price: 18700, period: 2 },
+      { sortNo: 2, name: "演習追加版", price: 21450, period: 3 },
+    ],
   },
   {
-    "id": 106,
-    "title": "若手リーダーのためのタイムマネジメント",
-    "code": "MF2006-90006",
-    "org": "他団体B",
-    "stdTag": "仕事力",
-    "options": [
-      { "id": 1, "name": "通常版", "price": 18700, "length": "2か月" },
-      { "id": 2, "name": "演習追加版", "price": 21450, "length": "3か月" }
-    ]
+    id: 203,
+    tkfCode: "TKF-JMM-003",
+    name: "法人営業のためのヒアリング技術",
+    hanCode: "JMM-SL-003",
+    eduCode: "EDU002",
+    org: "JMAM",
+    status: "Active",
+    note: "ロールプレイ動画付き。",
+    htmlUrl: "https://example.com/courses/jmm-sl-003",
+    pdfUrl:  "https://example.com/pdfs/jmm-sl-003.pdf",
+    zipUrl:  "https://example.com/zips/jmm-sl-003.zip",
+    updatedAt: "2026/03/01",
+    courses: [
+      { sortNo: 1, name: "通常版",       price: 20900, period: 3 },
+      { sortNo: 2, name: "ロールプレイ版", price: 24200, period: 4 },
+    ],
+  },
+
+  // ── JTEX (EDU003) ──────────────────────────────────────────────
+  {
+    id: 301,
+    tkfCode: "TKF-JTX-001",
+    name: "入門マーケティングリサーチ",
+    hanCode: "JTX-MK-001",
+    eduCode: "EDU003",
+    org: "JTEX",
+    status: "Inactive",
+    note: "",
+    htmlUrl: "",
+    pdfUrl:  "https://example.com/pdfs/jtx-mk-001.pdf",
+    zipUrl:  "",
+    updatedAt: "2026/02/05",
+    courses: [
+      { sortNo: 1, name: "通常版",         price: 21450, period: 3 },
+      { sortNo: 2, name: "ケーススタディ版", price: 24640, period: 4 },
+    ],
   },
   {
-    "id": 107,
-    "title": "ロジカルシンキング実践トレーニング",
-    "code": "MF2007-90007",
-    "org": "IEC",
-    "stdTag": "思考法",
-    "options": [
-      { "id": 1, "name": "", "price": 22000, "length": "3か月" }
-    ]
+    id: 302,
+    tkfCode: "TKF-JTX-002",
+    name: "DX推進担当者のための基礎知識",
+    hanCode: "JTX-DX-002",
+    eduCode: "EDU003",
+    org: "JTEX",
+    status: "Active",
+    note: "2026年版。最新のAI・クラウド動向を含む。",
+    htmlUrl: "https://example.com/courses/jtx-dx-002",
+    pdfUrl:  "",
+    zipUrl:  "",
+    updatedAt: "2026/03/15",
+    courses: [
+      { sortNo: 1, name: "WEB版",   price: 24200, period: 3 },
+      { sortNo: 2, name: "演習付き版", price: 27500, period: 4 },
+    ],
   },
   {
-    "id": 108,
-    "title": "DX推進担当者のための基礎知識",
-    "code": "MF2008-90008",
-    "org": "他団体C",
-    "stdTag": "DX",
-    "options": [
-      { "id": 1, "name": "WEB版", "price": 24200, "length": "3か月" },
-      { "id": 2, "name": "演習付き版", "price": 27500, "length": "4か月" }
-    ]
+    id: 303,
+    tkfCode: "TKF-JTX-003",
+    name: "管理職のためのハラスメント防止",
+    hanCode: "JTX-CP-003",
+    eduCode: "EDU003",
+    org: "JTEX",
+    status: "Active",
+    note: "",
+    htmlUrl: "",
+    pdfUrl:  "",
+    zipUrl:  "",
+    updatedAt: "2026/01/10",
+    courses: [
+      { sortNo: 1, name: "標準版", price: 22000, period: 3 },
+    ],
   },
-  {
-    "id": 109,
-    "title": "人事担当者のための労務トラブル事例集",
-    "code": "MF2009-90009",
-    "org": "他団体A",
-    "stdTag": "労務",
-    "options": [
-      { "id": 1, "name": "", "price": 23650, "length": "3か月" }
-    ]
-  },
-  {
-    "id": 110,
-    "title": "オンライン会議ファシリテーション入門",
-    "code": "MF2010-90010",
-    "org": "他団体B",
-    "stdTag": "コミュニケーション",
-    "options": [
-      { "id": 1, "name": "WEB版", "price": 17930, "length": "2か月" }
-    ]
-  },
-  {
-    "id": 111,
-    "title": "Wordで作る分かりやすい社内文書",
-    "code": "MF2011-90011",
-    "org": "IEC",
-    "stdTag": "PCスキル",
-    "options": [
-      { "id": 1, "name": "郵便版", "price": 17160, "length": "2か月" },
-      { "id": 2, "name": "WEB版", "price": 17160, "length": "2か月" }
-    ]
-  },
-  {
-    "id": 112,
-    "title": "管理職のためのハラスメント防止",
-    "code": "MF2012-90012",
-    "org": "他団体C",
-    "stdTag": "コンプライアンス",
-    "options": [
-      { "id": 1, "name": "", "price": 22000, "length": "3か月" }
-    ]
-  },
-  {
-    "id": 113,
-    "title": "デザイン思考で考える新規事業アイデア",
-    "code": "MF2013-90013",
-    "org": "他団体A",
-    "stdTag": "思考法",
-    "options": [
-      { "id": 1, "name": "WEB版", "price": 25300, "length": "3か月" }
-    ]
-  },
-  {
-    "id": 114,
-    "title": "法人営業のためのヒアリング技術",
-    "code": "MF2014-90014",
-    "org": "他団体B",
-    "stdTag": "営業",
-    "options": [
-      { "id": 1, "name": "通常版", "price": 20900, "length": "3か月" },
-      { "id": 2, "name": "ロールプレイ版", "price": 24200, "length": "4か月" }
-    ]
-  },
-  {
-    "id": 115,
-    "title": "1on1で部下を育てるマネジメント",
-    "code": "MF2015-90015",
-    "org": "IEC",
-    "stdTag": "マネジメント",
-    "options": [
-      { "id": 1, "name": "", "price": 23650, "length": "3か月" }
-    ]
-  },
-  {
-    "id": 116,
-    "title": "伝わるプレゼンテーション資料作成術",
-    "code": "MF2016-90016",
-    "org": "他団体C",
-    "stdTag": "PCスキル",
-    "options": [
-      { "id": 1, "name": "WEB版", "price": 22000, "length": "2か月" },
-      { "id": 2, "name": "演習付き版", "price": 25300, "length": "3か月" }
-    ]
-  },
-  {
-    "id": 117,
-    "title": "ビジネス統計の超入門",
-    "code": "MF2017-90017",
-    "org": "他団体A",
-    "stdTag": "統計",
-    "options": [
-      { "id": 1, "name": "", "price": 24750, "length": "4か月" }
-    ]
-  },
-  {
-    "id": 118,
-    "title": "現場リーダーのためのチームビルディング",
-    "code": "MF2018-90018",
-    "org": "他団体B",
-    "stdTag": "リーダーシップ",
-    "options": [
-      { "id": 1, "name": "通常版", "price": 22550, "length": "3か月" }
-    ]
-  },
-  {
-    "id": 119,
-    "title": "バックオフィス業務の段取り力向上",
-    "code": "MF2019-90019",
-    "org": "IEC",
-    "stdTag": "仕事力",
-    "options": [
-      { "id": 1, "name": "", "price": 18150, "length": "2か月" }
-    ]
-  },
-  {
-    "id": 120,
-    "title": "最新コンプライアンスケース100",
-    "code": "MF2020-90020",
-    "org": "他団体C",
-    "stdTag": "コンプライアンス",
-    "options": [
-      { "id": 1, "name": "WEB版", "price": 23650, "length": "3か月" },
-      { "id": 2, "name": "演習付き版", "price": 26950, "length": "4か月" }
-    ]
-  }
 ];
