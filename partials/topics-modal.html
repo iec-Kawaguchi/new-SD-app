@@ -43,6 +43,26 @@
 			</header>
 
 			<main class="flex-1 px-6 py-6 space-y-8 pb-32">
+				<!-- 募集要項カルーセル表示設定 -->
+				<section class="bg-white rounded-xl shadow-sm border border-gray-200">
+					<div class="bg-gray-50/50 px-5 py-3 border-b border-gray-100 rounded-t-xl flex items-center">
+						<h2 class="text-sm font-bold text-gray-700 flex items-center gap-2">
+							<span class="material-symbols-outlined icon-md text-gray-400">menu_book</span>
+							募集要項カルーセル表示
+						</h2>
+					</div>
+					<div class="p-5 flex items-center justify-between gap-4">
+						<div>
+							<p class="text-sm font-bold text-gray-800">募集要項をカルーセルに表示する</p>
+							<p class="text-xs text-gray-500 mt-0.5">募集サイトのトップページに募集要項へのリンクカードを表示します</p>
+						</div>
+						<label class="relative inline-flex items-center cursor-pointer shrink-0">
+							<input type="checkbox" id="show-guideline-in-carousel" class="sr-only peer" checked>
+							<div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+						</label>
+					</div>
+				</section>
+
 				<!-- 特集追加セクション -->
 				<section class="bg-white rounded-xl shadow-sm border border-gray-200">
 					<div class="bg-gray-50/50 px-5 py-3 border-b border-gray-100 rounded-t-xl flex items-center justify-between">
