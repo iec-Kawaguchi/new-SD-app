@@ -9,6 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./css/base-style.css">
     <script src="../js/role-visibility.js"></script>
+    <script src="../js/components/segment-control.js" defer></script>
     <style>
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
@@ -51,12 +52,17 @@
 
             <!-- IEC: 編集可 -->
             <div class="p-5 space-y-4" data-visible-for="iec">
-                <!-- 「開講日を持たない」チェックボックス -->
-                <label class="flex items-center gap-2.5 cursor-pointer select-none w-fit group">
-                    <input type="checkbox" id="no-class-date-check"
-                        class="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer" />
-                    <span class="text-sm font-medium text-gray-700 group-hover:text-gray-900">開講日を持たない</span>
-                </label>
+                <!-- セグメントコントロール: 開講日あり / 開講日なし -->
+                <div class="flex items-center gap-3">
+                    <span class="text-xs font-bold text-gray-600">開講日の有無</span>
+                    <segment-control id="class-date-seg" name="class-date-mode" value="has-date" options="has-date:開講日あり, no-date:開講日なし"></segment-control>
+                </div>
+
+                <!-- 開講日なし時のメッセージ -->
+                <div id="no-date-notice" class="hidden items-center gap-2 text-sm text-amber-700 bg-amber-50 border border-amber-200 rounded-lg px-4 py-3">
+                    <span class="material-symbols-outlined text-amber-500" style="font-size:1.1rem">info</span>
+                    この募集は開講日設定がなく、申込機能がない募集サイトとして生成されます。
+                </div>
 
                 <!-- 追加フォーム -->
                 <div id="add-form" class="grid grid-cols-1 md:grid-cols-[1fr_1fr_1fr_auto] gap-3 items-end transition-all">
@@ -109,7 +115,7 @@
             <!-- 空状態 -->
             <div id="empty-state" class="py-16 text-center bg-white border-2 border-dashed border-slate-200 rounded-2xl">
                 <span class="material-symbols-outlined text-4xl text-slate-200 mb-3 block">event_busy</span>
-                <p class="text-slate-400 text-sm font-medium">開講日が登録されていません。上のフォームから追加してください。</p>
+                <p id="empty-state-msg" class="text-slate-400 text-sm font-medium">開講日が登録されていません。上のフォームから追加してください。</p>
             </div>
 
             <!-- リストブロック（1件以上時に表示） -->
@@ -243,17 +249,24 @@
     function renderList() {
         const container  = document.getElementById('list-container');
         const emptyState = document.getElementById('empty-state');
+        const emptyMsg   = document.getElementById('empty-state-msg');
         const listBlock  = document.getElementById('list-block');
         const badge      = document.getElementById('count-badge');
 
         badge.textContent = `${rows.length}件`;
 
         if (rows.length === 0) {
+            emptyMsg.textContent = hasNoClassDate
+                ? 'この募集は開講日設定がありません。'
+                : '開講日が登録されていません。上のフォームから追加してください。';
             emptyState.classList.remove('hidden');
             listBlock.classList.add('hidden');
         } else {
             emptyState.classList.add('hidden');
             listBlock.classList.remove('hidden');
+            // 開講日なし選択中は一覧をグレーアウト（保存時に削除される旨を視覚的に示す）
+            listBlock.classList.toggle('opacity-50', hasNoClassDate);
+            listBlock.classList.toggle('pointer-events-none', hasNoClassDate);
             const sorted = [...rows].sort((a, b) => a.openDate.localeCompare(b.openDate));
             container.innerHTML = sorted.map(r => {
                 const s = getStatus(r);
@@ -297,24 +310,32 @@
     };
 
     // --- 追加フォーム ---
-    const chk     = document.getElementById('no-class-date-check');
-    const addForm = document.getElementById('add-form');
-    const newOpen = document.getElementById('new-open-date');
-    const newFrom = document.getElementById('new-app-from');
-    const newTo   = document.getElementById('new-app-to');
-    const btnAdd  = document.getElementById('btn-add');
-    const errBox  = document.getElementById('add-error');
-    const errMsg  = document.getElementById('add-error-msg');
+    const noNotice  = document.getElementById('no-date-notice');
+    const addForm   = document.getElementById('add-form');
+    const newOpen   = document.getElementById('new-open-date');
+    const newFrom   = document.getElementById('new-app-from');
+    const newTo     = document.getElementById('new-app-to');
+    const btnAdd    = document.getElementById('btn-add');
+    const errBox    = document.getElementById('add-error');
+    const errMsg    = document.getElementById('add-error-msg');
     const showAddErr = msg => { errMsg.textContent = msg; errBox.classList.remove('hidden'); };
     const hideAddErr = ()  => errBox.classList.add('hidden');
 
-    // 「開講日を持たない」チェック ON/OFF
-    chk.addEventListener('change', () => {
-        hasNoClassDate = chk.checked;
-        [newOpen, newFrom, newTo, btnAdd].forEach(el => el.disabled = hasNoClassDate);
-        addForm.style.opacity       = hasNoClassDate ? '0.4' : '';
-        addForm.style.pointerEvents = hasNoClassDate ? 'none' : '';
+    // セグメントコントロール: 開講日あり / 開講日なし
+    function applyDateMode(noDate) {
+        hasNoClassDate = noDate;
+
+        // フォームと通知の表示切替
+        addForm.classList.toggle('hidden', noDate);
+        noNotice.classList.toggle('hidden', !noDate);
+        noNotice.classList.toggle('flex', noDate);
+
+        hideAddErr();
         renderList();
+    }
+
+    document.getElementById('class-date-seg').addEventListener('change', e => {
+        applyDateMode(e.detail.value === 'no-date');
     });
 
     // 申込開始日 → 翌日を申込終了日に自動セット
