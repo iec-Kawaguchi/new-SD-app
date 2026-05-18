@@ -55,11 +55,37 @@
 
                 <div class="grid grid-cols-1 md:grid-cols-[200px_1fr] items-center gap-4 p-5 hover:bg-gray-50/50 transition-colors">
                     <div>
+                        <div class="text-sm font-bold text-gray-800">電話番号</div>
+                        <div class="text-xs text-gray-400 mt-0.5">システム必須項目</div>
+                    </div>
+                    <div>
+                        <span class="inline-flex items-center px-2.5 py-1 rounded-md bg-blue-50 text-blue-700 text-xs font-medium border border-blue-100">
+                            <span class="material-symbols-outlined text-[14px] mr-1">check_circle</span>
+                            必須固定
+                        </span>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-[200px_1fr] items-center gap-4 p-5 hover:bg-gray-50/50 transition-colors">
+                    <div>
+                        <div class="text-sm font-bold text-gray-800">住所</div>
+                        <div class="text-xs text-gray-400 mt-0.5">システム必須項目。教材配送先が受講生本人以外に設定されている場合は表示されません。</div>
+                    </div>
+                    <div>
+                        <span class="inline-flex items-center px-2.5 py-1 rounded-md bg-blue-50 text-blue-700 text-xs font-medium border border-blue-100">
+                            <span class="material-symbols-outlined text-[14px] mr-1">check_circle</span>
+                            必須固定
+                        </span>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-[200px_1fr] items-center gap-4 p-5 hover:bg-gray-50/50 transition-colors">
+                    <div>
                         <div class="text-sm font-bold text-gray-800">メールアドレス</div>
                         <div class="text-xs text-gray-400 mt-0.5">連絡用に推奨</div>
                     </div>
                     <div>
-                        <segment-control name="email_req" value="required"></segment-control>
+                        <segment-control name="email_req" options="required:必須, optional:任意" value="required"></segment-control>
                     </div>
                 </div>
 

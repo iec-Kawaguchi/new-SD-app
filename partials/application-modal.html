@@ -2,360 +2,351 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8" />
-    <title>申込期間登録 - プロフェッショナル版</title>
+    <title>開講日設定</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
-	<link rel="stylesheet" href="./css/base-style.css">
-
+    <link rel="stylesheet" href="./css/base-style.css">
+    <script src="../js/role-visibility.js"></script>
     <style>
-        .accordion-content { transition: max-height 0.3s ease-out; overflow: hidden; }
-        .period-card.active { border-color: #3b82f6;  --tw-ring-color: #3b82f6; }
-        .dot-line::before {
-            content: '';
-            position: absolute;
-            left: 27px;
-            top: 0;
-            bottom: 0;
-            width: 2px;
-            background-image: linear-gradient(to bottom, #e5e7eb 50%, transparent 50%);
-            background-size: 2px 8px;
-        }
-		/* カスタムスクロールバー */
-        ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
-        }
-        ::-webkit-scrollbar-track {
-            background: transparent;
-        }
-        ::-webkit-scrollbar-thumb {
-            background-color: #cbd5e1;
-            border-radius: 20px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background-color: #94a3b8;
-        }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 20px; }
+        ::-webkit-scrollbar-thumb:hover { background-color: #94a3b8; }
     </style>
 </head>
 <body class="bg-slate-50 text-slate-900 antialiased pb-24">
-	<header class="sticky top-0 z-10 bg-white/95 backdrop-blur-sm border-b border-gray-100 px-6 py-4">
-            <div class="flex items-center gap-2 mb-1">
+
+    <!-- ヘッダー -->
+    <header class="sticky top-0 z-20 bg-white/95 backdrop-blur-sm border-b border-gray-100 px-6 py-4">
+        <div class="flex items-center justify-between mb-1">
+            <div class="flex items-center gap-2">
                 <span class="material-symbols-outlined text-blue-600">calendar_add_on</span>
-                <h1 class="text-lg font-bold text-gray-800 tracking-tight">申込期間・開講日設定</h1>
+                <h1 class="text-lg font-bold text-gray-800 tracking-tight">開講日設定</h1>
             </div>
-            <p class="text-xs text-gray-500 ml-8">申込期間と、それに紐づく開講日、申込締切日を一元管理します</p>
-        </header>
+            <!-- ロール切替（モックのみ） -->
+            <div class="relative">
+                <select id="role-select" class="appearance-none pl-3 pr-8 py-1.5 rounded-md border border-gray-300 bg-gray-50 text-sm text-gray-700 font-medium focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer">
+                    <option value="iec">IEC (管理者)</option>
+                    <option value="customer">顧客</option>
+                    <option value="supplier">他団体</option>
+                </select>
+                <span class="material-symbols-outlined absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 text-sm pointer-events-none">expand_more</span>
+            </div>
+        </div>
+        <p class="text-xs text-gray-500 ml-8">開講日ごとに申込開始日・申込終了日を設定します</p>
+    </header>
 
     <main class="max-w-4xl mx-auto px-4 py-8 space-y-8">
-        
+
+        <!-- B: 新規開講日を追加 -->
         <section class="bg-white rounded-2xl shadow-sm border border-slate-200">
-			<div class="bg-gray-50/50 px-5 py-3 border-b border-gray-100 flex items-center justify-between">
-                    <h2 class="text-sm font-bold text-gray-700 flex items-center gap-2">
-                        <span class="material-symbols-outlined icon-md text-gray-400">add_circle</span>
-                        新規申込期間を登録
-                    </h2>
-                </div>
-            <div class="p-4 sm:p-6">
-                <div class="grid grid-cols-1 md:grid-cols-[1fr_auto_auto_auto] gap-4 items-end">
-                    <div class="flex flex-col space-y-1.5">
-                        <label class="text-sm font-bold text-slate-600 ml-1">期間名称</label>
-                        <input id="new-period-name" type="text" class="w-full h-10 rounded-lg border border-gray-300 bg-slate-50 px-4 text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white outline-none transition-all" placeholder="例：2026年度 春期募集">
+            <div class="bg-gray-50/50 px-5 py-3 border-b border-gray-100">
+                <h2 class="text-sm font-bold text-gray-700 flex items-center gap-2">
+                    <span class="material-symbols-outlined icon-md text-gray-400">add_circle</span>
+                    新規開講日を追加
+                </h2>
+            </div>
+
+            <!-- IEC: 編集可 -->
+            <div class="p-5 space-y-4" data-visible-for="iec">
+                <!-- 「開講日を持たない」チェックボックス -->
+                <label class="flex items-center gap-2.5 cursor-pointer select-none w-fit group">
+                    <input type="checkbox" id="no-class-date-check"
+                        class="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer" />
+                    <span class="text-sm font-medium text-gray-700 group-hover:text-gray-900">開講日を持たない</span>
+                </label>
+
+                <!-- 追加フォーム -->
+                <div id="add-form" class="grid grid-cols-1 md:grid-cols-[1fr_1fr_1fr_auto] gap-3 items-end transition-all">
+                    <div class="space-y-1.5">
+                        <label class="text-xs font-bold text-slate-600 ml-1">開講日 <span class="text-red-500">*</span></label>
+                        <input id="new-open-date" type="date"
+                            class="w-full h-10 rounded-lg border border-gray-300 bg-slate-50 px-3 text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white outline-none transition-all disabled:opacity-50 disabled:cursor-not-allowed">
                     </div>
-                    <div class="flex flex-col space-y-1.5">
-                        <label class="text-sm font-bold text-slate-600 ml-1">受付開始</label>
-                        <input id="new-period-from" type="date" class="h-10 rounded-lg border border-gray-300 bg-slate-50 px-4 text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white outline-none transition-all">
+                    <div class="space-y-1.5">
+                        <label class="text-xs font-bold text-slate-600 ml-1">申込開始日 <span class="text-red-500">*</span></label>
+                        <input id="new-app-from" type="date"
+                            class="w-full h-10 rounded-lg border border-gray-300 bg-slate-50 px-3 text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white outline-none transition-all disabled:opacity-50 disabled:cursor-not-allowed">
                     </div>
-                    <div class="flex flex-col space-y-1.5">
-                        <label class="text-sm font-bold text-slate-600 ml-1">受付終了</label>
-                        <input id="new-period-to" type="date" class="h-10 rounded-lg border border-gray-300 bg-slate-50 px-4 text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white outline-none transition-all">
+                    <div class="space-y-1.5">
+                        <label class="text-xs font-bold text-slate-600 ml-1">申込終了日 <span class="text-red-500">*</span></label>
+                        <input id="new-app-to" type="date"
+                            class="w-full h-10 rounded-lg border border-gray-300 bg-slate-50 px-3 text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white outline-none transition-all disabled:opacity-50 disabled:cursor-not-allowed">
                     </div>
-                    <button id="btn-add-period" class="h-10 px-6 bg-blue-600 text-white rounded-lg font-bold text-sm hover:bg-blue-700 transition-colors shadow-lg shadow-slate-200 flex items-center gap-2">
-                        <span class="material-symbols-outlined text-sm">add</span>
-                        期間を作成
+                    <button id="btn-add"
+                        class="h-10 px-5 bg-blue-600 text-white rounded-lg font-bold text-sm hover:bg-blue-700 transition-colors shadow-sm flex items-center gap-1.5 whitespace-nowrap disabled:opacity-50 disabled:cursor-not-allowed">
+                        <span class="material-symbols-outlined text-sm">add</span>追加
                     </button>
                 </div>
+                <!-- バリデーションエラー -->
+                <div id="add-error" class="hidden text-xs text-red-600 font-medium flex items-center gap-1.5">
+                    <span class="material-symbols-outlined text-sm">error</span>
+                    <span id="add-error-msg"></span>
+                </div>
+            </div>
+
+            <!-- 非IEC: 閲覧専用 -->
+            <div class="p-5 hidden" data-visible-for="customer,supplier">
+                <p class="text-sm text-gray-500 flex items-center gap-2">
+                    <span class="material-symbols-outlined text-gray-400 text-base">visibility</span>
+                    閲覧専用です。変更は IEC が行います。
+                </p>
             </div>
         </section>
 
-        <div class="space-y-4">
-            <div class="flex items-center justify-between px-2">
+        <!-- C: 登録済みの開講日一覧 -->
+        <div class="space-y-3">
+            <div class="flex items-center justify-between px-1">
                 <h3 class="text-sm font-bold text-slate-500 flex items-center gap-2">
                     <span class="material-symbols-outlined text-sm">list_alt</span>
-                    登録済みの期間一覧
+                    登録済みの開講日一覧
                 </h3>
-                <span id="period-count-badge" class="text-xs px-2 py-0.5 bg-slate-200 text-slate-600 rounded-full font-bold">0件</span>
+                <span id="count-badge" class="text-xs px-2 py-0.5 bg-slate-200 text-slate-600 rounded-full font-bold">0件</span>
             </div>
 
-            <div id="master-container" class="space-y-4">
-                <div id="empty-state" class="py-20 text-center bg-white border-2 border-dashed border-slate-200 rounded-3xl">
-                    <span class="material-symbols-outlined text-5xl text-slate-200 mb-4">folder_off</span>
-                    <p class="text-slate-400 font-medium">期間が登録されていません。上のフォームから作成してください。</p>
+            <!-- 空状態 -->
+            <div id="empty-state" class="py-16 text-center bg-white border-2 border-dashed border-slate-200 rounded-2xl">
+                <span class="material-symbols-outlined text-4xl text-slate-200 mb-3 block">event_busy</span>
+                <p class="text-slate-400 text-sm font-medium">開講日が登録されていません。上のフォームから追加してください。</p>
+            </div>
+
+            <!-- リストブロック（1件以上時に表示） -->
+            <div id="list-block" class="hidden bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                <!-- 列ヘッダー -->
+                <div class="flex items-center gap-4 px-5 py-2.5 bg-gray-50/80 border-b border-gray-100 text-[11px] font-bold text-gray-400 uppercase tracking-wide">
+                    <div class="w-[88px] shrink-0">状態</div>
+                    <div class="flex-1 min-w-0">開講日</div>
+                    <div class="flex-1 min-w-0">申込開始日</div>
+                    <div class="flex-1 min-w-0">申込終了日</div>
+                    <div class="w-20 shrink-0"></div>
                 </div>
+                <!-- 行を動的挿入 -->
+                <div id="list-container"></div>
             </div>
         </div>
     </main>
 
+    <!-- フッター -->
     <div class="fixed bottom-0 inset-x-0 z-50 bg-white border-t border-gray-200 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
-		<div class="mx-auto px-6 py-4 flex items-center justify-end gap-3">
-			<button class="px-5 py-2.5 rounded-lg border border-gray-300 bg-white text-sm font-bold text-gray-600 hover:bg-gray-50 hover:text-gray-800 transition-colors">
-				キャンセル
-			</button>
-			<button class="px-6 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-bold hover:bg-blue-700 shadow-sm hover:shadow active:scale-[0.98] transition-all">
-				登録する
-			</button>
-		</div>
-	</div>
+        <div class="mx-auto px-6 py-4 flex items-center justify-end gap-3">
+            <button class="px-5 py-2.5 rounded-lg border border-gray-300 bg-white text-sm font-bold text-gray-600 hover:bg-gray-50 hover:text-gray-800 transition-colors">
+                キャンセル
+            </button>
+            <button data-visible-for="iec"
+                class="px-6 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-bold hover:bg-blue-700 shadow-sm hover:shadow active:scale-[0.98] transition-all">
+                登録する
+            </button>
+        </div>
+    </div>
 
-	<script>
-	let periods = [];
-	let activeAccordionId = null;
+    <script>
+    // モック上の「今日」（2026-05-18 固定）
+    const TODAY = new Date('2026-05-18');
 
-	const masterContainer = document.getElementById('master-container');
-	const emptyState = document.getElementById('empty-state');
-	const btnAddPeriod = document.getElementById('btn-add-period');
-	const periodCountBadge = document.getElementById('period-count-badge');
+    // ダミーデータ: future / accepting / closed の3状態を網羅
+    let rows = [
+        { id: 1, openDate: '2026-09-10', appFrom: '2026-07-01', appTo: '2026-08-25', isEditing: false },
+        { id: 2, openDate: '2026-07-15', appFrom: '2026-05-01', appTo: '2026-06-30', isEditing: false },
+        { id: 3, openDate: '2026-04-20', appFrom: '2026-03-01', appTo: '2026-04-10', isEditing: false },
+    ];
+    let hasNoClassDate = false;
+    let nextId = 4;
 
-	// 1. 申込期間の追加
-	btnAddPeriod.addEventListener('click', () => {
-	const nameInput = document.getElementById('new-period-name');
-	const fromInput = document.getElementById('new-period-from');
-	const toInput = document.getElementById('new-period-to');
+    const fmt = d => d.replace(/-/g, '/');
 
-	if (!nameInput.value || !fromInput.value || !toInput.value) {
-		alert('名称と期間をすべて入力してください');
-		return;
-	}
+    function getStatus(row) {
+        const f = new Date(row.appFrom), t = new Date(row.appTo);
+        if (TODAY < f) return 'future';
+        if (TODAY <= t) return 'accepting';
+        return 'closed';
+    }
 
-	const newPeriod = {
-		id: Date.now(),
-		name: nameInput.value,
-		from: fromInput.value,
-		to: toInput.value,
-		isEditing: false, // 期間自体の編集フラグ
-		sessions: []
-	};
+    function statusBadge(s) {
+        const m = {
+            future:    ['受付前',   'bg-blue-50  text-blue-600  border-blue-100'],
+            accepting: ['受付中',   'bg-green-50 text-green-700 border-green-100'],
+            closed:    ['受付終了', 'bg-gray-100 text-gray-500  border-gray-200'],
+        };
+        const [label, cls] = m[s];
+        return `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold border ${cls}">${label}</span>`;
+    }
 
-	periods.push(newPeriod);
-	activeAccordionId = newPeriod.id;
+    // 通常表示行
+    function renderNormalRow(row, status) {
+        const isClosed  = status === 'closed';
+        const dateCls   = isClosed ? 'text-gray-400' : 'text-slate-700';
+        const subCls    = isClosed ? 'text-gray-400' : 'text-slate-500';
+        const canEdit   = !hasNoClassDate && (status === 'future' || status === 'accepting');
+        const canDelete = !hasNoClassDate && status === 'future';
+        const editTitle = status === 'accepting' ? '申込終了日を延長する' : '編集';
+        const editIcon  = status === 'accepting' ? 'edit_note' : 'edit';
 
-	nameInput.value = '';
-	fromInput.value = '';
-	toInput.value = '';
-	render();
-	});
+        return `
+        <div class="group flex items-center gap-4 px-5 py-3.5 border-b border-slate-100 last:border-0 hover:bg-slate-50/50 transition-colors">
+            <div class="w-[88px] shrink-0">${statusBadge(status)}</div>
+            <div class="flex-1 min-w-0 font-mono text-sm font-semibold ${dateCls}">${fmt(row.openDate)}</div>
+            <div class="flex-1 min-w-0 font-mono text-sm ${subCls}">${fmt(row.appFrom)}</div>
+            <div class="flex-1 min-w-0 font-mono text-sm ${subCls}">${fmt(row.appTo)}</div>
+            <div class="w-20 shrink-0 flex justify-end gap-1 transition-all ${canEdit || canDelete ? 'opacity-0 group-hover:opacity-100' : ''}" data-visible-for="iec">
+                ${canEdit   ? `<button onclick="startEdit(${row.id})" title="${editTitle}" class="size-8 flex items-center justify-center rounded-lg text-slate-400 hover:text-blue-600 hover:bg-blue-50 transition-colors"><span class="material-symbols-outlined text-lg">${editIcon}</span></button>` : ''}
+                ${canDelete ? `<button onclick="deleteRow(${row.id})" title="削除" class="size-8 flex items-center justify-center rounded-lg text-slate-400 hover:text-red-500 hover:bg-red-50 transition-colors"><span class="material-symbols-outlined text-lg">delete</span></button>` : ''}
+            </div>
+        </div>`;
+    }
 
-	function render() {
-	if (periods.length === 0) {
-		emptyState.classList.remove('hidden');
-		periodCountBadge.textContent = '0件';
-		masterContainer.innerHTML = '';
-		return;
-	}
+    // インライン編集行
+    function renderEditRow(row, status) {
+        const isFuture    = status === 'future';
+        const isAccepting = status === 'accepting';
 
-	emptyState.classList.add('hidden');
-	periodCountBadge.textContent = `${periods.length}件`;
-	masterContainer.innerHTML = '';
+        const locked = val =>
+            `<div class="h-9 flex items-center gap-1.5 px-3 rounded-lg border border-gray-200 bg-gray-100 text-sm font-mono text-gray-500">
+                <span class="material-symbols-outlined text-sm text-gray-400">lock</span>${fmt(val)}
+            </div>`;
+        const dateInput = (id, val) =>
+            `<input type="date" id="${id}" value="${val}" class="h-9 rounded-lg border border-blue-300 bg-white px-3 text-sm outline-none focus:ring-2 focus:ring-blue-500 w-full">`;
 
-	periods.forEach(p => {
-		masterContainer.appendChild(createPeriodCard(p));
-	});
-	}
+        return `
+        <div class="px-5 py-4 bg-blue-50/40 border-b border-slate-100 last:border-0">
+            ${isAccepting ? `<p class="text-xs font-medium text-amber-600 mb-3 flex items-center gap-1.5"><span class="material-symbols-outlined text-sm">info</span>受付中のため、申込終了日の延長のみ変更可能です</p>` : ''}
+            <div class="flex flex-wrap items-end gap-3">
+                <div class="space-y-1 min-w-[140px] flex-1">
+                    <label class="text-xs font-bold ${isFuture ? 'text-blue-600' : 'text-gray-400'}">開講日</label>
+                    ${isFuture ? dateInput(`edit-open-${row.id}`, row.openDate) : locked(row.openDate)}
+                </div>
+                <div class="space-y-1 min-w-[140px] flex-1">
+                    <label class="text-xs font-bold ${isFuture ? 'text-blue-600' : 'text-gray-400'}">申込開始日</label>
+                    ${isFuture ? dateInput(`edit-from-${row.id}`, row.appFrom) : locked(row.appFrom)}
+                </div>
+                <div class="space-y-1 min-w-[140px] flex-1">
+                    <label class="text-xs font-bold text-blue-600">申込終了日${isAccepting ? ' <span class="text-amber-500 text-[10px] font-normal ml-1">延長のみ</span>' : ''}</label>
+                    ${dateInput(`edit-to-${row.id}`, row.appTo)}
+                </div>
+                <div class="flex gap-1.5 shrink-0">
+                    <button onclick="saveEdit(${row.id})" class="h-9 px-4 bg-blue-600 text-white rounded-lg text-xs font-bold hover:bg-blue-700 transition-colors flex items-center gap-1">
+                        <span class="material-symbols-outlined text-sm">check</span>保存
+                    </button>
+                    <button onclick="cancelEdit(${row.id})" class="h-9 px-3 bg-white text-slate-500 rounded-lg border border-slate-200 text-xs font-bold hover:bg-slate-50 transition-colors">
+                        戻る
+                    </button>
+                </div>
+            </div>
+            <div id="edit-err-${row.id}" class="hidden mt-2 text-xs text-red-600 font-medium flex items-center gap-1.5">
+                <span class="material-symbols-outlined text-sm">error</span><span></span>
+            </div>
+        </div>`;
+    }
 
-	// 2. 申込期間カードの生成（編集モード対応）
-	function createPeriodCard(period) {
-	const isOpen = activeAccordionId === period.id;
-	const div = document.createElement('div');
-	div.className = `period-card bg-white border ${isOpen ? 'border-blue-500 ring-1 ring-blue-500' : 'border-slate-200'} rounded-2xl overflow-hidden shadow-sm transition-all mb-4`;
+    // 一覧を再描画
+    function renderList() {
+        const container  = document.getElementById('list-container');
+        const emptyState = document.getElementById('empty-state');
+        const listBlock  = document.getElementById('list-block');
+        const badge      = document.getElementById('count-badge');
 
-	// --- ヘッダー部分（通常表示 or 編集モード） ---
-	let headerContent = '';
-	if (period.isEditing) {
-		// 【期間編集モード】
-		headerContent = `
-			<div class="p-4 flex flex-wrap items-end gap-3 bg-blue-50/50">
-				<div class="flex-1 min-w-[200px] space-y-1">
-					<label class="text-xs font-bold text-blue-600 ml-1">期間名称</label>
-					<input type="text" id="edit-p-name-${period.id}" value="${period.name}" class="w-full h-9 rounded-lg border border-blue-300 px-3 text-sm outline-none focus:ring-2 focus:ring-blue-500">
-				</div>
-				<div class="flex flex-col space-y-1">
-					<label class="text-xs font-bold text-blue-600 ml-1">開始</label>
-					<input type="date" id="edit-p-from-${period.id}" value="${period.from}" class="h-9 rounded-lg border border-blue-300 px-3 text-sm outline-none focus:ring-2 focus:ring-blue-500">
-				</div>
-				<div class="flex flex-col space-y-1">
-					<label class="text-xs font-bold text-blue-600 ml-1">終了</label>
-					<input type="date" id="edit-p-to-${period.id}" value="${period.to}" class="h-9 rounded-lg border border-blue-300 px-3 text-sm outline-none focus:ring-2 focus:ring-blue-500">
-				</div>
-				<div class="flex gap-1">
-					<button onclick="savePeriodEdit(${period.id})" class="h-9 px-3 bg-blue-600 text-white rounded-lg text-xs font-bold hover:bg-blue-700">保存</button>
-					<button onclick="cancelPeriodEdit(${period.id})" class="h-9 px-3 bg-white border border-slate-200 text-slate-500 rounded-lg text-xs font-bold hover:bg-slate-50">戻る</button>
-				</div>
-			</div>
-		`;
-	} else {
-		// 【通常表示モード】
-		headerContent = `
-			<div class="p-4 flex items-center gap-4 cursor-pointer hover:bg-slate-50/50 group" onclick="toggleAccordion(${period.id})">
-				<div class="size-10 rounded-xl ${isOpen ? 'bg-blue-600 text-white' : 'bg-blue-50 text-blue-600'} flex items-center justify-center font-bold text-sm border border-blue-100 transition-all">
-					${period.name.charAt(0)}
-				</div>
-				<div class="flex-1 min-w-0">
-					<h4 class="font-bold text-slate-800 truncate">${period.name}</h4>
-					<p class="text-[11px] font-mono text-slate-400 flex items-center gap-1">
-						<span class="material-symbols-outlined text-[12px]">calendar_today</span>
-						${period.from.replace(/-/g, '/')} - ${period.to.replace(/-/g, '/')}
-					</p>
-				</div>
-				<div class="flex items-center gap-3">
-					<button onclick="startPeriodEdit(${period.id})" class="opacity-0 group-hover:opacity-100 p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all" title="期間名を編集">
-						<span class="material-symbols-outlined text-sm">edit_note</span>
-					</button>
-					<span class="material-symbols-outlined text-slate-300 transition-transform ${isOpen ? 'rotate-180' : ''}">expand_more</span>
-				</div>
-			</div>
-		`;
-	}
+        badge.textContent = `${rows.length}件`;
 
-	div.innerHTML = `
-		${headerContent}
-		<div class="${isOpen ? '' : 'hidden'} border-t border-slate-100 bg-slate-50/30 p-4 sm:p-6 space-y-6 relative">
-			<div class="absolute left-[27px] top-0 bottom-0 w-px border-l-2 border-dashed border-slate-200"></div>
-			
-			<div class="relative z-10 ml-10 bg-white p-4 rounded-xl border border-slate-200 shadow-sm space-y-3">
-				<p class="text-[10px] font-bold text-blue-600 uppercase flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">add_circle</span>新規日程を追加</p>
-				<div class="grid grid-cols-1 sm:grid-cols-[1fr_1fr_auto] gap-3 items-end">
-					<div class="flex flex-col space-y-1.5">
-						<label class="text-xs font-bold text-slate-600 ml-1">開講日</label>
-						<input type="date" id="open-${period.id}" class="h-9 rounded-lg border border-slate-200 px-3 text-xs outline-none focus:ring-2 focus:ring-blue-500 transition-all">
-					</div>
-					<div class="flex flex-col space-y-1.5">
-						<label class="text-xs font-bold text-slate-600 ml-1">申込締切</label>
-						<input type="date" id="limit-${period.id}" class="h-9 rounded-lg border border-slate-200 px-3 text-xs outline-none focus:ring-2 focus:ring-blue-500 transition-all">
-					</div>
-					<button onclick="addSession(${period.id})" class="h-9 px-4 bg-blue-600 text-white rounded-lg text-xs font-bold hover:bg-blue-700">追加</button>
-				</div>
-			</div>
+        if (rows.length === 0) {
+            emptyState.classList.remove('hidden');
+            listBlock.classList.add('hidden');
+        } else {
+            emptyState.classList.add('hidden');
+            listBlock.classList.remove('hidden');
+            const sorted = [...rows].sort((a, b) => a.openDate.localeCompare(b.openDate));
+            container.innerHTML = sorted.map(r => {
+                const s = getStatus(r);
+                return r.isEditing ? renderEditRow(r, s) : renderNormalRow(r, s);
+            }).join('');
+        }
 
-			<div class="relative z-10 ml-10 space-y-2">
-				${renderSessions(period)}
-			</div>
+        if (typeof RoleMock !== 'undefined') RoleMock.applyRoleVisibility();
+    }
 
-			<div class="pt-4 flex justify-end border-t border-slate-100 relative z-10">
-				<button onclick="deletePeriod(${period.id})" class="flex items-center gap-1 px-3 py-1.5 text-xs font-bold text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors">
-					<span class="material-symbols-outlined text-sm">delete</span> この申込期間を削除
-				</button>
-			</div>
-		</div>
-	`;
-	return div;
-	}
+    // --- 操作ハンドラ ---
+    window.startEdit  = id => { rows.forEach(r => r.isEditing = r.id === id); renderList(); };
+    window.cancelEdit = id => { rows.find(r => r.id === id).isEditing = false; renderList(); };
+    window.deleteRow  = id => { rows = rows.filter(r => r.id !== id); renderList(); };
 
-	// 3. 開講日（子要素）のレンダリング
-	function renderSessions(period) {
-	if (period.sessions.length === 0) return `<p class="text-[11px] text-slate-400 italic py-2">開講日が登録されていません。</p>`;
-	return period.sessions.map(s => {
-		if (s.isEditing) {
-			return `
-				<div class="flex items-center gap-3 bg-blue-50 border border-blue-200 p-3 rounded-xl animate-in fade-in duration-200">
-					<div class="grid grid-cols-2 gap-3 flex-1">
-						<input type="date" id="edit-open-${s.id}" value="${s.open}" class="w-full h-8 rounded border border-blue-300 px-2 text-xs">
-						<input type="date" id="edit-limit-${s.id}" value="${s.limit}" class="w-full h-8 rounded border border-blue-300 px-2 text-xs">
-					</div>
-					<div class="flex gap-1">
-						<button onclick="saveSessionEdit(${period.id}, ${s.id})" class="size-8 flex items-center justify-center bg-blue-600 text-white rounded-lg hover:bg-blue-700 shadow-sm"><span class="material-symbols-outlined text-sm">check</span></button>
-						<button onclick="cancelSessionEdit(${period.id}, ${s.id})" class="size-8 flex items-center justify-center bg-white text-slate-400 rounded-lg border border-slate-200"><span class="material-symbols-outlined text-sm">close</span></button>
-					</div>
-				</div>
-			`;
-		}
-		return `
-			<div class="group flex items-center justify-between bg-white border border-slate-200 p-3 rounded-xl hover:shadow-md hover:border-blue-200 transition-all">
-				<div class="flex items-center gap-8">
-					<div class="flex flex-col">
-						<span class="text-xs font-bold text-slate-400 uppercase">開講日</span>
-						<span class="text-xs font-bold font-mono text-slate-700">${s.open.replace(/-/g, '/')}</span>
-					</div>
-					<div class="flex flex-col border-l border-slate-100 pl-8">
-						<span class="text-xs font-bold text-red-400 uppercase">申込締切</span>
-						<span class="text-xs font-bold font-mono text-slate-500">${s.limit.replace(/-/g, '/')}</span>
-					</div>
-				</div>
-				<div class="flex gap-1 opacity-0 group-hover:opacity-100 transition-all">
-					<button onclick="startSessionEdit(${period.id}, ${s.id})" class="size-8 flex items-center justify-center rounded-full text-slate-400 hover:text-blue-600 hover:bg-blue-50"><span class="material-symbols-outlined text-lg">edit</span></button>
-					<button onclick="deleteSession(${period.id}, ${s.id})" class="size-8 flex items-center justify-center rounded-full text-slate-400 hover:text-red-500 hover:bg-red-50"><span class="material-symbols-outlined text-lg">delete</span></button>
-				</div>
-			</div>
-		`;
-	}).join('');
-	}
+    window.saveEdit = id => {
+        const row    = rows.find(r => r.id === id);
+        const status = getStatus(row);
+        const errEl  = document.getElementById(`edit-err-${id}`);
+        const showErr = msg => {
+            errEl.querySelector('span:last-child').textContent = msg;
+            errEl.classList.remove('hidden');
+        };
 
-	// 4. アクション関数群
-	window.toggleAccordion = (id) => { activeAccordionId = (activeAccordionId === id) ? null : id; render(); };
+        if (status === 'accepting') {
+            const newTo = document.getElementById(`edit-to-${id}`).value;
+            if (!newTo)            return showErr('申込終了日を入力してください');
+            if (newTo < row.appTo) return showErr('申込終了日を前倒しすることはできません');
+            row.appTo = newTo;
+        } else {
+            const newOpen = document.getElementById(`edit-open-${id}`).value;
+            const newFrom = document.getElementById(`edit-from-${id}`).value;
+            const newTo   = document.getElementById(`edit-to-${id}`).value;
+            if (!newOpen || !newFrom || !newTo) return showErr('すべての項目を入力してください');
+            if (newFrom > newTo)  return showErr('申込開始日は申込終了日以前の日付を入力してください');
+            if (newTo >= newOpen) return showErr('申込終了日は開講日より前の日付を入力してください');
+            row.openDate = newOpen; row.appFrom = newFrom; row.appTo = newTo;
+        }
+        row.isEditing = false;
+        renderList();
+    };
 
-	// --- 申込期間（親）の編集用 ---
-	window.startPeriodEdit = (id) => {
-	event.stopPropagation(); // アコーディオンが閉じるのを防ぐ
-	const period = periods.find(p => p.id === id);
-	period.isEditing = true;
-	render();
-	};
-	window.cancelPeriodEdit = (id) => {
-	const period = periods.find(p => p.id === id);
-	period.isEditing = false;
-	render();
-	};
-	window.savePeriodEdit = (id) => {
-	const period = periods.find(p => p.id === id);
-	period.name = document.getElementById(`edit-p-name-${id}`).value;
-	period.from = document.getElementById(`edit-p-from-${id}`).value;
-	period.to = document.getElementById(`edit-p-to-${id}`).value;
-	period.isEditing = false;
-	render();
-	};
+    // --- 追加フォーム ---
+    const chk     = document.getElementById('no-class-date-check');
+    const addForm = document.getElementById('add-form');
+    const newOpen = document.getElementById('new-open-date');
+    const newFrom = document.getElementById('new-app-from');
+    const newTo   = document.getElementById('new-app-to');
+    const btnAdd  = document.getElementById('btn-add');
+    const errBox  = document.getElementById('add-error');
+    const errMsg  = document.getElementById('add-error-msg');
+    const showAddErr = msg => { errMsg.textContent = msg; errBox.classList.remove('hidden'); };
+    const hideAddErr = ()  => errBox.classList.add('hidden');
 
-	// --- 開講日（子）の編集用 ---
-	window.addSession = (periodId) => {
-	const openVal = document.getElementById(`open-${periodId}`).value;
-	const limitVal = document.getElementById(`limit-${periodId}`).value;
-	if (!openVal || !limitVal) return alert('入力してください');
-	periods.find(p => p.id === periodId).sessions.push({ id: Date.now(), open: openVal, limit: limitVal, isEditing: false });
-	render();
-	};
-	window.startSessionEdit = (pId, sId) => {
-	event.stopPropagation();
-	periods.find(p => p.id === pId).sessions.forEach(s => s.isEditing = (s.id === sId));
-	render();
-	};
-	window.saveSessionEdit = (pId, sId) => {
-	const s = periods.find(p => p.id === pId).sessions.find(s => s.id === sId);
-	s.open = document.getElementById(`edit-open-${sId}`).value;
-	s.limit = document.getElementById(`edit-limit-${sId}`).value;
-	s.isEditing = false;
-	render();
-	};
-	window.cancelSessionEdit = (pId, sId) => {
-	periods.find(p => p.id === pId).sessions.find(s => s.id === sId).isEditing = false;
-	render();
-	};
+    // 「開講日を持たない」チェック ON/OFF
+    chk.addEventListener('change', () => {
+        hasNoClassDate = chk.checked;
+        [newOpen, newFrom, newTo, btnAdd].forEach(el => el.disabled = hasNoClassDate);
+        addForm.style.opacity       = hasNoClassDate ? '0.4' : '';
+        addForm.style.pointerEvents = hasNoClassDate ? 'none' : '';
+        renderList();
+    });
 
-	// 削除系
-	window.deleteSession = (pId, sId) => {
-	event.stopPropagation();
-	const p = periods.find(p => p.id === pId);
-	p.sessions = p.sessions.filter(s => s.id !== sId);
-	render();
-	};
-	window.deletePeriod = (id) => {
-	event.stopPropagation();
-	if (confirm('削除しますか？')) {
-		periods = periods.filter(p => p.id !== id);
-		if (activeAccordionId === id) activeAccordionId = null;
-		render();
-	}
-	};
+    // 申込開始日 → 翌日を申込終了日に自動セット
+    newFrom.addEventListener('change', () => {
+        if (!newFrom.value) return;
+        const d = new Date(newFrom.value);
+        d.setDate(d.getDate() + 1);
+        newTo.value = d.toISOString().split('T')[0];
+    });
 
-	render();
-	</script>
+    // 追加ボタン
+    btnAdd.addEventListener('click', () => {
+        const od = newOpen.value, af = newFrom.value, at = newTo.value;
+        hideAddErr();
+        if (!od || !af || !at) return showAddErr('すべての項目を入力してください');
+        if (af > at)           return showAddErr('申込開始日は申込終了日以前の日付を入力してください');
+        if (at >= od)          return showAddErr('申込終了日は開講日より前の日付を入力してください');
+
+        rows.push({ id: nextId++, openDate: od, appFrom: af, appTo: at, isEditing: false });
+        newOpen.value = newFrom.value = newTo.value = '';
+        renderList();
+    });
+
+    // ロール初期化
+    if (!new URLSearchParams(location.search).get('role') && typeof RoleMock !== 'undefined') {
+        RoleMock.setRoleInUrl('iec');
+    }
+    if (typeof RoleMock !== 'undefined') {
+        RoleMock.init({ roleSelect: '#role-select' });
+    }
+
+    renderList();
+    </script>
 </body>
 </html>
