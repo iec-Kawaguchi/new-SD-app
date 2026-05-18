@@ -65,19 +65,6 @@
 
                 <div class="grid grid-cols-1 md:grid-cols-[200px_1fr] items-center gap-4 p-5 hover:bg-gray-50/50 transition-colors">
                     <div>
-                        <div class="text-sm font-bold text-gray-800">所属</div>
-                        <div class="text-xs text-gray-400 mt-0.5">システム必須項目。「組織階層管理」で登録された組織情報から所属選択をさせます。</div>
-                    </div>
-                    <div>
-                        <span class="inline-flex items-center px-2.5 py-1 rounded-md bg-blue-50 text-blue-700 text-xs font-medium border border-blue-100">
-                            <span class="material-symbols-outlined text-[14px] mr-1">check_circle</span>
-                            必須固定
-                        </span>
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-[200px_1fr] items-center gap-4 p-5 hover:bg-gray-50/50 transition-colors">
-                    <div>
                         <div class="text-sm font-bold text-gray-800">社員番号</div>
                         <div class="text-xs text-gray-400 mt-0.5">一意のIDが必要な場合</div>
                     </div>
@@ -107,6 +94,19 @@
                     </div>
                     <div>
                         <segment-control name="dob_req" value="none"></segment-control>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-[200px_1fr] items-center gap-4 p-5 hover:bg-gray-50/50 transition-colors">
+                    <div>
+                        <div class="text-sm font-bold text-gray-800">所属</div>
+                        <div class="text-xs text-gray-400 mt-0.5">システム必須項目。「組織階層管理」で登録された組織情報から所属選択をさせます。</div>
+                    </div>
+                    <div>
+                        <span class="inline-flex items-center px-2.5 py-1 rounded-md bg-blue-50 text-blue-700 text-xs font-medium border border-blue-100">
+                            <span class="material-symbols-outlined text-[14px] mr-1">check_circle</span>
+                            必須固定
+                        </span>
                     </div>
                 </div>
 
@@ -277,6 +277,9 @@
                 } else {
                     emptyMsg.classList.add('hidden');
                 }
+                addBtn.disabled = container.children.length >= 10;
+                addBtn.classList.toggle('opacity-40', addBtn.disabled);
+                addBtn.classList.toggle('cursor-not-allowed', addBtn.disabled);
             };
 
             // イベントリスナー登録
