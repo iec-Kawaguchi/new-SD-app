@@ -91,6 +91,7 @@
                                         <th class="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider" data-visible-for="iec">団体</th>
                                         <th class="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider text-center">HTML</th>
                                         <th class="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider text-center">版下PDF</th>
+                                        <th class="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider text-center whitespace-nowrap">サムネイル</th>
                                         <th class="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider text-center whitespace-nowrap">オプション</th>
                                         <th class="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider text-center whitespace-nowrap">最終更新日</th>
                                         <th class="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider text-center">ステータス</th>
@@ -199,6 +200,16 @@
                                     <label class="text-xs text-gray-500">版下PDF</label>
                                     <input id="mPdfFile" type="file" accept=".pdf"
                                         class="block w-full text-sm text-gray-700 file:mr-3 file:py-1.5 file:px-3 file:rounded file:border-0 file:text-xs file:font-medium file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 border border-gray-300 rounded-md cursor-pointer px-2 py-1.5">
+                                </div>
+                                <div class="flex flex-col gap-1">
+                                    <label class="text-xs text-gray-500">サムネイル画像</label>
+                                    <input id="mThumbnailFile" type="file" accept=".jpg,.jpeg,.png"
+                                        class="block w-full text-sm text-gray-700 file:mr-3 file:py-1.5 file:px-3 file:rounded file:border-0 file:text-xs file:font-medium file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 border border-gray-300 rounded-md cursor-pointer px-2 py-1.5">
+                                    <div id="mThumbnailPreview" class="hidden mt-1">
+                                        <img src="" alt="サムネイルプレビュー" class="h-20 w-auto rounded border border-gray-200 object-cover">
+                                        <button type="button" id="mThumbnailClear"
+                                            class="mt-1 text-xs text-red-500 hover:text-red-700 hover:underline">削除</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -347,7 +358,7 @@
                 );
 
                 if (slice.length === 0) {
-                    tableBody.innerHTML = `<tr><td colspan="${isIec ? 8 : 7}" class="px-6 py-12 text-center text-gray-500">コースが見つかりませんでした</td></tr>`;
+                    tableBody.innerHTML = `<tr><td colspan="${isIec ? 9 : 8}" class="px-6 py-12 text-center text-gray-500">コースが見つかりませんでした</td></tr>`;
                     updatePagination();
                     return;
                 }
@@ -386,6 +397,7 @@
                             ${orgCell}
                             <td class="px-6 py-4 text-center">${badge(!!c.htmlUrl)}</td>
                             <td class="px-6 py-4 text-center">${badge(!!c.pdfUrl)}</td>
+                            <td class="px-6 py-4 text-center">${badge(!!c.thumbnailUrl)}</td>
                             <td class="px-6 py-4 text-sm text-center font-medium text-gray-700">${c.courses.length}</td>
                             <td class="px-6 py-4 text-sm text-center text-gray-500 whitespace-nowrap">${c.updatedAt}</td>
                             <td class="px-6 py-4 text-center">${statusBadge(c.status)}</td>
@@ -478,6 +490,16 @@
                 document.getElementById('mHanCode').value = data?.hanCode || '';
                 document.getElementById('mNote').value    = data?.note    || '';
                 // file input は value のセット不可（セキュリティ制限）
+                // サムネイルプレビュー初期化
+                const previewEl = document.getElementById('mThumbnailPreview');
+                const previewImg = previewEl?.querySelector('img');
+                if (data?.thumbnailUrl && previewEl && previewImg) {
+                    previewImg.src = data.thumbnailUrl;
+                    previewEl.classList.remove('hidden');
+                } else if (previewEl) {
+                    previewEl.classList.add('hidden');
+                    if (previewImg) previewImg.src = '';
+                }
 
                 // オプションコピー
                 modalCourseRows = data
@@ -565,6 +587,13 @@
             document.getElementById('btnCloseModalHeader').addEventListener('click', closeModal);
             document.getElementById('btnCloseModal').addEventListener('click', closeModal);
             modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
+
+            document.getElementById('mThumbnailClear')?.addEventListener('click', () => {
+                document.getElementById('mThumbnailFile').value = '';
+                const previewEl = document.getElementById('mThumbnailPreview');
+                previewEl.classList.add('hidden');
+                previewEl.querySelector('img').src = '';
+            });
 
             document.getElementById('btnAddCourse').addEventListener('click', () => {
                 modalCourseRows.push({

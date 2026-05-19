@@ -79,7 +79,7 @@
                             <span class="${STYLES.icon}">person</span>
                             <span class="text-sm">ユーザー管理</span>
                         </a>
-                        <a href="course-master-list.html" data-visible-for="iec, supplier" class="js-nav-item">
+                        <a href="course-master.html" data-visible-for="iec, supplier" class="js-nav-item">
                             <span class="${STYLES.icon}">book_2</span>
                             <span class="text-sm">コース管理</span>
                         </a>
