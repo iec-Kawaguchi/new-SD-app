@@ -33,15 +33,9 @@
             <div id="app-sidebar"></div>
             
             <div class="flex-1 flex gap-0 overflow-hidden bg-gray-50/50">
-                <div class="flex flex-shrink-0 border-r border-gray-200 bg-white w-[24rem] z-10 flex-col h-full shadow-[4px_0_24px_rgba(0,0,0,0.02)]">
+                <div class="flex flex-shrink-0 border-r border-gray-200 bg-white w-64 z-10 flex-col h-full shadow-[4px_0_24px_rgba(0,0,0,0.02)]">
                     <div class="flex flex-col h-full">
-                        <div class="sticky top-0 z-20 px-5 pt-6 pb-4 bg-white/95 backdrop-blur-sm border-b border-gray-100">
-                            <div class="flex items-center justify-between mb-4">
-                                <h2 class="text-lg font-bold text-gray-800 tracking-tight flex items-center gap-2">
-                                    <span class="material-symbols-outlined text-blue-600">dashboard</span>
-                                    募集一覧
-                                </h2>
-                            </div>
+                        <div class="sticky top-0 z-20 px-5 pt-4 pb-4 bg-white/95 backdrop-blur-sm border-b border-gray-100">
                             <div class="flex relative gap-2">
                                 <div class="relative flex-1">
                                     <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
@@ -58,10 +52,10 @@
                                 </button>
                             </div>
 
-                            <div id="filter-panel" class="hidden mt-4 pt-4 border-t border-gray-100 animate-[fadeIn_0.2s_ease-out]  overflow-y-auto custom-scrollbar">
-                                <div class="space-y-6">
+                            <div id="filter-panel" class="hidden mt-3 pt-3 border-t border-gray-100 overflow-y-auto custom-scrollbar max-h-[50vh]">
+                                <div class="space-y-3">
                                     <div>
-                                        <label class="block text-xs font-bold text-gray-500 mb-2 uppercase tracking-wide">全体ステータス</label>
+                                        <label class="block text-xs font-bold text-gray-500 mb-1 uppercase tracking-wide">全体ステータス</label>
                                         <div class="flex flex-wrap gap-2">
                                             <button type="button" data-cat="main" data-val="公開" class="filter-btn text-xs px-3 py-1.5 rounded-full border border-gray-200 bg-white text-gray-600 hover:bg-gray-50 transition-colors">公開</button>
                                             <button type="button" data-cat="main" data-val="非公開" class="filter-btn text-xs px-3 py-1.5 rounded-full border border-gray-200 bg-white text-gray-600 hover:bg-gray-50 transition-colors">非公開</button>
@@ -69,7 +63,7 @@
                                     </div>
 
                                     <div>
-                                        <div class="flex items-center gap-2 mb-2">
+                                        <div class="flex items-center gap-2 mb-1">
                                             <span class="material-symbols-outlined text-gray-400 text-base">info</span>
                                             <label class="block text-xs font-bold text-gray-500 uppercase tracking-wide">基本情報</label>
                                         </div>
@@ -81,41 +75,40 @@
                                     </div>
 
                                     <div>
-                                        <div class="flex items-center gap-2 mb-2">
+                                        <div class="flex items-center gap-2 mb-1">
                                             <span class="material-symbols-outlined text-gray-400 text-base">list_alt</span>
                                             <label class="block text-xs font-bold text-gray-500 uppercase tracking-wide">コースリスト</label>
                                         </div>
                                         <div class="flex flex-wrap gap-2">
                                             <button type="button" data-cat="course" data-val="未着手" class="filter-btn text-xs px-2.5 py-1 rounded border border-gray-200 bg-white text-gray-500 hover:bg-gray-50">未着手</button>
                                             <button type="button" data-cat="course" data-val="提案中" class="filter-btn text-xs px-2.5 py-1 rounded border border-gray-200 bg-white text-gray-500 hover:bg-gray-50">提案中</button>
-                                            <button type="button" data-cat="course" data-val="顧客確認中" class="filter-btn text-xs px-2.5 py-1 rounded border border-gray-200 bg-white text-gray-500 hover:bg-gray-50">顧客確認中</button>
                                             <button type="button" data-cat="course" data-val="料金確認中" class="filter-btn text-xs px-2.5 py-1 rounded border border-gray-200 bg-white text-gray-500 hover:bg-gray-50">料金確認中</button>
                                             <button type="button" data-cat="course" data-val="完了" class="filter-btn text-xs px-2.5 py-1 rounded border border-gray-200 bg-white text-gray-500 hover:bg-gray-50">完了</button>
                                         </div>
                                     </div>
 
                                     <div>
-                                        <div class="flex items-center gap-2 mb-2">
+                                        <div class="flex items-center gap-2 mb-1">
                                             <span class="material-symbols-outlined text-gray-400 text-base">web</span>
                                             <label class="block text-xs font-bold text-gray-500 uppercase tracking-wide">募集サイト</label>
                                         </div>
                                         <div class="flex flex-wrap gap-2">
                                             <button type="button" data-cat="site" data-val="未着手" class="filter-btn text-xs px-2.5 py-1 rounded border border-gray-200 bg-white text-gray-500 hover:bg-gray-50">未着手</button>
-                                            <button type="button" data-cat="site" data-val="顧客承認中" class="filter-btn text-xs px-2.5 py-1 rounded border border-gray-200 bg-white text-gray-500 hover:bg-gray-50">顧客承認中</button>
+                                            <button type="button" data-cat="site" data-val="処理中" class="filter-btn text-xs px-2.5 py-1 rounded border border-gray-200 bg-white text-gray-500 hover:bg-gray-50">処理中</button>
                                             <button type="button" data-cat="site" data-val="完了" class="filter-btn text-xs px-2.5 py-1 rounded border border-gray-200 bg-white text-gray-500 hover:bg-gray-50">完了</button>
                                         </div>
                                     </div>
 
-                                   <div>
-                                        <label class="block text-xs font-bold text-gray-500 mb-2 uppercase tracking-wide">対象期間</label>
-                                        <div class="flex items-center gap-2">
-                                            <input id="date-filter-from" type="date" class="w-full text-sm border border-gray-300 rounded-md px-2 py-1.5 text-gray-700 focus:ring-2 focus:ring-blue-500 focus:outline-none placeholder-gray-400">
-                                            <span class="text-gray-400 text-xs">～</span>
-                                            <input id="date-filter-to" type="date" class="w-full text-sm border border-gray-300 rounded-md px-2 py-1.5 text-gray-700 focus:ring-2 focus:ring-blue-500 focus:outline-none placeholder-gray-400">
+                                    <div>
+                                        <label class="block text-xs font-bold text-gray-500 mb-1 uppercase tracking-wide">対象期間</label>
+                                        <div class="flex flex-col gap-1">
+                                            <input id="date-filter-from" type="date" class="w-full text-sm border border-gray-300 rounded-md px-2 py-1.5 text-gray-700 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                                            <span class="text-center text-gray-400 text-xs">〜</span>
+                                            <input id="date-filter-to" type="date" class="w-full text-sm border border-gray-300 rounded-md px-2 py-1.5 text-gray-700 focus:ring-2 focus:ring-blue-500 focus:outline-none">
                                         </div>
                                     </div>
 
-                                    <div class="flex justify-end pt-2 gap-2 pb-2">
+                                    <div class="flex justify-end gap-2 pb-2">
                                         <button id="filter-reset" class="text-xs text-gray-500 hover:text-gray-800 underline px-2">条件クリア</button>
                                         <button id="filter-close-btn" class="text-xs bg-gray-800 text-white px-3 py-1.5 rounded-md hover:bg-gray-700 font-medium transition-colors">閉じる</button>
                                     </div>
@@ -189,7 +182,7 @@
                                 </div>
                             </div>
                             <!-- タスクパネル -->
-                            <div class="mt-8 grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-6">
+                            <div class="mt-8 grid grid-cols-1 lg:grid-cols-3 xl:grid-cols-3 gap-6">
                                 <!-- 基本情報 -->
                                 <div class="w-full rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-shadow duration-300 flex flex-col overflow-hidden group">
                                     <div class="px-5 py-4 border-b border-gray-100 bg-gray-50/50 flex justify-between items-center">
@@ -226,61 +219,86 @@
                                     </div>
                                     <!-- タスク -->
                                     <div class="p-3 flex flex-col gap-1">
-                                        <div class="flex items-center justify-between p-2.5 rounded-lg hover:bg-gray-50 transition-colors">
+                                        <!-- 顧客担当 - IEC -->
+                                        <button data-modal-src="./partials/tanto-modal.html"
+                                            class="group/row flex items-center justify-between w-full p-2.5 rounded-lg hover:bg-gray-50 transition-colors text-left"
+                                            data-visible-for="iec">
                                             <div class="flex items-center text-sm font-medium text-gray-700 gap-2">
-                                                <span class="material-symbols-outlined text-orange-400 icon-md" data-visible-for="iec">error</span>
-                                                <span class="material-symbols-outlined text-gray-300 icon-md" data-visible-for="supplier,customer">check_circle</span>
+                                                <span class="material-symbols-outlined text-orange-400 icon-md">error</span>
                                                 <span>顧客担当</span>
                                             </div>
-                                            <button
-                                                data-modal-src="./partials/tanto-modal.html"
-                                                class="flex items-center text-gray-400 hover:text-blue-600 hover:bg-blue-50 px-2 py-1 rounded transition-all" 
-                                                data-visible-for="iec">
-                                                <span class="material-symbols-outlined icon-sm">edit</span>
-                                                <span class="text-xs ml-1 font-medium">編集</span>
-                                            </button>
-                                        </div>
-                                        <div class="flex items-center justify-between p-2.5 rounded-lg hover:bg-gray-50 transition-colors">
+                                            <span class="material-symbols-outlined icon-sm text-gray-300 group-hover/row:text-blue-500 transition-colors">chevron_right</span>
+                                        </button>
+                                        <!-- 顧客担当 - Customer -->
+                                        <button data-modal-src="./partials/tanto-modal.html" data-modal-readonly="true"
+                                            class="group/row flex items-center justify-between w-full p-2.5 rounded-lg hover:bg-gray-50 transition-colors text-left"
+                                            data-visible-for="customer">
                                             <div class="flex items-center text-sm font-medium text-gray-700 gap-2">
-                                                <span class="material-symbols-outlined text-emerald-500 icon-md" data-visible-for="iec">check_circle</span>
-                                                <span class="material-symbols-outlined text-gray-300 icon-md" data-visible-for="supplier,customer">check_circle</span>
+                                                <span class="material-symbols-outlined text-gray-300 icon-md">check_circle</span>
+                                                <span>顧客担当</span>
+                                            </div>
+                                            <span class="material-symbols-outlined icon-sm text-gray-300 group-hover/row:text-blue-500 transition-colors">chevron_right</span>
+                                        </button>
+                                        <!-- 参加団体 - IEC -->
+                                        <button data-modal-src="./partials/supplier-modal.html"
+                                            class="group/row flex items-center justify-between w-full p-2.5 rounded-lg hover:bg-gray-50 transition-colors text-left"
+                                            data-visible-for="iec">
+                                            <div class="flex items-center text-sm font-medium text-gray-700 gap-2">
+                                                <span class="material-symbols-outlined text-emerald-500 icon-md">check_circle</span>
                                                 <span>参加団体</span>
                                             </div>
-                                            <button
-                                                data-modal-src="./partials/supplier-modal.html"
-                                                class="flex items-center text-gray-400 hover:text-blue-600 hover:bg-blue-50 px-2 py-1 rounded transition-all" 
-                                                data-visible-for="iec">
-                                                <span class="material-symbols-outlined icon-sm">edit</span>
-                                                <span class="text-xs ml-1 font-medium">編集</span>
-                                            </button>
-                                        </div>
-                                        <div class="flex items-center justify-between p-2.5 rounded-lg hover:bg-gray-50 transition-colors">
+                                            <span class="material-symbols-outlined icon-sm text-gray-300 group-hover/row:text-blue-500 transition-colors">chevron_right</span>
+                                        </button>
+                                        <!-- 参加団体 - Vendor / Customer -->
+                                        <button data-modal-src="./partials/supplier-modal.html" data-modal-readonly="true"
+                                            class="group/row flex items-center justify-between w-full p-2.5 rounded-lg hover:bg-gray-50 transition-colors text-left"
+                                            data-visible-for="supplier, customer">
                                             <div class="flex items-center text-sm font-medium text-gray-700 gap-2">
-                                                <span class="material-symbols-outlined text-emerald-500 icon-md" data-visible-for="iec">check_circle</span>
-                                                <span class="material-symbols-outlined text-gray-300 icon-md" data-visible-for="supplier,customer">check_circle</span>
+                                                <span class="material-symbols-outlined text-gray-300 icon-md">check_circle</span>
+                                                <span>参加団体</span>
+                                            </div>
+                                            <span class="material-symbols-outlined icon-sm text-gray-300 group-hover/row:text-blue-500 transition-colors">chevron_right</span>
+                                        </button>
+                                        <!-- 開講日 - IEC -->
+                                        <button data-modal-src="./partials/application-modal.html"
+                                            class="group/row flex items-center justify-between w-full p-2.5 rounded-lg hover:bg-gray-50 transition-colors text-left"
+                                            data-visible-for="iec">
+                                            <div class="flex items-center text-sm font-medium text-gray-700 gap-2">
+                                                <span class="material-symbols-outlined text-emerald-500 icon-md">check_circle</span>
                                                 <span>開講日</span>
                                             </div>
-                                            <button
-                                                data-modal-src="./partials/application-modal.html"
-                                                class="flex items-center text-gray-400 hover:text-blue-600 hover:bg-blue-50 px-2 py-1 rounded transition-all"
-                                                data-visible-for="iec">
-                                                <span class="material-symbols-outlined icon-sm">edit</span>
-                                                <span class="text-xs ml-1 font-medium">編集</span>
-                                            </button>
-                                        </div>
-                                        <div class="flex items-center justify-between p-2.5 rounded-lg hover:bg-gray-50 transition-colors"
+                                            <span class="material-symbols-outlined icon-sm text-gray-300 group-hover/row:text-blue-500 transition-colors">chevron_right</span>
+                                        </button>
+                                        <!-- 開講日 - Vendor / Customer -->
+                                        <button data-modal-src="./partials/application-modal.html" data-modal-readonly="true"
+                                            class="group/row flex items-center justify-between w-full p-2.5 rounded-lg hover:bg-gray-50 transition-colors text-left"
+                                            data-visible-for="supplier, customer">
+                                            <div class="flex items-center text-sm font-medium text-gray-700 gap-2">
+                                                <span class="material-symbols-outlined text-gray-300 icon-md">check_circle</span>
+                                                <span>開講日</span>
+                                            </div>
+                                            <span class="material-symbols-outlined icon-sm text-gray-300 group-hover/row:text-blue-500 transition-colors">chevron_right</span>
+                                        </button>
+                                        <!-- キャンセルポリシー - IEC -->
+                                        <button data-modal-src="./partials/cancel-policy-modal.html"
+                                            class="group/row flex items-center justify-between w-full p-2.5 rounded-lg hover:bg-gray-50 transition-colors text-left"
                                             data-visible-for="iec">
                                             <div class="flex items-center text-sm font-medium text-gray-700 gap-2">
                                                 <span class="material-symbols-outlined text-gray-300 icon-md">check_circle</span>
                                                 <span>キャンセルポリシー</span>
                                             </div>
-                                            <button
-                                                data-modal-src="./partials/cancel-policy-modal.html"
-                                                class="flex items-center text-gray-400 hover:text-blue-600 hover:bg-blue-50 px-2 py-1 rounded transition-all">
-                                                <span class="material-symbols-outlined icon-sm">edit</span>
-                                                <span class="text-xs ml-1 font-medium">編集</span>
-                                            </button>
-                                        </div>
+                                            <span class="material-symbols-outlined icon-sm text-gray-300 group-hover/row:text-blue-500 transition-colors">chevron_right</span>
+                                        </button>
+                                        <!-- キャンセルポリシー - Vendor / Customer -->
+                                        <button data-modal-src="./partials/cancel-policy-modal.html" data-modal-readonly="true"
+                                            class="group/row flex items-center justify-between w-full p-2.5 rounded-lg hover:bg-gray-50 transition-colors text-left"
+                                            data-visible-for="supplier, customer">
+                                            <div class="flex items-center text-sm font-medium text-gray-700 gap-2">
+                                                <span class="material-symbols-outlined text-gray-300 icon-md">check_circle</span>
+                                                <span>キャンセルポリシー</span>
+                                            </div>
+                                            <span class="material-symbols-outlined icon-sm text-gray-300 group-hover/row:text-blue-500 transition-colors">chevron_right</span>
+                                        </button>
                                     </div>
                                 </div>
                                 <!-- コースリスト -->
@@ -316,90 +334,101 @@
                                     </div>
                                     <!-- タスク -->
                                     <div class="p-3 flex flex-col gap-1">
-                                        <div class="flex items-center justify-between p-2.5 rounded-lg hover:bg-gray-50 transition-colors" data-visible-for="iec">
+                                        <!-- コースリスト - IEC -->
+                                        <a href="media-plan-course-proposal-list.html?role=iec"
+                                            class="group/row flex items-center justify-between w-full p-2.5 rounded-lg hover:bg-gray-50 transition-colors"
+                                            data-visible-for="iec">
                                             <div class="flex items-center text-sm font-medium text-gray-700 gap-2">
-                                                <span class="material-symbols-outlined text-orange-400 icon-md" data-visible-for="iec">error</span>
-                                                <span class="material-symbols-outlined text-gray-300 icon-md" data-visible-for="customer">check_circle</span>
-                                                <span>リスト作成</span>
+                                                <span class="material-symbols-outlined text-orange-400 icon-md">error</span>
+                                                <span>コースリスト</span>
                                             </div>
-                                            <a href="media-plan-course-proposal-list.html?role=iec"
-                                                class="flex items-center text-gray-400 hover:text-blue-600 hover:bg-blue-50 px-2 py-1 rounded transition-all" 
-                                                data-visible-for="iec, supplier">
-                                                <span class="material-symbols-outlined icon-sm">edit</span>
-                                                <span class="text-xs ml-1 font-medium">編集</span>
-                                            </a>
-                                        </div>
-                                        <div class="flex items-center justify-between p-2.5 rounded-lg hover:bg-gray-50 transition-colors" data-visible-for="supplier">
+                                            <span class="material-symbols-outlined icon-sm text-gray-300 group-hover/row:text-blue-500 transition-colors">chevron_right</span>
+                                        </a>
+                                        <!-- コース提案 - Vendor -->
+                                        <a href="media-plan-course-proposal-list.html?role=supplier"
+                                            class="group/row flex items-center justify-between w-full p-2.5 rounded-lg hover:bg-gray-50 transition-colors"
+                                            data-visible-for="supplier">
                                             <div class="flex items-center text-sm font-medium text-gray-700 gap-2">
                                                 <span class="material-symbols-outlined text-orange-400 icon-md">error</span>
                                                 <span>コース提案</span>
                                             </div>
-                                            <a href="media-plan-course-proposal-list.html?role=supplier"
-                                                class="flex items-center text-gray-400 hover:text-blue-600 hover:bg-blue-50 px-2 py-1 rounded transition-all" 
-                                                data-visible-for="supplier">
-                                                <span class="material-symbols-outlined icon-sm">edit</span>
-                                                <span class="text-xs ml-1 font-medium">編集</span>
-                                            </a>
-                                        </div>
-                                        <div class="flex items-center justify-between p-2.5 rounded-lg hover:bg-gray-50 transition-colors" data-visible-for="iec">
+                                            <span class="material-symbols-outlined icon-sm text-gray-300 group-hover/row:text-blue-500 transition-colors">chevron_right</span>
+                                        </a>
+                                        <!-- 提案依頼 - 未依頼状態（IEC） -->
+                                        <button data-modal-src="./partials/req-course-proposal-modal.html"
+                                            class="group/row flex items-center justify-between w-full p-2.5 rounded-lg hover:bg-gray-50 transition-colors text-left"
+                                            data-visible-for="iec">
                                             <div class="flex items-center text-sm font-medium text-gray-700 gap-2">
                                                 <span class="material-symbols-outlined text-gray-300 icon-md">pause_circle</span>
                                                 <span>提案依頼</span>
                                             </div>
-                                            <button data-modal-src="./partials/req-course-proposal-modal.html"
-                                                class="flex items-center text-gray-400 hover:text-blue-600 hover:bg-blue-50 px-2 py-1 rounded transition-all">
-                                                <span class="material-symbols-outlined icon-sm">send</span>
-                                                <span class="text-xs ml-1 font-medium">依頼</span>
-                                            </button>
-                                        </div>
-                                        <div class="flex items-center justify-between p-2.5 rounded-lg hover:bg-gray-50 transition-colors" data-visible-for="iec">
+                                            <span class="material-symbols-outlined icon-sm text-gray-300 group-hover/row:text-blue-500 transition-colors">chevron_right</span>
+                                        </button>
+                                        <!-- 提案依頼 - 依頼済状態（IEC）→ 状況確認 -->
+                                        <button data-modal-src="./partials/req-course-proposal-modal.html" data-modal-readonly="true"
+                                            class="group/row flex items-center justify-between w-full p-2.5 rounded-lg hover:bg-gray-50 transition-colors text-left"
+                                            data-visible-for="iec">
+                                            <div class="flex items-center text-sm font-medium text-gray-700 gap-2">
+                                                <span class="material-symbols-outlined text-gray-300 icon-md">pause_circle</span>
+                                                <span>提案依頼（状況）</span>
+                                            </div>
+                                            <span class="material-symbols-outlined icon-sm text-gray-300 group-hover/row:text-blue-500 transition-colors">chevron_right</span>
+                                        </button>
+                                        <!-- リスト確認依頼 - IEC -->
+                                        <button data-modal-src="./partials/req-course-list-confirm-modal.html"
+                                            class="group/row flex items-center justify-between w-full p-2.5 rounded-lg hover:bg-gray-50 transition-colors text-left"
+                                            data-visible-for="iec">
                                             <div class="flex items-center text-sm font-medium text-gray-700 gap-2">
                                                 <span class="material-symbols-outlined text-gray-300 icon-md">pause_circle</span>
                                                 <span>リスト確認依頼</span>
                                             </div>
-                                            <button data-modal-src="./partials/req-course-list-confirm-modal.html"
-                                                class="flex items-center text-gray-400 hover:text-blue-600 hover:bg-blue-50 px-2 py-1 rounded transition-all">
-                                                <span class="material-symbols-outlined icon-sm">send</span>
-                                                <span class="text-xs ml-1 font-medium">依頼</span>
-                                            </button>
-                                        </div>
-                                        <div class="flex items-center justify-between p-2.5 rounded-lg hover:bg-gray-50 transition-colors" data-visible-for="customer">
+                                            <span class="material-symbols-outlined icon-sm text-gray-300 group-hover/row:text-blue-500 transition-colors">chevron_right</span>
+                                        </button>
+                                        <!-- コースリスト確認 - Customer -->
+                                        <a href="media-plan-course-proposal-list.html?role=customer"
+                                            class="group/row flex items-center justify-between w-full p-2.5 rounded-lg hover:bg-gray-50 transition-colors"
+                                            data-visible-for="customer">
                                             <div class="flex items-center text-sm font-medium text-gray-700 gap-2">
                                                 <span class="material-symbols-outlined text-gray-300 icon-md">pause_circle</span>
                                                 <span>コースリスト確認</span>
                                             </div>
-                                            <a href="media-plan-course-proposal-list.html?role=customer"
-                                                class="flex items-center text-gray-400 hover:text-blue-600 hover:bg-blue-50 px-2 py-1 rounded transition-all">
-                                                <span class="material-symbols-outlined icon-sm">visibility</span>
-                                                <span class="text-xs ml-1 font-medium">確認</span>
-                                            </a>
-                                        </div>
-                                        <div class="flex items-center justify-between p-2.5 rounded-lg hover:bg-gray-50 transition-colors" data-visible-for="iec">
+                                            <span class="material-symbols-outlined icon-sm text-gray-300 group-hover/row:text-blue-500 transition-colors">chevron_right</span>
+                                        </a>
+                                        <!-- 料金確認依頼 - 未依頼状態（IEC） -->
+                                        <button data-modal-src="./partials/req-course-price-confirm-modal.html"
+                                            class="group/row flex items-center justify-between w-full p-2.5 rounded-lg hover:bg-gray-50 transition-colors text-left"
+                                            data-visible-for="iec">
                                             <div class="flex items-center text-sm font-medium text-gray-700 gap-2">
                                                 <span class="material-symbols-outlined text-gray-300 icon-md">pause_circle</span>
                                                 <span>料金確認依頼</span>
                                             </div>
-                                            <button data-modal-src="./partials/req-course-price-confirm-modal.html"
-                                                class="flex items-center text-gray-400 hover:text-blue-600 hover:bg-blue-50 px-2 py-1 rounded transition-all">
-                                                <span class="material-symbols-outlined icon-sm">send</span>
-                                                <span class="text-xs ml-1 font-medium">依頼</span>
-                                            </button>
-                                        </div>
-                                        <div class="flex items-center justify-between p-2.5 rounded-lg hover:bg-gray-50 transition-colors" data-visible-for="supplier">
+                                            <span class="material-symbols-outlined icon-sm text-gray-300 group-hover/row:text-blue-500 transition-colors">chevron_right</span>
+                                        </button>
+                                        <!-- 料金確認依頼 - 依頼済状態（IEC）→ 状況確認 -->
+                                        <button data-modal-src="./partials/req-course-price-confirm-modal.html" data-modal-readonly="true"
+                                            class="group/row flex items-center justify-between w-full p-2.5 rounded-lg hover:bg-gray-50 transition-colors text-left"
+                                            data-visible-for="iec">
+                                            <div class="flex items-center text-sm font-medium text-gray-700 gap-2">
+                                                <span class="material-symbols-outlined text-gray-300 icon-md">pause_circle</span>
+                                                <span>料金確認依頼（状況）</span>
+                                            </div>
+                                            <span class="material-symbols-outlined icon-sm text-gray-300 group-hover/row:text-blue-500 transition-colors">chevron_right</span>
+                                        </button>
+                                        <!-- 料金確認 - Vendor -->
+                                        <a href="media-plan-course-price-confirm-list.html"
+                                            class="group/row flex items-center justify-between w-full p-2.5 rounded-lg hover:bg-gray-50 transition-colors"
+                                            data-visible-for="supplier">
                                             <div class="flex items-center text-sm font-medium text-gray-700 gap-2">
                                                 <span class="material-symbols-outlined text-orange-400 icon-md">error</span>
                                                 <span>料金確認</span>
                                             </div>
-                                            <a href="media-plan-course-price-confirm-list.html"
-                                                class="flex items-center text-gray-400 hover:text-blue-600 hover:bg-blue-50 px-2 py-1 rounded transition-all">
-                                                <span class="material-symbols-outlined icon-sm">edit</span>
-                                                <span class="text-xs ml-1 font-medium">編集</span>
-                                            </a>
-                                        </div>
+                                            <span class="material-symbols-outlined icon-sm text-gray-300 group-hover/row:text-blue-500 transition-colors">chevron_right</span>
+                                        </a>
                                     </div>
                                 </div>
                                 <!-- 募集サイト -->
-                                <div class="w-full rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-shadow duration-300 flex flex-col overflow-hidden group">
+                                <div class="w-full rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-shadow duration-300 flex flex-col overflow-hidden group"
+                                     data-visible-for="iec, customer">
                                     <div class="px-5 py-4 border-b border-gray-100 bg-gray-50/50 flex justify-between items-center">
                                         <div class="flex items-center gap-2">
                                             <div class="p-1.5 bg-white rounded-md border border-gray-200 shadow-sm text-blue-600 flex items-center justify-center">
@@ -428,91 +457,96 @@
                                     </div>
                                     <!-- タスク -->
                                     <div class="p-3 flex flex-col gap-1">
-                                        <div class="flex items-center justify-between p-2.5 rounded-lg hover:bg-gray-50 transition-colors"
-                                            data-visible-for="iec, supplier, customer">
+                                        <!-- 募集要項 - IEC -->
+                                        <button data-modal-src="./partials/guideline-modal.html"
+                                            class="group/row flex items-center justify-between w-full p-2.5 rounded-lg hover:bg-gray-50 transition-colors text-left"
+                                            data-visible-for="iec">
                                             <div class="flex items-center text-sm font-medium text-gray-700 gap-2">
-                                                <span class="material-symbols-outlined text-emerald-500 icon-md" data-visible-for="iec, customer">check_circle</span>
-                                                <span class="material-symbols-outlined text-gray-300 icon-md" data-visible-for="supplier">check_circle</span>
+                                                <span class="material-symbols-outlined text-emerald-500 icon-md">check_circle</span>
                                                 <span>募集要項</span>
                                             </div>
-                                            <button
-                                                data-modal-src="./partials/guideline-modal2.html"
-                                                class="flex items-center text-gray-400 hover:text-blue-600 hover:bg-blue-50 px-2 py-1 rounded transition-all" 
-                                                data-visible-for="iec, customer">
-                                                <span class="material-symbols-outlined icon-sm">edit</span>
-                                                <span class="text-xs ml-1 font-medium">編集</span>
-                                            </button>
-                                        </div>
-                                        
-                                        <div class="flex items-center justify-between p-2.5 rounded-lg hover:bg-gray-50 transition-colors"
-                                            data-visible-for="iec, customer">
+                                            <span class="material-symbols-outlined icon-sm text-gray-300 group-hover/row:text-blue-500 transition-colors">chevron_right</span>
+                                        </button>
+                                        <!-- 募集要項 - Customer -->
+                                        <button data-modal-src="./partials/guideline-modal.html"
+                                            class="group/row flex items-center justify-between w-full p-2.5 rounded-lg hover:bg-gray-50 transition-colors text-left"
+                                            data-visible-for="customer">
+                                            <div class="flex items-center text-sm font-medium text-gray-700 gap-2">
+                                                <span class="material-symbols-outlined text-emerald-500 icon-md">check_circle</span>
+                                                <span>募集要項</span>
+                                            </div>
+                                            <span class="material-symbols-outlined icon-sm text-gray-300 group-hover/row:text-blue-500 transition-colors">chevron_right</span>
+                                        </button>
+                                        <!-- サイトユーザー - IEC -->
+                                        <button data-modal-src="./partials/site-user-modal.html"
+                                            class="group/row flex items-center justify-between w-full p-2.5 rounded-lg hover:bg-gray-50 transition-colors text-left"
+                                            data-visible-for="iec">
                                             <div class="flex items-center text-sm font-medium text-gray-700 gap-2">
                                                 <span class="material-symbols-outlined text-emerald-500 icon-md">check_circle</span>
                                                 <span>サイトユーザー</span>
                                             </div>
-                                            <button
-                                                data-modal-src="./partials/site-user-modal.html"
-                                                class="flex items-center text-gray-400 hover:text-blue-600 hover:bg-blue-50 px-2 py-1 rounded transition-all">
-                                                <span class="material-symbols-outlined icon-sm">edit</span>
-                                                <span class="text-xs ml-1 font-medium">編集</span>
-                                            </button>
-                                        </div>
-
-                                        <div class="flex items-center justify-between p-2.5 rounded-lg hover:bg-gray-50 transition-colors"
+                                            <span class="material-symbols-outlined icon-sm text-gray-300 group-hover/row:text-blue-500 transition-colors">chevron_right</span>
+                                        </button>
+                                        <!-- サイトユーザー - Customer（閲覧） -->
+                                        <button data-modal-src="./partials/site-user-modal.html" data-modal-readonly="true"
+                                            class="group/row flex items-center justify-between w-full p-2.5 rounded-lg hover:bg-gray-50 transition-colors text-left"
+                                            data-visible-for="customer">
+                                            <div class="flex items-center text-sm font-medium text-gray-700 gap-2">
+                                                <span class="material-symbols-outlined text-gray-300 icon-md">check_circle</span>
+                                                <span>サイトユーザー</span>
+                                            </div>
+                                            <span class="material-symbols-outlined icon-sm text-gray-300 group-hover/row:text-blue-500 transition-colors">chevron_right</span>
+                                        </button>
+                                        <!-- 特集ページ - IEC / Customer -->
+                                        <button data-modal-src="./partials/topics-modal.html"
+                                            class="group/row flex items-center justify-between w-full p-2.5 rounded-lg hover:bg-gray-50 transition-colors text-left"
                                             data-visible-for="iec, customer">
                                             <div class="flex items-center text-sm font-medium text-gray-700 gap-2">
                                                 <span class="material-symbols-outlined text-emerald-500 icon-md">check_circle</span>
-                                                <span>特集ぺージ</span>
+                                                <span>特集ページ</span>
                                             </div>
-                                            <button
-                                                data-modal-src="./partials/topics-modal.html"
-                                                class="flex items-center text-gray-400 hover:text-blue-600 hover:bg-blue-50 px-2 py-1 rounded transition-all">
-                                                <span class="material-symbols-outlined icon-sm">edit</span>
-                                                <span class="text-xs ml-1 font-medium">編集</span>
-                                            </button>
-                                        </div>
-
-                                        <div class="flex items-center justify-between p-2.5 rounded-lg hover:bg-gray-50 transition-colors"
+                                            <span class="material-symbols-outlined icon-sm text-gray-300 group-hover/row:text-blue-500 transition-colors">chevron_right</span>
+                                        </button>
+                                        <!-- 申込フォーム - IEC -->
+                                        <button data-modal-src="./partials/application-form-modal.html"
+                                            class="group/row flex items-center justify-between w-full p-2.5 rounded-lg hover:bg-gray-50 transition-colors text-left"
                                             data-visible-for="iec">
                                             <div class="flex items-center text-sm font-medium text-gray-700 gap-2">
                                                 <span class="material-symbols-outlined text-emerald-500 icon-md">check_circle</span>
                                                 <span>申込フォーム</span>
                                             </div>
-                                            <button
-                                                data-modal-src="./partials/application-form-modal.html"
-                                                class="flex items-center text-gray-400 hover:text-blue-600 hover:bg-blue-50 px-2 py-1 rounded transition-all">
-                                                <span class="material-symbols-outlined icon-sm">edit</span>
-                                                <span class="text-xs ml-1 font-medium">編集</span>
-                                            </button>
-                                        </div>
-
-                                        <div class="flex items-center justify-between p-2.5 rounded-lg hover:bg-gray-50 transition-colors"
+                                            <span class="material-symbols-outlined icon-sm text-gray-300 group-hover/row:text-blue-500 transition-colors">chevron_right</span>
+                                        </button>
+                                        <!-- 申込フォーム - Customer（閲覧） -->
+                                        <button data-modal-src="./partials/application-form-modal.html" data-modal-readonly="true"
+                                            class="group/row flex items-center justify-between w-full p-2.5 rounded-lg hover:bg-gray-50 transition-colors text-left"
+                                            data-visible-for="customer">
+                                            <div class="flex items-center text-sm font-medium text-gray-700 gap-2">
+                                                <span class="material-symbols-outlined text-gray-300 icon-md">check_circle</span>
+                                                <span>申込フォーム</span>
+                                            </div>
+                                            <span class="material-symbols-outlined icon-sm text-gray-300 group-hover/row:text-blue-500 transition-colors">chevron_right</span>
+                                        </button>
+                                        <!-- サイト承認依頼 - IEC -->
+                                        <button data-modal-src="./partials/req-site-confirm-modal.html"
+                                            class="group/row flex items-center justify-between w-full p-2.5 rounded-lg hover:bg-gray-50 transition-colors text-left"
                                             data-visible-for="iec">
                                             <div class="flex items-center text-sm font-medium text-gray-700 gap-2">
                                                 <span class="material-symbols-outlined text-emerald-500 icon-md">check_circle</span>
-                                                <span>サイト確認依頼</span>
+                                                <span>サイト承認依頼</span>
                                             </div>
-                                            <button
-                                                data-modal-src="./partials/req-site-confirm-modal.html"
-                                                class="flex items-center text-gray-400 hover:text-blue-600 hover:bg-blue-50 px-2 py-1 rounded transition-all">
-                                                <span class="material-symbols-outlined icon-sm">send</span>
-                                                <span class="text-xs ml-1 font-medium">依頼</span>
-                                            </button>
-                                        </div>
-
-                                        <div class="flex items-center justify-between p-2.5 rounded-lg hover:bg-gray-50 transition-colors"
+                                            <span class="material-symbols-outlined icon-sm text-gray-300 group-hover/row:text-blue-500 transition-colors">chevron_right</span>
+                                        </button>
+                                        <!-- サイト承認 - Customer -->
+                                        <button data-modal-src="./partials/res-site-confirm-modal.html"
+                                            class="group/row flex items-center justify-between w-full p-2.5 rounded-lg hover:bg-gray-50 transition-colors text-left"
                                             data-visible-for="customer">
                                             <div class="flex items-center text-sm font-medium text-gray-700 gap-2">
                                                 <span class="material-symbols-outlined text-emerald-500 icon-md">check_circle</span>
-                                                <span>サイト確認</span>
+                                                <span>サイト承認</span>
                                             </div>
-                                            <button
-                                                data-modal-src="./partials/res-site-confirm-modal.html"
-                                                class="flex items-center text-gray-400 hover:text-blue-600 hover:bg-blue-50 px-2 py-1 rounded transition-all">
-                                                <span class="material-symbols-outlined icon-sm">visibility</span>
-                                                <span class="text-xs ml-1 font-medium">確認</span>
-                                            </button>
-                                        </div>
+                                            <span class="material-symbols-outlined icon-sm text-gray-300 group-hover/row:text-blue-500 transition-colors">chevron_right</span>
+                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -534,7 +568,7 @@
                                     <span class="material-symbols-outlined icon-sm">open_in_new</span>
                                     プレビュー
                                 </button> -->
-                                <a href="./forUser/top2.html" target="_blank" class="rounded-md font-bold bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 transition-all shadow-sm hover:shadow py-2.5 px-5 flex items-center gap-2 text-sm"
+                                <a href="./forUser/top.html" target="_blank" class="rounded-md font-bold bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 transition-all shadow-sm hover:shadow py-2.5 px-5 flex items-center gap-2 text-sm"
                                 data-visible-for="iec,supplier, customer">
                                     <span class="material-symbols-outlined icon-sm">open_in_new</span>
                                     サイト確認
@@ -586,12 +620,8 @@
         let style = { iconColor: "text-gray-300", bgColor: "bg-gray-50", borderColor: "border-gray-200" };
         if (status === "完了") {
             style = { iconColor: "text-green-600", bgColor: "bg-green-50", borderColor: "border-green-200" };
-        } else if (["処理中", "提案中"].includes(status)) {
+        } else if (["処理中", "提案中", "料金確認中"].includes(status)) {
             style = { iconColor: "text-blue-600", bgColor: "bg-blue-50", borderColor: "border-blue-200" };
-        } else if (["顧客確認中", "顧客承認中"].includes(status)) {
-            style = { iconColor: "text-orange-500", bgColor: "bg-orange-50", borderColor: "border-orange-200" };
-        } else if (["料金確認中"].includes(status)) {
-            style = { iconColor: "text-purple-500", bgColor: "bg-purple-50", borderColor: "border-purple-200" };
         }
         return style;
     }
@@ -644,11 +674,11 @@
                 ${stripHtml}
                 <div class="flex items-start justify-between gap-3 pl-2">
                     <div class="flex-1 min-w-0">
-                        <div class="flex justify-between items-start">
+                        <div>
                             <div class="text-sm font-bold text-gray-800 group-hover:text-blue-700 transition-colors truncate mb-0.5">${item.title}</div>
-                            <span class="text-[0.7rem] text-gray-500 font-mono pt-1 ml-2 whitespace-nowrap">${item.period.split(' - ')[0]}〜${item.period.split(' - ')[1]}</span>
+                            <span class="text-[0.7rem] text-gray-500 font-mono whitespace-nowrap">${item.period.split(' - ')[0]}〜${item.period.split(' - ')[1]}</span>
                         </div>
-                        <div class="text-xs text-gray-500 font-medium truncate mb-2">${item.company}</div>
+                        <div class="text-xs text-gray-500 font-medium truncate mb-2" data-visible-for="iec, supplier">${item.company}</div>
                         <div class="flex items-center justify-between mt-2 pt-2 border-t border-dashed border-gray-100">
                             <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[0.625rem] font-medium border ${t.badge}">
                                 ${item.statusLabel}

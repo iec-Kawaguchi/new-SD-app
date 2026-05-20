@@ -56,7 +56,15 @@
 
         // iframe 本体
         const iframe = document.createElement('iframe');
-        iframe.src = src;                     // file:// 相対パスOK
+        // data-modal-readonly="true" の場合はロールと ?readonly=true を付与してモーダルに伝達
+        const isReadonly = openerEl && openerEl.getAttribute('data-modal-readonly') === 'true';
+        if (isReadonly) {
+            const role = window.RoleMock ? window.RoleMock.getRole() : '';
+            const sep  = src.includes('?') ? '&' : '?';
+            iframe.src = src + sep + 'readonly=true' + (role ? '&role=' + role : '');
+        } else {
+            iframe.src = src;
+        }
         iframe.title = 'modal';
         iframe.className = 'w-full h-full rounded-2xl';
         iframe.setAttribute('loading', 'eager');

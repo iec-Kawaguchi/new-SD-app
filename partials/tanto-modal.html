@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="./css/base-style.css">
     <script src="../js/role-visibility.js"></script>
     <script src="../js/components/combobox.js"></script>
+    <script src="../js/modal-readonly.js"></script>
 
     <style>
         /* カスタムスクロールバー */
@@ -38,12 +39,6 @@
                 </div>
             </div>
             <p class="text-xs text-gray-500 ml-8">本募集における顧客側の担当者情報を管理します。</p>
-
-            <!-- 参照モード案内（Customer のみ）※モックには存在しなかった要素 -->
-            <div data-visible-for="customer" class="hidden mt-3 ml-8 flex items-start gap-2 rounded-lg bg-blue-50 border border-blue-100 px-4 py-3">
-                <span class="material-symbols-outlined text-blue-500 shrink-0 mt-0.5" style="font-size: 18px;">info</span>
-                <p class="text-sm text-blue-700">この画面は閲覧専用です。担当者の追加・削除・変更は行えません。</p>
-            </div>
         </header>
 
         <main class="flex-1 px-6 py-6 space-y-8 pb-32">
@@ -151,10 +146,10 @@
                     </span>
                 </label>`}
                 ${user.isAdmin ? `
-                <span data-visible-for="customer" class="hidden block px-3 py-1.5 rounded-md border border-blue-200 bg-blue-50 text-xs font-medium text-blue-700">
+                <span data-visible-for="customer" class="hidden px-3 py-1.5 rounded-md border border-blue-200 bg-blue-50 text-xs font-medium text-blue-700">
                     管理者
                 </span>` : `
-                <span data-visible-for="customer" class="hidden block px-3 py-1.5 rounded-md border border-gray-200 bg-white text-xs font-medium text-gray-500">
+                <span data-visible-for="customer" class="hidden px-3 py-1.5 rounded-md border border-gray-200 bg-white text-xs font-medium text-gray-500">
                     担当者
                 </span>`}
             `;

@@ -8,6 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
     <script src="../js/role-visibility.js"></script>
+    <script src="../js/modal-readonly.js"></script>
 
     <style>
         ::-webkit-scrollbar { width: 6px; height: 6px; }
@@ -39,7 +40,7 @@
             <p class="text-xs text-gray-500 ml-8">本募集のキャンセルポリシーを設定します。募集サイト上に表示されます。</p>
 
             <!-- 参照モード案内（supplier / customer） -->
-            <div data-visible-for="supplier,customer" class="hidden mt-3 ml-8 rounded-lg bg-blue-50 border border-blue-100 px-4 py-3">
+            <div data-readonly-banner data-visible-for="supplier,customer" class="hidden mt-3 ml-8 rounded-lg bg-blue-50 border border-blue-100 px-4 py-3">
                 <div class="flex items-start gap-2">
                     <span class="material-symbols-outlined text-blue-500 shrink-0 mt-0.5" style="font-size: 18px;">info</span>
                     <p class="text-sm text-blue-700">この画面は閲覧専用です。IECが設定したキャンセルポリシーを確認できます。</p>

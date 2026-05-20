@@ -10,6 +10,8 @@
 		<link rel="stylesheet" href="./css/base-style.css">
 		<script src="../js/role-visibility.js"></script>
 		<script src="../js/components/combobox.js"></script>
+		<script src="../js/modal-readonly.js"></script>
+	<script src="../js/components/segment-control.js" defer></script>
 
 		<style>
 			::-webkit-scrollbar { width: 6px; height: 6px; }
@@ -30,10 +32,12 @@
 					</div>
 					<p class="text-xs text-gray-500 ml-8">本募集の参加団体情報を登録してください。</p>
 				</div>
+
 				<!-- ロール切替（モックのみ） -->
 				<div class="relative">
 					<select id="role-select" class="appearance-none pl-3 pr-8 py-1.5 rounded-md border border-gray-300 bg-gray-50 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
 						<option value="iec">IEC (管理者)</option>
+						<option value="supplier">他団体</option>
 						<option value="customer">顧客</option>
 					</select>
 					<span class="material-symbols-outlined absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 text-sm pointer-events-none">expand_more</span>
@@ -51,8 +55,21 @@
 						団体担当を追加
 					</h2>
 				</div>
-				<div class="p-5">
-					<div class="flex flex-col md:flex-row gap-4 items-end">
+				<div class="p-5 space-y-4">
+					<!-- セグメントコントロール: 参加団体あり / 参加団体なし -->
+					<div class="flex items-center gap-3">
+						<span class="text-xs font-bold text-gray-600">参加団体の有無</span>
+						<segment-control id="vendor-seg" name="vendor-mode" value="has-vendor" options="has-vendor:参加団体あり, no-vendor:参加団体なし"></segment-control>
+					</div>
+
+					<!-- 参加団体なし時のメッセージ -->
+					<div id="no-vendor-notice" class="hidden items-center gap-2 text-sm text-amber-700 bg-amber-50 border border-amber-200 rounded-lg px-4 py-3">
+						<span class="material-symbols-outlined text-amber-500" style="font-size:1.1rem">info</span>
+						この募集は他団体の参加がなく、IEC 単独で進行します。
+					</div>
+
+					<!-- 追加フォーム -->
+					<div id="vendor-add-form" class="flex flex-col md:flex-row gap-4 items-end">
 
 					<div class="flex flex-col gap-1.5 flex-1 min-w-[200px]">
 						<label class="text-xs font-bold text-gray-700 uppercase tracking-wide">団体</label>
@@ -73,7 +90,7 @@
 			</section>
 
 			<!-- IEC編集モード：登録済みリスト -->
-			<section data-visible-for="iec">
+			<section data-visible-for="iec" id="vendor-list-section">
 				<h2 class="text-sm font-bold text-gray-500 mb-3 uppercase tracking-wide px-1 flex items-center gap-2">
 					登録済み担当者
 				</h2>
@@ -87,8 +104,8 @@
 				</div>
 			</section>
 
-			<!-- Customer参照モード：IEC担当＋参加団体営業担当 -->
-			<div data-visible-for="customer" class="hidden space-y-8">
+			<!-- 参照モード（supplier / customer）：IEC担当＋参加団体営業担当 -->
+			<div data-visible-for="supplier,customer" class="hidden space-y-8">
 				<!-- IEC担当セクション -->
 				<section>
 					<h2 class="text-sm font-bold text-gray-500 mb-3 uppercase tracking-wide px-1 flex items-center gap-2">
@@ -120,7 +137,7 @@
 				<button data-visible-for="iec" class="px-5 py-2.5 rounded-lg border border-gray-300 bg-white text-sm font-bold text-gray-600 hover:bg-gray-50 hover:text-gray-800 transition-colors">
 					キャンセル
 				</button>
-				<button data-visible-for="customer" class="hidden px-5 py-2.5 rounded-lg border border-gray-300 bg-white text-sm font-bold text-gray-600 hover:bg-gray-50 hover:text-gray-800 transition-colors">
+				<button data-visible-for="supplier,customer" class="hidden px-5 py-2.5 rounded-lg border border-gray-300 bg-white text-sm font-bold text-gray-600 hover:bg-gray-50 hover:text-gray-800 transition-colors">
 					閉じる
 				</button>
 				<button id="save-btn" data-visible-for="iec" class="px-6 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-bold hover:bg-blue-700 shadow-sm hover:shadow active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:shadow-none disabled:active:scale-100">
@@ -211,6 +228,282 @@
 			</div>
 		</template>
 
-		<script src="../js/modals/supplier-modal.js"></script>
+		<script>
+		// 参加団体登録モーダル v2：ロール別表示切替・排他的営業担当選択・保存バリデーション対応
+
+		window.addEventListener('DOMContentLoaded', () => {
+		  // --- マスターデータ ---
+		  const orgMaster = [
+		    { id: 'org-1', name: '産業能率大学' },
+		    { id: 'org-2', name: 'JMAM' },
+		    { id: 'org-3', name: 'JTEX' },
+		  ];
+
+		  const contactMaster = {
+		    'org-1': [
+		      { id: 'ichiro', name: '鈴木 一郎', email: 'ichiro.suzuki@sannou.ac.jp' },
+		      { id: 'hanako', name: '高橋 花子', email: 'hanako.takahashi@sannou.ac.jp' },
+		    ],
+		    'org-2': [
+		      { id: 'taro', name: '田中 太郎', email: 'taro.tanaka@jmam.co.jp' },
+		    ],
+		    'org-3': [
+		      { id: 'keiko', name: '佐藤 恵子', email: 'keiko.sato@jtex.co.jp' },
+		    ],
+		  };
+
+		  // 初期登録済みデータ（ロール付き）
+		  const initialEntries = [
+		    { orgId: 'org-1', contactId: 'ichiro', roles: { sales: true,  apply: false, billing: false } },
+		    { orgId: 'org-1', contactId: 'hanako', roles: { sales: false, apply: true,  billing: false } },
+		    { orgId: 'org-2', contactId: 'taro',   roles: { sales: true,  apply: true,  billing: true  } },
+		    { orgId: 'org-3', contactId: 'keiko',  roles: { sales: true,  apply: true,  billing: true  } },
+		  ];
+
+		  // IECユーザーダミーデータ（Customer参照モード用）
+		  const iecUsers = [
+		    { name: '山田 健一', email: 'yamada.kenichi@iec.co.jp' },
+		    { name: '佐々木 裕子', email: 'sasaki.yuko@iec.co.jp' },
+		  ];
+
+		  // --- DOM参照 ---
+		  const addBtn         = document.getElementById('add-btn');
+		  const cardsEl        = document.getElementById('cards');
+		  const emptyEl        = document.getElementById('empty');
+		  const saveBtn        = document.getElementById('save-btn');
+		  const iecCardsEl     = document.getElementById('iec-cards');
+		  const vendorCardsEl  = document.getElementById('vendor-sales-cards');
+		  const vendorEmptyEl  = document.getElementById('vendor-sales-empty');
+		  const cardTpl        = document.getElementById('card-tpl');
+		  const iecCardTpl     = document.getElementById('iec-card-tpl');
+		  const vendorCardTpl  = document.getElementById('vendor-card-tpl');
+
+		  // --- ユーティリティ ---
+		  function orgName(orgId) {
+		    return orgMaster.find(o => o.id === orgId)?.name || '';
+		  }
+
+		  function findContact(orgId, contactId) {
+		    return (contactMaster[orgId] || []).find(c => c.id === contactId);
+		  }
+
+		  function setEmptyState() {
+		    emptyEl.classList.toggle('hidden', cardsEl.children.length > 0);
+		  }
+
+		  // --- 保存バリデーション ---
+		  // 条件：担当者0件は保存可。1件以上の場合は
+		  //   ① 全担当者が少なくとも1ロール保持
+		  //   ② 各団体ごとに営業担当がちょうど1名
+		  function validateSaveBtn() {
+		    const cards = [...cardsEl.querySelectorAll('[data-contact-id]')];
+		    if (cards.length === 0) {
+		      saveBtn.disabled = false;
+		      return;
+		    }
+
+		    const anyNoRole = cards.some(card => {
+		      const s = card.querySelector('.role-sales').checked;
+		      const a = card.querySelector('.role-apply').checked;
+		      const b = card.querySelector('.role-billing').checked;
+		      return !s && !a && !b;
+		    });
+
+		    const orgSalesCount = {};
+		    cards.forEach(card => {
+		      const orgId = card.dataset.orgId;
+		      if (!(orgId in orgSalesCount)) orgSalesCount[orgId] = 0;
+		      if (card.querySelector('.role-sales').checked) orgSalesCount[orgId]++;
+		    });
+		    const salesInvalid = Object.values(orgSalesCount).some(count => count !== 1);
+
+		    saveBtn.disabled = anyNoRole || salesInvalid;
+		  }
+
+		  // --- コンボボックス初期化 ---
+		  const orgCombobox = initCombobox(
+		    document.getElementById('org-combobox'),
+		    {
+		      placeholder: '団体を選択してください',
+		      items: orgMaster.map(o => ({ value: o.id, label: o.name })),
+		      onSelect(orgId) {
+		        updateContactCombobox(orgId);
+		      },
+		    }
+		  );
+
+		  const contactCombobox = initCombobox(
+		    document.getElementById('contact-combobox'),
+		    {
+		      placeholder: '担当者を選択してください',
+		      disabled: true,
+		    }
+		  );
+
+		  function updateContactCombobox(orgId) {
+		    const contacts = (contactMaster[orgId] || []).map(c => ({ value: c.id, label: c.name }));
+		    contactCombobox.setItems(contacts);
+		    contactCombobox.setDisabled(!orgId);
+		  }
+
+		  // --- カード生成（IEC編集モード） ---
+		  function makeCard({ orgId, contactId, roles = {} }) {
+		    const contact = findContact(orgId, contactId);
+		    const orgLabel = orgName(orgId);
+		    if (!contact || !orgLabel) return null;
+
+		    const node = cardTpl.content.firstElementChild.cloneNode(true);
+		    node.dataset.orgId     = orgId;
+		    node.dataset.contactId = contactId;
+
+		    node.querySelector('.avatar').textContent = contact.name.trim().charAt(0);
+		    node.querySelector('.name').textContent   = contact.name;
+		    node.querySelector('.org').textContent    = orgLabel;
+		    node.querySelector('.email').textContent  = contact.email || '';
+
+		    const salesChk   = node.querySelector('.role-sales');
+		    const applyChk   = node.querySelector('.role-apply');
+		    const billingChk = node.querySelector('.role-billing');
+
+		    salesChk.checked   = !!roles.sales;
+		    applyChk.checked   = !!roles.apply;
+		    billingChk.checked = !!roles.billing;
+
+		    // 営業担当：同一団体内で排他的選択
+		    salesChk.addEventListener('change', () => {
+		      if (salesChk.checked) {
+		        cardsEl.querySelectorAll('[data-org-id="' + orgId + '"]').forEach(other => {
+		          if (other !== node) other.querySelector('.role-sales').checked = false;
+		        });
+		      }
+		      validateSaveBtn();
+		    });
+
+		    applyChk.addEventListener('change', validateSaveBtn);
+		    billingChk.addEventListener('change', validateSaveBtn);
+
+		    node.querySelector('.remove').addEventListener('click', () => {
+		      node.remove();
+		      setEmptyState();
+		      validateSaveBtn();
+		    });
+
+		    return node;
+		  }
+
+		  // 重複チェックしてカードを追加
+		  function addEntry(entry) {
+		    if (cardsEl.querySelector('[data-contact-id="' + entry.contactId + '"]')) return false;
+		    const card = makeCard(entry);
+		    if (!card) return false;
+		    cardsEl.prepend(card);
+		    setEmptyState();
+		    validateSaveBtn();
+		    return true;
+		  }
+
+		  // --- Customer参照モード用カード生成 ---
+		  function renderIecCards() {
+		    iecCardsEl.innerHTML = '';
+		    iecUsers.forEach(user => {
+		      const node = iecCardTpl.content.firstElementChild.cloneNode(true);
+		      node.querySelector('.avatar').textContent      = user.name.trim().charAt(0);
+		      node.querySelector('.name').textContent        = user.name;
+		      node.querySelector('.affiliation').textContent = 'IEC';
+		      node.querySelector('.email').textContent       = user.email;
+		      iecCardsEl.appendChild(node);
+		    });
+		  }
+
+		  function renderVendorSalesCards() {
+		    vendorCardsEl.innerHTML = '';
+		    const salesEntries = initialEntries.filter(e => e.roles.sales);
+		    if (salesEntries.length === 0) {
+		      vendorEmptyEl.classList.remove('hidden');
+		      return;
+		    }
+		    vendorEmptyEl.classList.add('hidden');
+		    salesEntries.forEach(entry => {
+		      const contact = findContact(entry.orgId, entry.contactId);
+		      if (!contact) return;
+		      const node = vendorCardTpl.content.firstElementChild.cloneNode(true);
+		      node.querySelector('.avatar').textContent = contact.name.trim().charAt(0);
+		      node.querySelector('.name').textContent   = contact.name;
+		      node.querySelector('.org').textContent    = orgName(entry.orgId);
+		      node.querySelector('.email').textContent  = contact.email;
+		      vendorCardsEl.appendChild(node);
+		    });
+		  }
+
+		  // --- 初期化 ---
+		  initialEntries.forEach(e => addEntry(e));
+		  setEmptyState();
+		  validateSaveBtn();
+		  renderIecCards();
+		  renderVendorSalesCards();
+
+		  // --- イベント ---
+		  addBtn.addEventListener('click', () => {
+		    const orgId     = orgCombobox.getValue();
+		    const contactId = contactCombobox.getValue();
+
+		    if (!orgId || !contactId) {
+		      if (!orgId) {
+		        const btn = document.querySelector('#org-combobox .combo-btn');
+		        btn.classList.add('ring-2', 'ring-red-400');
+		        setTimeout(() => btn.classList.remove('ring-2', 'ring-red-400'), 1500);
+		      }
+		      if (!contactId) {
+		        const btn = document.querySelector('#contact-combobox .combo-btn');
+		        btn.classList.add('ring-2', 'ring-red-400');
+		        setTimeout(() => btn.classList.remove('ring-2', 'ring-red-400'), 1500);
+		      }
+		      return;
+		    }
+
+		    // 新規追加時はロールを全未選択
+		    const added = addEntry({ orgId, contactId, roles: {} });
+		    if (!added) {
+		      // 重複の場合：既存カードをハイライト
+		      const existing = cardsEl.querySelector('[data-contact-id="' + contactId + '"]');
+		      if (existing) {
+		        existing.classList.add('ring-2', 'ring-yellow-400', 'rounded-xl');
+		        existing.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+		        setTimeout(() => existing.classList.remove('ring-2', 'ring-yellow-400', 'rounded-xl'), 1500);
+		      }
+		    }
+
+		    contactCombobox.reset();
+		    updateContactCombobox(orgId);
+		  });
+
+		  // --- 参加団体の有無セグメントコントロール ---
+		  let hasNoVendor = false;
+
+		  function applyVendorMode(noVendor) {
+		    hasNoVendor = noVendor;
+		    const addForm     = document.getElementById('vendor-add-form');
+		    const notice      = document.getElementById('no-vendor-notice');
+		    const listSection = document.getElementById('vendor-list-section');
+
+		    addForm.classList.toggle('hidden', noVendor);
+		    notice.classList.toggle('hidden', !noVendor);
+		    notice.classList.toggle('flex', noVendor);
+
+		    listSection.classList.toggle('opacity-50', noVendor);
+		    listSection.classList.toggle('pointer-events-none', noVendor);
+		  }
+
+		  document.getElementById('vendor-seg').addEventListener('change', e => {
+		    applyVendorMode(e.detail.value === 'no-vendor');
+		  });
+
+		  // --- RoleMock初期化 ---
+		  if (!new URLSearchParams(location.search).get('role')) {
+		    RoleMock.setRoleInUrl('iec');
+		  }
+		  RoleMock.init({ roleSelect: '#role-select' });
+		});
+		</script>
 	</body>
 </html>

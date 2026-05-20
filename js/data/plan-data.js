@@ -60,7 +60,7 @@ export const planData = [
         progress: {
             basic: "完了",
             course: "完了",
-            site: "顧客承認中"
+            site: "処理中"
         }
     },
     {

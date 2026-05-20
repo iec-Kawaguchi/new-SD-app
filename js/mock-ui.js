@@ -2,16 +2,11 @@
 // 依存: TailwindCSS, role-visibility.js (RoleMock)
 
 (function (global) {
-    // スタイル定義（<a>タグに直接適用するため、クラスを整理）
     const STYLES = {
-        // 共通: 角丸、Flex配置、トランジション
         base: "flex items-center w-full py-2 px-3 rounded-md transition-all duration-200 group cursor-pointer",
-        // アクティブ: 青背景、青文字、太字
         active: "bg-blue-50 text-blue-700 font-semibold shadow-sm",
-        // 非アクティブ: グレー文字、ホバーで薄いグレー
         inactive: "text-gray-600 hover:bg-gray-50 hover:text-gray-900",
-        // アイコン
-        icon: "material-symbols-outlined text-[1.25rem] mr-3 transition-colors",
+        icon: "material-symbols-outlined nav-icon text-[1.25rem] mr-3 transition-colors",
     };
 
     const headerTpl = (opts = {}) => {
@@ -19,8 +14,11 @@
         const brand = opts.brand || "New SD App";
         return `
         <header class="bg-white w-full h-16 border-b border-gray-200 sticky top-0 z-50">
-            <div class="flex items-center h-full justify-between px-6">
+            <div class="flex items-center h-full justify-between px-3">
                 <div class="flex items-center gap-3">
+                    <button id="sidebar-toggle" class="p-1.5 rounded-md text-gray-500 hover:bg-gray-100 hover:text-gray-700 transition-colors hidden lg:flex items-center" title="メニューを折りたたむ">
+                        <span class="material-symbols-outlined" style="font-size:1.375rem">menu_open</span>
+                    </button>
                     <div class="text-xl text-blue-800 font-bold tracking-tight">${brand}</div>
                 </div>
                 <div class="ml-auto flex items-center gap-4">
@@ -43,99 +41,79 @@
         </header>`;
     };
 
-    // サイドバー：ul/liをやめて、div > a のシンプルな構造に変更（バグ回避）
     const sidebarTpl = () => `
-        <aside class="w-64 bg-white border-r border-gray-200 flex flex-col h-[calc(100vh-4rem)] overflow-y-auto sticky top-16 hidden lg:flex">
-            <nav class="flex-1 px-3 py-6 space-y-6">
-                
+        <aside id="app-sidebar-el" class="w-56 bg-white border-r border-gray-200 flex flex-col h-[calc(100vh-4rem)] overflow-hidden sticky top-16 hidden lg:flex transition-[width] duration-200">
+            <nav class="flex-1 px-3 py-6 space-y-6 overflow-y-auto">
+
                 <div>
-                    <h2 id="menu-1" class="px-3 mb-2 text-xs font-semibold text-gray-400 uppercase tracking-wider cursor-pointer flex items-center justify-between hover:text-gray-600 transition-colors group/head">
+                    <h2 id="menu-1" class="sidebar-section-head px-3 mb-2 text-xs font-semibold text-gray-400 uppercase tracking-wider cursor-pointer flex items-center justify-between hover:text-gray-600 transition-colors group/head">
                         募集メニュー
                         <span id="menu-1-arrow" class="material-symbols-outlined text-[1rem] group-hover/head:text-gray-600 transition-transform">keyboard_arrow_up</span>
                     </h2>
                     <div id="menu-items-1" class="space-y-1">
-                        <a href="media-plan-list.html" data-visible-for="iec, supplier, customer" class="js-nav-item">
+                        <a href="media-plan-list.html" data-visible-for="iec, supplier, customer" class="js-nav-item" title="募集一覧">
                             <span class="${STYLES.icon}">dashboard</span>
-                            <span class="text-sm">募集一覧</span>
+                            <span class="text-sm sidebar-text">募集一覧</span>
                         </a>
-                        <a href="applications-download.html" data-visible-for="iec, supplier, customer" class="js-nav-item">
+                        <a href="applications-download.html" data-visible-for="iec, supplier, customer" class="js-nav-item" title="申込データDL">
                             <span class="${STYLES.icon}">download</span>
-                            <span class="text-sm">申込データDL</span>
+                            <span class="text-sm sidebar-text">申込データDL</span>
                         </a>
                     </div>
                 </div>
 
                 <div>
-                    <h2 id="menu-2" class="px-3 mb-2 text-xs font-semibold text-gray-400 uppercase tracking-wider cursor-pointer flex items-center justify-between hover:text-gray-600 transition-colors group/head">
+                    <h2 id="menu-2" class="sidebar-section-head px-3 mb-2 text-xs font-semibold text-gray-400 uppercase tracking-wider cursor-pointer flex items-center justify-between hover:text-gray-600 transition-colors group/head">
                         システム設定
                         <span id="menu-2-arrow" class="material-symbols-outlined text-[1rem] group-hover/head:text-gray-600 transition-transform">keyboard_arrow_up</span>
                     </h2>
                     <div id="menu-items-2" class="space-y-1">
-                        <a href="company-master.html" data-visible-for="iec, customer" class="js-nav-item">
+                        <a href="company-master.html" data-visible-for="iec, customer" class="js-nav-item" title="企業管理">
                             <span class="${STYLES.icon}">apartment</span>
-                            <span class="text-sm">企業管理</span>
+                            <span class="text-sm sidebar-text">企業管理</span>
                         </a>
-                        <a href="user-master.html" data-visible-for="iec, supplier, customer" class="js-nav-item">
+                        <a href="user-master.html" data-visible-for="iec, supplier, customer" class="js-nav-item" title="ユーザー管理">
                             <span class="${STYLES.icon}">person</span>
-                            <span class="text-sm">ユーザー管理</span>
+                            <span class="text-sm sidebar-text">ユーザー管理</span>
                         </a>
-                        <a href="course-master.html" data-visible-for="iec, supplier" class="js-nav-item">
+                        <a href="course-master.html" data-visible-for="iec, supplier" class="js-nav-item" title="コース管理">
                             <span class="${STYLES.icon}">book_2</span>
-                            <span class="text-sm">コース管理</span>
+                            <span class="text-sm sidebar-text">コース管理</span>
                         </a>
-                        <a href="topics-master.html" data-visible-for="iec, customer" class="js-nav-item">
+                        <a href="topics-master.html" data-visible-for="iec, customer" class="js-nav-item" title="特集ページ管理">
                             <span class="${STYLES.icon}">view_agenda</span>
-                            <span class="text-sm">特集ページ管理</span>
+                            <span class="text-sm sidebar-text">特集ページ管理</span>
                         </a>
-                        <a href="org-master.html" data-visible-for="iec, customer" class="js-nav-item">
+                        <a href="org-master.html" data-visible-for="iec, customer" class="js-nav-item" title="組織階層管理">
                             <span class="${STYLES.icon}">account_tree</span>
-                            <span class="text-sm">組織階層管理</span>
+                            <span class="text-sm sidebar-text">組織階層管理</span>
                         </a>
-                        <a href="application-instructions-master.html" data-visible-for="iec, customer" class="js-nav-item">
+                        <a href="application-instructions-master.html" data-visible-for="iec, customer" class="js-nav-item" title="申込指示管理">
                             <span class="${STYLES.icon}">order_approve</span>
-                            <span class="text-sm">申込指示管理</span>
+                            <span class="text-sm sidebar-text">申込指示管理</span>
                         </a>
-                        <a href="tag-master.html" data-visible-for="iec, customer" class="js-nav-item">
+                        <a href="tag-master.html" data-visible-for="iec, customer" class="js-nav-item" title="タグ管理">
                             <span class="${STYLES.icon}">tag</span>
-                            <span class="text-sm">タグ管理</span>
+                            <span class="text-sm sidebar-text">タグ管理</span>
                         </a>
-                       
-                        
                     </div>
                 </div>
 
             </nav>
-            <div class="p-4 border-t border-gray-100">
+            <div class="p-4 border-t border-gray-100 sidebar-section-head shrink-0">
                 <div class="text-xs text-gray-400 text-center">v1.0.1 Fixed</div>
             </div>
         </aside>`;
 
     function highlightActiveByHref(sidebarRoot) {
-        // 現在のパス（クエリパラメータ除外）
         const currentPath = new URL(location.href).pathname;
-        
-        // デバッグ用（F12コンソールで確認可能）
-        // console.log('[MockUI] Current Path:', currentPath);
-
         const links = sidebarRoot.querySelectorAll('a.js-nav-item');
-        
         links.forEach(a => {
             const rawHref = a.getAttribute('href');
             if (!rawHref || rawHref === '#') return;
-
-            // hrefを絶対パスに変換して比較
-            const targetUrl = new URL(rawHref, location.href);
-            const targetPath = targetUrl.pathname;
-            
-            // 判定ロジック: パスが完全一致するか
+            const targetPath = new URL(rawHref, location.href).pathname;
             const isActive = (targetPath === currentPath);
-            
-            // デバッグログ: なぜ一致した/しなかったか確認したい場合はコメント解除
-            // console.log(`[MockUI] Checking: ${targetPath} == ${currentPath} ? ${isActive}`);
-
-            // クラスの適用
-            // baseクラス + (isActive ? active : inactive)
-            a.className = `${STYLES.base} ${isActive ? STYLES.active : STYLES.inactive}`;
+            a.className = `js-nav-item ${STYLES.base} ${isActive ? STYLES.active : STYLES.inactive}`;
         });
     }
 
@@ -155,12 +133,57 @@
         toggleMenu('#menu-2', '#menu-items-2', '#menu-2-arrow');
     }
 
+    function wireSidebarToggle(sidebarRoot) {
+        const sidebar = sidebarRoot.querySelector('#app-sidebar-el');
+        // トグルボタンはヘッダー内にあるためdocument全体から取得
+        const toggleBtn = document.querySelector('#sidebar-toggle');
+        if (!sidebar || !toggleBtn) return;
+
+        const toggleIcon = toggleBtn.querySelector('.material-symbols-outlined');
+        const nav = sidebarRoot.querySelector('nav');
+
+        function collapse() {
+            sidebar.dataset.collapsed = 'true';
+            sidebar.classList.replace('w-56', 'w-14');
+            if (toggleIcon) toggleIcon.textContent = 'menu';
+            toggleBtn.title = 'メニューを展開する';
+            // navのpaddingを除去してアイコンをサイドバー幅に対して正確に中央揃え
+            if (nav) { nav.classList.remove('px-3'); nav.classList.add('px-2'); }
+            sidebarRoot.querySelectorAll('.sidebar-text').forEach(el => el.classList.add('hidden'));
+            sidebarRoot.querySelectorAll('.sidebar-section-head').forEach(el => el.classList.add('hidden'));
+            sidebarRoot.querySelectorAll('.js-nav-item').forEach(el => {
+                el.classList.add('justify-center');
+                el.classList.remove('px-3');
+            });
+            sidebarRoot.querySelectorAll('.nav-icon').forEach(el => el.classList.remove('mr-3'));
+        }
+
+        function expand() {
+            sidebar.dataset.collapsed = 'false';
+            sidebar.classList.replace('w-14', 'w-56');
+            if (toggleIcon) toggleIcon.textContent = 'menu_open';
+            toggleBtn.title = 'メニューを折りたたむ';
+            if (nav) { nav.classList.remove('px-0'); nav.classList.add('px-3'); }
+            sidebarRoot.querySelectorAll('.sidebar-text').forEach(el => el.classList.remove('hidden'));
+            sidebarRoot.querySelectorAll('.sidebar-section-head').forEach(el => el.classList.remove('hidden'));
+            sidebarRoot.querySelectorAll('.js-nav-item').forEach(el => {
+                el.classList.remove('justify-center');
+                el.classList.add('px-3');
+            });
+            sidebarRoot.querySelectorAll('.nav-icon').forEach(el => el.classList.add('mr-3'));
+        }
+
+        toggleBtn.addEventListener('click', () => {
+            if (sidebar.dataset.collapsed === 'true') expand(); else collapse();
+        });
+    }
+
     function injectHeader(targetSelector, opts = {}) {
         const mount = document.querySelector(targetSelector);
         if (!mount) return;
         mount.innerHTML = headerTpl(opts);
         if (global.RoleMock) {
-            if(!new URLSearchParams(location.search).get('role')) RoleMock.setRoleInUrl(opts.initialRole || 'iec');
+            if (!new URLSearchParams(location.search).get('role')) RoleMock.setRoleInUrl(opts.initialRole || 'iec');
             RoleMock.init({ roleSelect: '#role-select' });
             const sel = mount.querySelector('#role-select');
             if (sel) sel.value = RoleMock.getRole();
@@ -172,9 +195,8 @@
         if (!mount) return;
         mount.innerHTML = sidebarTpl();
         wireSideMenuToggles(mount);
+        wireSidebarToggle(mount);
         if (global.RoleMock) RoleMock.applyRoleVisibility();
-        
-        // 最後にハイライト実行
         highlightActiveByHref(mount);
     }
 
