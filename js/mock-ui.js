@@ -92,9 +92,13 @@
                             <span class="${STYLES.icon}">order_approve</span>
                             <span class="text-sm sidebar-text">申込指示管理</span>
                         </a>
-                        <a href="tag-master.html" data-visible-for="iec, customer" class="js-nav-item" title="タグ管理">
+                        <a href="standard-tag-master.html" data-visible-for="iec, supplier, customer" class="js-nav-item" title="標準タグ管理">
+                            <span class="${STYLES.icon}">sell</span>
+                            <span class="text-sm sidebar-text">標準タグ管理</span>
+                        </a>
+                        <a href="tag-master.html" data-visible-for="iec, customer" class="js-nav-item" title="カスタムタグ管理">
                             <span class="${STYLES.icon}">tag</span>
-                            <span class="text-sm sidebar-text">タグ管理</span>
+                            <span class="text-sm sidebar-text">カスタムタグ管理</span>
                         </a>
                     </div>
                 </div>

@@ -665,9 +665,29 @@ window.addEventListener('DOMContentLoaded', () => {
 
     let modalData = [];
 
+    // courseMasterData → モーダル用の統一フォーマットへ変換
+    const normalizeCourseMaster = d => ({
+        id: d.id,
+        title: d.name || '',
+        code: d.tkfCode || d.hanCode || '',
+        org: d.org || '',
+        stdTag: '',
+        options: Array.isArray(d.courses)
+            ? d.courses.map(c => ({
+                id: c.sortNo,
+                name: c.name || '',
+                price: c.price ?? 0,
+                length: c.period ? `${c.period}か月` : '-'
+            }))
+            : [],
+    });
+
     function loadModalData() {
-        const data = courseMasterData || [];
-        modalData = (initialRole === 'supplier') ? data.filter(d => d.org === "他団体B") : data;
+        const raw = courseMasterData || [];
+        const filtered = initialRole === 'supplier'
+            ? raw.filter(d => d.eduCode !== 'IEC')
+            : raw;
+        modalData = filtered.map(normalizeCourseMaster);
     }
 
     function renderModalList(){

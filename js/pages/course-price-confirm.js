@@ -688,14 +688,30 @@ window.addEventListener('DOMContentLoaded', () => {
     // ▼ データ初期化 (fetch廃止)
     // =========================================================
 
+    // courseMasterData → モーダル用の統一フォーマットへ変換
+    const normalizeCourseMaster = d => ({
+        id: d.id,
+        title: d.name || '',
+        code: d.tkfCode || d.hanCode || '',
+        org: d.org || '',
+        stdTag: '',
+        options: Array.isArray(d.courses)
+            ? d.courses.map(c => ({
+                id: c.sortNo,
+                name: c.name || '',
+                price: c.price ?? 0,
+                length: c.period ? `${c.period}か月` : '-'
+            }))
+            : [],
+    });
+
     // モーダルデータのロード
     const initModalData = () => {
-        const data = courseMasterData || []; // importしたデータを使用
-        if (initialRole === 'supplier') {
-            modalData = data.filter(d => d.org === '他団体B');
-        } else {
-            modalData = data;
-        }
+        const raw = courseMasterData || [];
+        const filtered = initialRole === 'supplier'
+            ? raw.filter(d => d.eduCode !== 'IEC')
+            : raw;
+        modalData = filtered.map(normalizeCourseMaster);
     };
 
     // メインリストデータのロード
