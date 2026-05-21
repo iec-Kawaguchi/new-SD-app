@@ -2,6 +2,28 @@
 // courses[] は m_course_flyer_tk レコードに相当
 export const courseMasterData = [
 
+  // ── IEC（幹事団体）────────────────────────────────────────────
+  // 基本情報は基幹システム管理。SDalioでは標準タグのみ編集可能（工事中）。
+  {
+    id: 1,
+    tkfCode: "TKF-IEC-001",
+    name: "SD制度活用オリエンテーション",
+    hanCode: "IEC-OR-001",
+    eduCode: "IEC",
+    org: "IEC（幹事団体）",
+    status: "Active",
+    note: "SD制度の概要と募集サイトの使い方を解説するオリエンテーション教材。",
+    htmlUrl:      "https://example.com/courses/iec-or-001",
+    pdfUrl:       "https://example.com/pdfs/iec-or-001.pdf",
+    zipUrl:       "",
+    thumbnailUrl: "",
+    updatedAt: "2026/04/01",
+    courses: [
+      { sortNo: 1, name: "", price: 5500, period: 1 }, // 通常モード（name空 = 通常判定）
+    ],
+    standardTagIds: [2, 7, 10], // 一般社員・初級・Web通信 をセット済み
+  },
+
   // ── 産業能率大学 (EDU001) ──────────────────────────────────────
   {
     id: 101,
