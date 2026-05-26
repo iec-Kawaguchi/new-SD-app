@@ -162,6 +162,18 @@
                     </button>
                 </div>
 
+                <!-- Vendor向け注意事項バナー（supplierロールのみ表示） -->
+                <div data-visible-for="supplier" class="shrink-0 px-5 py-3 bg-amber-50 border-b border-amber-200">
+                    <div class="flex items-start gap-2">
+                        <span class="material-symbols-outlined text-amber-600 shrink-0 mt-0.5" style="font-size:16px">info</span>
+                        <ul class="text-xs text-amber-800 flex flex-col gap-1 list-none">
+                            <li>新規登録/編集を行った内容は<strong>仮登録</strong>の状態となり、IECで確認を行ったのち本登録されます。仮登録の状態のものを、再度編集したり、取り消しをすることはできません（他のユーザーが行った場合も同様です）。必要な場合は、IECへご連絡ください。</li>
+                            <li>登録済みコースを編集すると、同コース掲載中の<strong>他企業/募集も一律で変更</strong>されます。他へ影響を与えたくない場合は新規登録を行なってください。</li>
+                            <li>新規登録・編集を希望される理由を「備考」に入力してください（Ａ社用で受講料が異なるため、９月より料金改定のため、など）。</li>
+                        </ul>
+                    </div>
+                </div>
+
                 <!-- モーダルボディ（スクロール） -->
                 <div class="overflow-y-auto flex-1 p-6 flex flex-col gap-6">
 
@@ -214,11 +226,20 @@
                                 <div class="flex flex-col gap-1.5">
                                     <label class="text-sm font-bold text-gray-700">
                                         自社管理コード
-                                        <span class="text-red-500" data-visible-for="iec,supplier">*</span>
                                     </label>
                                     <input id="mHanCode" type="text"
                                         class="w-full rounded-md border border-gray-300 px-3 py-2.5 text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 shadow-sm text-sm transition-shadow font-mono"
                                         placeholder="例：SAN-BM-001">
+                                </div>
+
+                                <!-- 企業専用フライヤー -->
+                                <div class="flex items-center gap-2.5">
+                                    <input id="mExclusiveFlg" type="checkbox"
+                                        class="w-4 h-4 text-blue-600 bg-gray-50 border-gray-300 rounded focus:ring-blue-500 focus:ring-2 cursor-pointer">
+                                    <label for="mExclusiveFlg" class="text-sm font-bold text-gray-700 cursor-pointer select-none">
+                                        企業専用コース
+                                    </label>
+                                    <span class="text-xs text-gray-400">（特定の企業にのみ提供される独自コースの場合はチェックしてください）</span>
                                 </div>
                             </div>
 
@@ -297,6 +318,15 @@
                                     <span id="fileAccordionIcon" class="material-symbols-outlined text-gray-400 transition-transform" style="font-size:18px">expand_more</span>
                                 </button>
                                 <div id="fileAccordionBody" class="hidden flex-col gap-4 p-4 border-t border-gray-100">
+                                    <!-- 添付ファイル注意文 -->
+                                    <div class="flex items-start gap-2 bg-blue-50 border border-blue-100 rounded-md px-3 py-2.5">
+                                        <span class="material-symbols-outlined text-blue-500 shrink-0 mt-0.5" style="font-size:15px">info</span>
+                                        <ul class="text-xs text-blue-800 flex flex-col gap-1 list-none">
+                                            <li>HTML（ZIP/URL）は募集サイトに、版下PDFは募集冊子に使用されるデータです。制作する募集媒体に応じて、必要なファイルを登録してください。</li>
+                                            <li>個別のZIPファイルを用意できない場合は、受講生に案内可能な「講座詳細」としてのURLを、「HTML URL」に直接入力してください。通期/企業横断で受講生に案内されるので、途中で内容が変更されないものを使用してください。</li>
+                                            <li>サムネイル画像を登録しない場合は、代わりにコース名が表示されます。</li>
+                                        </ul>
+                                    </div>
                                     <div class="flex flex-col gap-1.5">
                                         <label class="text-sm font-medium text-gray-700">HTML（ZIPファイル）</label>
                                         <p class="text-xs text-gray-400">PDFを表示することもできます。PDFを入れたZIPファイルをアップロードしてください。</p>
@@ -342,7 +372,7 @@
                                 <label class="text-sm font-bold text-gray-700">備考</label>
                                 <textarea id="mNote" rows="2"
                                     class="w-full rounded-md border border-gray-300 px-3 py-2.5 text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 shadow-sm text-sm transition-shadow resize-none"
-                                    placeholder="補足情報があれば入力してください"></textarea>
+                                    placeholder="登録・編集を希望される理由、ほか補足情報を入力してください。"></textarea>
                             </div>
 
                         </div><!-- /basicForm -->
@@ -1088,9 +1118,10 @@
                         if (readonly) el.setAttribute('readonly', '');
                         else          el.removeAttribute('readonly');
                     });
-                    // ファイルアップロード・削除ボタン・オプション追加ボタンを disabled
+                    // チェックボックス・ファイルアップロード・削除ボタン・オプション追加ボタンを disabled
                     // ※ btnToggleFiles（アコーディオン開閉）は参照モードでも開閉可能とする
-                    ['mHtmlZipFile', 'mHtmlZipClear',
+                    ['mExclusiveFlg',
+                     'mHtmlZipFile', 'mHtmlZipClear',
                      'mPdfFile',     'mPdfClear',
                      'mThumbnailFile', 'mThumbnailClear',
                      'btnAddCourse'].forEach(id => {
@@ -1114,6 +1145,7 @@
                 document.getElementById('mName').value    = data?.name    || '';
                 document.getElementById('mHanCode').value = data?.hanCode || '';
                 document.getElementById('mNote').value    = data?.note    || '';
+                document.getElementById('mExclusiveFlg').checked = data?.exclusiveFlg || false;
 
                 // HTML(ZIP)既存ファイル表示
                 const htmlZipExisting  = document.getElementById('mHtmlZipExisting');
@@ -1480,8 +1512,8 @@
                     alert('団体を選択してください。');
                     return;
                 }
-                if (!name || !hanCode) {
-                    alert('コース名と自社管理コードは必須です。');
+                if (!name) {
+                    alert('コース名は必須です。');
                     return;
                 }
                 if (courseTypeMode === 'normal') {
