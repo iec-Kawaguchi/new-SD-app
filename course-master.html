@@ -44,33 +44,41 @@
                     <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden flex flex-col flex-1">
 
                         <!-- ツールバー -->
-                        <div class="p-4 border-b border-gray-100 flex flex-wrap items-center gap-3 bg-white">
-                            <div class="relative flex-1 min-w-[200px] max-w-sm">
-                                <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                                    <span class="material-symbols-outlined text-gray-400 icon-sm">search</span>
+                        <div class="p-4 border-b border-gray-100 flex flex-col gap-2.5 bg-white">
+                            <!-- 1段目：検索・絞り込み・新規登録 -->
+                            <div class="flex flex-wrap items-center gap-3">
+                                <div class="relative flex-1 min-w-[200px] max-w-sm">
+                                    <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                        <span class="material-symbols-outlined text-gray-400 icon-sm">search</span>
+                                    </div>
+                                    <input id="searchInput" type="text"
+                                        class="h-10 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 pr-3 py-2 leading-tight transition-shadow"
+                                        placeholder="コース名・自社管理コードで検索...">
                                 </div>
-                                <input id="searchInput" type="text"
-                                    class="h-10 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 pr-3 py-2 leading-tight transition-shadow"
-                                    placeholder="コース名・自社管理コードで検索...">
+
+                                <!-- 団体フィルタ（IECのみ） -->
+                                <div id="filterOrgContainer" data-visible-for="iec" class="w-44"></div>
+
+                                <!-- 無効なコースも含む -->
+                                <label class="flex items-center gap-2 cursor-pointer select-none text-sm text-gray-700 whitespace-nowrap" data-visible-for="iec,supplier">
+                                    <input id="showInactive" type="checkbox" class="w-4 h-4 text-blue-600 bg-gray-50 border-gray-300 rounded focus:ring-blue-500 focus:ring-2 cursor-pointer">
+                                    <span>無効なコースも含む</span>
+                                </label>
+
+                                <div class="flex-1"></div>
+
+                                <!-- 新規登録 -->
+                                <button id="btnOpenNew" data-visible-for="iec,supplier"
+                                    class="h-10 flex items-center justify-center gap-1.5 text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:ring-blue-100 font-medium rounded-md text-sm px-4 transition-all shadow-sm hover:shadow active:scale-95 whitespace-nowrap">
+                                    <span class="material-symbols-outlined icon-sm">add</span>
+                                    <span>新規登録</span>
+                                </button>
                             </div>
 
-                            <!-- 団体フィルタ（IECのみ） -->
-                            <div id="filterOrgContainer" data-visible-for="iec" class="w-44"></div>
-
-                            <!-- 無効なコースも含む -->
-                            <label class="flex items-center gap-2 cursor-pointer select-none text-sm text-gray-700 whitespace-nowrap" data-visible-for="iec,supplier">
-                                <input id="showInactive" type="checkbox" class="w-4 h-4 text-blue-600 bg-gray-50 border-gray-300 rounded focus:ring-blue-500 focus:ring-2 cursor-pointer">
-                                <span>無効なコースも含む</span>
-                            </label>
-
-                            <div class="flex-1"></div>
-
-                            <!-- 新規登録（Vendorのみ） -->
-                            <button id="btnOpenNew" data-visible-for="iec,supplier"
-                                class="h-10 flex items-center justify-center gap-1.5 text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:ring-blue-100 font-medium rounded-md text-sm px-4 transition-all shadow-sm hover:shadow active:scale-95 whitespace-nowrap">
-                                <span class="material-symbols-outlined icon-sm">add</span>
-                                <span>新規登録</span>
-                            </button>
+                            <!-- 2段目：承認ステータスフィルタ（IECのみ） -->
+                            <div id="approvalFilterChips" data-visible-for="iec" class="flex flex-wrap gap-1.5">
+                                <!-- JS で描画 -->
+                            </div>
                         </div>
 
                         <!-- テーブル -->
@@ -81,9 +89,8 @@
                                         <th class="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">コース名 / 自社管理コード</th>
                                         <th class="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider font-mono" data-visible-for="iec">フライヤーコード</th>
                                         <th class="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider" data-visible-for="iec">団体</th>
-                                        <th class="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider text-center">HTML</th>
-                                        <th class="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider text-center">版下PDF</th>
-                                        <th class="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider text-center whitespace-nowrap">サムネイル</th>
+                                        <th class="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider text-center whitespace-nowrap">バージョン / 承認</th>
+                                        <th class="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider text-center whitespace-nowrap">素材</th>
                                         <th class="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider text-center whitespace-nowrap">オプション</th>
                                         <th class="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider text-center whitespace-nowrap">最終更新日</th>
                                         <th class="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider text-center">ステータス</th>
@@ -160,6 +167,12 @@
 
                     <!-- ── 基本情報パネル ─────────────────────────────── -->
                     <div id="panelBasic" class="flex flex-col gap-6">
+
+                        <!-- 参照モード案内バナー（Vendor が承認済フライヤーを開いた場合のみ表示） -->
+                        <div id="readOnlyBanner" class="hidden items-start gap-3 bg-amber-50 border border-amber-200 rounded-lg px-4 py-3">
+                            <span class="material-symbols-outlined text-amber-500 mt-0.5 shrink-0" style="font-size:18px">lock</span>
+                            <p class="text-sm text-amber-800">このコースは承認済みのため基本情報を編集できません。内容を変更するには「バージョンアップ申請」を行ってください。タグセットは変更・保存できます。</p>
+                        </div>
 
                         <!-- 工事中プレースホルダー（IEC自社フライヤー時のみ表示） -->
                         <div id="wipPlaceholder" class="hidden flex-col items-center justify-center gap-4 py-16 text-center">
@@ -351,6 +364,21 @@
                         class="px-4 py-2 rounded-md bg-white border border-gray-300 text-gray-700 font-medium hover:bg-gray-50 hover:border-gray-400 transition-all shadow-sm text-sm">
                         キャンセル
                     </button>
+                    <!-- 却下する（IEC / 未承認・申請中のみ） -->
+                    <button id="btnRejectInModal"
+                        class="hidden px-4 py-2 rounded-md bg-white border border-red-300 text-red-600 font-medium hover:bg-red-50 shadow-sm transition-all text-sm">
+                        却下する
+                    </button>
+                    <!-- 承認する（IEC / 未承認・申請中のみ） -->
+                    <button id="btnApproveInModal"
+                        class="hidden px-4 py-2 rounded-md bg-green-600 text-white font-bold hover:bg-green-700 shadow-sm transition-all text-sm">
+                        承認する
+                    </button>
+                    <!-- 承認申請する（Vendor / 未承認のみ） -->
+                    <button id="btnApplyInModal"
+                        class="hidden px-4 py-2 rounded-md bg-blue-500 text-white font-bold hover:bg-blue-600 shadow-sm transition-all text-sm">
+                        承認申請する
+                    </button>
                     <button id="btnSave" data-visible-for="iec,supplier"
                         class="px-4 py-2 rounded-md bg-blue-600 text-white font-bold hover:bg-blue-700 shadow-sm hover:shadow transition-all text-sm">
                         保存する
@@ -375,6 +403,85 @@
                 <div class="px-6 py-4 bg-gray-50 flex gap-3 justify-end border-t border-gray-100">
                     <button id="btnDeleteCancel" class="px-4 py-2 rounded-md bg-white border border-gray-300 text-gray-700 font-medium hover:bg-gray-50 transition-all shadow-sm">キャンセル</button>
                     <button id="btnDeleteConfirm" class="px-4 py-2 rounded-md bg-red-600 text-white font-bold hover:bg-red-700 shadow-sm transition-all">削除する</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== 却下コメント入力モーダル (エリアE) ==================== -->
+        <!-- IEC が「却下する」押下時に表示 -->
+        <div id="rejectionInputModal" class="fixed inset-0 z-[200] bg-gray-900/50 backdrop-blur-sm items-center justify-center hidden">
+            <div class="bg-white rounded-xl shadow-2xl w-full max-w-md mx-4 overflow-hidden border border-gray-100">
+                <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center">
+                    <h2 class="text-lg font-bold text-gray-800 flex items-center gap-2">
+                        <span class="material-symbols-outlined text-red-500 icon-md">cancel</span>
+                        却下理由の入力
+                    </h2>
+                    <button id="btnCloseRejectionInput"
+                        class="text-gray-400 hover:text-gray-600 hover:bg-gray-100 p-1 rounded-full transition-colors">
+                        <span class="material-symbols-outlined icon-md">close</span>
+                    </button>
+                </div>
+                <div class="px-6 py-5 flex flex-col gap-3">
+                    <label class="text-sm font-bold text-gray-700">
+                        却下理由
+                        <span class="text-red-500">*</span>
+                    </label>
+                    <textarea id="rejectionInputText" rows="4"
+                        class="w-full rounded-md border border-gray-300 px-3 py-2.5 text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-400 focus:border-red-400 shadow-sm text-sm resize-none"
+                        placeholder="却下理由を入力してください"></textarea>
+                    <p id="rejectionInputError" class="hidden text-xs text-red-600">却下理由を入力してください。</p>
+                </div>
+                <div class="px-6 py-4 bg-gray-50 flex gap-3 justify-end border-t border-gray-100">
+                    <button id="btnCancelRejectionInput"
+                        class="px-4 py-2 rounded-md bg-white border border-gray-300 text-gray-700 font-medium hover:bg-gray-50 hover:border-gray-400 transition-all shadow-sm text-sm">
+                        キャンセル
+                    </button>
+                    <button id="btnConfirmRejectionInput"
+                        class="px-4 py-2 rounded-md bg-red-600 text-white font-bold hover:bg-red-700 shadow-sm transition-all text-sm">
+                        却下する
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== 棄却コメント確認モーダル (エリアG) ==================== -->
+        <!-- supplier ロールのみ開かれる。IEC はバッジ自体が表示されないため表示制御不要 -->
+        <div id="rejectionCommentModal" class="fixed inset-0 z-[200] bg-gray-900/50 backdrop-blur-sm items-center justify-center hidden">
+            <div class="bg-white rounded-xl shadow-2xl w-full max-w-md mx-4 overflow-hidden border border-gray-100">
+                <!-- ヘッダー -->
+                <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center">
+                    <h2 class="text-lg font-bold text-gray-800 flex items-center gap-2">
+                        <span class="material-symbols-outlined text-red-500 icon-md">info</span>
+                        却下理由の確認
+                    </h2>
+                    <button id="btnCloseRejectionModal"
+                        class="text-gray-400 hover:text-gray-600 hover:bg-gray-100 p-1 rounded-full transition-colors">
+                        <span class="material-symbols-outlined icon-md">close</span>
+                    </button>
+                </div>
+                <!-- ボディ -->
+                <div class="px-6 py-5 flex flex-col gap-4">
+                    <div class="flex flex-col gap-1">
+                        <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">対象コース</p>
+                        <p id="rcCourseName" class="text-sm font-medium text-gray-800"></p>
+                    </div>
+                    <div class="flex flex-col gap-1">
+                        <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">棄却バージョン</p>
+                        <p id="rcRejectedVer" class="text-sm text-gray-700"></p>
+                    </div>
+                    <div class="flex flex-col gap-1">
+                        <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">却下理由</p>
+                        <div class="bg-red-50 border border-red-100 rounded-md px-4 py-3">
+                            <p id="rcRejectionComment" class="text-sm text-red-700 whitespace-pre-wrap"></p>
+                        </div>
+                    </div>
+                </div>
+                <!-- フッター -->
+                <div class="px-6 py-4 bg-gray-50 flex justify-end border-t border-gray-100">
+                    <button id="btnCloseRejectionModalFooter"
+                        class="px-4 py-2 rounded-md bg-white border border-gray-300 text-gray-700 font-medium hover:bg-gray-50 hover:border-gray-400 transition-all shadow-sm text-sm">
+                        閉じる
+                    </button>
                 </div>
             </div>
         </div>
@@ -441,13 +548,27 @@
                 ? `<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-green-50 text-green-700 border border-green-100"><span class="w-1.5 h-1.5 bg-green-500 rounded-full"></span>有効</span>`
                 : `<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-600 border border-gray-200"><span class="w-1.5 h-1.5 bg-gray-400 rounded-full"></span>無効</span>`;
 
-            const filterData = () => {
-                const role           = getRole();
-                const keyword        = searchInput.value.trim().toLowerCase();
-                const org            = filterOrgCombobox ? filterOrgCombobox.getValue() : '';
+            const approvalBadge = (s) => {
+                const map = {
+                    unapproved: 'bg-yellow-50 text-yellow-700 border-yellow-200',
+                    pending:    'bg-blue-50 text-blue-700 border-blue-100',
+                    approved:   'bg-green-50 text-green-700 border-green-100',
+                    rejected:   'bg-red-50 text-red-700 border-red-200',
+                };
+                const label = { unapproved: '未承認', pending: '申請中', approved: '承認済', rejected: '棄却' };
+                const cls = map[s] ?? 'bg-gray-100 text-gray-500 border-gray-200';
+                return `<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium border ${cls}">${label[s] ?? s}</span>`;
+            };
+
+            let filterApprovalStatus = ''; // ''=すべて / 'unapproved' / 'pending' / 'approved' / 'rejected'
+
+            const getBaseFiltered = () => {
+                const role            = getRole();
+                const keyword         = searchInput.value.trim().toLowerCase();
+                const org             = filterOrgCombobox ? filterOrgCombobox.getValue() : '';
                 const includeInactive = showInactive ? showInactive.checked : false;
 
-                filtered = courseMasterData.filter(c => {
+                return courseMasterData.filter(c => {
                     if (role === 'supplier' && c.eduCode !== SUPPLIER_EDU_CODE) return false;
                     if (org && c.eduCode !== org) return false;
                     if (!includeInactive && c.status !== 'Active') return false;
@@ -457,7 +578,45 @@
                     }
                     return true;
                 });
+            };
+
+            const renderApprovalFilterChips = (baseFiltered) => {
+                const chipsContainer = document.getElementById('approvalFilterChips');
+                if (!chipsContainer) return;
+                const statuses = ['', 'unapproved', 'pending', 'rejected', 'approved'];
+                const labels   = { '': 'すべて', unapproved: '未承認', pending: '申請中', rejected: '棄却', approved: '承認済' };
+                const colors   = {
+                    '':         { a: 'bg-gray-700 text-white border-gray-700',     i: 'bg-white text-gray-600 border-gray-300 hover:bg-gray-50' },
+                    unapproved: { a: 'bg-yellow-500 text-white border-yellow-500', i: 'bg-yellow-50 text-yellow-700 border-yellow-300 hover:bg-yellow-100' },
+                    pending:    { a: 'bg-blue-600 text-white border-blue-600',     i: 'bg-blue-50 text-blue-700 border-blue-200 hover:bg-blue-100' },
+                    rejected:   { a: 'bg-red-500 text-white border-red-500',       i: 'bg-red-50 text-red-600 border-red-200 hover:bg-red-100' },
+                    approved:   { a: 'bg-green-600 text-white border-green-600',   i: 'bg-green-50 text-green-700 border-green-200 hover:bg-green-100' },
+                };
+                const cnt = { '': baseFiltered.length };
+                ['unapproved', 'pending', 'rejected', 'approved'].forEach(s => {
+                    cnt[s] = baseFiltered.filter(c => (c.approvalStatus ?? 'approved') === s).length;
+                });
+                chipsContainer.innerHTML = statuses.map(s => {
+                    const isActive  = filterApprovalStatus === s;
+                    const cls       = isActive ? colors[s].a : colors[s].i;
+                    const cntCls    = isActive ? 'opacity-75' : 'text-gray-400';
+                    return `<button type="button" class="approval-filter-chip inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium border transition-colors whitespace-nowrap ${cls}" data-status="${s}">
+                        ${labels[s]}<span class="${cntCls}">${cnt[s]}</span>
+                    </button>`;
+                }).join('');
+            };
+
+            const filterData = () => {
+                const role = getRole();
+                const base = getBaseFiltered();
+
+                if (role === 'iec' && filterApprovalStatus) {
+                    filtered = base.filter(c => (c.approvalStatus ?? 'approved') === filterApprovalStatus);
+                } else {
+                    filtered = base;
+                }
                 currentPage = 1;
+                if (role === 'iec') renderApprovalFilterChips(base);
                 renderList();
             };
 
@@ -483,50 +642,96 @@
                 );
 
                 if (slice.length === 0) {
-                    tableBody.innerHTML = `<tr><td colspan="${isIec ? 10 : 8}" class="px-6 py-12 text-center text-gray-500">コースが見つかりませんでした</td></tr>`;
+                    tableBody.innerHTML = `<tr><td colspan="${isIec ? 9 : 7}" class="px-6 py-12 text-center text-gray-500">コースが見つかりませんでした</td></tr>`;
                     updatePagination();
                     return;
                 }
 
                 tableBody.innerHTML = slice.map(c => {
+                    const approvalStatus = c.approvalStatus ?? 'approved';
+                    const ver            = c.ver ?? 1;
+
                     const flyerCodeCell = isIec
                         ? `<td class="px-6 py-4 text-sm font-mono text-gray-500 whitespace-nowrap">${c.tkfCode}</td>`
                         : '';
                     const orgCell = isIec
                         ? `<td class="px-6 py-4 text-sm text-gray-600 whitespace-nowrap">${c.org}</td>`
                         : '';
+
+                    // 棄却バッジ：supplierロールかつ棄却バッジ表示条件を満たす場合のみ表示
+                    const rejectionBadge = (!isIec && c.hasPendingRejection)
+                        ? `<button type="button" class="js-open-rejection-comment mt-1.5 inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium bg-red-50 text-red-600 border border-red-200 hover:bg-red-100 transition-colors" data-id="${c.id}">
+                               <span class="material-symbols-outlined" style="font-size:12px;line-height:1">warning</span>
+                               前回申請が却下されました
+                           </button>`
+                        : '';
+
                     const isActive = c.status !== 'Inactive';
-                    const statusMenuLabel     = isActive ? '無効にする' : '有効にする';
-                    const statusMenuIcon      = isActive ? 'block' : 'check_circle';
-                    const statusMenuIconColor = isActive ? 'text-orange-400 group-hover:text-orange-500' : 'text-green-500 group-hover:text-green-600';
+
+                    // ── ドロップダウンメニュー構築 ──────────────────
+                    // 編集する（IEC:全ステータス / Vendor:未承認・申請中のみ）
+                    const editItem = (isIec || ['unapproved', 'pending'].includes(approvalStatus))
+                        ? `<a href="#" class="js-open-modal group flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-gray-900" data-id="${c.id}">
+                               <span class="material-symbols-outlined icon-sm mr-3 text-gray-400 group-hover:text-gray-500">edit</span>編集する
+                           </a>`
+                        : '';
+
+                    // 申請を取り消す（Vendor / 申請中のみ）
+                    const cancelItem = (!isIec && approvalStatus === 'pending')
+                        ? `<a href="#" class="js-cancel-approval group flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-gray-900" data-id="${c.id}">
+                               <span class="material-symbols-outlined icon-sm mr-3 text-orange-400 group-hover:text-orange-500">undo</span>申請を取り消す
+                           </a>`
+                        : '';
+
+                    // バージョンアップ申請（Vendor / 承認済のみ）
+                    const versionUpItem = (!isIec && approvalStatus === 'approved')
+                        ? `<a href="#" class="js-version-up group flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-gray-900" data-id="${c.id}">
+                               <span class="material-symbols-outlined icon-sm mr-3 text-violet-400 group-hover:text-violet-500">upgrade</span>バージョンアップ申請
+                           </a>`
+                        : '';
+
+                    // 有効/無効切替
+                    const toggleItem = `<a href="#" class="js-toggle-status group flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-gray-900" data-id="${c.id}">
+                               <span class="material-symbols-outlined icon-sm mr-3 ${isActive ? 'text-orange-400 group-hover:text-orange-500' : 'text-green-500 group-hover:text-green-600'}">${isActive ? 'block' : 'check_circle'}</span>
+                               ${isActive ? '無効にする' : '有効にする'}
+                           </a>`;
+
+                    // 削除する
                     const deleteItem = isActive
                         ? `<a href="#" class="flex items-center px-4 py-2 text-sm text-gray-400 cursor-not-allowed" title="先に無効にしてから削除してください"><span class="material-symbols-outlined icon-sm mr-3 text-gray-300">delete</span>削除する</a>`
                         : `<a href="#" class="js-delete-action group flex items-center px-4 py-2 text-sm text-red-600 hover:bg-red-50" data-id="${c.id}"><span class="material-symbols-outlined icon-sm mr-3 text-red-400 group-hover:text-red-500">delete</span>削除する</a>`;
-                    const menuItems = `<div class="py-1">
-                               <a href="#" class="js-open-modal group flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-gray-900" data-id="${c.id}">
-                                   <span class="material-symbols-outlined icon-sm mr-3 text-gray-400 group-hover:text-gray-500">edit</span>
-                                   編集する
-                               </a>
-                               <a href="#" class="js-toggle-status group flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-gray-900" data-id="${c.id}">
-                                   <span class="material-symbols-outlined icon-sm mr-3 ${statusMenuIconColor}">${statusMenuIcon}</span>
-                                   ${statusMenuLabel}
-                               </a>
-                           </div>
-                           <div class="border-t border-gray-100 my-1"></div>
-                           <div class="py-1">
-                               ${deleteItem}
-                           </div>`;
+
+                    // セクション1: 編集・申請系アクション
+                    const sec1body = [editItem, cancelItem, versionUpItem].filter(Boolean).join('');
+                    const sec1 = sec1body ? `<div class="py-1">${sec1body}</div>` : '';
+                    // セクション2: IEC承認・却下はモーダルフッターに移動済み
+                    const sec2 = '';
+                    // セクション3: 有効/無効 + 削除
+                    const sec3 = `<div class="border-t border-gray-100 py-1">${toggleItem}</div>
+                                  <div class="border-t border-gray-100 py-1">${deleteItem}</div>`;
+
+                    const menuItems = sec1 + sec2 + sec3;
+
                     return `
                         <tr class="hover:bg-gray-50 transition-colors cursor-pointer" data-id="${c.id}">
                             <td class="px-6 py-4">
                                 <div class="text-sm font-medium text-gray-900">${c.name}</div>
                                 <div class="text-xs text-gray-400 mt-0.5 font-mono">${c.hanCode}</div>
+                                ${rejectionBadge}
                             </td>
                             ${flyerCodeCell}
                             ${orgCell}
-                            <td class="px-6 py-4 text-center">${badge(!!c.htmlUrl)}</td>
-                            <td class="px-6 py-4 text-center">${badge(!!c.pdfUrl)}</td>
-                            <td class="px-6 py-4 text-center">${badge(!!c.thumbnailUrl)}</td>
+                            <td class="px-6 py-4 text-center">
+                                <div class="text-xs font-mono text-gray-500 whitespace-nowrap">Ver.${ver}</div>
+                                <div class="mt-1 flex justify-center">${approvalBadge(approvalStatus)}</div>
+                            </td>
+                            <td class="px-6 py-4 text-center">
+                                <div class="flex items-center justify-center gap-2">
+                                    <span class="material-symbols-outlined ${c.htmlUrl ? 'text-blue-500' : 'text-gray-300'}" title="HTML${c.htmlUrl ? '（登録済）' : '（未登録）'}" style="font-size:18px">code</span>
+                                    <span class="material-symbols-outlined ${c.pdfUrl ? 'text-red-400' : 'text-gray-300'}" title="版下PDF${c.pdfUrl ? '（登録済）' : '（未登録）'}" style="font-size:18px">picture_as_pdf</span>
+                                    <span class="material-symbols-outlined ${c.thumbnailUrl ? 'text-violet-500' : 'text-gray-300'}" title="サムネイル${c.thumbnailUrl ? '（登録済）' : '（未登録）'}" style="font-size:18px">image</span>
+                                </div>
+                            </td>
                             <td class="px-6 py-4 text-sm text-center font-medium text-gray-700">${c.courses.length}</td>
                             <td class="px-6 py-4 text-sm text-center text-gray-500 whitespace-nowrap">${c.updatedAt}</td>
                             <td class="px-6 py-4 text-center">${statusBadge(c.status)}</td>
@@ -535,7 +740,7 @@
                                     <button class="menu-trigger flex p-2 rounded-full text-gray-400 hover:text-gray-600 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors">
                                         <span class="material-symbols-outlined icon-md">more_horiz</span>
                                     </button>
-                                    <div class="menu hidden absolute right-0 mt-2 w-44 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 z-10 text-left">
+                                    <div class="menu hidden absolute right-0 mt-2 w-52 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 z-10 text-left">
                                         ${menuItems}
                                     </div>
                                 </div>
@@ -546,17 +751,86 @@
                 updatePagination();
             };
 
+            // ── 却下コメント入力モーダル管理（エリアE）──────────────
+            const rejectionInputModal = document.getElementById('rejectionInputModal');
+            let pendingRejectId = null;
+
+            const openRejectionInputModal = (id) => {
+                pendingRejectId = id;
+                document.getElementById('rejectionInputText').value = '';
+                document.getElementById('rejectionInputError').classList.add('hidden');
+                rejectionInputModal.classList.remove('hidden');
+                rejectionInputModal.classList.add('flex');
+                document.getElementById('rejectionInputText').focus();
+            };
+            const closeRejectionInputModal = () => {
+                rejectionInputModal.classList.add('hidden');
+                rejectionInputModal.classList.remove('flex');
+                pendingRejectId = null;
+            };
+
+            document.getElementById('btnCloseRejectionInput')?.addEventListener('click', closeRejectionInputModal);
+            document.getElementById('btnCancelRejectionInput')?.addEventListener('click', closeRejectionInputModal);
+            rejectionInputModal?.addEventListener('click', e => { if (e.target === rejectionInputModal) closeRejectionInputModal(); });
+
+            document.getElementById('btnConfirmRejectionInput')?.addEventListener('click', () => {
+                const comment = document.getElementById('rejectionInputText').value.trim();
+                if (!comment) {
+                    document.getElementById('rejectionInputError').classList.remove('hidden');
+                    return;
+                }
+                const course = courseMasterData.find(c => c.id === pendingRejectId);
+                if (course) {
+                    course.approvalStatus = 'rejected';
+                    // 同一 tkfCode の承認済行に棄却通知をセット
+                    const prevApproved = courseMasterData.find(c =>
+                        c.tkfCode === course.tkfCode && c.approvalStatus === 'approved'
+                    );
+                    if (prevApproved) {
+                        prevApproved.hasPendingRejection = true;
+                        prevApproved.rejectedVer         = course.ver ?? 1;
+                        prevApproved.rejectionComment    = comment;
+                    }
+                    filterData();
+                }
+                closeRejectionInputModal();
+            });
+
+            // ── 棄却コメント確認モーダル管理 ────────────────────────
+            const rejectionCommentModal = document.getElementById('rejectionCommentModal');
+
+            const openRejectionCommentModal = (data) => {
+                document.getElementById('rcCourseName').textContent    = data.name;
+                document.getElementById('rcRejectedVer').textContent   = `Ver.${data.rejectedVer}`;
+                document.getElementById('rcRejectionComment').textContent = data.rejectionComment || '';
+                rejectionCommentModal.classList.remove('hidden');
+                rejectionCommentModal.classList.add('flex');
+            };
+
+            const closeRejectionCommentModal = () => {
+                rejectionCommentModal.classList.add('hidden');
+                rejectionCommentModal.classList.remove('flex');
+            };
+
+            document.getElementById('btnCloseRejectionModal')?.addEventListener('click', closeRejectionCommentModal);
+            document.getElementById('btnCloseRejectionModalFooter')?.addEventListener('click', closeRejectionCommentModal);
+            rejectionCommentModal?.addEventListener('click', e => {
+                if (e.target === rejectionCommentModal) closeRejectionCommentModal();
+            });
+
             // ── モーダル管理 ────────────────────────────────────────
             const modal       = document.getElementById('modal');
             const modalTitle  = document.getElementById('modalTitle');
 
             let modalCourseRows = [];
+            let currentEditData = null; // 現在モーダルで開いているフライヤーデータ（承認・却下処理用）
             let nextRid = 0;
             let mOrgCombobox = null;
             let courseTypeMode  = 'normal';
             let selectedTagIds = new Set();
             let activeTab      = 'basic';
-            let currentIsIecWip = false;
+            let currentIsIecWip   = false;
+            let currentIsReadOnly = false; // Vendor + 承認済の参照モード（タグのみ保存可）
 
             const showTab = (tabName) => {
                 activeTab = tabName;
@@ -710,48 +984,125 @@
                 }
                 emptyState.classList.add('hidden');
 
+                const ro = currentIsReadOnly; // 参照モード時は行内を全て非活性にする
                 tbody.innerHTML = modalCourseRows.map((r, i) => `
                         <tr data-rid="${r._rid}">
                             <td class="px-3 py-2">
                                 <div class="flex items-center gap-0.5">
-                                    <button class="btn-move-up p-0.5 rounded text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors" data-rid="${r._rid}" ${i === 0 ? 'disabled' : ''}>
+                                    <button class="btn-move-up p-0.5 rounded text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors" data-rid="${r._rid}" ${i === 0 || ro ? 'disabled' : ''}>
                                         <span class="material-symbols-outlined icon-sm">arrow_upward</span>
                                     </button>
-                                    <button class="btn-move-down p-0.5 rounded text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors" data-rid="${r._rid}" ${i === modalCourseRows.length - 1 ? 'disabled' : ''}>
+                                    <button class="btn-move-down p-0.5 rounded text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors" data-rid="${r._rid}" ${i === modalCourseRows.length - 1 || ro ? 'disabled' : ''}>
                                         <span class="material-symbols-outlined icon-sm">arrow_downward</span>
                                     </button>
                                 </div>
                             </td>
                             <td class="px-3 py-2">
                                 <input type="text" value="${r.name || ''}" placeholder="例：WEB版" data-field="name"
-                                    class="w-full rounded border border-gray-300 px-2 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500">
+                                    class="w-full rounded border border-gray-300 px-2 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
+                                    ${ro ? 'readonly' : ''}>
                             </td>
                             <td class="px-3 py-2">
                                 <input type="number" min="1" value="${r.price !== undefined && r.price !== '' ? r.price : ''}" placeholder="17600" data-field="price"
-                                    class="w-full rounded border border-gray-300 px-2 py-1.5 text-sm text-right focus:outline-none focus:ring-1 focus:ring-blue-500">
+                                    class="w-full rounded border border-gray-300 px-2 py-1.5 text-sm text-right focus:outline-none focus:ring-1 focus:ring-blue-500"
+                                    ${ro ? 'readonly' : ''}>
                             </td>
                             <td class="px-3 py-2">
                                 <input type="number" min="1" value="${r.period !== undefined && r.period !== '' ? r.period : ''}" placeholder="例：3" data-field="period"
-                                    class="w-full rounded border border-gray-300 px-2 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500">
+                                    class="w-full rounded border border-gray-300 px-2 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
+                                    ${ro ? 'readonly' : ''}>
                             </td>
                             <td class="px-3 py-2 text-center">
-                                <button class="btn-del-row p-1 rounded text-red-400 hover:text-red-600 hover:bg-red-50 transition-colors" data-rid="${r._rid}">
+                                <button class="btn-del-row p-1 rounded text-red-400 hover:text-red-600 hover:bg-red-50 transition-colors" data-rid="${r._rid}" ${ro ? 'disabled' : ''}>
                                     <span class="material-symbols-outlined icon-sm">close</span>
                                 </button>
                             </td>
                         </tr>`).join('');
             };
 
-            const openModal = (data = null) => {
-                const isNew = !data;
-                const role  = getRole();
+            const openModal = (data = null, forceReadOnly = false) => {
+                currentEditData   = data; // 承認・却下・申請ボタンから参照するため保持
+                const isNew  = !data;
+                const role   = getRole();
+                const approvalStatus = data?.approvalStatus ?? 'approved';
+                // Vendor + 承認済 → 参照モード（基本情報のみ編集不可、タグは保存可）
+                const isReadOnly = forceReadOnly || (!isNew && role !== 'iec' && approvalStatus === 'approved');
+                currentIsReadOnly = isReadOnly;
 
                 // タイトル
-                const icon = isNew ? 'library_add' : 'edit';
-                const label = isNew ? 'コース新規登録' : 'コース編集';
+                let icon, label;
+                if (isNew)         { icon = 'library_add'; label = 'コース新規登録'; }
+                else if (isReadOnly) { icon = 'visibility';  label = 'コース参照'; }
+                else               { icon = 'edit';         label = 'コース編集'; }
                 modalTitle.innerHTML = `
                     <span class="material-symbols-outlined text-blue-600 icon-md">${icon}</span>
                     ${label}`;
+
+                // ── フッターボタン制御 ────────────────────────────
+                const btnSave           = document.getElementById('btnSave');
+                const btnClose          = document.getElementById('btnCloseModal');
+                const btnApproveInModal = document.getElementById('btnApproveInModal');
+                const btnRejectInModal  = document.getElementById('btnRejectInModal');
+                const btnApplyInModal   = document.getElementById('btnApplyInModal');
+
+                // 一旦全て非表示にリセット
+                btnApproveInModal.classList.add('hidden');
+                btnRejectInModal.classList.add('hidden');
+                btnApplyInModal.classList.add('hidden');
+                btnSave?.classList.remove('hidden');
+                btnClose.textContent = 'キャンセル';
+
+                // 保存ボタンのラベル
+                if (btnSave) btnSave.textContent = isReadOnly ? 'タグ変更を保存する' : '保存する';
+
+                // 承認系ボタンの表示制御（参照モード時は全て非表示のまま）
+                if (!isReadOnly) {
+                    if (!isNew && role === 'iec' && ['unapproved', 'pending'].includes(approvalStatus)) {
+                        // IEC編集・未承認/申請中：承認・却下ボタンを追加表示
+                        btnApproveInModal.classList.remove('hidden');
+                        btnRejectInModal.classList.remove('hidden');
+                    } else if (!isNew && role !== 'iec' && approvalStatus === 'unapproved') {
+                        // Vendor編集・未承認：承認申請ボタンを追加表示
+                        btnApplyInModal.classList.remove('hidden');
+                    }
+                }
+
+                // 案内バナー制御
+                const readOnlyBanner = document.getElementById('readOnlyBanner');
+                if (readOnlyBanner) {
+                    if (isReadOnly) {
+                        readOnlyBanner.classList.remove('hidden');
+                        readOnlyBanner.classList.add('flex');
+                    } else {
+                        readOnlyBanner.classList.add('hidden');
+                        readOnlyBanner.classList.remove('flex');
+                    }
+                }
+
+                // 参照モード：フォームフィールドを readonly にする
+                const setFormReadonly = (readonly) => {
+                    // テキスト系フィールドを readonly
+                    ['mName', 'mHanCode', 'mNote', 'mNormalPrice', 'mNormalPeriod', 'mHtmlUrl'].forEach(id => {
+                        const el = document.getElementById(id);
+                        if (!el) return;
+                        if (readonly) el.setAttribute('readonly', '');
+                        else          el.removeAttribute('readonly');
+                    });
+                    // ファイルアップロード・削除ボタン・オプション追加ボタンを disabled
+                    // ※ btnToggleFiles（アコーディオン開閉）は参照モードでも開閉可能とする
+                    ['mHtmlZipFile', 'mHtmlZipClear',
+                     'mPdfFile',     'mPdfClear',
+                     'mThumbnailFile', 'mThumbnailClear',
+                     'btnAddCourse'].forEach(id => {
+                        const el = document.getElementById(id);
+                        if (!el) return;
+                        el.disabled = readonly;
+                    });
+                    // セグメントコントロール（受講形態タイプ切替）
+                    const sc = document.getElementById('courseTypeControl');
+                    if (sc) sc.style.pointerEvents = readonly ? 'none' : '';
+                };
+                setFormReadonly(isReadOnly);
 
                 // 団体コンボ（IECのみ）
                 if (mOrgCombobox) {
@@ -867,6 +1218,8 @@
 
             const closeModal = () => {
                 modal.classList.add('hidden');
+                currentEditData   = null;
+                currentIsReadOnly = false;
             };
 
             // ── イベント：一覧 ──────────────────────────────────────
@@ -890,6 +1243,58 @@
                     e.stopPropagation();
                     closeAllMenus();
                     trigger.nextElementSibling.classList.remove('hidden');
+                    return;
+                }
+                // 棄却コメント確認バッジ（エリアG）
+                const rejectionBadgeBtn = e.target.closest('.js-open-rejection-comment');
+                if (rejectionBadgeBtn) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const id   = parseInt(rejectionBadgeBtn.dataset.id, 10);
+                    const data = courseMasterData.find(c => c.id === id);
+                    if (data) openRejectionCommentModal(data);
+                    return;
+                }
+                // 申請を取り消す
+                const cancelApplyBtn = e.target.closest('.js-cancel-approval');
+                if (cancelApplyBtn) {
+                    e.preventDefault();
+                    closeAllMenus();
+                    const course = courseMasterData.find(c => c.id === parseInt(cancelApplyBtn.dataset.id, 10));
+                    if (course) { course.approvalStatus = 'unapproved'; filterData(); }
+                    return;
+                }
+                // バージョンアップ申請
+                const versionUpBtn = e.target.closest('.js-version-up');
+                if (versionUpBtn) {
+                    e.preventDefault();
+                    closeAllMenus();
+                    const id     = parseInt(versionUpBtn.dataset.id, 10);
+                    const course = courseMasterData.find(c => c.id === id);
+                    if (course) {
+                        // 同一 tkfCode に申請中・未承認が既にある場合はエラー
+                        const existing = courseMasterData.find(c =>
+                            c.tkfCode === course.tkfCode &&
+                            ['unapproved', 'pending'].includes(c.approvalStatus ?? '')
+                        );
+                        if (existing) {
+                            alert('このコースにはすでに申請中のバージョンがあります。');
+                            return;
+                        }
+                        const newVer = {
+                            ...course,
+                            id: Date.now(),
+                            ver: (course.ver ?? 1) + 1,
+                            approvalStatus: 'unapproved',
+                            updatedAt: new Date().toLocaleDateString('ja-JP', { year: 'numeric', month: '2-digit', day: '2-digit' }).replace(/\//g, '/'),
+                            hasPendingRejection: false,
+                            rejectedVer: undefined,
+                            rejectionComment: undefined,
+                        };
+                        courseMasterData.push(newVer);
+                        filterData();
+                        openModal(newVer);
+                    }
                     return;
                 }
                 const openBtn = e.target.closest('.js-open-modal');
@@ -924,9 +1329,9 @@
 
                 const row = e.target.closest('tr[data-id]');
                 if (row && !e.target.closest('.menu-trigger') && !e.target.closest('.menu')) {
-                    const id = parseInt(row.dataset.id, 10);
+                    const id   = parseInt(row.dataset.id, 10);
                     const data = courseMasterData.find(c => c.id === id);
-                    if (data) openModal(data);
+                    if (data) openModal(data); // openModal 内で参照モード判定
                 }
             });
 
@@ -1070,7 +1475,7 @@
                 const name    = document.getElementById('mName').value.trim();
                 const hanCode = document.getElementById('mHanCode').value.trim();
                 const role    = getRole();
-                if (!currentIsIecWip) {
+                if (!currentIsIecWip && !currentIsReadOnly) {
                 if (role === 'iec' && mOrgCombobox && !mOrgCombobox.getValue()) {
                     alert('団体を選択してください。');
                     return;
@@ -1117,8 +1522,35 @@
                         return;
                     }
                 }
-                } // end if (!currentIsIecWip)
+                } // end if (!currentIsIecWip && !currentIsReadOnly)
                 alert('（モック）保存しました。');
+                closeModal();
+            });
+
+            // ── フッター：承認する ───────────────────────────────
+            document.getElementById('btnApproveInModal')?.addEventListener('click', () => {
+                if (currentEditData) {
+                    currentEditData.approvalStatus = 'approved';
+                    filterData();
+                }
+                closeModal();
+            });
+
+            // ── フッター：却下する（エリアE モーダルを開く）────────
+            document.getElementById('btnRejectInModal')?.addEventListener('click', () => {
+                if (currentEditData) {
+                    const id = currentEditData.id;
+                    closeModal();
+                    openRejectionInputModal(id);
+                }
+            });
+
+            // ── フッター：承認申請する ───────────────────────────
+            document.getElementById('btnApplyInModal')?.addEventListener('click', () => {
+                if (currentEditData) {
+                    currentEditData.approvalStatus = 'pending';
+                    filterData();
+                }
                 closeModal();
             });
 
@@ -1150,10 +1582,19 @@
                 renderStandardTags();
             });
 
+            // 承認ステータスフィルタ チップ クリック（IECのみ）
+            document.getElementById('approvalFilterChips')?.addEventListener('click', e => {
+                const chip = e.target.closest('.approval-filter-chip');
+                if (!chip) return;
+                filterApprovalStatus = chip.dataset.status;
+                filterData();
+            });
+
             // ロール切替時に再描画
             document.addEventListener('change', e => {
                 if (e.target.id !== 'role-select') return;
                 setTimeout(() => {
+                    filterApprovalStatus = '';
                     filterData();
                     if (!modal.classList.contains('hidden')) {
                         applyFieldReadonly();

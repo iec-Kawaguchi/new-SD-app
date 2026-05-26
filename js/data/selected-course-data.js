@@ -1,6 +1,8 @@
+// id は mef_id（m_media_plan_flyer の主キー）に相当。
+// courseMasterData（m_flyer_tk）の tkf_id（1, 101～, 201～, 301～）と衝突しないよう 1001～ を使用。
 export const selectedCourseData = [
   {
-    "id": 1,
+    "id": 1001,
     "title": "Z世代のためのマナー",
     "code": "DF1001-80001",
     "org": "IEC",
@@ -13,7 +15,7 @@ export const selectedCourseData = [
     ]
   },
   {
-    "id": 2,
+    "id": 1002,
     "title": "Excel基礎が完璧にわかる",
     "code": "DF1002-80002",
     "org": "IEC",
@@ -26,7 +28,7 @@ export const selectedCourseData = [
     ]
   },
   {
-    "id": 3,
+    "id": 1003,
     "title": "マーケティングの嘘100",
     "code": "DF1003-80003",
     "org": "IEC",
@@ -38,7 +40,7 @@ export const selectedCourseData = [
     ]
   },
   {
-    "id": 4,
+    "id": 1004,
     "title": "若手社員のためのビジネス文章術",
     "code": "DF1004-80004",
     "org": "他団体B",
@@ -51,7 +53,7 @@ export const selectedCourseData = [
     ]
   },
   {
-    "id": 5,
+    "id": 1005,
     "title": "数字に強くなる基礎会計",
     "code": "DF1005-80005",
     "org": "IEC",
@@ -63,7 +65,7 @@ export const selectedCourseData = [
     ]
   },
   {
-    "id": 6,
+    "id": 1006,
     "title": "ミドル層のためのタイムマネジメント",
     "code": "DF1006-80006",
     "org": "他団体C",
@@ -76,7 +78,7 @@ export const selectedCourseData = [
     ]
   },
   {
-    "id": 7,
+    "id": 1007,
     "title": "誰でもできるロジカルシンキング",
     "code": "DF1007-80007",
     "org": "他団体B",
@@ -88,7 +90,7 @@ export const selectedCourseData = [
     ]
   },
   {
-    "id": 8,
+    "id": 1008,
     "title": "DX時代のデータリテラシー入門",
     "code": "DF1008-80008",
     "org": "IEC",
@@ -101,7 +103,7 @@ export const selectedCourseData = [
     ]
   },
   {
-    "id": 9,
+    "id": 1009,
     "title": "管理職のための労務リスク基礎",
     "code": "DF1009-80009",
     "org": "IEC",
@@ -113,7 +115,7 @@ export const selectedCourseData = [
     ]
   },
   {
-    "id": 10,
+    "id": 1010,
     "title": "やさしいファシリテーション入門",
     "code": "DF1010-80010",
     "org": "他団体B",
@@ -126,7 +128,7 @@ export const selectedCourseData = [
     ]
   },
   {
-    "id": 11,
+    "id": 1011,
     "title": "Excel関数マスターコース",
     "code": "DF1011-80011",
     "org": "他団体C",
@@ -138,7 +140,7 @@ export const selectedCourseData = [
     ]
   },
   {
-    "id": 12,
+    "id": 1012,
     "title": "ハラスメント防止の基礎",
     "code": "DF1012-80012",
     "org": "IEC",
@@ -151,7 +153,7 @@ export const selectedCourseData = [
     ]
   },
   {
-    "id": 13,
+    "id": 1013,
     "title": "デザイン思考で学ぶ問題解決",
     "code": "DF1013-80013",
     "org": "IEC",
@@ -163,7 +165,7 @@ export const selectedCourseData = [
     ]
   },
   {
-    "id": 14,
+    "id": 1014,
     "title": "営業基礎：信頼構築と提案力",
     "code": "DF1014-80014",
     "org": "他団体C",
@@ -176,7 +178,7 @@ export const selectedCourseData = [
     ]
   },
   {
-    "id": 15,
+    "id": 1015,
     "title": "心理的安全性のつくりかた",
     "code": "DF1015-80015",
     "org": "他団体B",
@@ -188,7 +190,7 @@ export const selectedCourseData = [
     ]
   },
   {
-    "id": 16,
+    "id": 1016,
     "title": "PowerPoint資料作成術",
     "code": "DF1016-80016",
     "org": "IEC",
@@ -201,7 +203,7 @@ export const selectedCourseData = [
     ]
   },
   {
-    "id": 17,
+    "id": 1017,
     "title": "データ分析のための統計入門",
     "code": "DF1017-80017",
     "org": "他団体C",
@@ -213,7 +215,7 @@ export const selectedCourseData = [
     ]
   },
   {
-    "id": 18,
+    "id": 1018,
     "title": "VUCA時代のリーダーシップ",
     "code": "DF1018-80018",
     "org": "IEC",
@@ -226,7 +228,7 @@ export const selectedCourseData = [
     ]
   },
   {
-    "id": 19,
+    "id": 1019,
     "title": "事務職のための情報整理術",
     "code": "DF1019-80019",
     "org": "他団体B",
@@ -238,7 +240,7 @@ export const selectedCourseData = [
     ]
   },
   {
-    "id": 20,
+    "id": 1020,
     "title": "コンプライアンス最新事例2025",
     "code": "DF1020-80020",
     "org": "IEC",
