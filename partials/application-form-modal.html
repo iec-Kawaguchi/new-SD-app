@@ -59,9 +59,12 @@
                 </div>
 
                 <!-- 開講日なし時のメッセージ -->
-                <div id="no-date-notice" class="hidden items-center gap-2 text-sm text-amber-700 bg-amber-50 border border-amber-200 rounded-lg px-4 py-3">
-                    <span class="material-symbols-outlined text-amber-500" style="font-size:1.1rem">info</span>
-                    この募集は開講日設定がなく、申込機能がない募集サイトとして生成されます。
+                <div id="no-date-notice" class="hidden items-start gap-2 text-sm text-amber-700 bg-amber-50 border border-amber-200 rounded-lg px-4 py-3">
+                    <span class="material-symbols-outlined text-amber-500 mt-0.5 shrink-0" style="font-size:1.1rem">info</span>
+                    <div>
+                        <p>この募集は開講日設定がなく、申込機能がない募集サイトとして生成されます。</p>
+                        <p class="mt-1 font-medium">この状態で登録すると、登録済みの開講日はすべて削除されます。</p>
+                    </div>
                 </div>
 
                 <!-- 追加フォーム -->
@@ -85,6 +88,15 @@
                         class="h-10 px-5 bg-blue-600 text-white rounded-lg font-bold text-sm hover:bg-blue-700 transition-colors shadow-sm flex items-center gap-1.5 whitespace-nowrap disabled:opacity-50 disabled:cursor-not-allowed">
                         <span class="material-symbols-outlined text-sm">add</span>追加
                     </button>
+                </div>
+
+                <!-- 締切日設定の案内（常時表示） -->
+                <div class="flex items-start gap-2 text-xs text-blue-700 bg-blue-50 border border-blue-200 rounded-lg px-3 py-2.5">
+                    <span class="material-symbols-outlined text-blue-500 shrink-0 mt-0.5" style="font-size:1.1rem">tips_and_updates</span>
+                    <div class="leading-relaxed space-y-0.5">
+                        <p>・アルク講座あり：20日に申込DL許可が必須。余裕のある締切日を推奨</p>
+                        <p>・1月開講は、12/10より前の締切を推奨（配送遅延リスク回避のため）</p>
+                    </div>
                 </div>
 
                 <!-- 配送遅延ソフトアラート（追加フォーム） -->
@@ -315,7 +327,9 @@
             listBlock.classList.remove('hidden');
             listBlock.classList.toggle('opacity-50', hasNoClassDate);
             listBlock.classList.toggle('pointer-events-none', hasNoClassDate);
-            const sorted = [...rows].sort((a, b) => a.openDate.localeCompare(b.openDate));
+            const sorted = [...rows].sort((a, b) =>
+                a.openDate.localeCompare(b.openDate) || a.appFrom.localeCompare(b.appFrom)
+            );
             container.innerHTML = sorted.map(r => {
                 const s = getStatus(r);
                 return r.isEditing ? renderEditRow(r, s) : renderNormalRow(r, s);
