@@ -451,8 +451,8 @@
                     <div class="flex items-start gap-3">
                         <span class="material-symbols-outlined text-red-500 mt-0.5">warning</span>
                         <div>
-                            <h3 class="text-base font-bold text-gray-800">削除の確認</h3>
-                            <p class="text-sm text-gray-600 mt-1">この操作は取り消せません。削除しますか？</p>
+                            <h3 id="deleteDialogTitle" class="text-base font-bold text-gray-800">削除の確認</h3>
+                            <p id="deleteDialogMessage" class="text-sm text-gray-600 mt-1">この操作は取り消せません。削除しますか？</p>
                         </div>
                     </div>
                 </div>
@@ -798,29 +798,41 @@
                            </a>`
                         : '';
 
-                    // 承認済バージョンを持つか（有効/無効・条件付き削除の対象）
+                    // 承認済バージョンを持つか（条件付き削除の対象）
                     const hasApprovedVersion = ['承認済', '改訂中', '改訂申請中'].includes(cs);
+                    // 削除ラベル（改訂版併存時は削除対象を明示）
+                    const deleteLabel = hasDraft ? 'コースを削除する' : '削除する';
 
-                    // 有効/無効切替（フライヤー全体への操作）
-                    // 承認済バージョンを持つフライヤーのみ表示。作成中・申請中は未流通のため非表示
-                    const toggleItem = hasApprovedVersion
+                    // 有効/無効切替（フライヤー全体＝tkf_code 単位への操作）
+                    // 複合ステータス「申請中」以上（=提案で選択可能な集合）に表示。作成中のみ未流通のため非表示
+                    const canToggleStatus = cs !== '作成中';
+                    const toggleItem = canToggleStatus
                         ? `<a href="#" class="js-toggle-status group flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-gray-900" data-id="${c.id}">
                                <span class="material-symbols-outlined icon-sm mr-3 ${isActive ? 'text-orange-400 group-hover:text-orange-500' : 'text-green-500 group-hover:text-green-600'}">${isActive ? 'block' : 'check_circle'}</span>
                                ${isActive ? '無効にする' : '有効にする'}
                            </a>`
                         : '';
 
+                    // 改訂版を破棄する（改訂中のみ。改訂申請中は IEC 審査中のため不可）
+                    const discardItem = (cs === '改訂中')
+                        ? `<a href="#" class="js-discard-draft group flex items-center px-4 py-2 text-sm text-red-600 hover:bg-red-50" data-id="${c.id}">
+                               <span class="material-symbols-outlined icon-sm mr-3 text-red-400 group-hover:text-red-500">undo</span>改訂版を破棄する
+                           </a>`
+                        : '';
+
                     // 削除する（全バージョンを削除）
-                    // 作成中: 無条件で直接削除可 / 申請中: 非表示 / 承認済・改訂中・改訂申請中: Inactive のとき削除可（参照条件はモックでは省略）
+                    // 作成中: 無条件で直接削除可 / 申請中: 非表示 / 改訂申請中(Vendor): 非表示 / 承認済・改訂中・改訂申請中(IEC): Inactive のとき削除可（参照条件はモックでは省略）
                     let deleteItem = '';
                     if (cs === '作成中') {
-                        deleteItem = `<a href="#" class="js-delete-action group flex items-center px-4 py-2 text-sm text-red-600 hover:bg-red-50" data-id="${c.id}"><span class="material-symbols-outlined icon-sm mr-3 text-red-400 group-hover:text-red-500">delete</span>削除する</a>`;
+                        deleteItem = `<a href="#" class="js-delete-action group flex items-center px-4 py-2 text-sm text-red-600 hover:bg-red-50" data-id="${c.id}"><span class="material-symbols-outlined icon-sm mr-3 text-red-400 group-hover:text-red-500">delete</span>${deleteLabel}</a>`;
                     } else if (cs === '申請中') {
                         deleteItem = ''; // IEC 審査中のため削除不可（メニュー非表示）
+                    } else if (cs === '改訂申請中' && !isIec) {
+                        deleteItem = ''; // Vendor は IEC 審査中のため削除不可（メニュー非表示）
                     } else {
                         deleteItem = isActive
-                            ? `<a href="#" class="flex items-center px-4 py-2 text-sm text-gray-400 cursor-not-allowed" title="先に無効にしてから削除してください"><span class="material-symbols-outlined icon-sm mr-3 text-gray-300">delete</span>削除する</a>`
-                            : `<a href="#" class="js-delete-action group flex items-center px-4 py-2 text-sm text-red-600 hover:bg-red-50" data-id="${c.id}"><span class="material-symbols-outlined icon-sm mr-3 text-red-400 group-hover:text-red-500">delete</span>削除する</a>`;
+                            ? `<a href="#" class="flex items-center px-4 py-2 text-sm text-gray-400 cursor-not-allowed" title="先に無効にしてから削除してください"><span class="material-symbols-outlined icon-sm mr-3 text-gray-300">delete</span>${deleteLabel}</a>`
+                            : `<a href="#" class="js-delete-action group flex items-center px-4 py-2 text-sm text-red-600 hover:bg-red-50" data-id="${c.id}"><span class="material-symbols-outlined icon-sm mr-3 text-red-400 group-hover:text-red-500">delete</span>${deleteLabel}</a>`;
                     }
 
                     // コピーして新規作成（IEC: 全件 / Vendor: 自社のみ）
@@ -828,12 +840,23 @@
                                <span class="material-symbols-outlined icon-sm mr-3 text-blue-400 group-hover:text-blue-500">content_copy</span>コピーして新規作成
                            </a>`;
 
-                    const sec1body = [editItem, versionUpItem, copyItem].filter(Boolean).join('');
-                    const sec1 = sec1body ? `<div class="py-1">${sec1body}</div>` : '';
-                    const sec3 = [toggleItem, deleteItem].filter(Boolean)
-                        .map(item => `<div class="border-t border-gray-100 py-1">${item}</div>`).join('');
-
-                    const menuItems = sec1 + sec3;
+                    // メニュー構築：改訂版併存時（改訂中/改訂申請中）は操作対象バージョンでグループ分けして明示する
+                    const groupHeader = (label) => `<div class="px-4 pt-2 pb-1 text-[10px] font-semibold text-gray-400 uppercase tracking-wider">${label}</div>`;
+                    let menuItems;
+                    if (hasDraft) {
+                        const groupA = [editItem, discardItem].filter(Boolean).join('');
+                        const groupB = [toggleItem, deleteItem, copyItem].filter(Boolean).join('');
+                        const parts = [];
+                        if (groupA) parts.push(`<div class="py-1">${groupHeader('改訂版に対する操作')}${groupA}</div>`);
+                        if (groupB) parts.push(`<div class="border-t border-gray-100 py-1">${groupHeader('コース全体に対する操作')}${groupB}</div>`);
+                        menuItems = parts.join('');
+                    } else {
+                        const sec1body = [editItem, versionUpItem, copyItem].filter(Boolean).join('');
+                        const sec1 = sec1body ? `<div class="py-1">${sec1body}</div>` : '';
+                        const sec3 = [toggleItem, deleteItem].filter(Boolean)
+                            .map(item => `<div class="border-t border-gray-100 py-1">${item}</div>`).join('');
+                        menuItems = sec1 + sec3;
+                    }
 
                     // オプション列：代表バージョンのコース数
                     const coursesCount = c.courses.length;
@@ -1424,8 +1447,29 @@
 
             const closeAllMenus = () => document.querySelectorAll('.menu').forEach(m => m.classList.add('hidden'));
 
-            let pendingDeleteId = null;
-            const deleteDialog = document.getElementById('deleteConfirmDialog');
+            let pendingConfirm = null; // { type:'delete'|'discard', id }
+            const deleteDialog        = document.getElementById('deleteConfirmDialog');
+            const deleteDialogTitle   = document.getElementById('deleteDialogTitle');
+            const deleteDialogMessage = document.getElementById('deleteDialogMessage');
+            const btnDeleteConfirmEl  = document.getElementById('btnDeleteConfirm');
+
+            // 削除／改訂版破棄の確認ダイアログを開く（対象バージョンを明示）
+            const openConfirmDialog = (type, flyer) => {
+                pendingConfirm = { type, id: flyer.id };
+                if (type === 'discard') {
+                    deleteDialogTitle.textContent   = '改訂版の破棄';
+                    deleteDialogMessage.textContent = `改訂版（Ver.${flyer.draft.ver}）の変更内容を破棄します。公開中の承認済版（Ver.${flyer.ver}）はそのまま残ります。よろしいですか？`;
+                    btnDeleteConfirmEl.textContent  = '破棄する';
+                } else {
+                    const hasApproved = ['承認済', '改訂中', '改訂申請中'].includes(flyer.compositeStatus);
+                    deleteDialogTitle.textContent   = '削除の確認';
+                    deleteDialogMessage.textContent = hasApproved
+                        ? `公開中の承認済版（Ver.${flyer.ver}）を含む全バージョンを削除します。この操作は取り消せません。削除しますか？`
+                        : 'この操作は取り消せません。削除しますか？';
+                    btnDeleteConfirmEl.textContent  = '削除する';
+                }
+                deleteDialog.classList.remove('hidden');
+            };
 
             tableBody.addEventListener('click', e => {
                 const trigger = e.target.closest('.menu-trigger');
@@ -1504,13 +1548,22 @@
                     }
                     return;
                 }
+                // 改訂版を破棄する
+                const discardBtn = e.target.closest('.js-discard-draft');
+                if (discardBtn) {
+                    e.preventDefault();
+                    closeAllMenus();
+                    const flyer = courseMasterData.find(c => c.id === parseInt(discardBtn.dataset.id, 10));
+                    if (flyer && flyer.draft) openConfirmDialog('discard', flyer);
+                    return;
+                }
                 // 削除する
                 const deleteBtn = e.target.closest('.js-delete-action');
                 if (deleteBtn) {
                     e.preventDefault();
                     closeAllMenus();
-                    pendingDeleteId = parseInt(deleteBtn.dataset.id, 10);
-                    deleteDialog.classList.remove('hidden');
+                    const flyer = courseMasterData.find(c => c.id === parseInt(deleteBtn.dataset.id, 10));
+                    if (flyer) openConfirmDialog('delete', flyer);
                     return;
                 }
                 // 行クリック → モーダルを開く（ドラフトがあればドラフトを先に表示）
@@ -1522,11 +1575,24 @@
                 }
             });
 
-            document.getElementById('btnDeleteCancel').addEventListener('click', () => deleteDialog.classList.add('hidden'));
-            document.getElementById('btnDeleteConfirm').addEventListener('click', () => {
-                alert('（モック）削除しました。');
+            document.getElementById('btnDeleteCancel').addEventListener('click', () => {
                 deleteDialog.classList.add('hidden');
-                pendingDeleteId = null;
+                pendingConfirm = null;
+            });
+            document.getElementById('btnDeleteConfirm').addEventListener('click', () => {
+                if (!pendingConfirm) { deleteDialog.classList.add('hidden'); return; }
+                const flyer = courseMasterData.find(c => c.id === pendingConfirm.id);
+                if (pendingConfirm.type === 'discard') {
+                    if (flyer && flyer.draft) {
+                        flyer.draft = null;          // 改訂版（Ver.N+1）のみ破棄。承認済版は残す
+                        updateCompositeStatus(flyer); // → 承認済 に戻る
+                        filterData();
+                    }
+                } else {
+                    alert('（モック）削除しました。');
+                }
+                deleteDialog.classList.add('hidden');
+                pendingConfirm = null;
             });
             deleteDialog.addEventListener('click', e => { if (e.target === deleteDialog) deleteDialog.classList.add('hidden'); });
 
