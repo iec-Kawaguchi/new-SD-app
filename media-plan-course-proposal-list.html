@@ -50,22 +50,41 @@
 
                     <div class="flex flex-col flex-1 min-h-0 gap-4">
 
-                        <!-- A: 通知バナー（Vendor専用） -->
-                        <div id="notifications" class="shrink-0 transition-all duration-300" data-visible-for="supplier">
-                            <div class="relative overflow-hidden rounded-lg border border-blue-100 bg-blue-50/50 shadow-sm">
-                                <div class="px-5 py-4 flex gap-4 items-start">
-                                    <div class="flex-shrink-0 mt-0.5">
-                                        <span class="material-symbols-outlined text-blue-600 icon-md">info</span>
-                                    </div>
-                                    <div class="flex-1 min-w-0">
-                                        <div class="flex items-center justify-between">
-                                            <h3 class="text-sm font-bold text-blue-900">提案要望</h3>
-                                            <button id="notificationCloseButton" class="text-blue-400 hover:text-blue-700 hover:bg-blue-100 rounded-full p-1 transition-colors">
-                                                <span class="material-symbols-outlined icon-md block">close</span>
-                                            </button>
+                        <!-- A: Vendor専用エリア（制作する媒体 + 提案要望コメント） -->
+                        <div class="shrink-0 flex flex-col gap-2" data-visible-for="supplier">
+
+                            <!-- 制作する媒体バッジ（常時表示） -->
+                            <div class="flex items-center gap-2.5 px-4 py-2.5 rounded-lg border border-gray-200 bg-white shadow-sm">
+                                <span class="material-symbols-outlined text-gray-400 icon-sm">article</span>
+                                <span class="text-xs font-medium text-gray-600 shrink-0">制作する媒体</span>
+                                <div class="w-px h-4 bg-gray-200 shrink-0"></div>
+                                <div class="flex flex-wrap gap-1.5">
+                                    <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium bg-sky-100 text-sky-700 border border-sky-200">
+                                        <span class="material-symbols-outlined" style="font-size:13px">language</span>WEBサイト
+                                    </span>
+                                    <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium bg-violet-100 text-violet-700 border border-violet-200">
+                                        <span class="material-symbols-outlined" style="font-size:13px">auto_stories</span>パンフレット
+                                    </span>
+                                </div>
+                            </div>
+
+                            <!-- 提案要望コメント（コメントがある場合のみ表示） -->
+                            <div id="notifications" class="transition-all duration-300">
+                                <div class="relative overflow-hidden rounded-lg border border-blue-100 bg-blue-50/50 shadow-sm">
+                                    <div class="px-5 py-4 flex gap-4 items-start">
+                                        <div class="shrink-0 mt-0.5">
+                                            <span class="material-symbols-outlined text-blue-600 icon-md">info</span>
                                         </div>
-                                        <div class="mt-1 text-sm text-blue-800/80 leading-relaxed">
-                                            ●●食品株式会社様の中期経営計画にのっとり、デジタルシフトを実現するためのITスキルやITリテラシー強化に寄与するコースを積極的に採用したいとの要望をいただいております。
+                                        <div class="flex-1 min-w-0">
+                                            <div class="flex items-center justify-between">
+                                                <h3 class="text-sm font-bold text-blue-900">提案要望</h3>
+                                                <button id="notificationCloseButton" class="text-blue-400 hover:text-blue-700 hover:bg-blue-100 rounded-full p-1 transition-colors">
+                                                    <span class="material-symbols-outlined icon-md block">close</span>
+                                                </button>
+                                            </div>
+                                            <div class="mt-1 text-sm text-blue-800/80 leading-relaxed">
+                                                ●●食品株式会社様の中期経営計画にのっとり、デジタルシフトを実現するためのITスキルやITリテラシー強化に寄与するコースを積極的に採用したいとの要望をいただいております。
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

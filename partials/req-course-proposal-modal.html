@@ -14,32 +14,58 @@
 			::-webkit-scrollbar-track { background: transparent; }
 			::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 20px; }
 			::-webkit-scrollbar-thumb:hover { background-color: #94a3b8; }
+
+			/* 再依頼フォームの展開アニメーション */
+			.rerequest-form {
+				display: grid;
+				grid-template-rows: 0fr;
+				transition: grid-template-rows 0.2s ease-out;
+			}
+			.rerequest-form.open {
+				grid-template-rows: 1fr;
+			}
+			.rerequest-form > div {
+				overflow: hidden;
+			}
 		</style>
+		<script src="../js/modal-readonly.js"></script>
 	</head>
 	<body class="bg-gray-50 text-gray-900 antialiased">
 		<div class="min-h-dvh flex flex-col">
+
+			<!-- ヘッダー -->
 			<header class="sticky top-0 z-10 bg-white/95 backdrop-blur-sm border-b border-gray-100 px-6 py-4">
-				<div class="flex items-center gap-2 mb-1">
-					<span class="material-symbols-outlined text-blue-600">post_add</span>
-					<h1 class="text-lg font-bold text-gray-800 tracking-tight">コース提案依頼</h1>
+				<div class="flex items-center justify-between mb-1">
+					<div class="flex items-center gap-2">
+						<span class="material-symbols-outlined text-blue-600">post_add</span>
+						<h1 class="text-lg font-bold text-gray-800 tracking-tight">コース提案依頼</h1>
+					</div>
+					<!-- モード切替（モックのみ・呼び出し元の data-modal-readonly 属性で制御される） -->
+					<div class="flex items-center gap-1.5 text-xs">
+						<span class="text-gray-400 mr-1">モック表示:</span>
+						<a href="?" id="mode-send-link" class="px-2.5 py-1 rounded border font-medium transition-colors text-xs">送信モード</a>
+						<a href="?readonly=true" id="mode-readonly-link" class="px-2.5 py-1 rounded border font-medium transition-colors text-xs">参照モード</a>
+					</div>
 				</div>
 				<p class="text-xs text-gray-500 ml-8">参加団体へのコース提案依頼書を作成します。</p>
 			</header>
 
 			<main class="flex-1 px-6 py-6 space-y-8 pb-32">
-				<section class="space-y-3">
+
+				<!-- エリアB: 参加団体リスト（送信モード） -->
+				<section data-send-section class="space-y-3">
+
+					<!-- サンプル -->
 					<div class="group relative flex flex-col md:flex-row md:items-center gap-4 rounded-xl bg-white border border-gray-200 shadow-sm px-5 py-4 hover:shadow-md hover:border-blue-200 transition-all duration-200">
 						<div class="absolute left-0 top-3 bottom-3 w-1 bg-blue-500 rounded-r opacity-0 group-hover:opacity-100 transition-opacity"></div>
 						<div class="flex items-center gap-4 flex-1 min-w-0">
-							<div class="shrink-0">
-								<span class="inline-grid place-items-center size-10 rounded-full bg-blue-50 text-blue-600 font-bold text-sm border border-blue-100 shadow-sm">サ</span>
-							</div>
+							<span class="inline-grid place-items-center size-10 rounded-full bg-blue-50 text-blue-600 font-bold text-sm border border-blue-100 shadow-sm shrink-0">サ</span>
 							<div class="min-w-0 flex-1 flex flex-col gap-1.5">
 								<p class="text-sm font-bold text-gray-800 truncate group-hover:text-blue-700 transition-colors">株式会社サンプル</p>
 								<div class="flex flex-wrap items-center gap-2">
 									<span class="px-2 py-0.5 rounded text-xs bg-blue-100 text-blue-700 border border-blue-200">営業担当</span>
 									<span class="text-xs font-bold text-gray-700">山田 太郎</span>
-									<p class="text-xs text-gray-500 truncate mt-0.5 font-mono">yamada@example.com</p>
+									<span class="text-xs text-gray-500 font-mono">yamada@example.com</span>
 								</div>
 							</div>
 						</div>
@@ -56,18 +82,18 @@
 							<custom-toggle checked="true" label-on="対象" label-off="除外"></custom-toggle>
 						</div>
 					</div>
+
+					<!-- テスト -->
 					<div class="group relative flex flex-col md:flex-row md:items-center gap-4 rounded-xl bg-white border border-gray-200 shadow-sm px-5 py-4 hover:shadow-md hover:border-emerald-200 transition-all duration-200">
 						<div class="absolute left-0 top-3 bottom-3 w-1 bg-emerald-500 rounded-r opacity-0 group-hover:opacity-100 transition-opacity"></div>
 						<div class="flex items-center gap-4 flex-1 min-w-0">
-							<div class="shrink-0">
-								<span class="inline-grid place-items-center size-10 rounded-full bg-emerald-50 text-emerald-600 font-bold text-sm border border-emerald-100 shadow-sm">テ</span>
-							</div>
+							<span class="inline-grid place-items-center size-10 rounded-full bg-emerald-50 text-emerald-600 font-bold text-sm border border-emerald-100 shadow-sm shrink-0">テ</span>
 							<div class="min-w-0 flex-1 flex flex-col gap-1.5">
 								<p class="text-sm font-bold text-gray-800 truncate group-hover:text-blue-700 transition-colors">株式会社テスト</p>
 								<div class="flex flex-wrap items-center gap-2">
 									<span class="px-2 py-0.5 rounded text-xs bg-blue-100 text-blue-700 border border-blue-200">営業担当</span>
 									<span class="text-xs font-bold text-gray-700">鈴木 一郎</span>
-									<p class="text-xs text-gray-500 truncate mt-0.5 font-mono">suzuki@example.com</p>
+									<span class="text-xs text-gray-500 font-mono">suzuki@example.com</span>
 								</div>
 							</div>
 						</div>
@@ -85,24 +111,20 @@
 						</div>
 					</div>
 
+					<!-- デモ -->
 					<div class="group relative flex flex-col md:flex-row md:items-center gap-4 rounded-xl bg-white border border-gray-200 shadow-sm px-5 py-4 hover:shadow-md hover:border-violet-200 transition-all duration-200">
 						<div class="absolute left-0 top-3 bottom-3 w-1 bg-violet-500 rounded-r opacity-0 group-hover:opacity-100 transition-opacity"></div>
 						<div class="flex items-center gap-4 flex-1 min-w-0">
-							<div class="shrink-0">
-								<span class="inline-grid place-items-center size-10 rounded-full bg-violet-50 text-violet-600 font-bold text-sm border border-violet-100 shadow-sm">デ</span>
-							</div>
-							<div class="flex items-center gap-4 flex-1 min-w-0">
-								<div class="min-w-0 flex-1 flex flex-col gap-1.5">
-									<p class="text-sm font-bold text-gray-800 truncate group-hover:text-blue-700 transition-colors">株式会社デモ</p>
-									<div class="flex flex-wrap items-center gap-2">
-										<span class="px-2 py-0.5 rounded text-xs bg-blue-100 text-blue-700 border border-blue-200">営業担当</span>
-										<span class="text-xs font-bold text-gray-700">佐藤 花子</span>
-										<p class="text-xs text-gray-500 truncate mt-0.5 font-mono">sato@demo.com</p>
-									</div>
+							<span class="inline-grid place-items-center size-10 rounded-full bg-violet-50 text-violet-600 font-bold text-sm border border-violet-100 shadow-sm shrink-0">デ</span>
+							<div class="min-w-0 flex-1 flex flex-col gap-1.5">
+								<p class="text-sm font-bold text-gray-800 truncate group-hover:text-blue-700 transition-colors">株式会社デモ</p>
+								<div class="flex flex-wrap items-center gap-2">
+									<span class="px-2 py-0.5 rounded text-xs bg-blue-100 text-blue-700 border border-blue-200">営業担当</span>
+									<span class="text-xs font-bold text-gray-700">佐藤 花子</span>
+									<span class="text-xs text-gray-500 font-mono">sato@demo.com</span>
 								</div>
 							</div>
 						</div>
-
 						<div class="flex flex-wrap items-center justify-end gap-4 mt-2 md:mt-0 pl-14 md:pl-0">
 							<span class="px-2.5 py-1 rounded-md text-[11px] font-medium bg-sky-50 text-sky-700 border border-sky-100">現在: 22</span>
 							<div class="flex items-center gap-2">
@@ -116,71 +138,343 @@
 							<custom-toggle checked="true" label-on="対象" label-off="除外"></custom-toggle>
 						</div>
 					</div>
+
 				</section>
 
-				<section class="grid grid-cols-1 md:grid-cols-2 gap-6">
+				<!-- エリアC: 依頼内容（送信モード） -->
+				<section data-send-section class="space-y-6">
+
+					<!-- 制作する媒体 -->
 					<div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-						<div class="bg-gray-50/50 px-5 py-3 border-b border-gray-100 flex items-center justify-between">
+						<div class="bg-gray-50/50 px-5 py-3 border-b border-gray-100">
 							<h2 class="text-sm font-bold text-gray-700 flex items-center gap-2">
-								<span class="material-symbols-outlined icon-md text-gray-400">edit_note</span>
-								フリーコメント
+								<span class="material-symbols-outlined icon-md text-gray-400">article</span>
+								制作する媒体
 							</h2>
 						</div>
 						<div class="p-5">
-							<textarea id="free-comment" class="block w-full rounded-md border border-gray-300 p-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50/50 transition-shadow hover:bg-white resize-none h-32" placeholder="お客様要望・注意点などを共有"></textarea>
-							<div class="mt-2 flex justify-end text-xs text-gray-400"><span id="char-count">0</span>/500</div>
+							<div class="flex flex-wrap gap-x-6 gap-y-3">
+								<label class="flex items-center gap-2 cursor-pointer">
+									<input type="checkbox" name="media-type" value="web" class="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 accent-blue-600">
+									<span class="text-sm text-gray-700">WEBサイト</span>
+								</label>
+								<label class="flex items-center gap-2 cursor-pointer">
+									<input type="checkbox" name="media-type" value="pamphlet" class="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 accent-blue-600">
+									<span class="text-sm text-gray-700">パンフレット</span>
+								</label>
+								<label class="flex items-center gap-2 cursor-pointer">
+									<input type="checkbox" name="media-type" value="leaflet" class="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 accent-blue-600">
+									<span class="text-sm text-gray-700">リーフレット</span>
+								</label>
+								<label class="flex items-center gap-2 cursor-pointer">
+									<input type="checkbox" name="media-type" value="other" class="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 accent-blue-600">
+									<span class="text-sm text-gray-700">その他</span>
+								</label>
+							</div>
 						</div>
 					</div>
 
-					<div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden h-fit">
-						<div class="bg-gray-50/50 px-5 py-3 border-b border-gray-100 flex items-center justify-between">
-							<h2 class="text-sm font-bold text-gray-700 flex items-center gap-2">
-								<span class="material-symbols-outlined icon-md text-gray-400">event</span>
-								回答期日
-							</h2>
-						</div>
-						<div class="p-5">
-							<div class="relative">
-							<input type="date" class="h-10 block w-full rounded-md border border-gray-300 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50/50 transition-shadow hover:bg-white cursor-pointer">
+					<!-- フリーコメント・回答期日 -->
+					<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+						<div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+							<div class="bg-gray-50/50 px-5 py-3 border-b border-gray-100">
+								<h2 class="text-sm font-bold text-gray-700 flex items-center gap-2">
+									<span class="material-symbols-outlined icon-md text-gray-400">edit_note</span>
+									フリーコメント
+								</h2>
 							</div>
-							<p class="mt-3 text-xs text-gray-400 flex items-center gap-1">
-							<span class="material-symbols-outlined text-[16px]">info</span>
-							期日を過ぎると自動でリマインドが送られます
-							</p>
+							<div class="p-5">
+								<textarea id="free-comment" class="block w-full rounded-md border border-gray-300 p-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50/50 transition-shadow hover:bg-white resize-none h-32" placeholder="お客様要望・注意点などを共有"></textarea>
+								<div class="mt-2 flex justify-end text-xs text-gray-400"><span id="char-count">0</span>/500</div>
+							</div>
+						</div>
+						<div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden h-fit">
+							<div class="bg-gray-50/50 px-5 py-3 border-b border-gray-100">
+								<h2 class="text-sm font-bold text-gray-700 flex items-center gap-2">
+									<span class="material-symbols-outlined icon-md text-gray-400">event</span>
+									回答期日
+								</h2>
+							</div>
+							<div class="p-5">
+								<input type="date" class="h-10 block w-full rounded-md border border-gray-300 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50/50 transition-shadow hover:bg-white cursor-pointer">
+								<p class="mt-3 text-xs text-gray-400 flex items-center gap-1">
+									<span class="material-symbols-outlined text-[16px]">info</span>
+									期日を過ぎると自動でリマインドが送られます
+								</p>
+							</div>
+						</div>
+					</div><!-- /フリーコメント・回答期日 grid -->
+				</section>
+
+				<!-- エリアD: 回答状況（参照モード） -->
+				<section data-readonly-section class="hidden space-y-3">
+					<div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+						<div class="bg-gray-50/50 px-5 py-3 border-b border-gray-100 flex items-center gap-2">
+							<span class="material-symbols-outlined icon-md text-gray-400">checklist</span>
+							<h2 class="text-sm font-bold text-gray-700">回答状況</h2>
+							<span class="ml-auto text-xs text-gray-400" id="response-counter">2 / 3 回答済み</span>
+						</div>
+						<div class="divide-y divide-gray-100" id="response-list">
+
+							<!-- サンプル: 提案済み → 再依頼ボタンあり -->
+							<div class="vendor-row" id="row-sample">
+								<!-- ステータス行 -->
+								<div class="flex items-center justify-between px-5 py-3">
+									<div class="flex items-center gap-3">
+										<span class="inline-grid place-items-center size-8 rounded-full bg-blue-50 text-blue-600 font-bold text-xs border border-blue-100 shrink-0">サ</span>
+										<span class="text-sm font-medium text-gray-700">株式会社サンプル</span>
+									</div>
+									<div class="flex items-center gap-2">
+										<span class="status-badge inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-200">
+											<span class="material-symbols-outlined" style="font-size:14px;">check_circle</span>
+											提案済み 4/16
+										</span>
+										<button class="rerequest-toggle-btn inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-medium bg-amber-50 text-amber-700 border border-amber-200 hover:bg-amber-100 active:bg-amber-200 transition-colors">
+											<span class="material-symbols-outlined" style="font-size:13px;">replay</span>
+											再依頼
+										</button>
+									</div>
+								</div>
+								<!-- 再依頼フォーム（インライン展開・エリアF） -->
+								<div class="rerequest-form">
+									<div>
+										<div class="mx-5 mb-3 rounded-lg border border-amber-200 bg-amber-50/60 p-4 space-y-3">
+											<p class="text-xs font-medium text-amber-800 flex items-center gap-1.5">
+												<span class="material-symbols-outlined shrink-0" style="font-size:15px;">replay</span>
+												株式会社サンプル への再依頼
+											</p>
+											<div>
+												<label class="block text-xs font-medium text-gray-600 mb-1">
+													再依頼コメント
+													<span class="text-gray-400 font-normal ml-1">（任意・500文字以内）</span>
+												</label>
+												<textarea class="rerequest-comment block w-full rounded-md border border-gray-300 p-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-transparent bg-white resize-none h-20" placeholder="修正してほしい点や理由を入力..."></textarea>
+												<div class="mt-1 flex justify-end text-xs text-gray-400">
+													<span class="rerequest-char-count">0</span>/500
+												</div>
+											</div>
+											<p class="text-xs text-gray-400 flex items-start gap-1">
+												<span class="material-symbols-outlined shrink-0 mt-0.5" style="font-size:13px;">info</span>
+												送信すると対象団体の営業担当に再依頼メールが送られます。
+											</p>
+											<div class="flex items-center justify-end gap-2 pt-1">
+												<button class="rerequest-cancel-btn px-4 py-1.5 rounded-md border border-gray-300 bg-white text-xs font-bold text-gray-600 hover:bg-gray-50 transition-colors">
+													キャンセル
+												</button>
+												<button class="rerequest-submit-btn inline-flex items-center gap-1.5 px-4 py-1.5 rounded-md bg-amber-500 text-white text-xs font-bold hover:bg-amber-600 shadow-sm active:scale-[0.98] transition-all">
+													<span class="material-symbols-outlined" style="font-size:14px;">send</span>
+													再依頼を送信する
+												</button>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<!-- テスト: 未回答 → 再依頼ボタンなし -->
+							<div class="vendor-row" id="row-test">
+								<div class="flex items-center justify-between px-5 py-3">
+									<div class="flex items-center gap-3">
+										<span class="inline-grid place-items-center size-8 rounded-full bg-emerald-50 text-emerald-600 font-bold text-xs border border-emerald-100 shrink-0">テ</span>
+										<span class="text-sm font-medium text-gray-700">株式会社テスト</span>
+									</div>
+									<span class="status-badge inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-gray-50 text-gray-500 border border-gray-200">
+										<span class="material-symbols-outlined" style="font-size:14px;">schedule</span>
+										未回答
+									</span>
+								</div>
+							</div>
+
+							<!-- デモ: 提案済み → 再依頼ボタンあり -->
+							<div class="vendor-row" id="row-demo">
+								<div class="flex items-center justify-between px-5 py-3">
+									<div class="flex items-center gap-3">
+										<span class="inline-grid place-items-center size-8 rounded-full bg-violet-50 text-violet-600 font-bold text-xs border border-violet-100 shrink-0">デ</span>
+										<span class="text-sm font-medium text-gray-700">株式会社デモ</span>
+									</div>
+									<div class="flex items-center gap-2">
+										<span class="status-badge inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-200">
+											<span class="material-symbols-outlined" style="font-size:14px;">check_circle</span>
+											提案済み 4/17
+										</span>
+										<button class="rerequest-toggle-btn inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-medium bg-amber-50 text-amber-700 border border-amber-200 hover:bg-amber-100 active:bg-amber-200 transition-colors">
+											<span class="material-symbols-outlined" style="font-size:13px;">replay</span>
+											再依頼
+										</button>
+									</div>
+								</div>
+								<!-- 再依頼フォーム（インライン展開・エリアF） -->
+								<div class="rerequest-form">
+									<div>
+										<div class="mx-5 mb-3 rounded-lg border border-amber-200 bg-amber-50/60 p-4 space-y-3">
+											<p class="text-xs font-medium text-amber-800 flex items-center gap-1.5">
+												<span class="material-symbols-outlined shrink-0" style="font-size:15px;">replay</span>
+												株式会社デモ への再依頼
+											</p>
+											<div>
+												<label class="block text-xs font-medium text-gray-600 mb-1">
+													再依頼コメント
+													<span class="text-gray-400 font-normal ml-1">（任意・500文字以内）</span>
+												</label>
+												<textarea class="rerequest-comment block w-full rounded-md border border-gray-300 p-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-transparent bg-white resize-none h-20" placeholder="修正してほしい点や理由を入力..."></textarea>
+												<div class="mt-1 flex justify-end text-xs text-gray-400">
+													<span class="rerequest-char-count">0</span>/500
+												</div>
+											</div>
+											<p class="text-xs text-gray-400 flex items-start gap-1">
+												<span class="material-symbols-outlined shrink-0 mt-0.5" style="font-size:13px;">info</span>
+												送信すると対象団体の営業担当に再依頼メールが送られます。
+											</p>
+											<div class="flex items-center justify-end gap-2 pt-1">
+												<button class="rerequest-cancel-btn px-4 py-1.5 rounded-md border border-gray-300 bg-white text-xs font-bold text-gray-600 hover:bg-gray-50 transition-colors">
+													キャンセル
+												</button>
+												<button class="rerequest-submit-btn inline-flex items-center gap-1.5 px-4 py-1.5 rounded-md bg-amber-500 text-white text-xs font-bold hover:bg-amber-600 shadow-sm active:scale-[0.98] transition-all">
+													<span class="material-symbols-outlined" style="font-size:14px;">send</span>
+													再依頼を送信する
+												</button>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+
 						</div>
 					</div>
 				</section>
+
 			</main>
 
+			<!-- フッター -->
 			<div class="fixed bottom-0 inset-x-0 z-50 bg-white border-t border-gray-200 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
 				<div class="mx-auto px-6 py-4 flex items-center justify-end gap-3">
 					<button class="px-5 py-2.5 rounded-lg border border-gray-300 bg-white text-sm font-bold text-gray-600 hover:bg-gray-50 hover:text-gray-800 transition-colors">
-					キャンセル
+						キャンセル
 					</button>
 					<button class="px-6 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-bold hover:bg-blue-700 shadow-sm hover:shadow active:scale-[0.98] transition-all">
-					提案依頼を送信する
+						提案依頼を送信する
 					</button>
 				</div>
 			</div>
+
 		</div>
 
 		<script src="../js/components/toggle-switch.js"></script>
 
 		<script>
+			const isReadOnly = new URLSearchParams(location.search).get('readonly') === 'true';
+
+			// ===== モード切替リンクのアクティブ表示（モックのみ） =====
+			const sendLink     = document.getElementById('mode-send-link');
+			const readonlyLink = document.getElementById('mode-readonly-link');
+			if (isReadOnly) {
+				sendLink.className     = 'px-2.5 py-1 rounded border border-gray-200 bg-white text-gray-500 font-medium hover:bg-gray-50 transition-colors text-xs';
+				readonlyLink.className = 'px-2.5 py-1 rounded border border-blue-200 bg-blue-50 text-blue-700 font-medium hover:bg-blue-100 transition-colors text-xs';
+			} else {
+				sendLink.className     = 'px-2.5 py-1 rounded border border-blue-200 bg-blue-50 text-blue-700 font-medium hover:bg-blue-100 transition-colors text-xs';
+				readonlyLink.className = 'px-2.5 py-1 rounded border border-gray-200 bg-white text-gray-500 font-medium hover:bg-gray-50 transition-colors text-xs';
+			}
+
+			// ===== 参照モード時: 送信モードセクションを非表示 =====
+			if (isReadOnly) {
+				document.querySelectorAll('[data-send-section]').forEach(el => el.classList.add('hidden'));
+			}
+
+			// ===== 参照モード時: modal-readonly.js が再依頼ボタンを非表示にするのを復元 =====
+			// modal-readonly.js は「依頼」「送信」キーワードを含むボタンを非表示にするため、
+			// [data-readonly-section] 内のボタンを DOMContentLoaded 後（modal-readonly.js より後）に再表示する
+			document.addEventListener('DOMContentLoaded', () => {
+				if (!isReadOnly) return;
+				setTimeout(() => {
+					document.querySelectorAll('[data-readonly-section] button').forEach(btn => {
+						btn.style.display = '';
+					});
+				}, 0);
+			});
+
+			// ===== フリーコメント 文字数カウント =====
 			const ta = document.getElementById('free-comment');
 			const cc = document.getElementById('char-count');
 			if (ta && cc) {
-			const update = () => { cc.textContent = Math.min(ta.value.length, 500); };
-			ta.addEventListener('input', update); update();
+				const update = () => { cc.textContent = Math.min(ta.value.length, 500); };
+				ta.addEventListener('input', update); update();
 			}
-			
+
+			// ===== 提案上限スピナー =====
 			document.querySelectorAll('div:has(> input[type="number"])').forEach(box => {
-			const input = box.querySelector('input[type="number"]');
-			const [dec, inc] = box.querySelectorAll('button');
-			if (!input || !dec || !inc) return;
-			dec.addEventListener('click', () => input.stepDown());
-			inc.addEventListener('click', () => input.stepUp());
+				const input = box.querySelector('input[type="number"]');
+				const [dec, inc] = box.querySelectorAll('button');
+				if (!input || !dec || !inc) return;
+				dec.addEventListener('click', () => input.stepDown());
+				inc.addEventListener('click', () => input.stepUp());
 			});
+
+			// ===== 再依頼フォーム（インライン展開） =====
+			document.querySelectorAll('.vendor-row').forEach(row => {
+				const toggleBtn  = row.querySelector('.rerequest-toggle-btn');
+				const form       = row.querySelector('.rerequest-form');
+				const cancelBtn  = row.querySelector('.rerequest-cancel-btn');
+				const submitBtn  = row.querySelector('.rerequest-submit-btn');
+				const commentTa  = row.querySelector('.rerequest-comment');
+				const charCount  = row.querySelector('.rerequest-char-count');
+				const badge      = row.querySelector('.status-badge');
+
+				if (!toggleBtn || !form) return;
+
+				// 再依頼ボタン → フォームを展開
+				toggleBtn.addEventListener('click', () => {
+					// 他の行のフォームをすべて閉じる
+					document.querySelectorAll('.rerequest-form.open').forEach(f => {
+						if (f !== form) f.classList.remove('open');
+					});
+					form.classList.toggle('open');
+					if (commentTa) commentTa.focus();
+				});
+
+				// キャンセル → フォームを閉じる
+				if (cancelBtn) {
+					cancelBtn.addEventListener('click', () => {
+						form.classList.remove('open');
+						if (commentTa) commentTa.value = '';
+						if (charCount) charCount.textContent = '0';
+					});
+				}
+
+				// 文字数カウント
+				if (commentTa && charCount) {
+					commentTa.addEventListener('input', () => {
+						charCount.textContent = Math.min(commentTa.value.length, 500);
+					});
+				}
+
+				// 送信 → バッジを「未回答」に更新してフォームを閉じる
+				if (submitBtn) {
+					submitBtn.addEventListener('click', () => {
+						// バッジを「未回答」に変更
+						if (badge) {
+							badge.className = 'status-badge inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-gray-50 text-gray-500 border border-gray-200';
+							badge.innerHTML = '<span class="material-symbols-outlined" style="font-size:14px;">schedule</span>未回答';
+						}
+						// 「再依頼」ボタンを非表示
+						toggleBtn.style.display = 'none';
+						// フォームを閉じる（高さ0に戻す）
+						form.classList.remove('open');
+						if (commentTa) commentTa.value = '';
+						if (charCount) charCount.textContent = '0';
+						// カウンター更新
+						updateCounter();
+					});
+				}
+			});
+
+			// 回答済み件数カウンターを再集計
+			function updateCounter() {
+				const counter = document.getElementById('response-counter');
+				if (!counter) return;
+				const total = document.querySelectorAll('[data-readonly-section] .status-badge').length;
+				const done  = document.querySelectorAll('[data-readonly-section] .status-badge.bg-emerald-50').length;
+				counter.textContent = `${done} / ${total} 回答済み`;
+			}
 		</script>
 	</body>
 </html>
