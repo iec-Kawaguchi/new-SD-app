@@ -1,7 +1,7 @@
 // media-plan-course.js
 
 import { selectedCourseData } from '../data/selected-course-data.js';
-import { courseMasterData } from '../data/course-master-data.js';
+import { courseMasterData, STANDARD_TAGS } from '../data/course-master-data.js';
 import { tagData } from '../data/tag-data.js';
 
 window.addEventListener('DOMContentLoaded', () => {
@@ -153,7 +153,7 @@ window.addEventListener('DOMContentLoaded', () => {
         const isDeleteRequested = d.deleteRequested == 1;
 
         const showOrderCol = !isSupplier;
-        const showCustomCol = !isSupplier;
+        const showCustomCol = true; // 全ロール表示（Vendorは参照のみ、追加ボタン非表示）
 
         // 行背景
         const rowBgClass = isDeleteRequested
@@ -235,13 +235,10 @@ window.addEventListener('DOMContentLoaded', () => {
                 ${d.stdTag ? `<span class="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] bg-blue-50 text-blue-700 border border-blue-100 truncate max-w-full">${d.stdTag}</span>` : ''}
             </div>
 
-            ${showCustomCol ? `
             <div class="flex items-center gap-1 flex-wrap" data-col="customTag">
                 ${customTags.map(t => `<span class="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] bg-white text-gray-600 border border-gray-200">${t}</span>`).join('')}
-                <button class="add-tag-btn opacity-0 group-hover:opacity-100 text-gray-400 hover:text-blue-600 transition-colors inline-flex items-center p-0.5 rounded hover:bg-blue-50" title="タグ追加">
-                    <span class="material-symbols-outlined text-[16px]">add</span>
-                </button>
-            </div>` : ''}
+                <button class="add-tag-btn opacity-0 group-hover:opacity-100 text-gray-400 hover:text-blue-600 transition-colors inline-flex items-center p-0.5 rounded hover:bg-blue-50" title="タグ追加"><span class="material-symbols-outlined text-[16px]">add</span></button>
+            </div>
         </div>`;
     }
 
@@ -785,11 +782,11 @@ window.addEventListener('DOMContentLoaded', () => {
                     <div class="space-y-2">
                         <div class="flex items-center gap-2">
                             <span class="text-xs text-gray-500 w-8 shrink-0">From</span>
-                            <input type="date" ${isCustomer || isSupplier ? 'readonly tabindex="-1"' : ''} class="rounded-md border ${isCustomer || isSupplier ? 'border-gray-200 bg-gray-50 text-gray-500' : 'border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500'} px-3 py-1.5 text-sm flex-1">
+                            <input type="date" ${isCustomer || isSupplier ? 'disabled' : ''} class="rounded-md border ${isCustomer || isSupplier ? 'border-gray-200 bg-gray-100 text-gray-400 cursor-not-allowed' : 'border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500'} px-3 py-1.5 text-sm flex-1">
                         </div>
                         <div class="flex items-center gap-2">
                             <span class="text-xs text-gray-500 w-8 shrink-0">To</span>
-                            <input type="date" ${isCustomer || isSupplier ? 'readonly tabindex="-1"' : ''} class="rounded-md border ${isCustomer || isSupplier ? 'border-gray-200 bg-gray-50 text-gray-500' : 'border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500'} px-3 py-1.5 text-sm flex-1">
+                            <input type="date" ${isCustomer || isSupplier ? 'disabled' : ''} class="rounded-md border ${isCustomer || isSupplier ? 'border-gray-200 bg-gray-100 text-gray-400 cursor-not-allowed' : 'border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500'} px-3 py-1.5 text-sm flex-1">
                         </div>
                     </div>
                     ${isCustomer || isSupplier ? '<p class="mt-1 text-xs text-gray-400">非公開日の設定はIECが行います</p>' : ''}
@@ -830,12 +827,15 @@ window.addEventListener('DOMContentLoaded', () => {
     let modalData = [];
 
     function normalizeCourseMaster(d) {
+        const stdTagNames = (d.standardTagIds || [])
+            .map(id => STANDARD_TAGS.find(t => t.id === id)?.name)
+            .filter(Boolean);
         return {
             id: d.id,
             title: d.name || '',
             code: d.tkfCode || d.hanCode || '',
             org: d.org || '',
-            stdTag: '',
+            stdTag: stdTagNames.join(','),
             options: Array.isArray(d.courses) ? d.courses.map(c => ({
                 id: c.sortNo, name: c.name || '', price: c.price ?? 0,
                 length: c.period ? `${c.period}か月` : '-'
@@ -856,22 +856,37 @@ window.addEventListener('DOMContentLoaded', () => {
         if (stdSel) {
             stdSel.innerHTML = `<option value="">標準タグ: 指定なし</option>`;
         }
+    }
 
-        // カスタムタグ（追加済みデータから収集）
-        const customSet = new Set(allData.flatMap(d =>
-            Array.isArray(d.custom) ? d.custom : String(d.custom || '').split(',').filter(Boolean)));
-        const customSel = document.getElementById('modal-custom-filter');
-        if (customSel) {
-            customSel.innerHTML = `<option value="">カスタムタグ: 指定なし</option>` +
-                [...customSet].map(t => `<option value="${t}">${t}</option>`).join('');
-        }
+    function buildOptionPopover(options) {
+        if (!options || !options.length) return '';
+        const nf = new Intl.NumberFormat('ja-JP');
+        const rows = options.map(o => `
+            <tr class="border-b border-gray-100 last:border-0">
+                <td class="py-1 pr-3 text-gray-700 whitespace-nowrap">${o.name || `オプション${o.id}`}</td>
+                <td class="py-1 pr-3 text-gray-500 whitespace-nowrap">${o.length || '-'}</td>
+                <td class="py-1 text-gray-700 whitespace-nowrap text-right">¥${typeof o.price === 'number' ? nf.format(o.price) : (o.price || '-')}</td>
+            </tr>`).join('');
+        return `
+            <div class="hidden group-hover/opt:block absolute top-full left-1/2 -translate-x-1/2 mt-1 z-50 bg-white border border-gray-200 rounded-lg shadow-xl p-3 w-72 pointer-events-none">
+                <div class="text-[10px] font-bold text-gray-400 mb-2 uppercase tracking-wide">オプション</div>
+                <table class="w-full text-xs">
+                    <thead>
+                        <tr class="text-gray-400 border-b border-gray-100">
+                            <th class="pb-1 pr-3 text-left font-normal">受講形態</th>
+                            <th class="pb-1 pr-3 text-left font-normal">期間</th>
+                            <th class="pb-1 text-right font-normal">受講料</th>
+                        </tr>
+                    </thead>
+                    <tbody>${rows}</tbody>
+                </table>
+            </div>`;
     }
 
     function renderModalList() {
         const q = (document.getElementById('modal-q')?.value || '').toLowerCase();
         const org = document.getElementById('modal-org-filter')?.value || '';
         const std = document.getElementById('modal-std-filter')?.value || '';
-        const custom = document.getElementById('modal-custom-filter')?.value || '';
         const addedIds = new Set(allData.map(d => String(d.id)));
 
         const filtered = modalData.filter(d => {
@@ -886,14 +901,29 @@ window.addEventListener('DOMContentLoaded', () => {
         if (!modalRows) return;
         modalRows.innerHTML = filtered.map(d => {
             const isAdded = addedIds.has(String(d.id));
+            const optCount = d.options?.length ?? 0;
+            const optBadge = optCount > 0
+                ? `<div class="relative group/opt flex justify-center">
+                       <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium bg-indigo-50 text-indigo-700 border border-indigo-100 cursor-default">${optCount}件</span>
+                       ${buildOptionPopover(d.options)}
+                   </div>`
+                : `<span class="text-xs text-gray-400 flex justify-center">−</span>`;
+            const stdTagList = d.stdTag ? d.stdTag.split(',').filter(Boolean) : [];
+            const stdBadge = stdTagList.length
+                ? stdTagList.slice(0, 2).map(t =>
+                    `<span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] bg-blue-50 text-blue-700 border border-blue-100 truncate">${t}</span>`
+                  ).join('') + (stdTagList.length > 2 ? `<span class="text-[10px] text-gray-400 shrink-0">+${stdTagList.length - 2}</span>` : '')
+                : '';
             return `
-                <label class="grid grid-cols-[3rem_1fr_12rem_8rem] items-center px-6 py-3 border-b border-gray-50 ${isAdded ? 'opacity-40 cursor-not-allowed bg-gray-50' : 'hover:bg-blue-50 cursor-pointer'} transition-colors">
+                <label class="grid grid-cols-[3rem_1fr_12rem_8rem_5rem_8rem] items-center px-6 py-3 border-b border-gray-50 ${isAdded ? 'opacity-40 cursor-not-allowed bg-gray-50' : 'hover:bg-blue-50 cursor-pointer'} transition-colors">
                     <div class="flex justify-center">
                         <input type="checkbox" class="modal-sel rounded border-gray-300 text-blue-600 h-4 w-4" data-id="${d.id}" ${isAdded ? 'disabled' : ''}>
                     </div>
                     <span class="truncate text-sm font-medium text-gray-800">${d.title}</span>
                     <span class="text-xs text-gray-500 font-mono">${d.code}</span>
                     <span class="text-xs text-gray-500">${d.org}</span>
+                    ${optBadge}
+                    <div class="flex flex-wrap gap-1 items-start">${stdBadge}</div>
                 </label>`;
         }).join('');
 
@@ -922,7 +952,7 @@ window.addEventListener('DOMContentLoaded', () => {
     document.getElementById('cancel-course-modal')?.addEventListener('click', closeCourseModal);
     document.getElementById('course-modal')?.addEventListener('click', e => { if (e.target === document.getElementById('course-modal')) closeCourseModal(); });
 
-    ['modal-q', 'modal-org-filter', 'modal-std-filter', 'modal-custom-filter'].forEach(id => {
+    ['modal-q', 'modal-org-filter', 'modal-std-filter'].forEach(id => {
         document.getElementById(id)?.addEventListener('input', renderModalList);
         document.getElementById(id)?.addEventListener('change', renderModalList);
     });
@@ -972,15 +1002,119 @@ window.addEventListener('DOMContentLoaded', () => {
         other: document.getElementById('tag-group-other'),
     };
 
+    // =========================================================
+    // K: 一括カスタムタグ設定モーダル
+    // =========================================================
+    const bulkTagModal = document.getElementById('bulk-tag-modal');
+    let bulkTagTargetIds = [];
+    const bulkTagGroups = {
+        target: document.getElementById('bulk-tag-group-target'),
+        genre: document.getElementById('bulk-tag-group-genre'),
+        level: document.getElementById('bulk-tag-group-level'),
+        other: document.getElementById('bulk-tag-group-other'),
+    };
+
+    function updateBulkTagApplyBtn() {
+        const count = document.querySelectorAll('.bulk-tag-chk:checked').length;
+        const btn = document.getElementById('apply-bulk-tag-modal');
+        if (btn) btn.disabled = count === 0;
+        const countEl = document.getElementById('bulk-tag-apply-count');
+        if (countEl) countEl.textContent = bulkTagTargetIds.length;
+    }
+
+    function openBulkTagModal(targetIds) {
+        bulkTagTargetIds = targetIds;
+        // ターゲット件数表示
+        const countEl = document.getElementById('bulk-tag-target-count');
+        if (countEl) countEl.textContent = `（${targetIds.length}件対象）`;
+        // モードをデフォルト（追加）にリセット
+        const addRadio = bulkTagModal?.querySelector('input[name="bulk-tag-mode"][value="add"]');
+        if (addRadio) addRadio.checked = true;
+        // タグ候補を描画（すべて未チェック）
+        Object.values(bulkTagGroups).forEach(el => { if (el) el.innerHTML = ''; });
+        tagData.forEach(tag => {
+            const container = bulkTagGroups[tag.type];
+            if (!container) return;
+            // Vendor は「その他」カテゴリのタグを選択不可
+            const isOtherForSupplier = isSupplier && tag.type === 'other';
+            container.insertAdjacentHTML('beforeend', `
+                <label class="flex items-center gap-2 ${isOtherForSupplier ? 'cursor-not-allowed opacity-40' : 'cursor-pointer hover:bg-gray-50'} p-1 rounded -ml-1" ${isOtherForSupplier ? 'title="その他タグはVendorが設定できません"' : ''}>
+                    <input type="checkbox" value="${tag.name}" class="bulk-tag-chk rounded border-gray-300 text-blue-600 h-4 w-4" ${isOtherForSupplier ? 'disabled' : ''}>
+                    <span class="text-sm text-gray-700">${tag.name}</span>
+                </label>`);
+        });
+        updateBulkTagApplyBtn();
+        bulkTagModal?.classList.remove('hidden'); bulkTagModal?.classList.add('flex');
+    }
+
+    function closeBulkTagModal() {
+        bulkTagModal?.classList.add('hidden'); bulkTagModal?.classList.remove('flex');
+        bulkTagTargetIds = [];
+    }
+
+    document.getElementById('bulk-tag-btn')?.addEventListener('click', () => {
+        const ids = Array.from(document.querySelectorAll('#rows .sel:checked'))
+            .map(c => c.closest('.row')?.dataset.id).filter(Boolean);
+        if (!ids.length) return;
+        openBulkTagModal(ids);
+    });
+
+    document.getElementById('close-bulk-tag-modal')?.addEventListener('click', closeBulkTagModal);
+    document.getElementById('cancel-bulk-tag-modal')?.addEventListener('click', closeBulkTagModal);
+    bulkTagModal?.addEventListener('click', e => { if (e.target === bulkTagModal) closeBulkTagModal(); });
+
+    bulkTagModal?.addEventListener('change', e => {
+        if (e.target.classList.contains('bulk-tag-chk')) updateBulkTagApplyBtn();
+    });
+
+    document.getElementById('apply-bulk-tag-modal')?.addEventListener('click', () => {
+        const selectedTags = Array.from(document.querySelectorAll('.bulk-tag-chk:checked')).map(i => i.value);
+        if (!selectedTags.length) return;
+        const mode = bulkTagModal?.querySelector('input[name="bulk-tag-mode"]:checked')?.value || 'add';
+
+        bulkTagTargetIds.forEach(id => {
+            const d = allData.find(d => String(d.id) === String(id));
+            const row = rowsEl.querySelector(`.row[data-id="${id}"]`);
+            if (!d || !row) return;
+
+            const existingTags = Array.isArray(d.custom)
+                ? d.custom
+                : String(d.custom || '').split(',').filter(Boolean);
+
+            const newTags = mode === 'overwrite'
+                ? selectedTags
+                : [...new Set([...existingTags, ...selectedTags])];
+
+            d.custom = newTags;
+            row.dataset.custom = newTags.join(',');
+
+            const col = row.querySelector('[data-col="customTag"]');
+            if (col) {
+                col.innerHTML = newTags.map(t =>
+                    `<span class="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] bg-white text-gray-600 border border-gray-200">${t}</span>`
+                ).join('') +
+                `<button class="add-tag-btn opacity-0 group-hover:opacity-100 text-gray-400 hover:text-blue-600 transition-colors inline-flex items-center p-0.5 rounded hover:bg-blue-50" title="タグ追加"><span class="material-symbols-outlined text-[16px]">add</span></button>`;
+            }
+        });
+
+        // 選択を解除
+        document.querySelectorAll('#rows .sel:checked').forEach(c => c.checked = false);
+        markDirty();
+        refreshBulkbar(); updateSelectAllState();
+        closeBulkTagModal();
+    });
+
     function openTagModal(rowId, currentTags) {
         currentEditingRowId = rowId;
         Object.values(tagGroups).forEach(el => { if (el) el.innerHTML = ''; });
         tagData.forEach(tag => {
             const container = tagGroups[tag.type];
             if (!container) return;
+            // Vendor は「その他」カテゴリのタグを選択不可
+            const isOtherForSupplier = isSupplier && tag.type === 'other';
             container.insertAdjacentHTML('beforeend', `
-                <label class="flex items-center gap-2 cursor-pointer hover:bg-gray-50 p-1 rounded -ml-1">
-                    <input type="checkbox" value="${tag.name}" class="tag-chk rounded border-gray-300 text-blue-600 h-4 w-4" ${currentTags.includes(tag.name) ? 'checked' : ''}>
+                <label class="flex items-center gap-2 ${isOtherForSupplier ? 'cursor-not-allowed opacity-40' : 'cursor-pointer hover:bg-gray-50'} p-1 rounded -ml-1" ${isOtherForSupplier ? 'title="その他タグはVendorが設定できません"' : ''}>
+                    <input type="checkbox" value="${tag.name}" class="tag-chk rounded border-gray-300 text-blue-600 h-4 w-4" ${currentTags.includes(tag.name) ? 'checked' : ''} ${isOtherForSupplier ? 'disabled' : ''}>
                     <span class="text-sm text-gray-700">${tag.name}</span>
                 </label>`);
         });
@@ -1091,16 +1225,19 @@ window.addEventListener('DOMContentLoaded', () => {
     if (listHeader) {
         applyGridClass(listHeader);
         if (isSupplier) {
-            // Supplier: No.列・カスタムタグ列ヘッダーを非表示
+            // Supplier: No.列ヘッダーを非表示（カスタムタグ列は参照のみ表示）
             const cols = listHeader.children;
             if (cols[2]) cols[2].classList.add('hidden'); // No.
-            if (cols[7]) cols[7].classList.add('hidden'); // カスタムタグ
         }
     }
 
     function loadModalData() {
         const raw = courseMasterData || [];
-        const filtered = isSupplier ? raw.filter(d => d.eduCode !== 'IEC') : raw;
+        // Vendor: 自社フライヤーのみ。かつ tkf_approval_status が「申請中」「承認済」のもののみ（「作成中」＝未申請は除外）
+        const VENDOR_SHOW_STATUSES = ['申請中', '承認済', '改訂中', '改訂申請中', '棄却（改訂）'];
+        const filtered = isSupplier
+            ? raw.filter(d => d.eduCode !== 'IEC' && VENDOR_SHOW_STATUSES.includes(d.compositeStatus))
+            : raw;
         modalData = filtered.map(normalizeCourseMaster);
     }
 

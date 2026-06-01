@@ -120,8 +120,8 @@
                                                     <h4 class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2">標準タグ</h4>
                                                     <div id="filter-std-tags" class="space-y-1.5"></div>
                                                 </div>
-                                                <!-- カスタムタグ（IEC・Customer 専用） -->
-                                                <div data-visible-for="iec, customer">
+                                                <!-- カスタムタグ（IEC・Vendor・Customer 表示） -->
+                                                <div data-visible-for="iec, supplier, customer">
                                                     <h4 class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2">カスタムタグ</h4>
                                                     <div id="filter-custom-tags" class="space-y-1.5"></div>
                                                 </div>
@@ -216,6 +216,10 @@
                                     </div>
 
                                     <div class="ml-auto flex items-center gap-2">
+                                        <!-- タグを設定: IEC・Vendor・Customer（Vendorは「その他」タグ選択不可） -->
+                                        <button id="bulk-tag-btn" data-visible-for="iec, supplier, customer" class="inline-flex items-center px-3 py-1.5 rounded bg-white border border-blue-200 text-blue-700 text-xs hover:bg-blue-50 transition-colors">
+                                            <span class="material-symbols-outlined icon-sm mr-1">label</span>タグを設定
+                                        </button>
                                         <button id="markDeleteRequest" class="inline-flex items-center px-3 py-1.5 rounded bg-white border border-red-200 text-red-600 text-xs hover:bg-red-50 transition-colors disabled:opacity-40 disabled:cursor-not-allowed">
                                             <span class="material-symbols-outlined icon-sm mr-1">delete_sweep</span>削除希望
                                         </button>
@@ -287,7 +291,7 @@
 
         <!-- H: コース追加モーダル -->
         <div id="course-modal" class="fixed inset-0 z-[100] bg-gray-900/50 backdrop-blur-sm hidden items-center justify-center transition-opacity duration-200 p-4">
-            <div class="bg-white rounded-xl shadow-2xl w-full max-w-5xl h-[85vh] flex flex-col overflow-hidden">
+            <div class="bg-white rounded-xl shadow-2xl w-full max-w-6xl h-[85vh] flex flex-col overflow-hidden">
                 <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-white shrink-0">
                     <h2 class="text-lg font-bold text-gray-800 flex items-center gap-2">
                         <span class="material-symbols-outlined text-blue-600 icon-md">library_add</span>
@@ -314,10 +318,6 @@
                     <select id="modal-std-filter" class="rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 min-w-[10rem]">
                         <option value="">標準タグ: 指定なし</option>
                     </select>
-                    <!-- カスタムタグフィルター: IEC専用（Vendorはカスタムタグを扱わない） -->
-                    <select id="modal-custom-filter" data-visible-for="iec" class="rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 min-w-[10rem]">
-                        <option value="">カスタムタグ: 指定なし</option>
-                    </select>
                     <!-- 残り提案可能件数（Vendor専用・ProposalLimit設定時のみ表示） -->
                     <div id="modal-proposal-limit" data-visible-for="supplier" class="ml-auto flex items-center gap-1.5 text-sm text-gray-600 bg-white border border-gray-200 rounded-md px-3 py-1.5 shadow-sm">
                         <span class="material-symbols-outlined icon-sm text-blue-500">info</span>
@@ -326,11 +326,13 @@
                 </div>
 
                 <div id="modal-list" class="flex-1 overflow-y-auto custom-scrollbar bg-white">
-                    <div class="grid grid-cols-[3rem_1fr_12rem_8rem] text-xs font-bold text-gray-500 bg-gray-50 border-b border-gray-200 px-6 py-3 sticky top-0 z-10">
+                    <div class="grid grid-cols-[3rem_1fr_12rem_8rem_5rem_8rem] text-xs font-bold text-gray-500 bg-gray-50 border-b border-gray-200 px-6 py-3 sticky top-0 z-10">
                         <div class="text-center">選択</div>
                         <div>コース名</div>
                         <div>コード</div>
                         <div>団体</div>
+                        <div class="text-center">オプション</div>
+                        <div>標準タグ</div>
                     </div>
                     <div id="modal-rows" class="divide-y divide-gray-100"></div>
                 </div>
@@ -390,6 +392,68 @@
             </div>
         </div>
 
+        <!-- K: 一括カスタムタグ設定モーダル（IEC・Vendor・Customer。Vendorは「その他」タグ選択不可） -->
+        <div id="bulk-tag-modal" class="fixed inset-0 z-[100] bg-gray-900/50 backdrop-blur-sm hidden items-center justify-center transition-opacity duration-200 p-4">
+            <div class="bg-white rounded-xl shadow-2xl w-full max-w-lg flex flex-col overflow-hidden">
+                <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-white shrink-0">
+                    <h2 class="text-lg font-bold text-gray-800 flex items-center gap-2">
+                        <span class="material-symbols-outlined text-blue-600 icon-md">label</span>
+                        一括カスタムタグ設定
+                        <span id="bulk-tag-target-count" class="text-sm font-normal text-gray-500"></span>
+                    </h2>
+                    <button id="close-bulk-tag-modal" class="text-gray-400 hover:text-gray-600 hover:bg-gray-100 p-1 rounded-full transition-colors">
+                        <span class="material-symbols-outlined icon-md">close</span>
+                    </button>
+                </div>
+                <div class="flex-1 overflow-y-auto custom-scrollbar bg-white p-6 max-h-[60vh]">
+                    <!-- 操作モード選択 -->
+                    <div class="mb-5 p-4 bg-gray-50 rounded-lg border border-gray-200 space-y-2">
+                        <label class="flex items-start gap-3 cursor-pointer">
+                            <input type="radio" name="bulk-tag-mode" value="add" checked class="mt-0.5 text-blue-600 border-gray-300 h-4 w-4 shrink-0">
+                            <div>
+                                <div class="text-sm font-medium text-gray-800">タグを追加する</div>
+                                <div class="text-xs text-gray-500 mt-0.5">各行の既存タグを維持したまま、選択タグを追加します</div>
+                            </div>
+                        </label>
+                        <label class="flex items-start gap-3 cursor-pointer">
+                            <input type="radio" name="bulk-tag-mode" value="overwrite" class="mt-0.5 text-blue-600 border-gray-300 h-4 w-4 shrink-0">
+                            <div>
+                                <div class="text-sm font-medium text-gray-800">クリアして上書きする</div>
+                                <div class="text-xs text-gray-500 mt-0.5">各行の既存タグをすべて削除し、選択タグで置き換えます</div>
+                            </div>
+                        </label>
+                    </div>
+                    <!-- タグ候補 -->
+                    <div class="space-y-6">
+                        <div>
+                            <h3 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">対象</h3>
+                            <div id="bulk-tag-group-target" class="grid grid-cols-2 gap-2"></div>
+                        </div>
+                        <div>
+                            <h3 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">ジャンル</h3>
+                            <div id="bulk-tag-group-genre" class="grid grid-cols-2 gap-2"></div>
+                        </div>
+                        <div>
+                            <h3 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">レベル</h3>
+                            <div id="bulk-tag-group-level" class="grid grid-cols-2 gap-2"></div>
+                        </div>
+                        <div>
+                            <h3 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">その他</h3>
+                            <div id="bulk-tag-group-other" class="grid grid-cols-2 gap-2"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="px-6 py-4 bg-gray-50 border-t border-gray-100 flex justify-end gap-3 shrink-0">
+                    <button id="cancel-bulk-tag-modal" class="px-4 py-2 rounded-md bg-white border border-gray-300 text-gray-700 text-sm font-medium hover:bg-gray-50 hover:border-gray-400 transition-all shadow-sm">
+                        キャンセル
+                    </button>
+                    <button id="apply-bulk-tag-modal" class="px-5 py-2 rounded-md bg-blue-600 text-white text-sm font-bold hover:bg-blue-700 shadow-sm hover:shadow transition-all disabled:opacity-40 disabled:cursor-not-allowed">
+                        設定する（<span id="bulk-tag-apply-count">0</span>件）
+                    </button>
+                </div>
+            </div>
+        </div>
+
         <!-- J: 差し戻し確認モーダル（Customer専用） -->
         <div id="reject-modal" class="fixed inset-0 z-[100] bg-gray-900/50 backdrop-blur-sm hidden items-center justify-center transition-opacity duration-200 p-4">
             <div class="bg-white rounded-xl shadow-2xl w-full max-w-lg flex flex-col overflow-hidden">
@@ -433,12 +497,12 @@
             .list-grid.no-std-tag {
                 grid-template-columns: 3rem 4rem 5rem 1fr 8rem 5rem 1fr;
             }
-            /* Vendor: No.列・カスタムタグ列非表示 */
+            /* Vendor: No.列非表示（カスタムタグ列は参照のみ表示） */
             .list-grid.supplier-grid {
-                grid-template-columns: 3rem 4rem 1fr 8rem 5rem 10rem;
+                grid-template-columns: 3rem 4rem 1fr 8rem 5rem 10rem 1fr;
             }
             .list-grid.supplier-grid.no-std-tag {
-                grid-template-columns: 3rem 4rem 1fr 8rem 5rem;
+                grid-template-columns: 3rem 4rem 1fr 8rem 5rem 1fr;
             }
         </style>
 

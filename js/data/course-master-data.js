@@ -15,6 +15,23 @@
 // status: フライヤー全体（tkf_code単位）の有効/無効
 // standardTagIds: tkf_code 単位で管理（バージョンと独立）
 
+// StandardTagMaster のモック定義（course-master.html のインライン定義と同値）
+export const STANDARD_TAGS = [
+    { id: 1,  category: 'target', name: '管理職' },
+    { id: 2,  category: 'target', name: '一般社員' },
+    { id: 3,  category: 'target', name: '新入社員' },
+    { id: 4,  category: 'genre',  name: 'ビジネスマナー' },
+    { id: 5,  category: 'genre',  name: 'IT・デジタル' },
+    { id: 6,  category: 'genre',  name: 'リーダーシップ' },
+    { id: 7,  category: 'level',  name: '初級' },
+    { id: 8,  category: 'level',  name: '中級' },
+    { id: 9,  category: 'level',  name: '上級' },
+    { id: 10, category: 'format', name: 'Web通信' },
+    { id: 11, category: 'format', name: '通信教育（紙テキスト）' },
+    { id: 12, category: 'other',  name: '資格対応' },
+    { id: 13, category: 'other',  name: 'eラーニング' },
+];
+
 export const courseMasterData = [
 
   // ── IEC（幹事団体）────────────────────────────────────────────
@@ -83,6 +100,7 @@ export const courseMasterData = [
         { sortNo: 2, name: "WEB版",  price: 17600, period: 2 },
       ],
     },
+    standardTagIds: [2, 3, 4, 10, 11],
   },
 
   // 複合ステータス「申請中」: Ver.1 申請中のみ（初回IEC承認待ち）
@@ -104,8 +122,9 @@ export const courseMasterData = [
     thumbnailUrl: "",
     updatedAt: "2026/02/28",
     courses: [
-      { sortNo: 1, name: "標準版", price: 23100, period: 3 },
+      { sortNo: 1, name: "", price: 23100, period: 3 },
     ],
+    standardTagIds: [1, 2, 8],
     draft: null,
   },
 
@@ -128,8 +147,9 @@ export const courseMasterData = [
     thumbnailUrl: "",
     updatedAt: "2026/01/20",
     courses: [
-      { sortNo: 1, name: "標準版", price: 23650, period: 3 },
+      { sortNo: 1, name: "", price: 23650, period: 3 },
     ],
+    standardTagIds: [1, 9],
     draft: null,
   },
 
@@ -155,7 +175,7 @@ export const courseMasterData = [
     thumbnailUrl: "https://example.com/thumbnails/san-dt-004.jpg",
     updatedAt: "2026/03/05",
     courses: [
-      { sortNo: 1, name: "WEB版", price: 25300, period: 3 },
+      { sortNo: 1, name: "", price: 25300, period: 3 },
     ],
     // 棄却後に未承認へ戻った改訂版（棄却コメントを保持）
     draft: {
@@ -170,9 +190,10 @@ export const courseMasterData = [
       thumbnailUrl: "https://example.com/thumbnails/san-dt-004.jpg",
       updatedAt: "2026/04/20",
       courses: [
-        { sortNo: 1, name: "WEB版", price: 25300, period: 3 },
+        { sortNo: 1, name: "", price: 25300, period: 3 },
       ],
     },
+    standardTagIds: [1, 2, 6, 8],
   },
 
   // 複合ステータス「承認済」: Ver.1 承認済・バージョンアップ申請フローの確認用
@@ -221,8 +242,9 @@ export const courseMasterData = [
     thumbnailUrl: "",
     updatedAt: "2026/02/18",
     courses: [
-      { sortNo: 1, name: "WEB版", price: 18920, period: 3 },
+      { sortNo: 1, name: "", price: 18920, period: 3 },
     ],
+    standardTagIds: [2, 5, 7, 10],
     draft: null,
   },
   {
@@ -246,6 +268,7 @@ export const courseMasterData = [
       { sortNo: 1, name: "通常版",   price: 18700, period: 2 },
       { sortNo: 2, name: "演習追加版", price: 21450, period: 3 },
     ],
+    standardTagIds: [2, 6, 7, 11],
     draft: null,
   },
   // Ver.2 承認済（過去にバージョンアップ申請→承認済みのフライヤー）
@@ -270,6 +293,7 @@ export const courseMasterData = [
       { sortNo: 1, name: "通常版",       price: 20900, period: 3 },
       { sortNo: 2, name: "ロールプレイ版", price: 24200, period: 4 },
     ],
+    standardTagIds: [2, 6, 8, 11],
     draft: null,
   },
 
@@ -295,6 +319,7 @@ export const courseMasterData = [
       { sortNo: 1, name: "通常版",         price: 21450, period: 3 },
       { sortNo: 2, name: "ケーススタディ版", price: 24640, period: 4 },
     ],
+    standardTagIds: [2, 8, 11],
     draft: null,
   },
   {
@@ -318,6 +343,7 @@ export const courseMasterData = [
       { sortNo: 1, name: "WEB版",   price: 24200, period: 3 },
       { sortNo: 2, name: "演習付き版", price: 27500, period: 4 },
     ],
+    standardTagIds: [1, 5, 7, 10],
     draft: null,
   },
   {
@@ -338,8 +364,9 @@ export const courseMasterData = [
     thumbnailUrl: "",
     updatedAt: "2026/01/10",
     courses: [
-      { sortNo: 1, name: "標準版", price: 22000, period: 3 },
+      { sortNo: 1, name: "", price: 22000, period: 3 },
     ],
+    standardTagIds: [1, 2, 8, 10],
     draft: null,
   },
 ];

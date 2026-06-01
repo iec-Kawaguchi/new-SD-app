@@ -229,6 +229,16 @@
                                             </div>
                                             <span class="material-symbols-outlined icon-sm text-gray-300 group-hover/row:text-blue-500 transition-colors">chevron_right</span>
                                         </button>
+                                        <!-- 顧客担当 - Vendor（参照） -->
+                                        <button data-modal-src="./partials/tanto-modal.html" data-modal-readonly="true"
+                                            class="group/row flex items-center justify-between w-full p-2.5 rounded-lg hover:bg-gray-50 transition-colors text-left"
+                                            data-visible-for="supplier">
+                                            <div class="flex items-center text-sm font-medium text-gray-700 gap-2">
+                                                <span class="material-symbols-outlined text-gray-300 icon-md">check_circle</span>
+                                                <span>顧客担当</span>
+                                            </div>
+                                            <span class="material-symbols-outlined icon-sm text-gray-300 group-hover/row:text-blue-500 transition-colors">chevron_right</span>
+                                        </button>
                                         <!-- 顧客担当 - Customer -->
                                         <button data-modal-src="./partials/tanto-modal.html" data-modal-readonly="true"
                                             class="group/row flex items-center justify-between w-full p-2.5 rounded-lg hover:bg-gray-50 transition-colors text-left"
@@ -414,6 +424,16 @@
                                             </div>
                                             <span class="material-symbols-outlined icon-sm text-gray-300 group-hover/row:text-blue-500 transition-colors">chevron_right</span>
                                         </button>
+                                        <!-- 料金確認リスト - IEC（料金確認依頼送付済み後） -->
+                                        <a href="media-plan-course-price-confirm-list.html?role=iec"
+                                            class="group/row flex items-center justify-between w-full p-2.5 rounded-lg hover:bg-gray-50 transition-colors"
+                                            data-visible-for="iec">
+                                            <div class="flex items-center text-sm font-medium text-gray-700 gap-2">
+                                                <span class="material-symbols-outlined text-orange-400 icon-md">error</span>
+                                                <span>料金確認リスト</span>
+                                            </div>
+                                            <span class="material-symbols-outlined icon-sm text-gray-300 group-hover/row:text-blue-500 transition-colors">chevron_right</span>
+                                        </a>
                                         <!-- 料金確認 - Vendor -->
                                         <a href="media-plan-course-price-confirm-list.html"
                                             class="group/row flex items-center justify-between w-full p-2.5 rounded-lg hover:bg-gray-50 transition-colors"
@@ -462,7 +482,7 @@
                                             class="group/row flex items-center justify-between w-full p-2.5 rounded-lg hover:bg-gray-50 transition-colors text-left"
                                             data-visible-for="iec">
                                             <div class="flex items-center text-sm font-medium text-gray-700 gap-2">
-                                                <span class="material-symbols-outlined text-emerald-500 icon-md">check_circle</span>
+                                                <span class="material-symbols-outlined text-orange-400 icon-md">error</span>
                                                 <span>募集要項</span>
                                             </div>
                                             <span class="material-symbols-outlined icon-sm text-gray-300 group-hover/row:text-blue-500 transition-colors">chevron_right</span>
@@ -472,7 +492,7 @@
                                             class="group/row flex items-center justify-between w-full p-2.5 rounded-lg hover:bg-gray-50 transition-colors text-left"
                                             data-visible-for="customer">
                                             <div class="flex items-center text-sm font-medium text-gray-700 gap-2">
-                                                <span class="material-symbols-outlined text-emerald-500 icon-md">check_circle</span>
+                                                <span class="material-symbols-outlined text-orange-400 icon-md">error</span>
                                                 <span>募集要項</span>
                                             </div>
                                             <span class="material-symbols-outlined icon-sm text-gray-300 group-hover/row:text-blue-500 transition-colors">chevron_right</span>
@@ -502,7 +522,7 @@
                                             class="group/row flex items-center justify-between w-full p-2.5 rounded-lg hover:bg-gray-50 transition-colors text-left"
                                             data-visible-for="iec, customer">
                                             <div class="flex items-center text-sm font-medium text-gray-700 gap-2">
-                                                <span class="material-symbols-outlined text-emerald-500 icon-md">check_circle</span>
+                                                <span class="material-symbols-outlined text-orange-400 icon-md">error</span>
                                                 <span>特集ページ</span>
                                             </div>
                                             <span class="material-symbols-outlined icon-sm text-gray-300 group-hover/row:text-blue-500 transition-colors">chevron_right</span>
@@ -512,7 +532,7 @@
                                             class="group/row flex items-center justify-between w-full p-2.5 rounded-lg hover:bg-gray-50 transition-colors text-left"
                                             data-visible-for="iec">
                                             <div class="flex items-center text-sm font-medium text-gray-700 gap-2">
-                                                <span class="material-symbols-outlined text-emerald-500 icon-md">check_circle</span>
+                                                <span class="material-symbols-outlined text-orange-400 icon-md">error</span>
                                                 <span>申込フォーム</span>
                                             </div>
                                             <span class="material-symbols-outlined icon-sm text-gray-300 group-hover/row:text-blue-500 transition-colors">chevron_right</span>
@@ -731,6 +751,12 @@
         return true;
     }
 
+    function parsePeriodEnd(periodStr) {
+        if (!periodStr) return '';
+        const parts = periodStr.split(' - ');
+        return parts.length === 2 ? parts[1].replace(/\//g, '-') : '';
+    }
+
     function applyFilters() {
         const filtered = planData.filter(item => {
             // 1. キーワード
@@ -753,6 +779,10 @@
 
             return true;
         });
+
+        // 募集期間終了日（To）の降順でソート
+        filtered.sort((a, b) => parsePeriodEnd(b.period).localeCompare(parsePeriodEnd(a.period)));
+
         renderPlanList(filtered);
     }
 
