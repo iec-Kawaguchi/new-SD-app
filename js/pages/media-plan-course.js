@@ -1,5 +1,4 @@
-// media-plan-course-v2.js
-// v2: 全幅レイアウト + スライドパネル + フィルターパネル + NEWバッジトグル + 登録元フラグ分離
+// media-plan-course.js
 
 import { selectedCourseData } from '../data/selected-course-data.js';
 import { courseMasterData } from '../data/course-master-data.js';
@@ -145,7 +144,7 @@ window.addEventListener('DOMContentLoaded', () => {
     }
 
     // =========================================================
-    // 行テンプレート生成（v2）
+    // 行テンプレート生成
     // =========================================================
     function rowTemplate(d) {
         const customTags = Array.isArray(d.custom) ? d.custom : String(d.custom || '').split(',').filter(x => x);

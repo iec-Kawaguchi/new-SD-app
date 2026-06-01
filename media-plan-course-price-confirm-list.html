@@ -5,28 +5,44 @@
         <title>料金確認 - New SD App</title>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <script src="https://cdn.tailwindcss.com"></script>
-        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
         <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
         <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nouislider@15.7.0/dist/nouislider.min.css">
         <link rel="stylesheet" href="./css/base-style.css">
-        <script src="https://cdn.jsdelivr.net/npm/nouislider@15.7.0/dist/nouislider.min.js"></script>
-        
         <script src="./js/role-visibility.js" defer></script>
         <script src="./js/mock-ui.js" defer></script>
         <script type="module" src="./js/pages/course-price-confirm.js"></script>
 
         <style>
+            .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+            .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+            .custom-scrollbar::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 3px; }
+
+            /* スライドパネル */
+            #slide-panel {
+                transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            }
+            #slide-panel.is-open {
+                transform: translateX(0) !important;
+            }
+
+            /* グリッドレイアウト */
+            .pc-grid {
+                display: grid;
+                grid-template-columns: 3rem 1fr 7rem 1fr 7rem;
+            }
         </style>
     </head>
     <body class="bg-gray-50 h-screen overflow-hidden flex flex-col text-gray-900 antialiased">
         <div id="app-header" class="sticky top-0 z-50 bg-white shadow-sm"></div>
+
         <main class="flex flex-1 min-h-0 overflow-hidden">
             <div id="app-sidebar" class="shrink-0"></div>
+
             <div class="flex-1 bg-gray-50 min-w-0 flex flex-col h-full overflow-hidden">
                 <div class="flex-1 flex flex-col p-6 lg:p-8 max-w-[1920px] mx-auto w-full h-full">
-                    
-                    <div class="flex justify-between items-center mb-6 shrink-0">
+
+                    <!-- ページタイトル -->
+                    <div class="flex justify-between items-center mb-4 shrink-0">
                         <div class="flex items-center gap-3">
                             <span class="flex items-center justify-center p-2 bg-white border border-gray-200 rounded-lg text-blue-600 shadow-sm">
                                 <span class="material-symbols-outlined icon-md">payments</span>
@@ -36,144 +52,238 @@
                                 <p class="text-xs text-gray-500 mt-0.5">●●食品株式会社様 FY26SD募集</p>
                             </div>
                         </div>
-                        <div data-visible-for="iec" class="text-xs text-red-500 bg-red-50 px-3 py-2 rounded border border-red-100 max-w-lg">
-                            ※IEC画面では料金確認の結果確認（差し替え履歴も）が可能。<br>
-                            ここは履歴のみ表示で、差し替えがおかしい/変更する場合はコースリストを直接編集する想定
+                    </div>
+
+                    <!-- IEC 注記バナー（IEC専用） -->
+                    <div data-visible-for="iec" class="mb-4 shrink-0 relative overflow-hidden rounded-lg border border-blue-100 bg-blue-50/50 shadow-sm">
+                        <div class="px-5 py-3 flex gap-4 items-start">
+                            <div class="flex-shrink-0 mt-0.5">
+                                <span class="material-symbols-outlined text-blue-600 icon-md">info</span>
+                            </div>
+                            <div class="flex-1 min-w-0 text-sm text-blue-800/80 leading-relaxed">
+                                Vendor 全員の回答が完了しました。各行に対して受入 / 差戻を判定してください。全件受入を確定した時点でコースリスト（f_media_plan_flyer）が自動反映されます。差戻があった場合は対象 Vendor に再依頼が発出されます。
+                            </div>
                         </div>
                     </div>
 
-                    <div class="flex gap-6 min-h-0 flex-1">
-                        <section class="flex-1 flex flex-col min-h-0 gap-4">
-                            <div class="flex-1 flex flex-col min-h-0 bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-                                <div class="p-4 border-b border-gray-100 flex flex-wrap items-center gap-3 bg-white shrink-0">
+                    <div class="flex flex-col flex-1 min-h-0 gap-4">
+
+                        <!-- リストセクション -->
+                        <section class="flex-1 flex flex-col min-h-0 bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+
+                            <!-- B: ヘッダー -->
+                            <div class="shrink-0">
+
+                                <!-- Row 1: 検索 / フィルター -->
+                                <div class="p-4 border-b border-gray-100 flex flex-wrap items-center gap-3 bg-white">
+
+                                    <!-- キーワード検索 -->
                                     <div class="relative w-72">
                                         <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                                             <span class="material-symbols-outlined text-gray-400 icon-sm">search</span>
                                         </div>
-                                        <input id="q" type="text" placeholder="コース名 / コード..."
-                                                class="block w-full rounded-md border border-gray-300 pl-10 pr-3 py-2 text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-50/50">
+                                        <input id="q" type="text" placeholder="コース名 / コード / タグ..."
+                                            class="block w-full rounded-md border border-gray-300 pl-10 pr-3 py-2 text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow bg-gray-50/50">
                                     </div>
-                                    
-                                    <div class="flex items-center gap-2">   
-                                        <button data-filter="new" class="inline-flex items-center px-3 py-2 rounded-md border border-gray-200 bg-white text-xs font-medium text-gray-700 hover:bg-gray-50 transition-colors shadow-sm">
-                                            NEWのみ
+
+                                    <!-- フィルターボタン + ドロップダウンパネル -->
+                                    <div class="relative" id="filter-container">
+                                        <button id="filter-btn" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-md border border-gray-200 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors shadow-sm">
+                                            <span class="material-symbols-outlined icon-sm">filter_list</span>
+                                            <span>フィルター</span>
+                                            <span id="filter-badge" class="hidden items-center justify-center min-w-[1.25rem] h-5 px-1.5 rounded-full bg-blue-600 text-white text-[10px] font-bold leading-none">0</span>
                                         </button>
-                                        <button data-filter="clear" class="inline-flex items-center px-3 py-2 rounded-md text-xs font-medium text-gray-500 hover:text-gray-700 hover:bg-gray-100 transition-colors">
-                                            フィルタ解除
-                                        </button>
-                                    </div>
-                                </div>
 
-                                <div class="grid grid-cols-[3rem_1fr_6rem_1fr] text-xs font-bold text-gray-500 bg-gray-50/80 border-b border-gray-200 px-4 py-3 shrink-0">
-                                    <div class="flex items-center justify-center">
-                                        <input id="selectAll" type="checkbox" class="rounded border-gray-300 text-blue-600 focus:ring-blue-500 h-4 w-4 cursor-pointer" title="すべて選択">
-                                    </div>
-                                    <div>確認対象コース</div>
-                                    <div class="text-center">判定</div>
-                                    <div>差し替えコース</div>
-                                </div>
-
-                                <div id="list" class="flex-1 overflow-y-auto custom-scrollbar bg-white">
-                                    <div id="skeleton" class="p-4 space-y-3">
-                                        <div class="h-14 rounded-lg bg-gray-50 animate-pulse border border-gray-100"></div>
-                                        <div class="h-14 rounded-lg bg-gray-50 animate-pulse border border-gray-100"></div>
-                                        <div class="h-14 rounded-lg bg-gray-50 animate-pulse border border-gray-100"></div>
-                                    </div>
-                                    <div id="rows" class="divide-y divide-gray-100"></div>
-                                    <div id="sentinel" class="h-4"></div>
-                                </div>
-
-                                <div class="bg-white border-t border-gray-200 px-4 py-3 flex items-center min-h-[3.5rem] shrink-0">
-                                    <div id="bulkbar" class="hidden flex items-center gap-4 w-full animate-[fadeIn_0.2s_ease-out]">
-                                        <div class="flex items-center gap-2 px-3 py-1.5 bg-blue-50 rounded-md border border-blue-100">
-                                            <span class="material-symbols-outlined text-blue-600 icon-sm">check_circle</span>
-                                            <p class="text-sm font-bold text-blue-900"><span id="selCount">0</span> 件選択中</p>
-                                        </div>
-                                        <button id="clearSelection" class="text-xs text-blue-600 hover:text-blue-800 underline">選択解除</button>
-                                        
-                                        <div class="ml-auto flex items-center gap-3">
-                                            <button id="markOK" class="inline-flex items-center px-4 py-2 rounded-md bg-white border border-green-200 text-green-700 text-xs font-bold hover:bg-green-50 transition-colors shadow-sm">
-                                                <span class="material-symbols-outlined icon-sm mr-1.5">thumb_up</span>判定OK
-                                            </button>
-                                            <button id="markNG" class="inline-flex items-center px-4 py-2 rounded-md bg-white border border-red-200 text-red-700 text-xs font-bold hover:bg-red-50 transition-colors shadow-sm">
-                                                <span class="material-symbols-outlined icon-sm mr-1.5">thumb_down</span>判定NG
-                                            </button>
+                                        <!-- フィルターパネル -->
+                                        <div id="filter-panel" class="hidden absolute top-full left-0 mt-2 w-64 bg-white border border-gray-200 rounded-xl shadow-lg z-20 overflow-hidden">
+                                            <div class="p-4 space-y-4 max-h-80 overflow-y-auto custom-scrollbar">
+                                                <!-- 状態（共通） -->
+                                                <div>
+                                                    <h4 class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2">状態</h4>
+                                                    <div class="space-y-1.5">
+                                                        <label class="flex items-center gap-2 cursor-pointer hover:bg-gray-50 rounded px-1 py-0.5">
+                                                            <input type="checkbox" class="filter-chk rounded border-gray-300 text-blue-600 h-4 w-4" data-filter-type="status" value="new">
+                                                            <span class="text-sm text-gray-700">NEWのみ</span>
+                                                        </label>
+                                                        <label class="flex items-center gap-2 cursor-pointer hover:bg-gray-50 rounded px-1 py-0.5">
+                                                            <input type="checkbox" class="filter-chk rounded border-gray-300 text-blue-600 h-4 w-4" data-filter-type="status" value="unjudged">
+                                                            <span class="text-sm text-gray-700">未判定のみ</span>
+                                                        </label>
+                                                        <label class="flex items-center gap-2 cursor-pointer hover:bg-gray-50 rounded px-1 py-0.5">
+                                                            <input type="checkbox" class="filter-chk rounded border-gray-300 text-blue-600 h-4 w-4" data-filter-type="status" value="ng">
+                                                            <span class="text-sm text-gray-700">判定NGのみ</span>
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                                <!-- 団体（IEC専用） -->
+                                                <div data-visible-for="iec">
+                                                    <h4 class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2">団体</h4>
+                                                    <div id="filter-orgs" class="space-y-1.5"></div>
+                                                </div>
+                                            </div>
+                                            <div class="px-4 py-3 border-t border-gray-100 bg-gray-50/50">
+                                                <button id="filter-reset" class="text-xs text-gray-500 hover:text-gray-700 hover:underline">フィルターをリセット</button>
+                                            </div>
                                         </div>
                                     </div>
-                                    <div id="bulk-placeholder" class="text-xs text-gray-400 w-full text-center">
-                                        行を選択すると一括操作メニューが表示されます
-                                    </div>
+                                </div>
+
+                                <!-- Row 2: 適用中フィルターチップ（条件あり時のみ表示） -->
+                                <div id="filter-chips-row" class="hidden px-4 py-2 border-b border-gray-100 bg-gray-50/30 flex flex-wrap gap-2 items-center">
+                                    <div id="filter-chips" class="flex flex-wrap gap-1.5"></div>
+                                    <button id="clear-all-filters" class="text-xs text-gray-400 hover:text-gray-600 ml-1">すべて解除</button>
                                 </div>
                             </div>
 
-                            <div class="shrink-0 flex flex-col gap-4">
-                                <section class="bg-blue-50/50 rounded-xl border border-blue-100 p-4" data-visible-for="supplier">
-                                    <div class="flex items-start gap-3 mb-4">
-                                        <span class="material-symbols-outlined text-blue-600 icon-md mt-0.5">info</span>
-                                        <div class="space-y-1">
-                                            <h2 class="text-sm font-bold text-gray-900">その他指示</h2>
-                                            <p class="text-xs text-gray-600 leading-relaxed">
-                                                PC講座の提供がある場合、添付のPC体系図をダウンロードのうえ、貴社PCコースを体系図上のどこに配置するかを示してご返送ください。
-                                            </p>
-                                        </div>
+                            <!-- C: 列ヘッダー -->
+                            <div class="pc-grid text-xs font-bold text-gray-500 bg-gray-50/80 border-b border-gray-200 px-4 py-3 shrink-0">
+                                <div class="flex items-center justify-center">
+                                    <input id="selectAll" type="checkbox" class="rounded border-gray-300 text-blue-600 focus:ring-blue-500 h-4 w-4 cursor-pointer" title="すべて選択">
+                                </div>
+                                <div class="flex items-center">確認対象コース</div>
+                                <div class="flex items-center justify-center">Vendor判定</div>
+                                <div class="flex items-center">差し替えコース</div>
+                                <div class="flex items-center justify-center" data-visible-for="iec">IEC判定</div>
+                            </div>
+
+                            <!-- D: 行リスト -->
+                            <div id="list" class="flex-1 overflow-y-auto custom-scrollbar bg-white">
+                                <div id="skeleton" class="p-4 space-y-3">
+                                    <div class="h-14 rounded-lg bg-gray-50 animate-pulse border border-gray-100"></div>
+                                    <div class="h-14 rounded-lg bg-gray-50 animate-pulse border border-gray-100"></div>
+                                    <div class="h-14 rounded-lg bg-gray-50 animate-pulse border border-gray-100"></div>
+                                    <div class="h-14 rounded-lg bg-gray-50 animate-pulse border border-gray-100"></div>
+                                    <div class="h-14 rounded-lg bg-gray-50 animate-pulse border border-gray-100"></div>
+                                </div>
+                                <div id="rows" class="divide-y divide-gray-100"></div>
+                                <div id="sentinel" class="h-4"></div>
+                            </div>
+
+                            <!-- E: 一括操作バー -->
+                            <div class="bg-white border-t border-gray-200 px-6 py-4 flex items-center min-h-[3.5rem] shrink-0">
+                                <div id="bulkbar" class="hidden flex items-center gap-3 w-full p-3 bg-blue-50 rounded-lg border border-blue-100 flex-wrap">
+                                    <div class="flex items-center gap-2">
+                                        <span class="material-symbols-outlined text-blue-600 icon-md">check_circle</span>
+                                        <p class="text-sm font-bold text-blue-900"><span id="selCount">0</span> 件選択中</p>
                                     </div>
+                                    <button id="clearSelection" class="text-xs text-blue-600 hover:text-blue-800 underline">選択解除</button>
 
-                                    <div class="grid gap-4 md:grid-cols-2">
-                                        <div class="bg-white rounded-lg border border-gray-200 p-3 flex items-center gap-3 shadow-sm">
-                                            <div class="p-2 bg-blue-50 rounded text-blue-600">
-                                                <span class="material-symbols-outlined icon-md">description</span>
-                                            </div>
-                                            <div class="flex-1 min-w-0">
-                                                <p class="text-sm font-bold text-gray-800 truncate">PC体系図.xlsx</p>
-                                                <p class="text-xs text-gray-500">1.2MB</p>
-                                            </div>
-                                            <button type="button" class="text-blue-600 hover:bg-blue-50 p-1.5 rounded-full transition-colors">
-                                                <span class="material-symbols-outlined icon-md">download</span>
-                                            </button>
-                                        </div>
+                                    <div class="h-4 w-px bg-blue-200 mx-1"></div>
 
-                                        <label class="cursor-pointer bg-white rounded-lg border border-gray-200 border-dashed p-3 flex items-center gap-3 hover:border-blue-400 hover:bg-blue-50/10 transition-colors shadow-sm group">
-                                            <div class="p-2 bg-gray-50 rounded text-gray-400 group-hover:text-blue-500 group-hover:bg-blue-50 transition-colors">
-                                                <span class="material-symbols-outlined icon-md">upload_file</span>
-                                            </div>
-                                            <div class="flex-1 min-w-0">
-                                                <p class="text-sm font-medium text-gray-700 group-hover:text-blue-700 transition-colors">ファイルをアップロード</p>
-                                                <p class="text-[10px] text-gray-400">最大 10MB (PDF, 画像)</p>
-                                            </div>
-                                            <input type="file" class="hidden" accept=".pdf,image/*" />
-                                        </label>
-                                    </div>
-                                </section>
-
-                                <div class="flex justify-end gap-3 pt-2">
-                                    <a href="./media-plan-list.html">
-                                        <button class="px-5 py-2.5 text-sm font-medium rounded-md border border-gray-300 text-gray-700 hover:bg-gray-50 transition-colors">
-                                            戻る
+                                    <!-- Vendor専用: 判定OK / 判定NG -->
+                                    <div class="flex items-center gap-2" data-visible-for="supplier">
+                                        <button id="markOK" class="inline-flex items-center px-3 py-1.5 rounded bg-white border border-green-200 text-green-700 text-xs font-bold hover:bg-green-50 transition-colors">
+                                            <span class="material-symbols-outlined icon-sm mr-1">thumb_up</span>判定OK
                                         </button>
-                                    </a>
-                                    <button class="px-6 py-2.5 text-sm font-bold rounded-md bg-blue-600 text-white hover:bg-blue-700 shadow-sm hover:shadow transition-all flex items-center gap-2" data-visible-for="supplier">
-                                        料金確認を完了する
-                                    </button>
+                                        <button id="markNG" class="inline-flex items-center px-3 py-1.5 rounded bg-white border border-red-200 text-red-700 text-xs font-bold hover:bg-red-50 transition-colors">
+                                            <span class="material-symbols-outlined icon-sm mr-1">thumb_down</span>判定NG
+                                        </button>
+                                    </div>
+
+                                    <!-- IEC専用: 受入 / 差戻 -->
+                                    <div class="flex items-center gap-2" data-visible-for="iec">
+                                        <button id="markAccept" class="inline-flex items-center px-3 py-1.5 rounded bg-white border border-green-200 text-green-700 text-xs font-bold hover:bg-green-50 transition-colors">
+                                            <span class="material-symbols-outlined icon-sm mr-1">check_circle</span>受入
+                                        </button>
+                                        <button id="markReject" class="inline-flex items-center px-3 py-1.5 rounded bg-white border border-red-200 text-red-700 text-xs font-bold hover:bg-red-50 transition-colors">
+                                            <span class="material-symbols-outlined icon-sm mr-1">cancel</span>差戻
+                                        </button>
+                                    </div>
+                                </div>
+                                <div id="bulk-placeholder" class="text-xs text-gray-400 w-full text-center">
+                                    行を選択すると一括操作メニューが表示されます
                                 </div>
                             </div>
                         </section>
 
-                        <aside id="preview" class="w-[24rem] xl:w-[28rem] bg-white rounded-xl shadow-sm border border-gray-200 overflow-y-auto custom-scrollbar shrink-0 flex flex-col">
-                            <div class="flex-1 flex flex-col items-center justify-center p-8 text-center text-gray-400">
-                                <span class="material-symbols-outlined text-6xl mb-4 text-gray-200">plagiarism</span>
-                                <p class="text-sm font-medium">コースを選択すると<br>詳細プレビューが表示されます</p>
+                        <!-- F: その他指示（Vendor専用 / IsFileUploadRequired=true の場合のみ表示） -->
+                        <section data-visible-for="supplier" class="shrink-0 bg-blue-50/50 rounded-xl border border-blue-100 p-4">
+                            <div class="flex items-start gap-3 mb-4">
+                                <span class="material-symbols-outlined text-blue-600 icon-md mt-0.5">info</span>
+                                <div class="space-y-1">
+                                    <h2 class="text-sm font-bold text-gray-900">その他指示</h2>
+                                    <p class="text-xs text-gray-600 leading-relaxed">
+                                        PC講座の提供がある場合、添付のPC体系図をダウンロードのうえ、貴社PCコースを体系図上のどこに配置するかを示してご返送ください。
+                                    </p>
+                                </div>
                             </div>
-                        </aside>
+
+                            <div class="grid gap-4 md:grid-cols-2">
+                                <!-- 参照ファイルダウンロード（ReferenceFileData が null の場合は非表示） -->
+                                <div class="bg-white rounded-lg border border-gray-200 p-3 flex items-center gap-3 shadow-sm">
+                                    <div class="p-2 bg-blue-50 rounded text-blue-600">
+                                        <span class="material-symbols-outlined icon-md">description</span>
+                                    </div>
+                                    <div class="flex-1 min-w-0">
+                                        <p class="text-sm font-bold text-gray-800 truncate">PC体系図.xlsx</p>
+                                        <p class="text-xs text-gray-500">1.2 MB</p>
+                                    </div>
+                                    <button type="button" class="text-blue-600 hover:bg-blue-50 p-1.5 rounded-full transition-colors" title="ダウンロード">
+                                        <span class="material-symbols-outlined icon-md">download</span>
+                                    </button>
+                                </div>
+
+                                <!-- 返送ファイルアップロード（IsDone=false の場合のみ操作可能） -->
+                                <label class="cursor-pointer bg-white rounded-lg border border-gray-200 border-dashed p-3 flex items-center gap-3 hover:border-blue-400 hover:bg-blue-50/10 transition-colors shadow-sm group">
+                                    <div class="p-2 bg-gray-50 rounded text-gray-400 group-hover:text-blue-500 group-hover:bg-blue-50 transition-colors">
+                                        <span class="material-symbols-outlined icon-md">upload_file</span>
+                                    </div>
+                                    <div class="flex-1 min-w-0">
+                                        <p class="text-sm font-medium text-gray-700 group-hover:text-blue-700 transition-colors">ファイルをアップロード</p>
+                                        <p class="text-[10px] text-gray-400">最大 10MB (PDF, 画像)</p>
+                                    </div>
+                                    <input type="file" class="hidden" accept=".pdf,image/*" />
+                                </label>
+                            </div>
+                        </section>
+
+                        <!-- G: フッター -->
+                        <div class="shrink-0 bg-white border border-gray-200 rounded-xl px-6 py-4 flex justify-between items-center">
+                            <a href="./media-plan-list.html">
+                                <button class="px-5 py-2.5 text-sm font-medium rounded-md border border-gray-300 text-gray-700 hover:bg-gray-50 transition-colors">
+                                    戻る
+                                </button>
+                            </a>
+                            <div class="flex gap-3 items-center">
+                                <!-- 料金確認を完了する（Vendor専用） -->
+                                <button id="complete-btn" data-visible-for="supplier"
+                                    class="px-6 py-2.5 text-sm font-bold rounded-md bg-blue-600 text-white hover:bg-blue-700 shadow-sm hover:shadow transition-all">
+                                    料金確認を完了する
+                                </button>
+                                <!-- IEC専用：判定確定 -->
+                                <button id="confirm-decision-btn" data-visible-for="iec"
+                                    class="px-6 py-2.5 text-sm font-bold rounded-md bg-blue-600 text-white hover:bg-blue-700 shadow-sm hover:shadow transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                                    title="">
+                                    判定を確定する
+                                </button>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
             </div>
         </main>
 
+        <!-- H: 詳細スライドパネル（右オーバーレイ） -->
+        <div id="slide-backdrop" class="fixed inset-0 z-30 hidden"></div>
+        <div id="slide-panel" class="fixed top-0 right-0 h-full w-[26rem] xl:w-[30rem] bg-white border-l border-gray-200 shadow-2xl z-40 transform translate-x-full flex flex-col overflow-hidden">
+            <div class="flex items-center justify-between px-5 py-4 border-b border-gray-100 bg-white shrink-0">
+                <h3 class="text-base font-bold text-gray-800">コース詳細</h3>
+                <button id="close-slide-panel" class="text-gray-400 hover:text-gray-600 hover:bg-gray-100 p-1.5 rounded-full transition-colors">
+                    <span class="material-symbols-outlined icon-md">close</span>
+                </button>
+            </div>
+            <div id="panel-content" class="flex-1 overflow-y-auto custom-scrollbar">
+                <!-- JSで注入 -->
+            </div>
+        </div>
+
+        <!-- I: 差し替えコース選択モーダル（Vendor専用） -->
         <div id="course-modal" class="fixed inset-0 z-[100] bg-gray-900/50 backdrop-blur-sm hidden items-center justify-center transition-opacity duration-200 p-4">
-            <div class="bg-white rounded-xl shadow-2xl w-full max-w-4xl h-[80vh] flex flex-col overflow-hidden">
+            <div class="bg-white rounded-xl shadow-2xl w-full max-w-3xl h-[75vh] flex flex-col overflow-hidden">
                 <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-white shrink-0">
                     <h2 class="text-lg font-bold text-gray-800 flex items-center gap-2">
-                        <span class="material-symbols-outlined text-blue-600 icon-md">library_add</span>
+                        <span class="material-symbols-outlined text-blue-600 icon-md">swap_horiz</span>
                         差し替えコースを選択
                     </h2>
                     <button id="close-course-modal" class="text-gray-400 hover:text-gray-600 hover:bg-gray-100 p-1 rounded-full transition-colors">
@@ -197,8 +307,7 @@
                         <div>コース情報</div>
                         <div>団体</div>
                     </div>
-                    <div id="modal-rows" class="divide-y divide-gray-100">
-                        </div>
+                    <div id="modal-rows" class="divide-y divide-gray-100"></div>
                 </div>
 
                 <div class="px-6 py-4 bg-gray-50 border-t border-gray-100 flex justify-end gap-3 shrink-0">
@@ -212,5 +321,58 @@
                 </div>
             </div>
         </div>
+
+        <!-- J: 差戻理由入力モーダル（IEC専用） -->
+        <div id="reject-modal" class="fixed inset-0 z-100 bg-gray-900/50 backdrop-blur-sm hidden items-center justify-center p-4">
+            <div class="bg-white rounded-xl shadow-2xl w-full max-w-md flex flex-col overflow-hidden">
+                <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-white shrink-0">
+                    <h2 class="text-lg font-bold text-gray-800 flex items-center gap-2">
+                        <span class="material-symbols-outlined text-red-500 icon-md">cancel</span>
+                        差戻理由を入力
+                    </h2>
+                    <button id="close-reject-modal" class="text-gray-400 hover:text-gray-600 hover:bg-gray-100 p-1 rounded-full transition-colors">
+                        <span class="material-symbols-outlined icon-md">close</span>
+                    </button>
+                </div>
+                <div class="p-6">
+                    <p id="reject-target-count" class="text-sm font-bold text-gray-800 mb-3"></p>
+                    <p class="text-sm text-gray-600 mb-3">差戻理由を入力してください。対象 Vendor の再回答時に表示されます。</p>
+                    <textarea id="reject-comment" rows="4" maxlength="200"
+                        class="w-full rounded-md border border-gray-300 text-sm px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-500 resize-none"
+                        placeholder="差戻の理由を入力してください（例: 差し替えコースが顧客希望に合わないため、別の代替案をご検討ください）"></textarea>
+                    <div class="text-xs text-gray-400 mt-1 text-right"><span id="reject-comment-count">0</span> / 200</div>
+                    <p id="reject-comment-error" class="hidden text-xs text-red-600 mt-1">差戻理由は必須です。</p>
+                </div>
+                <div class="px-6 py-4 bg-gray-50 border-t border-gray-100 flex justify-end gap-3 shrink-0">
+                    <button id="cancel-reject-modal" class="px-4 py-2 rounded-md bg-white border border-gray-300 text-gray-700 text-sm font-medium hover:bg-gray-50 transition-all shadow-sm">キャンセル</button>
+                    <button id="confirm-reject-btn" class="px-5 py-2 rounded-md bg-red-600 text-white text-sm font-bold hover:bg-red-700 shadow-sm transition-all">差戻を確定する</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- K: 判定確定 確認モーダル（IEC専用） -->
+        <div id="decision-modal" class="fixed inset-0 z-100 bg-gray-900/50 backdrop-blur-sm hidden items-center justify-center p-4">
+            <div class="bg-white rounded-xl shadow-2xl w-full max-w-md flex flex-col overflow-hidden">
+                <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-white shrink-0">
+                    <h2 id="decision-modal-title" class="text-lg font-bold text-gray-800 flex items-center gap-2">
+                        <span id="decision-modal-icon" class="material-symbols-outlined icon-md">verified</span>
+                        <span id="decision-modal-title-text">判定を確定します</span>
+                    </h2>
+                    <button id="close-decision-modal" class="text-gray-400 hover:text-gray-600 hover:bg-gray-100 p-1 rounded-full transition-colors">
+                        <span class="material-symbols-outlined icon-md">close</span>
+                    </button>
+                </div>
+                <div class="p-6 space-y-3">
+                    <p id="decision-summary" class="text-sm font-bold text-gray-800"></p>
+                    <p class="text-sm text-gray-600">以下の処理が実行されます。</p>
+                    <ul id="decision-bullets" class="text-sm text-gray-700 list-disc pl-5 space-y-1"></ul>
+                </div>
+                <div class="px-6 py-4 bg-gray-50 border-t border-gray-100 flex justify-end gap-3 shrink-0">
+                    <button id="cancel-decision-modal" class="px-4 py-2 rounded-md bg-white border border-gray-300 text-gray-700 text-sm font-medium hover:bg-gray-50 transition-all shadow-sm">キャンセル</button>
+                    <button id="execute-decision-btn" class="px-5 py-2 rounded-md text-white text-sm font-bold shadow-sm transition-all"></button>
+                </div>
+            </div>
+        </div>
+
     </body>
 </html>

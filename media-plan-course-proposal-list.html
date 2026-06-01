@@ -2,7 +2,7 @@
 <html lang="ja" class="h-full bg-gray-50">
     <head>
         <meta charset="UTF-8" />
-        <title>コース提案 v2 - New SD App</title>
+        <title>コース提案 - New SD App</title>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <script src="https://cdn.tailwindcss.com"></script>
         <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
@@ -120,13 +120,13 @@
                                                     <h4 class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2">標準タグ</h4>
                                                     <div id="filter-std-tags" class="space-y-1.5"></div>
                                                 </div>
-                                                <!-- カスタムタグ -->
-                                                <div>
+                                                <!-- カスタムタグ（IEC・Customer 専用） -->
+                                                <div data-visible-for="iec, customer">
                                                     <h4 class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2">カスタムタグ</h4>
                                                     <div id="filter-custom-tags" class="space-y-1.5"></div>
                                                 </div>
-                                                <!-- 団体 -->
-                                                <div>
+                                                <!-- 団体（IEC・Customer 専用：Vendor は自社のみ閲覧のため団体絞り込み不要） -->
+                                                <div data-visible-for="iec, customer">
                                                     <h4 class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2">団体</h4>
                                                     <div id="filter-orgs" class="space-y-1.5"></div>
                                                 </div>

@@ -89,7 +89,7 @@
                                         <th class="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">コース名 / 自社管理コード</th>
                                         <th class="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider font-mono" data-visible-for="iec">フライヤーコード</th>
                                         <th class="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider" data-visible-for="iec">団体</th>
-                                        <th class="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider text-center whitespace-nowrap">バージョン / 承認</th>
+                                        <th class="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider text-center whitespace-nowrap">バージョン / ステータス</th>
                                         <th class="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider text-center whitespace-nowrap">素材</th>
                                         <th class="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider text-center whitespace-nowrap">オプション</th>
                                         <th class="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider text-center whitespace-nowrap">最終更新日</th>
@@ -148,6 +148,22 @@
                         class="text-gray-400 hover:text-gray-600 hover:bg-gray-100 p-1 rounded-full transition-colors">
                         <span class="material-symbols-outlined icon-md">close</span>
                     </button>
+                </div>
+
+                <!-- バージョン切替（改訂版が存在する場合のみ表示） -->
+                <div id="versionSwitch" class="hidden shrink-0 px-6 py-2.5 bg-violet-50 border-b border-violet-100 flex items-center gap-3">
+                    <span class="text-xs font-semibold text-violet-600">バージョン切替</span>
+                    <div class="flex rounded-md overflow-hidden border border-violet-200 text-xs font-medium">
+                        <button id="btnViewDraft"
+                            class="px-3 py-1.5 transition-colors">
+                            改訂版（Ver.<span id="draftVerLabel"></span>）
+                        </button>
+                        <button id="btnViewApproved"
+                            class="px-3 py-1.5 transition-colors border-l border-violet-200">
+                            承認済版（Ver.<span id="approvedVerLabel"></span>）
+                        </button>
+                    </div>
+                    <span class="text-xs text-violet-400">承認済版は参照専用です</span>
                 </div>
 
                 <!-- タブナビ -->
@@ -394,17 +410,17 @@
                         class="px-4 py-2 rounded-md bg-white border border-gray-300 text-gray-700 font-medium hover:bg-gray-50 hover:border-gray-400 transition-all shadow-sm text-sm">
                         キャンセル
                     </button>
-                    <!-- 却下する（IEC / 未承認・申請中のみ） -->
+                    <!-- 却下する（IEC / 未承認・申請中バージョン表示中のみ） -->
                     <button id="btnRejectInModal"
                         class="hidden px-4 py-2 rounded-md bg-white border border-red-300 text-red-600 font-medium hover:bg-red-50 shadow-sm transition-all text-sm">
                         却下する
                     </button>
-                    <!-- 承認する（IEC / 未承認・申請中のみ） -->
+                    <!-- 承認する（IEC / 未承認・申請中バージョン表示中のみ） -->
                     <button id="btnApproveInModal"
                         class="hidden px-4 py-2 rounded-md bg-green-600 text-white font-bold hover:bg-green-700 shadow-sm transition-all text-sm">
                         承認する
                     </button>
-                    <!-- 承認申請する（Vendor / 未承認のみ） -->
+                    <!-- 承認申請する（Vendor / 未承認バージョン表示中のみ） -->
                     <button id="btnApplyInModal"
                         class="hidden px-4 py-2 rounded-md bg-blue-500 text-white font-bold hover:bg-blue-600 shadow-sm transition-all text-sm">
                         承認申請する
@@ -578,6 +594,20 @@
                 ? `<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-green-50 text-green-700 border border-green-100"><span class="w-1.5 h-1.5 bg-green-500 rounded-full"></span>有効</span>`
                 : `<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-600 border border-gray-200"><span class="w-1.5 h-1.5 bg-gray-400 rounded-full"></span>無効</span>`;
 
+            // 複合ステータスバッジ（一覧列4用）
+            const compositeStatusBadge = (cs) => {
+                const map = {
+                    '作成中':     'bg-yellow-50 text-yellow-700 border-yellow-200',
+                    '申請中':     'bg-blue-50 text-blue-700 border-blue-100',
+                    '承認済':     'bg-green-50 text-green-700 border-green-100',
+                    '改訂中':     'bg-violet-50 text-violet-700 border-violet-200',
+                    '改訂申請中': 'bg-indigo-50 text-indigo-700 border-indigo-200',
+                };
+                const cls = map[cs] ?? 'bg-gray-100 text-gray-500 border-gray-200';
+                return `<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium border ${cls}">${cs}</span>`;
+            };
+
+            // approvalStatus → バッジ（モーダル内バージョン表示用）
             const approvalBadge = (s) => {
                 const map = {
                     unapproved: 'bg-yellow-50 text-yellow-700 border-yellow-200',
@@ -590,7 +620,33 @@
                 return `<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium border ${cls}">${label[s] ?? s}</span>`;
             };
 
-            let filterApprovalStatus = ''; // ''=すべて / 'unapproved' / 'pending' / 'approved' / 'rejected'
+            // 複合ステータスを再計算してセットする
+            const updateCompositeStatus = (flyer) => {
+                if (!flyer.draft) {
+                    const s = flyer.approvalStatus;
+                    if (s === 'approved')        flyer.compositeStatus = '承認済';
+                    else if (s === 'pending')    flyer.compositeStatus = '申請中';
+                    else                         flyer.compositeStatus = '作成中';
+                } else {
+                    const ds = flyer.draft.approvalStatus;
+                    if (ds === 'pending')        flyer.compositeStatus = '改訂申請中';
+                    else                         flyer.compositeStatus = '改訂中';
+                }
+            };
+
+            // 承認ステータスフィルタキー（'unapproved'/'pending'/'approved'/'revising'/'revisionPending'/''）が
+            // 複合ステータスにマッチするか判定（複合ステータスと1対1対応）
+            const csMatchesFilter = (cs, filterKey) => {
+                if (!filterKey) return true;
+                if (filterKey === 'unapproved')      return cs === '作成中';
+                if (filterKey === 'pending')         return cs === '申請中';
+                if (filterKey === 'approved')        return cs === '承認済';
+                if (filterKey === 'revising')        return cs === '改訂中';
+                if (filterKey === 'revisionPending') return cs === '改訂申請中';
+                return false;
+            };
+
+            let filterApprovalStatus = ''; // ''=すべて / 'unapproved' / 'pending' / 'approved' / 'revising' / 'revisionPending'
 
             const getBaseFiltered = () => {
                 const role            = getRole();
@@ -613,18 +669,20 @@
             const renderApprovalFilterChips = (baseFiltered) => {
                 const chipsContainer = document.getElementById('approvalFilterChips');
                 if (!chipsContainer) return;
-                const statuses = ['', 'unapproved', 'pending', 'rejected', 'approved'];
-                const labels   = { '': 'すべて', unapproved: '未承認', pending: '申請中', rejected: '棄却', approved: '承認済' };
+                const statuses = ['', 'unapproved', 'pending', 'approved', 'revising', 'revisionPending'];
+                const labels   = { '': 'すべて', unapproved: '作成中', pending: '申請中', approved: '承認済', revising: '改訂中', revisionPending: '改訂申請中' };
                 const colors   = {
-                    '':         { a: 'bg-gray-700 text-white border-gray-700',     i: 'bg-white text-gray-600 border-gray-300 hover:bg-gray-50' },
-                    unapproved: { a: 'bg-yellow-500 text-white border-yellow-500', i: 'bg-yellow-50 text-yellow-700 border-yellow-300 hover:bg-yellow-100' },
-                    pending:    { a: 'bg-blue-600 text-white border-blue-600',     i: 'bg-blue-50 text-blue-700 border-blue-200 hover:bg-blue-100' },
-                    rejected:   { a: 'bg-red-500 text-white border-red-500',       i: 'bg-red-50 text-red-600 border-red-200 hover:bg-red-100' },
-                    approved:   { a: 'bg-green-600 text-white border-green-600',   i: 'bg-green-50 text-green-700 border-green-200 hover:bg-green-100' },
+                    '':              { a: 'bg-gray-700 text-white border-gray-700',     i: 'bg-white text-gray-600 border-gray-300 hover:bg-gray-50' },
+                    unapproved:      { a: 'bg-yellow-500 text-white border-yellow-500', i: 'bg-yellow-50 text-yellow-700 border-yellow-300 hover:bg-yellow-100' },
+                    pending:         { a: 'bg-blue-600 text-white border-blue-600',     i: 'bg-blue-50 text-blue-700 border-blue-200 hover:bg-blue-100' },
+                    approved:        { a: 'bg-green-600 text-white border-green-600',   i: 'bg-green-50 text-green-700 border-green-200 hover:bg-green-100' },
+                    revising:        { a: 'bg-violet-600 text-white border-violet-600', i: 'bg-violet-50 text-violet-700 border-violet-200 hover:bg-violet-100' },
+                    revisionPending: { a: 'bg-indigo-600 text-white border-indigo-600', i: 'bg-indigo-50 text-indigo-700 border-indigo-200 hover:bg-indigo-100' },
                 };
+                // 複合ステータスと1対1対応のため件数合計 = 全件数
                 const cnt = { '': baseFiltered.length };
-                ['unapproved', 'pending', 'rejected', 'approved'].forEach(s => {
-                    cnt[s] = baseFiltered.filter(c => (c.approvalStatus ?? 'approved') === s).length;
+                ['unapproved', 'pending', 'approved', 'revising', 'revisionPending'].forEach(s => {
+                    cnt[s] = baseFiltered.filter(c => csMatchesFilter(c.compositeStatus, s)).length;
                 });
                 chipsContainer.innerHTML = statuses.map(s => {
                     const isActive  = filterApprovalStatus === s;
@@ -641,7 +699,7 @@
                 const base = getBaseFiltered();
 
                 if (role === 'iec' && filterApprovalStatus) {
-                    filtered = base.filter(c => (c.approvalStatus ?? 'approved') === filterApprovalStatus);
+                    filtered = base.filter(c => csMatchesFilter(c.compositeStatus, filterApprovalStatus));
                 } else {
                     filtered = base;
                 }
@@ -678,8 +736,11 @@
                 }
 
                 tableBody.innerHTML = slice.map(c => {
-                    const approvalStatus = c.approvalStatus ?? 'approved';
-                    const ver            = c.ver ?? 1;
+                    const cs       = c.compositeStatus;
+                    const hasDraft = !!c.draft;
+
+                    // 素材アイコンの参照先：承認済バージョン（代表行）
+                    const matData  = c; // htmlUrl/pdfUrl/thumbnailUrl は代表行から
 
                     const flyerCodeCell = isIec
                         ? `<td class="px-6 py-4 text-sm font-mono text-gray-500 whitespace-nowrap">${c.tkfCode}</td>`
@@ -688,8 +749,9 @@
                         ? `<td class="px-6 py-4 text-sm text-gray-600 whitespace-nowrap">${c.org}</td>`
                         : '';
 
-                    // 棄却バッジ：supplierロールかつ棄却バッジ表示条件を満たす場合のみ表示
-                    const rejectionBadge = (!isIec && c.hasPendingRejection)
+                    // 棄却バッジ：supplierロールかつ棄却コメントが存在する場合のみ表示
+                    const hasRejectionComment = !isIec && (c.rejectionComment || (c.draft && c.draft.rejectionComment));
+                    const rejectionBadge = hasRejectionComment
                         ? `<button type="button" class="js-open-rejection-comment mt-1.5 inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium bg-red-50 text-red-600 border border-red-200 hover:bg-red-100 transition-colors" data-id="${c.id}">
                                <span class="material-symbols-outlined" style="font-size:12px;line-height:1">warning</span>
                                前回申請が却下されました
@@ -698,49 +760,61 @@
 
                     const isActive = c.status !== 'Inactive';
 
+                    // ── 列4：バージョン/ステータス ──────────────────
+                    const draftSubBadge = hasDraft
+                        ? `<div class="mt-1 text-xs font-mono text-violet-500">+Ver.${c.draft.ver}（改訂中）</div>`
+                        : '';
+                    const versionStatusCell = `
+                        <td class="px-6 py-4 text-center">
+                            <div class="text-xs font-mono text-gray-500 whitespace-nowrap">Ver.${c.ver}</div>
+                            <div class="mt-1 flex justify-center">${compositeStatusBadge(cs)}</div>
+                            ${draftSubBadge}
+                        </td>`;
+
                     // ── ドロップダウンメニュー構築 ──────────────────
-                    // 編集する（IEC:全ステータス / Vendor:未承認・申請中のみ）
-                    const editItem = (isIec || ['unapproved', 'pending'].includes(approvalStatus))
+                    // 編集する
+                    // IEC: 常に表示 / Vendor: 作成中・改訂中（編集可能な未承認バージョンが存在する場合）
+                    const canVendorEdit = ['作成中', '改訂中'].includes(cs);
+                    const editItem = (isIec || canVendorEdit)
                         ? `<a href="#" class="js-open-modal group flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-gray-900" data-id="${c.id}">
                                <span class="material-symbols-outlined icon-sm mr-3 text-gray-400 group-hover:text-gray-500">edit</span>編集する
                            </a>`
                         : '';
 
-                    // 申請を取り消す（Vendor / 申請中のみ）
-                    const cancelItem = (!isIec && approvalStatus === 'pending')
+                    // 申請を取り消す（Vendor / 申請中・改訂申請中のみ）
+                    const cancelItem = (!isIec && ['申請中', '改訂申請中'].includes(cs))
                         ? `<a href="#" class="js-cancel-approval group flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-gray-900" data-id="${c.id}">
                                <span class="material-symbols-outlined icon-sm mr-3 text-orange-400 group-hover:text-orange-500">undo</span>申請を取り消す
                            </a>`
                         : '';
 
                     // バージョンアップ申請（Vendor / 承認済のみ）
-                    const versionUpItem = (!isIec && approvalStatus === 'approved')
+                    const versionUpItem = (!isIec && cs === '承認済')
                         ? `<a href="#" class="js-version-up group flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-gray-900" data-id="${c.id}">
                                <span class="material-symbols-outlined icon-sm mr-3 text-violet-400 group-hover:text-violet-500">upgrade</span>バージョンアップ申請
                            </a>`
                         : '';
 
-                    // 有効/無効切替
+                    // 有効/無効切替（フライヤー全体への操作）
                     const toggleItem = `<a href="#" class="js-toggle-status group flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-gray-900" data-id="${c.id}">
                                <span class="material-symbols-outlined icon-sm mr-3 ${isActive ? 'text-orange-400 group-hover:text-orange-500' : 'text-green-500 group-hover:text-green-600'}">${isActive ? 'block' : 'check_circle'}</span>
                                ${isActive ? '無効にする' : '有効にする'}
                            </a>`;
 
-                    // 削除する
+                    // 削除する（全バージョンを削除）
                     const deleteItem = isActive
                         ? `<a href="#" class="flex items-center px-4 py-2 text-sm text-gray-400 cursor-not-allowed" title="先に無効にしてから削除してください"><span class="material-symbols-outlined icon-sm mr-3 text-gray-300">delete</span>削除する</a>`
                         : `<a href="#" class="js-delete-action group flex items-center px-4 py-2 text-sm text-red-600 hover:bg-red-50" data-id="${c.id}"><span class="material-symbols-outlined icon-sm mr-3 text-red-400 group-hover:text-red-500">delete</span>削除する</a>`;
 
-                    // セクション1: 編集・申請系アクション
                     const sec1body = [editItem, cancelItem, versionUpItem].filter(Boolean).join('');
                     const sec1 = sec1body ? `<div class="py-1">${sec1body}</div>` : '';
-                    // セクション2: IEC承認・却下はモーダルフッターに移動済み
-                    const sec2 = '';
-                    // セクション3: 有効/無効 + 削除
                     const sec3 = `<div class="border-t border-gray-100 py-1">${toggleItem}</div>
                                   <div class="border-t border-gray-100 py-1">${deleteItem}</div>`;
 
-                    const menuItems = sec1 + sec2 + sec3;
+                    const menuItems = sec1 + sec3;
+
+                    // オプション列：代表バージョンのコース数
+                    const coursesCount = c.courses.length;
 
                     return `
                         <tr class="hover:bg-gray-50 transition-colors cursor-pointer" data-id="${c.id}">
@@ -751,18 +825,15 @@
                             </td>
                             ${flyerCodeCell}
                             ${orgCell}
-                            <td class="px-6 py-4 text-center">
-                                <div class="text-xs font-mono text-gray-500 whitespace-nowrap">Ver.${ver}</div>
-                                <div class="mt-1 flex justify-center">${approvalBadge(approvalStatus)}</div>
-                            </td>
+                            ${versionStatusCell}
                             <td class="px-6 py-4 text-center">
                                 <div class="flex items-center justify-center gap-2">
-                                    <span class="material-symbols-outlined ${c.htmlUrl ? 'text-blue-500' : 'text-gray-300'}" title="HTML${c.htmlUrl ? '（登録済）' : '（未登録）'}" style="font-size:18px">code</span>
-                                    <span class="material-symbols-outlined ${c.pdfUrl ? 'text-red-400' : 'text-gray-300'}" title="版下PDF${c.pdfUrl ? '（登録済）' : '（未登録）'}" style="font-size:18px">picture_as_pdf</span>
-                                    <span class="material-symbols-outlined ${c.thumbnailUrl ? 'text-violet-500' : 'text-gray-300'}" title="サムネイル${c.thumbnailUrl ? '（登録済）' : '（未登録）'}" style="font-size:18px">image</span>
+                                    <span class="material-symbols-outlined ${matData.htmlUrl ? 'text-blue-500' : 'text-gray-300'}" title="HTML${matData.htmlUrl ? '（登録済）' : '（未登録）'}" style="font-size:18px">code</span>
+                                    <span class="material-symbols-outlined ${matData.pdfUrl ? 'text-red-400' : 'text-gray-300'}" title="版下PDF${matData.pdfUrl ? '（登録済）' : '（未登録）'}" style="font-size:18px">picture_as_pdf</span>
+                                    <span class="material-symbols-outlined ${matData.thumbnailUrl ? 'text-violet-500' : 'text-gray-300'}" title="サムネイル${matData.thumbnailUrl ? '（登録済）' : '（未登録）'}" style="font-size:18px">image</span>
                                 </div>
                             </td>
-                            <td class="px-6 py-4 text-sm text-center font-medium text-gray-700">${c.courses.length}</td>
+                            <td class="px-6 py-4 text-sm text-center font-medium text-gray-700">${coursesCount}</td>
                             <td class="px-6 py-4 text-sm text-center text-gray-500 whitespace-nowrap">${c.updatedAt}</td>
                             <td class="px-6 py-4 text-center">${statusBadge(c.status)}</td>
                             <td class="px-6 py-4 text-center relative">
@@ -809,17 +880,18 @@
                     document.getElementById('rejectionInputError').classList.remove('hidden');
                     return;
                 }
-                const course = courseMasterData.find(c => c.id === pendingRejectId);
-                if (course) {
-                    course.approvalStatus = 'rejected';
-                    // 同一 tkfCode の承認済行に棄却通知をセット
-                    const prevApproved = courseMasterData.find(c =>
-                        c.tkfCode === course.tkfCode && c.approvalStatus === 'approved'
-                    );
-                    if (prevApproved) {
-                        prevApproved.hasPendingRejection = true;
-                        prevApproved.rejectedVer         = course.ver ?? 1;
-                        prevApproved.rejectionComment    = comment;
+                const flyer = courseMasterData.find(c => c.id === pendingRejectId);
+                if (flyer) {
+                    if (flyer.draft) {
+                        // 改訂版の却下：ドラフトを保持し approvalStatus を unapproved に戻す
+                        flyer.draft.approvalStatus   = 'unapproved';
+                        flyer.draft.rejectionComment = comment;
+                        flyer.compositeStatus        = '改訂中';
+                    } else {
+                        // Ver.1 申請中の却下：未承認に戻す + rejectionComment を保存
+                        flyer.approvalStatus   = 'unapproved';
+                        flyer.rejectionComment = comment;
+                        flyer.compositeStatus  = '作成中';
                     }
                     filterData();
                 }
@@ -829,10 +901,18 @@
             // ── 棄却コメント確認モーダル管理 ────────────────────────
             const rejectionCommentModal = document.getElementById('rejectionCommentModal');
 
-            const openRejectionCommentModal = (data) => {
-                document.getElementById('rcCourseName').textContent    = data.name;
-                document.getElementById('rcRejectedVer').textContent   = `Ver.${data.rejectedVer}`;
-                document.getElementById('rcRejectionComment').textContent = data.rejectionComment || '';
+            const openRejectionCommentModal = (flyer) => {
+                let rejectedVer, rejectionComment;
+                if (flyer.draft && flyer.draft.rejectionComment) {
+                    rejectedVer      = flyer.draft.ver;
+                    rejectionComment = flyer.draft.rejectionComment;
+                } else {
+                    rejectedVer      = flyer.ver;
+                    rejectionComment = flyer.rejectionComment || '';
+                }
+                document.getElementById('rcCourseName').textContent       = flyer.name;
+                document.getElementById('rcRejectedVer').textContent      = `Ver.${rejectedVer}`;
+                document.getElementById('rcRejectionComment').textContent = rejectionComment;
                 rejectionCommentModal.classList.remove('hidden');
                 rejectionCommentModal.classList.add('flex');
             };
@@ -849,18 +929,20 @@
             });
 
             // ── モーダル管理 ────────────────────────────────────────
-            const modal       = document.getElementById('modal');
-            const modalTitle  = document.getElementById('modalTitle');
+            const modal      = document.getElementById('modal');
+            const modalTitle = document.getElementById('modalTitle');
 
-            let modalCourseRows = [];
-            let currentEditData = null; // 現在モーダルで開いているフライヤーデータ（承認・却下処理用）
+            let modalCourseRows    = [];
+            let currentFlyer       = null; // 現在モーダルで開いているフライヤー（tkf_code単位）
+            let currentEditData    = null; // 現在表示中のバージョンデータ（draft or 代表行）
+            let currentViewingDraft = false; // true = 改訂版を表示中
             let nextRid = 0;
             let mOrgCombobox = null;
             let courseTypeMode  = 'normal';
             let selectedTagIds = new Set();
             let activeTab      = 'basic';
             let currentIsIecWip   = false;
-            let currentIsReadOnly = false; // Vendor + 承認済の参照モード（タグのみ保存可）
+            let currentIsReadOnly = false;
 
             const showTab = (tabName) => {
                 activeTab = tabName;
@@ -896,8 +978,8 @@
 
             const showModeSection = (mode) => {
                 courseTypeMode = mode;
-                const normalSection   = document.getElementById('normalModeSection');
-                const optionsSection  = document.getElementById('optionsModeSection');
+                const normalSection  = document.getElementById('normalModeSection');
+                const optionsSection = document.getElementById('optionsModeSection');
                 if (mode === 'normal') {
                     normalSection.classList.remove('hidden');
                     optionsSection.classList.add('hidden');
@@ -952,7 +1034,6 @@
                 badge.classList.toggle('hidden', count === 0);
             };
 
-            // アコーディオンの開閉状態（カテゴリーキー → true=開）
             const accordionOpen = { target: false, genre: false, level: false, format: false, other: false };
 
             const renderStandardTags = () => {
@@ -1014,7 +1095,7 @@
                 }
                 emptyState.classList.add('hidden');
 
-                const ro = currentIsReadOnly; // 参照モード時は行内を全て非活性にする
+                const ro = currentIsReadOnly;
                 tbody.innerHTML = modalCourseRows.map((r, i) => `
                         <tr data-rid="${r._rid}">
                             <td class="px-3 py-2">
@@ -1050,20 +1131,57 @@
                         </tr>`).join('');
             };
 
-            const openModal = (data = null, forceReadOnly = false) => {
-                currentEditData   = data; // 承認・却下・申請ボタンから参照するため保持
-                const isNew  = !data;
+            // openModal: flyer = フライヤー全体オブジェクト（v2形式）/ forceViewApproved = 承認済版を強制表示
+            const openModal = (flyer = null, forceViewApproved = false) => {
+                currentFlyer = flyer;
+                const isNew  = !flyer;
                 const role   = getRole();
+
+                // どのバージョンを表示するか決定
+                const hasDraft       = !isNew && !!flyer.draft;
+                currentViewingDraft  = hasDraft && !forceViewApproved;
+                const data           = isNew ? null : (currentViewingDraft ? flyer.draft : flyer);
+                currentEditData      = data; // 承認・申請ボタン参照用（フライヤー自体は currentFlyer から）
+
+                // バージョン切替UI
+                const versionSwitchEl = document.getElementById('versionSwitch');
+                if (hasDraft && versionSwitchEl) {
+                    versionSwitchEl.classList.remove('hidden');
+                    versionSwitchEl.classList.add('flex');
+                    document.getElementById('draftVerLabel').textContent    = flyer.draft.ver;
+                    document.getElementById('approvedVerLabel').textContent = flyer.ver;
+                    const btnDraft    = document.getElementById('btnViewDraft');
+                    const btnApproved = document.getElementById('btnViewApproved');
+                    if (currentViewingDraft) {
+                        btnDraft.className    = 'px-3 py-1.5 bg-violet-600 text-white transition-colors';
+                        btnApproved.className = 'px-3 py-1.5 bg-white text-violet-600 hover:bg-violet-50 transition-colors border-l border-violet-200';
+                    } else {
+                        btnDraft.className    = 'px-3 py-1.5 bg-white text-violet-600 hover:bg-violet-50 transition-colors';
+                        btnApproved.className = 'px-3 py-1.5 bg-violet-600 text-white transition-colors border-l border-violet-200';
+                    }
+                } else if (versionSwitchEl) {
+                    versionSwitchEl.classList.add('hidden');
+                    versionSwitchEl.classList.remove('flex');
+                }
+
+                // 承認ステータス（表示中バージョン）
                 const approvalStatus = data?.approvalStatus ?? 'approved';
-                // Vendor + 承認済 → 参照モード（基本情報のみ編集不可、タグは保存可）
-                const isReadOnly = forceReadOnly || (!isNew && role !== 'iec' && approvalStatus === 'approved');
+
+                // 参照モード判定
+                // 承認済版を表示中（ドラフトが存在する場合の承認済版タブ）→ 常に参照
+                // Vendor + 承認済・申請中 → 参照（編集不可）
+                const isViewingApproved = hasDraft && !currentViewingDraft;
+                const isReadOnly = !isNew && (
+                    isViewingApproved ||
+                    (role !== 'iec' && approvalStatus !== 'unapproved')
+                );
                 currentIsReadOnly = isReadOnly;
 
                 // タイトル
                 let icon, label;
-                if (isNew)         { icon = 'library_add'; label = 'コース新規登録'; }
+                if (isNew)           { icon = 'library_add'; label = 'コース新規登録'; }
                 else if (isReadOnly) { icon = 'visibility';  label = 'コース参照'; }
-                else               { icon = 'edit';         label = 'コース編集'; }
+                else                 { icon = 'edit';        label = 'コース編集'; }
                 modalTitle.innerHTML = `
                     <span class="material-symbols-outlined text-blue-600 icon-md">${icon}</span>
                     ${label}`;
@@ -1075,24 +1193,19 @@
                 const btnRejectInModal  = document.getElementById('btnRejectInModal');
                 const btnApplyInModal   = document.getElementById('btnApplyInModal');
 
-                // 一旦全て非表示にリセット
                 btnApproveInModal.classList.add('hidden');
                 btnRejectInModal.classList.add('hidden');
                 btnApplyInModal.classList.add('hidden');
                 btnSave?.classList.remove('hidden');
                 btnClose.textContent = 'キャンセル';
 
-                // 保存ボタンのラベル
                 if (btnSave) btnSave.textContent = isReadOnly ? 'タグ変更を保存する' : '保存する';
 
-                // 承認系ボタンの表示制御（参照モード時は全て非表示のまま）
                 if (!isReadOnly) {
                     if (!isNew && role === 'iec' && ['unapproved', 'pending'].includes(approvalStatus)) {
-                        // IEC編集・未承認/申請中：承認・却下ボタンを追加表示
                         btnApproveInModal.classList.remove('hidden');
                         btnRejectInModal.classList.remove('hidden');
                     } else if (!isNew && role !== 'iec' && approvalStatus === 'unapproved') {
-                        // Vendor編集・未承認：承認申請ボタンを追加表示
                         btnApplyInModal.classList.remove('hidden');
                     }
                 }
@@ -1111,15 +1224,12 @@
 
                 // 参照モード：フォームフィールドを readonly にする
                 const setFormReadonly = (readonly) => {
-                    // テキスト系フィールドを readonly
                     ['mName', 'mHanCode', 'mNote', 'mNormalPrice', 'mNormalPeriod', 'mHtmlUrl'].forEach(id => {
                         const el = document.getElementById(id);
                         if (!el) return;
                         if (readonly) el.setAttribute('readonly', '');
                         else          el.removeAttribute('readonly');
                     });
-                    // チェックボックス・ファイルアップロード・削除ボタン・オプション追加ボタンを disabled
-                    // ※ btnToggleFiles（アコーディオン開閉）は参照モードでも開閉可能とする
                     ['mExclusiveFlg',
                      'mHtmlZipFile', 'mHtmlZipClear',
                      'mPdfFile',     'mPdfClear',
@@ -1129,7 +1239,6 @@
                         if (!el) return;
                         el.disabled = readonly;
                     });
-                    // セグメントコントロール（受講形態タイプ切替）
                     const sc = document.getElementById('courseTypeControl');
                     if (sc) sc.style.pointerEvents = readonly ? 'none' : '';
                 };
@@ -1137,13 +1246,13 @@
 
                 // 団体コンボ（IECのみ）
                 if (mOrgCombobox) {
-                    mOrgCombobox.setValue(data?.eduCode || '');
-                    mOrgCombobox.setDisabled(!isNew); // 編集時は変更不可
+                    mOrgCombobox.setValue(flyer?.eduCode || '');
+                    mOrgCombobox.setDisabled(!isNew);
                 }
 
-                // フォーム値セット
-                document.getElementById('mName').value    = data?.name    || '';
-                document.getElementById('mHanCode').value = data?.hanCode || '';
+                // フォーム値セット（表示中バージョンのデータを使用）
+                document.getElementById('mName').value    = data?.name    || flyer?.name    || '';
+                document.getElementById('mHanCode').value = data?.hanCode || flyer?.hanCode || '';
                 document.getElementById('mNote').value    = data?.note    || '';
                 document.getElementById('mExclusiveFlg').checked = data?.exclusiveFlg || false;
 
@@ -1180,7 +1289,7 @@
                 }
 
                 // サムネイルプレビュー初期化
-                const previewEl = document.getElementById('mThumbnailPreview');
+                const previewEl  = document.getElementById('mThumbnailPreview');
                 const previewImg = previewEl?.querySelector('img');
                 if (data?.thumbnailUrl && previewEl && previewImg) {
                     previewImg.src = data.thumbnailUrl;
@@ -1207,26 +1316,27 @@
                 showTab('basic');
 
                 // IEC自社フライヤー判定（工事中プレースホルダー制御）
-                applyIecWip(data);
+                applyIecWip(flyer);
 
-                // 受講形態モード判定とオプションコピー
                 // 添付ファイルアコーディオン初期化
                 const hasFiles = !!(data?.htmlUrl || data?.pdfUrl || data?.thumbnailUrl);
                 toggleFileAccordion(hasFiles);
                 updateFileCountBadge();
 
+                // 受講形態モード
                 if (data) {
-                    const isNormalMode = data.courses.length === 1 && !data.courses[0].name;
+                    const courses = data.courses || flyer?.courses || [];
+                    const isNormalMode = courses.length === 1 && !courses[0].name;
                     const mode = isNormalMode ? 'normal' : 'options';
                     setModeActive(mode);
                     if (isNormalMode) {
-                        document.getElementById('mNormalPrice').value  = data.courses[0].price  || '';
-                        document.getElementById('mNormalPeriod').value = data.courses[0].period || '';
+                        document.getElementById('mNormalPrice').value  = courses[0].price  || '';
+                        document.getElementById('mNormalPeriod').value = courses[0].period || '';
                         modalCourseRows = [];
                     } else {
                         document.getElementById('mNormalPrice').value  = '';
                         document.getElementById('mNormalPeriod').value = '';
-                        modalCourseRows = data.courses.map((c, i) => ({ ...c, _rid: i }));
+                        modalCourseRows = courses.map((c, i) => ({ ...c, _rid: i }));
                     }
                 } else {
                     setModeActive('normal');
@@ -1236,8 +1346,8 @@
                 }
                 nextRid = modalCourseRows.length;
 
-                // 標準タグ初期化（選択済みタグを含むカテゴリーは自動で開く）
-                selectedTagIds = new Set(data?.standardTagIds || []);
+                // 標準タグ（flyer単位で管理）
+                selectedTagIds = new Set(flyer?.standardTagIds || []);
                 const categories = ['target', 'genre', 'level', 'format', 'other'];
                 categories.forEach(cat => {
                     accordionOpen[cat] = STANDARD_TAGS.some(t => t.category === cat && selectedTagIds.has(t.id));
@@ -1250,13 +1360,14 @@
 
             const closeModal = () => {
                 modal.classList.add('hidden');
+                currentFlyer      = null;
                 currentEditData   = null;
                 currentIsReadOnly = false;
             };
 
             // ── イベント：一覧 ──────────────────────────────────────
             searchInput.addEventListener('input', filterData);
-            if (showInactive)  showInactive.addEventListener('change', filterData);
+            if (showInactive) showInactive.addEventListener('change', filterData);
 
             btnPrev.addEventListener('click', () => { if (currentPage > 1) { currentPage--; renderList(); } });
             btnNext.addEventListener('click', () => {
@@ -1292,8 +1403,19 @@
                 if (cancelApplyBtn) {
                     e.preventDefault();
                     closeAllMenus();
-                    const course = courseMasterData.find(c => c.id === parseInt(cancelApplyBtn.dataset.id, 10));
-                    if (course) { course.approvalStatus = 'unapproved'; filterData(); }
+                    const id    = parseInt(cancelApplyBtn.dataset.id, 10);
+                    const flyer = courseMasterData.find(c => c.id === id);
+                    if (flyer) {
+                        if (flyer.draft && flyer.draft.approvalStatus === 'pending') {
+                            // 改訂申請中 → 改訂中
+                            flyer.draft.approvalStatus = 'unapproved';
+                        } else {
+                            // 申請中 → 未承認
+                            flyer.approvalStatus = 'unapproved';
+                        }
+                        updateCompositeStatus(flyer);
+                        filterData();
+                    }
                     return;
                 }
                 // バージョンアップ申請
@@ -1301,55 +1423,51 @@
                 if (versionUpBtn) {
                     e.preventDefault();
                     closeAllMenus();
-                    const id     = parseInt(versionUpBtn.dataset.id, 10);
-                    const course = courseMasterData.find(c => c.id === id);
-                    if (course) {
-                        // 同一 tkfCode に申請中・未承認が既にある場合はエラー
-                        const existing = courseMasterData.find(c =>
-                            c.tkfCode === course.tkfCode &&
-                            ['unapproved', 'pending'].includes(c.approvalStatus ?? '')
-                        );
-                        if (existing) {
-                            alert('このコースにはすでに申請中のバージョンがあります。');
-                            return;
-                        }
-                        const newVer = {
-                            ...course,
+                    const id    = parseInt(versionUpBtn.dataset.id, 10);
+                    const flyer = courseMasterData.find(c => c.id === id);
+                    if (flyer && !flyer.draft) {
+                        flyer.draft = {
                             id: Date.now(),
-                            ver: (course.ver ?? 1) + 1,
+                            ver: flyer.ver + 1,
                             approvalStatus: 'unapproved',
-                            updatedAt: new Date().toLocaleDateString('ja-JP', { year: 'numeric', month: '2-digit', day: '2-digit' }).replace(/\//g, '/'),
-                            hasPendingRejection: false,
-                            rejectedVer: undefined,
-                            rejectionComment: undefined,
+                            note: flyer.note,
+                            htmlUrl: flyer.htmlUrl,
+                            pdfUrl: flyer.pdfUrl,
+                            zipUrl: flyer.zipUrl,
+                            thumbnailUrl: flyer.thumbnailUrl,
+                            updatedAt: new Date().toLocaleDateString('ja-JP'),
+                            courses: flyer.courses.map(c => ({ ...c })),
                         };
-                        courseMasterData.push(newVer);
+                        updateCompositeStatus(flyer);
                         filterData();
-                        openModal(newVer);
+                        openModal(flyer); // ドラフトを開く
                     }
                     return;
                 }
+                // 編集する（メニューから）
                 const openBtn = e.target.closest('.js-open-modal');
                 if (openBtn) {
                     e.preventDefault();
                     closeAllMenus();
-                    const id   = parseInt(openBtn.dataset.id, 10);
-                    const data = courseMasterData.find(c => c.id === id);
-                    openModal(data);
+                    const id    = parseInt(openBtn.dataset.id, 10);
+                    const flyer = courseMasterData.find(c => c.id === id);
+                    if (flyer) openModal(flyer);
                     return;
                 }
+                // 有効/無効切替
                 const toggleBtn = e.target.closest('.js-toggle-status');
                 if (toggleBtn) {
                     e.preventDefault();
                     closeAllMenus();
-                    const id     = parseInt(toggleBtn.dataset.id, 10);
-                    const course = courseMasterData.find(c => c.id === id);
-                    if (course) {
-                        course.status = course.status === 'Active' ? 'Inactive' : 'Active';
+                    const id    = parseInt(toggleBtn.dataset.id, 10);
+                    const flyer = courseMasterData.find(c => c.id === id);
+                    if (flyer) {
+                        flyer.status = flyer.status === 'Active' ? 'Inactive' : 'Active';
                         filterData();
                     }
                     return;
                 }
+                // 削除する
                 const deleteBtn = e.target.closest('.js-delete-action');
                 if (deleteBtn) {
                     e.preventDefault();
@@ -1358,12 +1476,12 @@
                     deleteDialog.classList.remove('hidden');
                     return;
                 }
-
+                // 行クリック → モーダルを開く（ドラフトがあればドラフトを先に表示）
                 const row = e.target.closest('tr[data-id]');
                 if (row && !e.target.closest('.menu-trigger') && !e.target.closest('.menu')) {
-                    const id   = parseInt(row.dataset.id, 10);
-                    const data = courseMasterData.find(c => c.id === id);
-                    if (data) openModal(data); // openModal 内で参照モード判定
+                    const id    = parseInt(row.dataset.id, 10);
+                    const flyer = courseMasterData.find(c => c.id === id);
+                    if (flyer) openModal(flyer);
                 }
             });
 
@@ -1384,6 +1502,14 @@
             document.getElementById('btnCloseModalHeader').addEventListener('click', closeModal);
             document.getElementById('btnCloseModal').addEventListener('click', closeModal);
             modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
+
+            // バージョン切替ボタン
+            document.getElementById('btnViewDraft')?.addEventListener('click', () => {
+                if (currentFlyer) openModal(currentFlyer, false);
+            });
+            document.getElementById('btnViewApproved')?.addEventListener('click', () => {
+                if (currentFlyer) openModal(currentFlyer, true);
+            });
 
             document.getElementById('mThumbnailClear')?.addEventListener('click', () => {
                 document.getElementById('mThumbnailFile').value = '';
@@ -1419,7 +1545,6 @@
                 updateFileCountBadge();
             });
 
-            // ZIP選択時：HTML URLを自動生成（新規登録はプレースホルダー埋め込み）
             document.getElementById('mHtmlZipFile').addEventListener('change', e => {
                 const file = e.target.files[0];
                 const htmlUrlInput = document.getElementById('mHtmlUrl');
@@ -1429,9 +1554,8 @@
                     htmlUrlInput.removeAttribute('readonly');
                     return;
                 }
-                const dummyHtmlFileName = 'index.html'; // モック固定値
-                const flyerCode = '@FLYER_CODE';        // 新規登録時はプレースホルダー
-                htmlUrlInput.value = `{URL_ROOT}/${flyerCode}/html/${dummyHtmlFileName}`;
+                const flyerCode = '@FLYER_CODE';
+                htmlUrlInput.value = `{URL_ROOT}/${flyerCode}/html/index.html`;
                 htmlUrlInput.setAttribute('readonly', '');
                 updateFileCountBadge();
             });
@@ -1448,7 +1572,6 @@
                 renderModalCourseRows();
             });
 
-            // 入力中の値をmodalCourseRowsに同期する（移動・削除前に呼ぶ）
             const syncInputValues = () => {
                 document.getElementById('mCourseRowsBody').querySelectorAll('tr[data-rid]').forEach(tr => {
                     const rid = parseInt(tr.dataset.rid, 10);
@@ -1505,73 +1628,78 @@
 
             document.getElementById('btnSave').addEventListener('click', () => {
                 const name    = document.getElementById('mName').value.trim();
-                const hanCode = document.getElementById('mHanCode').value.trim();
                 const role    = getRole();
                 if (!currentIsIecWip && !currentIsReadOnly) {
-                if (role === 'iec' && mOrgCombobox && !mOrgCombobox.getValue()) {
-                    alert('団体を選択してください。');
-                    return;
-                }
-                if (!name) {
-                    alert('コース名は必須です。');
-                    return;
-                }
-                if (courseTypeMode === 'normal') {
-                    const price  = document.getElementById('mNormalPrice').value;
-                    const period = document.getElementById('mNormalPeriod').value;
-                    if (!price || Number(price) < 1) {
-                        alert('受講料は1以上の整数で入力してください。');
+                    if (role === 'iec' && mOrgCombobox && !mOrgCombobox.getValue()) {
+                        alert('団体を選択してください。');
                         return;
                     }
-                    if (!period || Number(period) < 1) {
-                        alert('受講期間は1以上の整数で入力してください。');
+                    if (!name) {
+                        alert('コース名は必須です。');
                         return;
                     }
-                } else {
-                    syncInputValues();
-                    if (modalCourseRows.length === 0) {
-                        alert('オプションを1件以上登録してください。');
-                        return;
-                    }
-                    for (let i = 0; i < modalCourseRows.length; i++) {
-                        const r = modalCourseRows[i];
-                        if (!r.name || !r.name.trim()) {
-                            alert(`オプション名を入力してください。（${i + 1}行目）`);
+                    if (courseTypeMode === 'normal') {
+                        const price  = document.getElementById('mNormalPrice').value;
+                        const period = document.getElementById('mNormalPeriod').value;
+                        if (!price || Number(price) < 1) {
+                            alert('受講料は1以上の整数で入力してください。');
                             return;
                         }
-                        if (!r.price || Number(r.price) < 1) {
-                            alert(`価格は1以上の整数で入力してください。（${i + 1}行目）`);
+                        if (!period || Number(period) < 1) {
+                            alert('受講期間は1以上の整数で入力してください。');
                             return;
                         }
-                        if (!r.period || Number(r.period) < 1) {
-                            alert(`受講期間は1以上の整数で入力してください。（${i + 1}行目）`);
+                    } else {
+                        syncInputValues();
+                        if (modalCourseRows.length === 0) {
+                            alert('オプションを1件以上登録してください。');
+                            return;
+                        }
+                        for (let i = 0; i < modalCourseRows.length; i++) {
+                            const r = modalCourseRows[i];
+                            if (!r.name || !r.name.trim()) { alert(`オプション名を入力してください。（${i + 1}行目）`); return; }
+                            if (!r.price || Number(r.price) < 1) { alert(`価格は1以上の整数で入力してください。（${i + 1}行目）`); return; }
+                            if (!r.period || Number(r.period) < 1) { alert(`受講期間は1以上の整数で入力してください。（${i + 1}行目）`); return; }
+                        }
+                        const names = modalCourseRows.map(r => (r.name || '').trim()).filter(n => n);
+                        if (new Set(names).size !== names.length) {
+                            alert('同じオプション名が複数登録されています。');
                             return;
                         }
                     }
-                    const names = modalCourseRows.map(r => (r.name || '').trim()).filter(n => n);
-                    if (new Set(names).size !== names.length) {
-                        alert('同じオプション名が複数登録されています。');
-                        return;
-                    }
                 }
-                } // end if (!currentIsIecWip && !currentIsReadOnly)
                 alert('（モック）保存しました。');
                 closeModal();
             });
 
             // ── フッター：承認する ───────────────────────────────
             document.getElementById('btnApproveInModal')?.addEventListener('click', () => {
-                if (currentEditData) {
-                    currentEditData.approvalStatus = 'approved';
-                    filterData();
+                if (!currentFlyer) { closeModal(); return; }
+                if (currentFlyer.draft) {
+                    // ドラフトを承認済バージョンに昇格
+                    const d = currentFlyer.draft;
+                    currentFlyer.ver          = d.ver;
+                    currentFlyer.approvalStatus = 'approved';
+                    currentFlyer.note         = d.note;
+                    currentFlyer.htmlUrl      = d.htmlUrl;
+                    currentFlyer.pdfUrl       = d.pdfUrl;
+                    currentFlyer.zipUrl       = d.zipUrl;
+                    currentFlyer.thumbnailUrl = d.thumbnailUrl;
+                    currentFlyer.courses      = d.courses;
+                    currentFlyer.updatedAt    = d.updatedAt;
+                    currentFlyer.draft        = null;
+                } else {
+                    currentFlyer.approvalStatus = 'approved';
                 }
+                updateCompositeStatus(currentFlyer);
+                filterData();
                 closeModal();
             });
 
             // ── フッター：却下する（エリアE モーダルを開く）────────
             document.getElementById('btnRejectInModal')?.addEventListener('click', () => {
-                if (currentEditData) {
-                    const id = currentEditData.id;
+                if (currentFlyer) {
+                    const id = currentFlyer.id;
                     closeModal();
                     openRejectionInputModal(id);
                 }
@@ -1579,10 +1707,18 @@
 
             // ── フッター：承認申請する ───────────────────────────
             document.getElementById('btnApplyInModal')?.addEventListener('click', () => {
-                if (currentEditData) {
-                    currentEditData.approvalStatus = 'pending';
-                    filterData();
+                if (!currentFlyer) { closeModal(); return; }
+                if (currentFlyer.draft) {
+                    // 改訂中 → 改訂申請中（棄却コメントをクリア）
+                    currentFlyer.draft.approvalStatus   = 'pending';
+                    currentFlyer.draft.rejectionComment = undefined;
+                } else {
+                    // 未承認 → 申請中（棄却コメントをクリア）
+                    currentFlyer.approvalStatus   = 'pending';
+                    currentFlyer.rejectionComment = undefined;
                 }
+                updateCompositeStatus(currentFlyer);
+                filterData();
                 closeModal();
             });
 
@@ -1629,7 +1765,6 @@
                     filterApprovalStatus = '';
                     filterData();
                     if (!modal.classList.contains('hidden')) {
-                        applyFieldReadonly();
                         renderModalCourseRows();
                     }
                 }, 0);

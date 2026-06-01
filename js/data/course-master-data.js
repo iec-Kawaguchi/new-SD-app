@@ -1,15 +1,24 @@
-// m_flyer_tk + m_course_flyer_tk のモックデータ
-// courses[] は m_course_flyer_tk レコードに相当
+// m_flyer_tk + m_course_flyer_tk のモックデータ（v2: 複合ステータス対応）
 //
-// approvalStatus: 'unapproved'=未承認 / 'pending'=申請中 / 'approved'=承認済 / 'rejected'=棄却
-// ver: tkf_ver に対応
-// hasPendingRejection: 棄却バージョンが存在し、より新しい未承認バージョンが存在しない場合 true
-// rejectedVer / rejectionComment: 棄却コメント確認モーダル（エリアG）用
+// 各エントリは tkf_code 単位で1件（バージョンをまたいで統合）
+//
+// compositeStatus:
+//   '未承認'       = Ver.1 未承認のみ
+//   '申請中'       = Ver.N 申請中のみ（承認済なし）
+//   '承認済'       = Ver.N 承認済のみ
+//   '改訂中'       = Ver.N 承認済 + Ver.N+1 未承認
+//   '改訂申請中'   = Ver.N 承認済 + Ver.N+1 申請中
+//   '棄却（改訂）' = Ver.N 承認済 + Ver.N+1 棄却
+//
+// ver / approvalStatus / courses / updatedAt 等は代表行（承認済行、なければ唯一行）のデータ
+// draft: 改訂中バージョンが存在する場合のみ設定（未承認/申請中の最新バージョン行）
+// status: フライヤー全体（tkf_code単位）の有効/無効
+// standardTagIds: tkf_code 単位で管理（バージョンと独立）
 
 export const courseMasterData = [
 
   // ── IEC（幹事団体）────────────────────────────────────────────
-  // IECコースは承認フロー対象外（approved 固定）
+  // IECコースは承認フロー対象外（approved 固定・バージョンアップ申請不要）
   {
     id: 1,
     tkfCode: "TKF-IEC-001",
@@ -17,6 +26,7 @@ export const courseMasterData = [
     hanCode: "IEC-OR-001",
     eduCode: "IEC",
     org: "IEC（幹事団体）",
+    compositeStatus: "承認済",
     ver: 1,
     approvalStatus: "approved",
     status: "Active",
@@ -30,10 +40,11 @@ export const courseMasterData = [
       { sortNo: 1, name: "", price: 5500, period: 1 },
     ],
     standardTagIds: [2, 7, 10],
+    draft: null,
   },
 
   // ── 産業能率大学 (EDU001) ─────────────────────────────────────
-  // id:101 承認済 ver:1（現行バージョン）。id:105 に新バージョン（未承認 ver:2）あり
+  // 複合ステータス「改訂中」: Ver.1 承認済 + Ver.2 未承認（バージョンアップ申請後）
   {
     id: 101,
     tkfCode: "TKF-SAN-001",
@@ -41,6 +52,8 @@ export const courseMasterData = [
     hanCode: "SAN-BM-001",
     eduCode: "EDU001",
     org: "産業能率大学",
+    compositeStatus: "改訂中",
+    // 代表行（承認済 Ver.1）
     ver: 1,
     approvalStatus: "approved",
     status: "Active",
@@ -54,30 +67,25 @@ export const courseMasterData = [
       { sortNo: 1, name: "郵便版", price: 17600, period: 2 },
       { sortNo: 2, name: "WEB版",  price: 17600, period: 2 },
     ],
+    // 改訂中バージョン（未承認 Ver.2）
+    draft: {
+      id: 105,
+      ver: 2,
+      approvalStatus: "unapproved",
+      note: "2026年版に改訂。社会人1〜3年目向け。（改訂作業中）",
+      htmlUrl:      "https://example.com/courses/san-bm-001",
+      pdfUrl:       "",
+      zipUrl:       "",
+      thumbnailUrl: "https://example.com/thumbnails/san-bm-001.jpg",
+      updatedAt: "2026/05/10",
+      courses: [
+        { sortNo: 1, name: "郵便版", price: 17600, period: 2 },
+        { sortNo: 2, name: "WEB版",  price: 17600, period: 2 },
+      ],
+    },
   },
-  // id:105 バージョンアップ申請後の新バージョン行（未承認 ver:2）。id:101 と同一 tkfCode
-  {
-    id: 105,
-    tkfCode: "TKF-SAN-001",
-    name: "新入社員のためのビジネスマナー基礎",
-    hanCode: "SAN-BM-001",
-    eduCode: "EDU001",
-    org: "産業能率大学",
-    ver: 2,
-    approvalStatus: "unapproved",
-    status: "Active",
-    note: "2026年版に改訂。社会人1〜3年目向け。（改訂作業中）",
-    htmlUrl:      "https://example.com/courses/san-bm-001",
-    pdfUrl:       "",
-    zipUrl:       "",
-    thumbnailUrl: "https://example.com/thumbnails/san-bm-001.jpg",
-    updatedAt: "2026/05/10",
-    courses: [
-      { sortNo: 1, name: "郵便版", price: 17600, period: 2 },
-      { sortNo: 2, name: "WEB版",  price: 17600, period: 2 },
-    ],
-  },
-  // id:102 申請中 ver:1（IEC の承認待ち）
+
+  // 複合ステータス「申請中」: Ver.1 申請中のみ（初回IEC承認待ち）
   {
     id: 102,
     tkfCode: "TKF-SAN-002",
@@ -85,6 +93,7 @@ export const courseMasterData = [
     hanCode: "SAN-FN-002",
     eduCode: "EDU001",
     org: "産業能率大学",
+    compositeStatus: "申請中",
     ver: 1,
     approvalStatus: "pending",
     status: "Active",
@@ -97,8 +106,10 @@ export const courseMasterData = [
     courses: [
       { sortNo: 1, name: "標準版", price: 23100, period: 3 },
     ],
+    draft: null,
   },
-  // id:103 未承認 ver:1・無効（まだ承認申請前）
+
+  // 複合ステータス「作成中」: Ver.1 未承認・無効（まだ承認申請前）
   {
     id: 103,
     tkfCode: "TKF-SAN-003",
@@ -106,6 +117,7 @@ export const courseMasterData = [
     hanCode: "SAN-HR-003",
     eduCode: "EDU001",
     org: "産業能率大学",
+    compositeStatus: "作成中",
     ver: 1,
     approvalStatus: "unapproved",
     status: "Inactive",
@@ -118,8 +130,12 @@ export const courseMasterData = [
     courses: [
       { sortNo: 1, name: "標準版", price: 23650, period: 3 },
     ],
+    draft: null,
   },
-  // id:104 承認済 ver:1。ver:2 が棄却されたため棄却バッジ表示（hasPendingRejection: true）
+
+  // 複合ステータス「改訂中」（棄却後）: Ver.1 承認済 + Ver.2 棄却されて未承認に戻った状態
+  // 棄却はアクション。結果として draft.approvalStatus = 'unapproved' に戻り、compositeStatus = '改訂中'。
+  // draft.rejectionComment に棄却コメントを保持する（再申請時にクリア）。
   {
     id: 104,
     tkfCode: "TKF-SAN-004",
@@ -127,6 +143,8 @@ export const courseMasterData = [
     hanCode: "SAN-DT-004",
     eduCode: "EDU001",
     org: "産業能率大学",
+    compositeStatus: "改訂中",
+    // 代表行（承認済 Ver.1）
     ver: 1,
     approvalStatus: "approved",
     status: "Active",
@@ -136,13 +154,52 @@ export const courseMasterData = [
     zipUrl:       "",
     thumbnailUrl: "https://example.com/thumbnails/san-dt-004.jpg",
     updatedAt: "2026/03/05",
-    // 棄却バッジ表示用（未確認事項 #14 対応）
-    hasPendingRejection: true,
-    rejectedVer: 2,
-    rejectionComment: "版下PDFが未添付です。申請前に必ず版下PDFをアップロードしてください。",
     courses: [
       { sortNo: 1, name: "WEB版", price: 25300, period: 3 },
     ],
+    // 棄却後に未承認へ戻った改訂版（棄却コメントを保持）
+    draft: {
+      id: 106,
+      ver: 2,
+      approvalStatus: "unapproved",
+      rejectionComment: "版下PDFが未添付です。申請前に必ず版下PDFをアップロードしてください。",
+      note: "",
+      htmlUrl:      "https://example.com/courses/san-dt-004",
+      pdfUrl:       "",
+      zipUrl:       "",
+      thumbnailUrl: "https://example.com/thumbnails/san-dt-004.jpg",
+      updatedAt: "2026/04/20",
+      courses: [
+        { sortNo: 1, name: "WEB版", price: 25300, period: 3 },
+      ],
+    },
+  },
+
+  // 複合ステータス「承認済」: Ver.1 承認済・バージョンアップ申請フローの確認用
+  // Vendorロールで「バージョンアップ申請」→ 改訂版作成 → 承認申請 → IEC承認 の一連の流れを確認できる
+  {
+    id: 107,
+    tkfCode: "TKF-SAN-005",
+    name: "グローバル人材育成のための異文化コミュニケーション",
+    hanCode: "SAN-GC-005",
+    eduCode: "EDU001",
+    org: "産業能率大学",
+    compositeStatus: "承認済",
+    ver: 1,
+    approvalStatus: "approved",
+    status: "Active",
+    note: "海外拠点との協働経験者向け。ケーススタディ演習あり。",
+    htmlUrl:      "https://example.com/courses/san-gc-005",
+    pdfUrl:       "https://example.com/pdfs/san-gc-005.pdf",
+    zipUrl:       "",
+    thumbnailUrl: "https://example.com/thumbnails/san-gc-005.jpg",
+    updatedAt: "2026/04/15",
+    courses: [
+      { sortNo: 1, name: "通常版",         price: 26400, period: 3 },
+      { sortNo: 2, name: "ケーススタディ版", price: 30800, period: 4 },
+    ],
+    standardTagIds: [1, 6, 10],
+    draft: null,
   },
 
   // ── JMAM (EDU002) ─────────────────────────────────────────────
@@ -153,6 +210,7 @@ export const courseMasterData = [
     hanCode: "JMM-PC-001",
     eduCode: "EDU002",
     org: "JMAM",
+    compositeStatus: "承認済",
     ver: 1,
     approvalStatus: "approved",
     status: "Active",
@@ -165,6 +223,7 @@ export const courseMasterData = [
     courses: [
       { sortNo: 1, name: "WEB版", price: 18920, period: 3 },
     ],
+    draft: null,
   },
   {
     id: 202,
@@ -173,6 +232,7 @@ export const courseMasterData = [
     hanCode: "JMM-LM-002",
     eduCode: "EDU002",
     org: "JMAM",
+    compositeStatus: "承認済",
     ver: 1,
     approvalStatus: "approved",
     status: "Active",
@@ -186,7 +246,9 @@ export const courseMasterData = [
       { sortNo: 1, name: "通常版",   price: 18700, period: 2 },
       { sortNo: 2, name: "演習追加版", price: 21450, period: 3 },
     ],
+    draft: null,
   },
+  // Ver.2 承認済（過去にバージョンアップ申請→承認済みのフライヤー）
   {
     id: 203,
     tkfCode: "TKF-JMM-003",
@@ -194,6 +256,7 @@ export const courseMasterData = [
     hanCode: "JMM-SL-003",
     eduCode: "EDU002",
     org: "JMAM",
+    compositeStatus: "承認済",
     ver: 2,
     approvalStatus: "approved",
     status: "Active",
@@ -207,6 +270,7 @@ export const courseMasterData = [
       { sortNo: 1, name: "通常版",       price: 20900, period: 3 },
       { sortNo: 2, name: "ロールプレイ版", price: 24200, period: 4 },
     ],
+    draft: null,
   },
 
   // ── JTEX (EDU003) ──────────────────────────────────────────────
@@ -217,6 +281,7 @@ export const courseMasterData = [
     hanCode: "JTX-MK-001",
     eduCode: "EDU003",
     org: "JTEX",
+    compositeStatus: "承認済",
     ver: 1,
     approvalStatus: "approved",
     status: "Inactive",
@@ -230,6 +295,7 @@ export const courseMasterData = [
       { sortNo: 1, name: "通常版",         price: 21450, period: 3 },
       { sortNo: 2, name: "ケーススタディ版", price: 24640, period: 4 },
     ],
+    draft: null,
   },
   {
     id: 302,
@@ -238,6 +304,7 @@ export const courseMasterData = [
     hanCode: "JTX-DX-002",
     eduCode: "EDU003",
     org: "JTEX",
+    compositeStatus: "承認済",
     ver: 1,
     approvalStatus: "approved",
     status: "Active",
@@ -251,6 +318,7 @@ export const courseMasterData = [
       { sortNo: 1, name: "WEB版",   price: 24200, period: 3 },
       { sortNo: 2, name: "演習付き版", price: 27500, period: 4 },
     ],
+    draft: null,
   },
   {
     id: 303,
@@ -259,6 +327,7 @@ export const courseMasterData = [
     hanCode: "JTX-CP-003",
     eduCode: "EDU003",
     org: "JTEX",
+    compositeStatus: "承認済",
     ver: 1,
     approvalStatus: "approved",
     status: "Active",
@@ -271,5 +340,6 @@ export const courseMasterData = [
     courses: [
       { sortNo: 1, name: "標準版", price: 22000, period: 3 },
     ],
+    draft: null,
   },
 ];

@@ -13,19 +13,34 @@
 			/* トグル用スタイル (Custom Elementsが未ロードの場合のフォールバック含む) */
 			custom-toggle { display: inline-block; }
 		</style>
+		<script src="../js/modal-readonly.js"></script>
 	</head>
 	<body class="bg-gray-50 text-gray-900 antialiased">
 	<div class="min-h-dvh flex flex-col">
 		<header class="sticky top-0 z-10 bg-white/95 backdrop-blur-sm border-b border-gray-100 px-6 py-4">
-			<div class="flex items-center gap-2 mb-1">
-				<span class="material-symbols-outlined text-blue-600">payments</span>
-				<h1 class="text-lg font-bold text-gray-800 tracking-tight">料金確認依頼</h1>
+			<div class="flex items-center justify-between">
+				<div>
+					<div class="flex items-center gap-2 mb-1">
+						<span class="material-symbols-outlined text-blue-600">payments</span>
+						<h1 class="text-lg font-bold text-gray-800 tracking-tight">料金確認依頼</h1>
+					</div>
+					<p class="text-xs text-gray-500 ml-8">参加団体への料金確認依頼書を作成します。</p>
+				</div>
+				<!-- モード切替（モックのみ） -->
+				<div class="relative">
+					<select id="mode-select" class="appearance-none pl-3 pr-8 py-1.5 rounded-md border border-gray-300 bg-gray-50 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer">
+						<option value="send">送信モード</option>
+						<option value="readonly">参照モード</option>
+					</select>
+					<span class="material-symbols-outlined absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 text-sm pointer-events-none">expand_more</span>
+				</div>
 			</div>
-			<p class="text-xs text-gray-500 ml-8">参加団体への料金確認依頼書を作成します。</p>
 		</header>
 
 		<main class="flex-1 px-6 py-6 space-y-8 pb-32">
-			<section class="space-y-3">
+
+			<!-- エリアB：対象団体（送信モード） -->
+			<section data-send-section class="space-y-3">
 				<h2 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2 ml-1">対象団体</h2>
 
 				<div class="group relative flex flex-col md:flex-row md:items-center gap-4 rounded-xl bg-white border border-gray-200 shadow-sm px-5 py-4 hover:shadow-md hover:border-blue-200 transition-all duration-200">
@@ -71,31 +86,31 @@
 				</div>
 
 				<div class="group relative flex flex-col md:flex-row md:items-center gap-4 rounded-xl bg-white border border-gray-200 shadow-sm px-5 py-4 hover:shadow-md hover:border-violet-200 transition-all duration-200">
-				<div class="absolute left-0 top-3 bottom-3 w-1 bg-violet-500 rounded-r opacity-0 group-hover:opacity-100 transition-opacity"></div>
-				
-				<div class="flex items-center gap-4 flex-1 min-w-0">
-					<div class="shrink-0">
-					<span class="inline-grid place-items-center size-10 rounded-full bg-violet-50 text-violet-600 font-bold text-sm border border-violet-100 shadow-sm">デ</span>
-					</div>
+					<div class="absolute left-0 top-3 bottom-3 w-1 bg-violet-500 rounded-r opacity-0 group-hover:opacity-100 transition-opacity"></div>
 					<div class="flex items-center gap-4 flex-1 min-w-0">
-						<div class="min-w-0 flex-1 flex flex-col gap-1.5">
-							<p class="text-sm font-bold text-gray-800 truncate group-hover:text-blue-700 transition-colors">株式会社デモ</p>
-							<div class="flex flex-wrap items-center gap-2">
-								<span class="px-2 py-0.5 rounded text-xs bg-blue-100 text-blue-700 border border-blue-200">営業担当</span>
-								<span class="text-xs font-bold text-gray-700">佐藤 花子</span>
-								<p class="text-xs text-gray-500 truncate mt-0.5 font-mono">sato@demo.com</p>
+						<div class="shrink-0">
+							<span class="inline-grid place-items-center size-10 rounded-full bg-violet-50 text-violet-600 font-bold text-sm border border-violet-100 shadow-sm">デ</span>
+						</div>
+						<div class="flex items-center gap-4 flex-1 min-w-0">
+							<div class="min-w-0 flex-1 flex flex-col gap-1.5">
+								<p class="text-sm font-bold text-gray-800 truncate group-hover:text-blue-700 transition-colors">株式会社デモ</p>
+								<div class="flex flex-wrap items-center gap-2">
+									<span class="px-2 py-0.5 rounded text-xs bg-blue-100 text-blue-700 border border-blue-200">営業担当</span>
+									<span class="text-xs font-bold text-gray-700">佐藤 花子</span>
+									<p class="text-xs text-gray-500 truncate mt-0.5 font-mono">sato@demo.com</p>
+								</div>
 							</div>
 						</div>
 					</div>
-				</div>
-				<div class="flex items-center justify-end pl-14 md:pl-0">
-					<custom-toggle checked="true" label-on="対象" label-off="除外"></custom-toggle>
-				</div>
+					<div class="flex items-center justify-end pl-14 md:pl-0">
+						<custom-toggle checked="true" label-on="対象" label-off="除外"></custom-toggle>
+					</div>
 				</div>
 			</section>
 
-			<section class="grid grid-cols-1 md:grid-cols-2 gap-6">
-				
+			<!-- エリアC：確認項目オプション / エリアE：回答期日（送信モード） -->
+			<section data-send-section class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
 				<div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden h-fit">
 					<div class="bg-gray-50/50 px-5 py-3 border-b border-gray-100 flex items-center justify-between">
 						<h2 class="text-sm font-bold text-gray-700 flex items-center gap-2">
@@ -103,7 +118,7 @@
 						確認項目オプション
 						</h2>
 					</div>
-					
+
 					<div class="divide-y divide-gray-100">
 						<div class="p-5 flex items-center justify-between gap-4">
 							<div>
@@ -125,32 +140,124 @@
 				</div>
 
 				<div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden h-fit">
-				<div class="bg-gray-50/50 px-5 py-3 border-b border-gray-100 flex items-center justify-between">
-					<h2 class="text-sm font-bold text-gray-700 flex items-center gap-2">
-						<span class="material-symbols-outlined icon-md text-gray-400">event</span>
-						回答期日
-					</h2>
-				</div>
-				<div class="p-5">
-					<div class="relative">
-					<input type="date" class="h-10 block w-full rounded-md border border-gray-300 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50/50 transition-shadow hover:bg-white cursor-pointer">
+					<div class="bg-gray-50/50 px-5 py-3 border-b border-gray-100 flex items-center justify-between">
+						<h2 class="text-sm font-bold text-gray-700 flex items-center gap-2">
+							<span class="material-symbols-outlined icon-md text-gray-400">event</span>
+							回答期日
+							<span class="ml-auto text-[11px] font-medium text-red-500">必須</span>
+						</h2>
 					</div>
-					<p class="mt-3 text-xs text-gray-400 flex items-center gap-1">
-					<span class="material-symbols-outlined text-[16px]">info</span>
-					期日を過ぎると自動でリマインドが送られます
-					</p>
+					<div class="p-5">
+						<div class="relative">
+						<input type="date" class="h-10 block w-full rounded-md border border-gray-300 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50/50 transition-shadow hover:bg-white cursor-pointer">
+						</div>
+						<p class="mt-3 text-xs text-gray-400 flex items-center gap-1">
+						<span class="material-symbols-outlined text-[16px]">info</span>
+						期日を過ぎると自動でリマインドが送られます
+						</p>
+					</div>
 				</div>
+			</section>
+
+			<!-- エリアD：参照ファイル（送信モード） -->
+			<section data-send-section>
+				<div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+					<div class="bg-gray-50/50 px-5 py-3 border-b border-gray-100 flex items-center justify-between">
+						<h2 class="text-sm font-bold text-gray-700 flex items-center gap-2">
+							<span class="material-symbols-outlined icon-md text-gray-400">attach_file</span>
+							参照ファイル
+							<span class="ml-1 text-[11px] font-medium text-gray-400">任意</span>
+						</h2>
+					</div>
+					<div class="p-5 space-y-3">
+						<p class="text-xs text-gray-500 leading-relaxed">
+							Vendor が料金確認作業時に参照するファイル（PCコース体系図など）をアップロードできます。アップロードしたファイルは Vendor 側の料金確認リスト画面でダウンロード可能になります。
+						</p>
+
+						<!-- 未選択時 -->
+						<label id="reference-file-empty" class="cursor-pointer bg-white rounded-lg border border-gray-200 border-dashed p-3 flex items-center gap-3 hover:border-blue-400 hover:bg-blue-50/10 transition-colors shadow-sm group">
+							<div class="p-2 bg-gray-50 rounded text-gray-400 group-hover:text-blue-500 group-hover:bg-blue-50 transition-colors">
+								<span class="material-symbols-outlined icon-md">upload_file</span>
+							</div>
+							<div class="flex-1 min-w-0">
+								<p class="text-sm font-medium text-gray-700 group-hover:text-blue-700 transition-colors">参照ファイルをアップロード</p>
+								<p class="text-[10px] text-gray-400">最大 10MB（PDF・画像・Excel・Word 等）</p>
+							</div>
+							<input id="reference-file-input" type="file" class="hidden" />
+						</label>
+
+						<!-- 選択済み時（モック・初期非表示） -->
+						<div id="reference-file-selected" class="hidden bg-white rounded-lg border border-gray-200 p-3 flex items-center gap-3 shadow-sm">
+							<div class="p-2 bg-blue-50 rounded text-blue-600">
+								<span class="material-symbols-outlined icon-md">description</span>
+							</div>
+							<div class="flex-1 min-w-0">
+								<p id="reference-file-name" class="text-sm font-bold text-gray-800 truncate">PC体系図.xlsx</p>
+								<p id="reference-file-size" class="text-xs text-gray-500">1.2 MB</p>
+							</div>
+							<button id="reference-file-clear" type="button" class="text-gray-400 hover:text-red-600 hover:bg-red-50 p-1.5 rounded-full transition-colors" title="選択解除">
+								<span class="material-symbols-outlined icon-md">close</span>
+							</button>
+						</div>
+					</div>
+				</div>
+			</section>
+
+			<!-- エリアE：回答状況（参照モード） -->
+			<section data-readonly-section class="hidden space-y-3">
+				<div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+					<div class="bg-gray-50/50 px-5 py-3 border-b border-gray-100 flex items-center gap-2">
+						<span class="material-symbols-outlined icon-md text-gray-400">checklist</span>
+						<h2 class="text-sm font-bold text-gray-700">回答状況</h2>
+						<span class="ml-auto text-xs text-gray-400">1 / 2 確認済み（1 対象外）</span>
+					</div>
+					<div class="divide-y divide-gray-100">
+						<div class="flex items-center justify-between px-5 py-3">
+							<div class="flex items-center gap-3">
+								<span class="inline-grid place-items-center size-8 rounded-full bg-blue-50 text-blue-600 font-bold text-xs border border-blue-100">サ</span>
+								<span class="text-sm font-medium text-gray-400 line-through">株式会社サンプル</span>
+							</div>
+							<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-gray-50 text-gray-400 border border-gray-200">
+								対象外
+							</span>
+						</div>
+						<div class="flex items-center justify-between px-5 py-3">
+							<div class="flex items-center gap-3">
+								<span class="inline-grid place-items-center size-8 rounded-full bg-emerald-50 text-emerald-600 font-bold text-xs border border-emerald-100">テ</span>
+								<span class="text-sm font-medium text-gray-700">株式会社テスト</span>
+							</div>
+							<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-200">
+								<span class="material-symbols-outlined" style="font-size:14px;">check_circle</span>
+								確認済み 5/11
+							</span>
+						</div>
+						<div class="flex items-center justify-between px-5 py-3">
+							<div class="flex items-center gap-3">
+								<span class="inline-grid place-items-center size-8 rounded-full bg-violet-50 text-violet-600 font-bold text-xs border border-violet-100">デ</span>
+								<span class="text-sm font-medium text-gray-700">株式会社デモ</span>
+							</div>
+							<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-gray-50 text-gray-500 border border-gray-200">
+								<span class="material-symbols-outlined" style="font-size:14px;">schedule</span>
+								未回答
+							</span>
+						</div>
+					</div>
 				</div>
 			</section>
 		</main>
 
 		<div class="fixed bottom-0 inset-x-0 z-50 bg-white border-t border-gray-200 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
 			<div class="mx-auto px-6 py-4 flex items-center justify-end gap-3">
-				<button class="px-5 py-2.5 rounded-lg border border-gray-300 bg-white text-sm font-bold text-gray-600 hover:bg-gray-50 hover:text-gray-800 transition-colors">
+				<!-- 送信モードのみ表示 -->
+				<button data-send-footer class="px-5 py-2.5 rounded-lg border border-gray-300 bg-white text-sm font-bold text-gray-600 hover:bg-gray-50 hover:text-gray-800 transition-colors">
 				キャンセル
 				</button>
-				<button class="px-6 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-bold hover:bg-blue-700 shadow-sm hover:shadow active:scale-[0.98] transition-all">
+				<button data-send-footer class="px-6 py-2.5 rounded-lg bg-blue-600 text-white text-sm font-bold hover:bg-blue-700 shadow-sm hover:shadow active:scale-[0.98] transition-all">
 				確認依頼を送信する
+				</button>
+				<!-- 参照モードのみ表示 -->
+				<button data-readonly-footer class="hidden px-5 py-2.5 rounded-lg border border-gray-300 bg-white text-sm font-bold text-gray-600 hover:bg-gray-50 hover:text-gray-800 transition-colors">
+				閉じる
 				</button>
 			</div>
 		</div>
@@ -169,27 +276,54 @@
 		// ファイルアップロード項目の表示切り替え制御
 		const uploadToggle = document.getElementById('upload-toggle');
 		const uploadDetails = document.getElementById('upload-details');
-		
+
 		if (uploadToggle && uploadDetails) {
-			// 初期状態チェック
 			const updateVisibility = () => {
 				const isChecked = uploadToggle.getAttribute('checked') === 'true';
-				if (isChecked) {
-					uploadDetails.style.display = 'block';
-					// アニメーション用クラス操作などはここで行う
-				} else {
-					uploadDetails.style.display = 'none';
-				}
+				uploadDetails.style.display = isChecked ? 'block' : 'none';
 			};
 
-			// Custom Elementのクリックイベント等を監視
 			uploadToggle.addEventListener('click', () => {
-				// DOM更新を待ってから判定
-				setTimeout(updateVisibility, 10); 
+				setTimeout(updateVisibility, 10);
 			});
-			
-			// 初期実行
+
 			updateVisibility();
+		}
+
+		// 送信モード / 参照モード切り替え（モック専用）
+		function applyMode(mode) {
+			const isReadonly = mode === 'readonly';
+
+			// 送信モード専用セクション（エリアB・C・D）
+			document.querySelectorAll('[data-send-section]').forEach(el => {
+				el.classList.toggle('hidden', isReadonly);
+			});
+
+			// 参照モード専用セクション（エリアE）
+			document.querySelectorAll('[data-readonly-section]').forEach(el => {
+				el.classList.toggle('hidden', !isReadonly);
+			});
+
+			// フッターボタン切り替え
+			document.querySelectorAll('[data-send-footer]').forEach(el => {
+				el.classList.toggle('hidden', isReadonly);
+			});
+			document.querySelectorAll('[data-readonly-footer]').forEach(el => {
+				el.classList.toggle('hidden', !isReadonly);
+			});
+		}
+
+		const modeSelect = document.getElementById('mode-select');
+		if (modeSelect) {
+			// URLパラメータで初期モードを決定
+			const params = new URLSearchParams(location.search);
+			const initialMode = params.get('readonly') === 'true' ? 'readonly' : 'send';
+			modeSelect.value = initialMode;
+			applyMode(initialMode);
+
+			modeSelect.addEventListener('change', () => {
+				applyMode(modeSelect.value);
+			});
 		}
 	</script>
 	</body>
