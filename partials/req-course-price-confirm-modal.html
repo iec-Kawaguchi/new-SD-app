@@ -128,13 +128,46 @@
 							<custom-toggle id="upload-toggle" checked="true" label-on="あり" label-off="なし"></custom-toggle>
 						</div>
 
-						<div id="upload-details" class="p-5 bg-gray-50/30 transition-all duration-300">
-							<label class="block text-xs font-bold text-gray-600 mb-2">
-								<span class="material-symbols-outlined text-[16px] align-text-bottom mr-1">edit_note</span>
-								ファイルアップロードの要件・依頼内容
-							</label>
-							<textarea id="free-comment" class="block w-full rounded-md border border-gray-300 p-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white transition-shadow resize-none h-24" placeholder="例：PCコース体系図素材のアップロードをお願いします"></textarea>
-							<div class="mt-2 flex justify-end text-xs text-gray-400"><span id="char-count">0</span>/500</div>
+						<div id="upload-details" class="p-5 bg-gray-50/30 transition-all duration-300 space-y-4">
+							<div>
+								<label class="block text-xs font-bold text-gray-600 mb-2">
+									<span class="material-symbols-outlined text-[16px] align-text-bottom mr-1">edit_note</span>
+									ファイルアップロードの要件・依頼内容
+								</label>
+								<textarea id="free-comment" class="block w-full rounded-md border border-gray-300 p-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white transition-shadow resize-none h-24" placeholder="例：PCコース体系図素材のアップロードをお願いします"></textarea>
+								<div class="mt-2 flex justify-end text-xs text-gray-400"><span id="char-count">0</span>/500</div>
+							</div>
+							<div>
+								<p class="text-xs font-bold text-gray-600 mb-2">
+									<span class="material-symbols-outlined text-[16px] align-text-bottom mr-1">attach_file</span>
+									参照ファイル（サンプル）
+									<span class="ml-1 text-[11px] font-medium text-gray-400">任意</span>
+								</p>
+								<!-- 未選択時 -->
+								<label id="reference-file-empty" class="cursor-pointer bg-white rounded-lg border border-gray-200 border-dashed p-3 flex items-center gap-3 hover:border-blue-400 hover:bg-blue-50/10 transition-colors shadow-sm group">
+									<div class="p-2 bg-gray-50 rounded text-gray-400 group-hover:text-blue-500 group-hover:bg-blue-50 transition-colors">
+										<span class="material-symbols-outlined icon-md">upload_file</span>
+									</div>
+									<div class="flex-1 min-w-0">
+										<p class="text-sm font-medium text-gray-700 group-hover:text-blue-700 transition-colors">サンプルファイルをアップロード</p>
+										<p class="text-[10px] text-gray-400">最大 10MB（PDF・画像・Excel・Word 等）</p>
+									</div>
+									<input id="reference-file-input" type="file" class="hidden" />
+								</label>
+								<!-- 選択済み時（モック・初期非表示） -->
+								<div id="reference-file-selected" class="hidden bg-white rounded-lg border border-gray-200 shadow-sm"><div class="p-3 flex items-center gap-3">
+									<div class="p-2 bg-blue-50 rounded text-blue-600">
+										<span class="material-symbols-outlined icon-md">description</span>
+									</div>
+									<div class="flex-1 min-w-0">
+										<p id="reference-file-name" class="text-sm font-bold text-gray-800 truncate">PC体系図.xlsx</p>
+										<p id="reference-file-size" class="text-xs text-gray-500">1.2 MB</p>
+									</div>
+									<button id="reference-file-clear" type="button" class="text-gray-400 hover:text-red-600 hover:bg-red-50 p-1.5 rounded-full transition-colors" title="選択解除">
+										<span class="material-symbols-outlined icon-md">close</span>
+									</button>
+								</div></div>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -159,51 +192,39 @@
 				</div>
 			</section>
 
-			<!-- エリアD：参照ファイル（送信モード） -->
+			<!-- エリアD：制作する媒体（送信モード） -->
 			<section data-send-section>
 				<div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-					<div class="bg-gray-50/50 px-5 py-3 border-b border-gray-100 flex items-center justify-between">
+					<div class="bg-gray-50/50 px-5 py-3 border-b border-gray-100">
 						<h2 class="text-sm font-bold text-gray-700 flex items-center gap-2">
-							<span class="material-symbols-outlined icon-md text-gray-400">attach_file</span>
-							参照ファイル
-							<span class="ml-1 text-[11px] font-medium text-gray-400">任意</span>
+							<span class="material-symbols-outlined icon-md text-gray-400">article</span>
+							制作する媒体
 						</h2>
 					</div>
-					<div class="p-5 space-y-3">
-						<p class="text-xs text-gray-500 leading-relaxed">
-							Vendor が料金確認作業時に参照するファイル（PCコース体系図など）をアップロードできます。アップロードしたファイルは Vendor 側の料金確認リスト画面でダウンロード可能になります。
-						</p>
-
-						<!-- 未選択時 -->
-						<label id="reference-file-empty" class="cursor-pointer bg-white rounded-lg border border-gray-200 border-dashed p-3 flex items-center gap-3 hover:border-blue-400 hover:bg-blue-50/10 transition-colors shadow-sm group">
-							<div class="p-2 bg-gray-50 rounded text-gray-400 group-hover:text-blue-500 group-hover:bg-blue-50 transition-colors">
-								<span class="material-symbols-outlined icon-md">upload_file</span>
-							</div>
-							<div class="flex-1 min-w-0">
-								<p class="text-sm font-medium text-gray-700 group-hover:text-blue-700 transition-colors">参照ファイルをアップロード</p>
-								<p class="text-[10px] text-gray-400">最大 10MB（PDF・画像・Excel・Word 等）</p>
-							</div>
-							<input id="reference-file-input" type="file" class="hidden" />
-						</label>
-
-						<!-- 選択済み時（モック・初期非表示） -->
-						<div id="reference-file-selected" class="hidden bg-white rounded-lg border border-gray-200 p-3 flex items-center gap-3 shadow-sm">
-							<div class="p-2 bg-blue-50 rounded text-blue-600">
-								<span class="material-symbols-outlined icon-md">description</span>
-							</div>
-							<div class="flex-1 min-w-0">
-								<p id="reference-file-name" class="text-sm font-bold text-gray-800 truncate">PC体系図.xlsx</p>
-								<p id="reference-file-size" class="text-xs text-gray-500">1.2 MB</p>
-							</div>
-							<button id="reference-file-clear" type="button" class="text-gray-400 hover:text-red-600 hover:bg-red-50 p-1.5 rounded-full transition-colors" title="選択解除">
-								<span class="material-symbols-outlined icon-md">close</span>
-							</button>
+					<div class="p-5">
+						<div class="flex flex-wrap gap-x-6 gap-y-3">
+							<label class="flex items-center gap-2 cursor-pointer">
+								<input type="checkbox" name="media-type" value="web" class="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 accent-blue-600">
+								<span class="text-sm text-gray-700">WEBサイト</span>
+							</label>
+							<label class="flex items-center gap-2 cursor-pointer">
+								<input type="checkbox" name="media-type" value="pamphlet" class="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 accent-blue-600">
+								<span class="text-sm text-gray-700">パンフレット</span>
+							</label>
+							<label class="flex items-center gap-2 cursor-pointer">
+								<input type="checkbox" name="media-type" value="leaflet" class="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 accent-blue-600">
+								<span class="text-sm text-gray-700">リーフレット</span>
+							</label>
+							<label class="flex items-center gap-2 cursor-pointer">
+								<input type="checkbox" name="media-type" value="other" class="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 accent-blue-600">
+								<span class="text-sm text-gray-700">その他</span>
+							</label>
 						</div>
 					</div>
 				</div>
 			</section>
 
-			<!-- エリアE：回答状況（参照モード） -->
+			<!-- エリアF：回答状況（参照モード） -->
 			<section data-readonly-section class="hidden space-y-3">
 				<div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
 					<div class="bg-gray-50/50 px-5 py-3 border-b border-gray-100 flex items-center gap-2">
@@ -299,7 +320,7 @@
 				el.classList.toggle('hidden', isReadonly);
 			});
 
-			// 参照モード専用セクション（エリアE）
+			// 参照モード専用セクション（エリアF）
 			document.querySelectorAll('[data-readonly-section]').forEach(el => {
 				el.classList.toggle('hidden', !isReadonly);
 			});
