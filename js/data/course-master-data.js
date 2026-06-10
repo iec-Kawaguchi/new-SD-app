@@ -6,12 +6,12 @@
 //   '未承認'       = Ver.1 未承認のみ
 //   '申請中'       = Ver.N 申請中のみ（承認済なし）
 //   '承認済'       = Ver.N 承認済のみ
-//   '改訂中'       = Ver.N 承認済 + Ver.N+1 未承認
-//   '改訂申請中'   = Ver.N 承認済 + Ver.N+1 申請中
-//   '棄却（改訂）' = Ver.N 承認済 + Ver.N+1 棄却
+//   '修正中'       = Ver.N 承認済 + Ver.N+1 未承認
+//   '修正申請中'   = Ver.N 承認済 + Ver.N+1 申請中
+//   '否認（修正）' = Ver.N 承認済 + Ver.N+1 否認
 //
 // ver / approvalStatus / courses / updatedAt 等は代表行（承認済行、なければ唯一行）のデータ
-// draft: 改訂中バージョンが存在する場合のみ設定（未承認/申請中の最新バージョン行）
+// draft: 修正中バージョンが存在する場合のみ設定（未承認/申請中の最新バージョン行）
 // status: フライヤー全体（tkf_code単位）の有効/無効
 // standardTagIds: tkf_code 単位で管理（バージョンと独立）
 
@@ -61,7 +61,7 @@ export const courseMasterData = [
   },
 
   // ── 産業能率大学 (EDU001) ─────────────────────────────────────
-  // 複合ステータス「改訂中」: Ver.1 承認済 + Ver.2 未承認（バージョンアップ申請後）
+  // 複合ステータス「修正中」: Ver.1 承認済 + Ver.2 未承認（バージョンアップ申請後）
   {
     id: 101,
     tkfCode: "TKF-SAN-001",
@@ -69,7 +69,7 @@ export const courseMasterData = [
     hanCode: "SAN-BM-001",
     eduCode: "EDU001",
     org: "産業能率大学",
-    compositeStatus: "改訂中",
+    compositeStatus: "修正中",
     // 代表行（承認済 Ver.1）
     ver: 1,
     approvalStatus: "approved",
@@ -84,12 +84,12 @@ export const courseMasterData = [
       { sortNo: 1, name: "郵便版", price: 17600, period: 2 },
       { sortNo: 2, name: "WEB版",  price: 17600, period: 2 },
     ],
-    // 改訂中バージョン（未承認 Ver.2）
+    // 修正中バージョン（未承認 Ver.2）
     draft: {
       id: 105,
       ver: 2,
       approvalStatus: "unapproved",
-      note: "2026年版に改訂。社会人1〜3年目向け。（改訂作業中）",
+      note: "2026年版に修正。社会人1〜3年目向け。（修正作業中）",
       htmlUrl:      "https://example.com/courses/san-bm-001",
       pdfUrl:       "",
       zipUrl:       "",
@@ -140,7 +140,7 @@ export const courseMasterData = [
     ver: 1,
     approvalStatus: "unapproved",
     status: "Inactive",
-    note: "2026年版に改訂。最新の法改正（育休・時間外規制）に対応。",
+    note: "2026年版に修正。最新の法改正（育休・時間外規制）に対応。",
     htmlUrl:      "",
     pdfUrl:       "",
     zipUrl:       "",
@@ -153,9 +153,9 @@ export const courseMasterData = [
     draft: null,
   },
 
-  // 複合ステータス「改訂中」（棄却後）: Ver.1 承認済 + Ver.2 棄却されて未承認に戻った状態
-  // 棄却はアクション。結果として draft.approvalStatus = 'unapproved' に戻り、compositeStatus = '改訂中'。
-  // draft.rejectionComment に棄却コメントを保持する（再申請時にクリア）。
+  // 複合ステータス「修正中」（否認後）: Ver.1 承認済 + Ver.2 否認されて未承認に戻った状態
+  // 否認はアクション。結果として draft.approvalStatus = 'unapproved' に戻り、compositeStatus = '修正中'。
+  // draft.rejectionComment に否認コメントを保持する（再申請時にクリア）。
   {
     id: 104,
     tkfCode: "TKF-SAN-004",
@@ -163,7 +163,7 @@ export const courseMasterData = [
     hanCode: "SAN-DT-004",
     eduCode: "EDU001",
     org: "産業能率大学",
-    compositeStatus: "改訂中",
+    compositeStatus: "修正中",
     // 代表行（承認済 Ver.1）
     ver: 1,
     approvalStatus: "approved",
@@ -177,7 +177,7 @@ export const courseMasterData = [
     courses: [
       { sortNo: 1, name: "", price: 25300, period: 3 },
     ],
-    // 棄却後に未承認へ戻った改訂版（棄却コメントを保持）
+    // 否認後に未承認へ戻った修正版（否認コメントを保持）
     draft: {
       id: 106,
       ver: 2,
@@ -197,13 +197,14 @@ export const courseMasterData = [
   },
 
   // 複合ステータス「承認済」: Ver.1 承認済・バージョンアップ申請フローの確認用
-  // Vendorロールで「バージョンアップ申請」→ 改訂版作成 → 承認申請 → IEC承認 の一連の流れを確認できる
+  // Vendorロールで「バージョンアップ申請」→ 修正版作成 → 承認申請 → IEC承認 の一連の流れを確認できる
   {
     id: 107,
     tkfCode: "TKF-SAN-005",
     name: "グローバル人材育成のための異文化コミュニケーション",
     hanCode: "SAN-GC-005",
     eduCode: "EDU001",
+    exclusiveFlg: true, // 企業専用コース（デフォルトでは一覧非表示）
     org: "産業能率大学",
     compositeStatus: "承認済",
     ver: 1,
@@ -253,6 +254,7 @@ export const courseMasterData = [
     name: "若手リーダーのためのタイムマネジメント",
     hanCode: "JMM-LM-002",
     eduCode: "EDU002",
+    exclusiveFlg: true, // 企業専用コース（デフォルトでは一覧非表示）
     org: "JMAM",
     compositeStatus: "承認済",
     ver: 1,
