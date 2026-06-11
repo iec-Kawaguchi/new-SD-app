@@ -17,7 +17,7 @@
             :root { --safe-bottom: env(safe-area-inset-bottom); }
             /* モバイル用入力調整 */
             input[data-numeric] { ime-mode: disabled; }
-            
+
             /* エラー時のスタイル定義 */
             .input-error {
                 border-color: #ef4444 !important; /* red-500 */
@@ -29,7 +29,7 @@
             .material-symbols-outlined {
                 font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
             }
-            
+
             /* スクロールバー非表示 */
             .no-scrollbar::-webkit-scrollbar { display: none; }
             .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
@@ -40,7 +40,7 @@
 
         <main class="flex-1">
             <div class="max-w-6xl w-full mx-auto p-4 md:p-6 mt-4">
-                
+
                 <h1 class="text-2xl md:text-3xl font-black text-gray-800 mb-8 tracking-tight">
                     ご注文手続き
                 </h1>
@@ -53,9 +53,9 @@
                                 <h2 class="text-xl font-bold text-gray-800">カート</h2>
                             </div>
                             <ul id="cart-list" class="space-y-4">
-                                <li class="flex items-center gap-4 p-3 rounded-xl hover:bg-gray-50 transition-colors">
+                                <li class="flex items-center gap-4 p-3 rounded-xl hover:bg-gray-50 transition-colors" data-fly-code="EXCEL-VBA-001" data-course-code="101">
                                     <div class="flex-1 min-w-0">
-                                        <p class="font-bold text-gray-800 truncate">Excel マクロ＆VBA入門</p>
+                                        <p class="font-bold text-gray-800 truncate">Excel マクロ＆VBA入門（通常コース）</p>
                                         <p class="text-sm text-gray-500">コースNo: 101</p>
                                         <button type="button" class="text-sm text-gray-400 hover:text-red-500 underline mt-1 transition-colors" data-remove>削除</button>
                                     </div>
@@ -68,6 +68,21 @@
                                         </div>
                                     </div>
                                 </li>
+                                <li class="flex items-center gap-4 p-3 rounded-xl hover:bg-gray-50 transition-colors" data-fly-code="MKT-BASIC-002" data-course-code="205">
+                                    <div class="flex-1 min-w-0">
+                                        <p class="font-bold text-gray-800 truncate">はじめてのマーケティング基礎（Web）</p>
+                                        <p class="text-sm text-gray-500">コースNo: 205</p>
+                                        <button type="button" class="text-sm text-gray-400 hover:text-red-500 underline mt-1 transition-colors" data-remove>削除</button>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <div class="hidden">
+                                            <input class="w-12 text-center outline-none" type="number" min="1" value="1" data-qty />
+                                        </div>
+                                        <div class="w-24 text-right">
+                                            <span class="font-bold text-lg text-gray-800" data-price="15400" data-line-total>¥15,400</span>
+                                        </div>
+                                    </div>
+                                </li>
                             </ul>
                         </section>
 
@@ -77,6 +92,37 @@
                                 <h2 class="text-xl font-bold text-gray-800">基本情報</h2>
                             </div>
                             <form id="checkout-form" class="space-y-6" novalidate>
+
+                                <!-- 開講日選択（選択可能な開講日が2件以上ある場合のみ表示。1件のみの場合は自動選択でこのブロックは非表示） -->
+                                <div id="class-date-block" class="flex flex-col bg-sky-50/50 p-4 rounded-xl border border-sky-100">
+                                    <span class="font-bold text-sm text-gray-700 mb-1">開講日 <span class="text-red-500">*</span></span>
+                                    <p class="text-xs text-gray-500 mb-3">申込対象の開講日を選択してください。開講日ごとに申込受付期間が異なります。</p>
+                                    <div class="space-y-3">
+                                        <label class="flex items-start gap-3 p-4 rounded-xl border border-gray-200 bg-white cursor-pointer hover:border-sky-300 transition has-[:checked]:border-sky-500 has-[:checked]:bg-sky-50 has-[:checked]:ring-2 has-[:checked]:ring-sky-200">
+                                            <input type="radio" name="classDate" value="1" class="mt-1 accent-sky-600 w-5 h-5" checked>
+                                            <div>
+                                                <div class="font-bold text-gray-800">2026年7月1日 開講</div>
+                                                <div class="text-sm text-gray-500 mt-0.5">申込受付：2026年5月1日 〜 2026年6月20日</div>
+                                            </div>
+                                        </label>
+                                        <label class="flex items-start gap-3 p-4 rounded-xl border border-gray-200 bg-white cursor-pointer hover:border-sky-300 transition has-[:checked]:border-sky-500 has-[:checked]:bg-sky-50 has-[:checked]:ring-2 has-[:checked]:ring-sky-200">
+                                            <input type="radio" name="classDate" value="2" class="mt-1 accent-sky-600 w-5 h-5">
+                                            <div>
+                                                <div class="font-bold text-gray-800">2026年10月1日 開講</div>
+                                                <div class="text-sm text-gray-500 mt-0.5">申込受付：2026年8月1日 〜 2026年9月20日</div>
+                                            </div>
+                                        </label>
+                                        <label class="flex items-start gap-3 p-4 rounded-xl border border-gray-200 bg-white cursor-pointer hover:border-sky-300 transition has-[:checked]:border-sky-500 has-[:checked]:bg-sky-50 has-[:checked]:ring-2 has-[:checked]:ring-sky-200">
+                                            <input type="radio" name="classDate" value="3" class="mt-1 accent-sky-600 w-5 h-5">
+                                            <div>
+                                                <div class="font-bold text-gray-800">2027年1月10日 開講</div>
+                                                <div class="text-sm text-gray-500 mt-0.5">申込受付：2026年11月1日 〜 2026年12月20日</div>
+                                            </div>
+                                        </label>
+                                    </div>
+                                    <p class="text-sm text-red-600 mt-2 hidden" data-error-for="classDate">開講日を選択してください。</p>
+                                </div>
+
                                 <div class="flex flex-col">
                                     <span class="font-bold text-sm text-gray-700 mb-2">受講区分 <span class="text-red-500">*</span></span>
                                     <div class="flex flex-wrap gap-4">
@@ -106,7 +152,7 @@
                                     </div>
                                     <div class="flex flex-col">
                                         <label for="kana_sei" class="font-bold text-sm text-gray-700 mb-1">セイ <span class="text-red-500">*</span></label>
-                                        <input id="kana_sei" name="kana_sei" type="text" class="border border-gray-300 rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500" placeholder="" pattern="^[\u30A0-\u30FF\sー－]+$" required />
+                                        <input id="kana_sei" name="kana_sei" type="text" class="border border-gray-300 rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500" placeholder="" pattern="^[゠-ヿ\sー－]+$" required />
                                         <p class="text-xs text-gray-500 mt-1">全角カタカナ</p>
                                     </div>
                                     <div class="flex flex-col">
@@ -115,7 +161,7 @@
                                     </div>
                                     <div class="flex flex-col">
                                         <label for="kana_mei" class="font-bold text-sm text-gray-700 mb-1">メイ <span class="text-red-500">*</span></label>
-                                        <input id="kana_mei" name="kana_mei" type="text" class="border border-gray-300 rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500" placeholder="" pattern="^[\u30A0-\u30FF\sー－]+$" required />
+                                        <input id="kana_mei" name="kana_mei" type="text" class="border border-gray-300 rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500" placeholder="" pattern="^[゠-ヿ\sー－]+$" required />
                                         <p class="text-xs text-gray-500 mt-1">全角カタカナ</p>
                                     </div>
                                 </div>
@@ -137,9 +183,17 @@
                                     </div>
                                     <p class="text-sm text-red-600 mt-1 hidden" data-error-for="gender">性別を選択してください。</p>
                                 </div>
+
+                                <!-- 生年月日（申込フォーム設定 BirthdayOption が「必須」「任意」の場合に表示。サンプルは必須） -->
+                                <div class="flex flex-col sm:w-1/2">
+                                    <label for="birthday" class="font-bold text-sm text-gray-700 mb-1">生年月日 <span class="text-red-500">*</span></label>
+                                    <input id="birthday" name="birthday" type="date" class="border border-gray-300 rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500 bg-white" required />
+                                    <p class="text-sm text-red-600 mt-1 hidden" data-error-for="birthday">生年月日を入力してください。</p>
+                                </div>
+
                                 <div class="flex flex-col space-y-2">
                                     <label for="org_display" class="font-bold text-sm text-gray-700">所属組織 <span class="text-red-500">*</span></label>
-                                    
+
                                     <div class="relative mt-1 cursor-pointer group">
                                         <input id="org_display" type="text" class="w-full border border-gray-300 rounded-xl p-3 pr-10 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500 cursor-pointer caret-transparent bg-white shadow-sm" placeholder="組織を選択してください" readonly required />
                                         <input id="org_value" name="org_value" type="hidden" /> <span class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 group-hover:text-sky-600 pointer-events-none transition-colors">
@@ -148,7 +202,7 @@
                                     </div>
                                     <p class="text-sm text-red-600 mt-1 hidden" data-error-for="org_display">所属組織を選択してください。</p>
                                 </div>
-                                
+
                                 <div class="flex flex-col space-y-2">
                                     <label for="employee_number" class="font-bold text-sm text-gray-700">社員番号 <span class="text-red-500">*</span></label>
                                     <input id="employee_number" type="text" class="w-1/2 border border-gray-300 rounded-xl p-3 pr-10 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500 bg-white" placeholder="社員番号を入力してください" required />
@@ -196,13 +250,13 @@
                                         <input id="agree" type="checkbox" class="mt-1 accent-sky-600 w-5 h-5 rounded" disabled>
                                         <span class="text-sm text-gray-700 leading-relaxed">
                                             <button type="button" id="open-privacy" class="underline text-sky-700 hover:text-sky-900 font-medium">
-                                                プライバシーポリシー
+                                                キャンセルポリシー
                                             </button>
                                             を確認のうえ、内容に同意します
                                         </span>
                                     </label>
                                     <p class="text-xs text-gray-500 mt-2 ml-8">ポリシーを確認し「同意する」ボタンを押すとチェックが付きます。</p>
-                                    <p class="text-sm text-red-600 mt-1 hidden ml-8" data-error-for="agree">プライバシーポリシーへの同意が必要です。</p>
+                                    <p class="text-sm text-red-600 mt-1 hidden ml-8" data-error-for="agree">キャンセルポリシーへの同意が必要です。</p>
                                 </div>
                             </form>
                         </section>
@@ -212,6 +266,7 @@
                                 <span class="material-symbols-outlined text-sky-600">local_shipping</span>
                                 <h2 class="text-xl font-bold text-gray-800">配送先</h2>
                             </div>
+                            <p class="text-xs text-gray-500 mb-4 -mt-2">※教材の配送先が会社・職場宛等に設定されている募集では、このセクションは表示されません。</p>
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <div class="flex flex-col">
                                     <label for="zip" class="font-bold text-sm text-gray-700 mb-1">郵便番号 <span class="text-red-500">*</span></label>
@@ -235,6 +290,88 @@
                                 </div>
                             </div>
                         </section>
+
+                        <!-- 独自追加項目（カスタム質問）。申込フォーム設定で登録された項目を入力タイプ別に表示する -->
+                        <section id="custom-questions-section" class="bg-white rounded-2xl shadow-sm border border-gray-200/60 p-6 md:p-8">
+                            <div class="flex items-center gap-2 mb-6 border-b border-gray-100 pb-4">
+                                <span class="material-symbols-outlined text-sky-600">quiz</span>
+                                <h2 class="text-xl font-bold text-gray-800">追加のご質問</h2>
+                            </div>
+                            <p class="text-xs text-gray-500 mb-6 -mt-2">主催団体からの追加の質問項目です。サンプルとして各入力タイプを表示しています。</p>
+                            <div id="custom-questions-container" class="space-y-6">
+
+                                <!-- ラジオボタン（必須） -->
+                                <div class="cq-item flex flex-col" data-cq-name="cq_pc_bring" data-cq-type="radio" data-required="true">
+                                    <span class="font-bold text-sm text-gray-700 mb-2">受講にあたり会社PCの持ち込みは可能ですか？ <span class="text-red-500">*</span></span>
+                                    <div class="flex flex-wrap gap-4">
+                                        <label class="inline-flex items-center gap-2 cursor-pointer p-2 rounded-lg hover:bg-gray-50 transition">
+                                            <input type="radio" name="cq_pc_bring" value="yes" class="accent-sky-600 w-5 h-5">
+                                            <span>可能</span>
+                                        </label>
+                                        <label class="inline-flex items-center gap-2 cursor-pointer p-2 rounded-lg hover:bg-gray-50 transition">
+                                            <input type="radio" name="cq_pc_bring" value="no" class="accent-sky-600 w-5 h-5">
+                                            <span>不可</span>
+                                        </label>
+                                    </div>
+                                    <p class="text-sm text-red-600 mt-1 hidden" data-error-for="cq_pc_bring">この項目は必須です。</p>
+                                </div>
+
+                                <!-- セレクトボックス（任意） -->
+                                <div class="cq-item flex flex-col sm:w-2/3" data-cq-name="cq_source" data-cq-type="select" data-required="false">
+                                    <label for="cq_source" class="font-bold text-sm text-gray-700 mb-1">本コースを知ったきっかけ</label>
+                                    <div class="relative">
+                                        <select id="cq_source" name="cq_source" class="w-full appearance-none border border-gray-300 rounded-xl p-3 pr-10 bg-white focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500 cursor-pointer">
+                                            <option value="">選択してください</option>
+                                            <option value="mail">社内メール・お知らせ</option>
+                                            <option value="boss">上司・同僚の紹介</option>
+                                            <option value="site">募集サイトを見て</option>
+                                            <option value="other">その他</option>
+                                        </select>
+                                        <span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">expand_more</span>
+                                    </div>
+                                    <p class="text-sm text-red-600 mt-1 hidden" data-error-for="cq_source">この項目は必須です。</p>
+                                </div>
+
+                                <!-- チェックボックス（任意・複数選択可） -->
+                                <div class="cq-item flex flex-col" data-cq-name="cq_interest" data-cq-type="checkbox" data-required="false">
+                                    <span class="font-bold text-sm text-gray-700 mb-2">関心のある分野（複数選択可）</span>
+                                    <div class="flex flex-wrap gap-x-6 gap-y-2">
+                                        <label class="inline-flex items-center gap-2 cursor-pointer p-1 rounded-lg hover:bg-gray-50 transition">
+                                            <input type="checkbox" name="cq_interest" value="dx" class="accent-sky-600 w-5 h-5 rounded">
+                                            <span>DX・IT</span>
+                                        </label>
+                                        <label class="inline-flex items-center gap-2 cursor-pointer p-1 rounded-lg hover:bg-gray-50 transition">
+                                            <input type="checkbox" name="cq_interest" value="mgmt" class="accent-sky-600 w-5 h-5 rounded">
+                                            <span>マネジメント</span>
+                                        </label>
+                                        <label class="inline-flex items-center gap-2 cursor-pointer p-1 rounded-lg hover:bg-gray-50 transition">
+                                            <input type="checkbox" name="cq_interest" value="finance" class="accent-sky-600 w-5 h-5 rounded">
+                                            <span>会計・財務</span>
+                                        </label>
+                                        <label class="inline-flex items-center gap-2 cursor-pointer p-1 rounded-lg hover:bg-gray-50 transition">
+                                            <input type="checkbox" name="cq_interest" value="lang" class="accent-sky-600 w-5 h-5 rounded">
+                                            <span>語学</span>
+                                        </label>
+                                    </div>
+                                    <p class="text-sm text-red-600 mt-1 hidden" data-error-for="cq_interest">この項目は必須です。</p>
+                                </div>
+
+                                <!-- 1行テキスト（任意） -->
+                                <div class="cq-item flex flex-col sm:w-2/3" data-cq-name="cq_emergency" data-cq-type="text" data-required="false">
+                                    <label for="cq_emergency" class="font-bold text-sm text-gray-700 mb-1">緊急連絡先（日中つながる番号）</label>
+                                    <input id="cq_emergency" name="cq_emergency" type="text" class="border border-gray-300 rounded-xl p-3 bg-white focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500" placeholder="例）03-1234-5678" />
+                                    <p class="text-sm text-red-600 mt-1 hidden" data-error-for="cq_emergency">この項目は必須です。</p>
+                                </div>
+
+                                <!-- 複数行テキスト（任意） -->
+                                <div class="cq-item flex flex-col" data-cq-name="cq_note" data-cq-type="textarea" data-required="false">
+                                    <label for="cq_note" class="font-bold text-sm text-gray-700 mb-1">事務局への連絡事項</label>
+                                    <textarea id="cq_note" name="cq_note" rows="3" class="border border-gray-300 rounded-xl p-3 bg-white focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500 resize-none" placeholder="ご要望・ご質問があればご記入ください。"></textarea>
+                                    <p class="text-sm text-red-600 mt-1 hidden" data-error-for="cq_note">この項目は必須です。</p>
+                                </div>
+
+                            </div>
+                        </section>
                     </div>
 
                     <aside class="md:col-span-1">
@@ -251,7 +388,7 @@
                                     </div>
                                     <div class="flex items-center justify-between">
                                         <dt class="text-gray-600">小計</dt>
-                                        <dd id="subtotal" class="font-medium text-gray-900">¥19,910</dd>
+                                        <dd id="subtotal" class="font-medium text-gray-900">¥35,310</dd>
                                     </div>
                                     <div class="flex items-center justify-between">
                                         <dt class="text-gray-600">送料</dt>
@@ -259,21 +396,21 @@
                                     </div>
                                     <hr class="my-3 border-dashed border-gray-300">
                                     <div class="flex items-center justify-between text-base">
-                                        <dt class="font-bold text-gray-800">合計</dt>
-                                        <dd id="grandTotal" class="font-bold text-2xl text-sky-700">¥19,910</dd>
+                                        <dt class="font-bold text-gray-800">合計<span class="text-xs font-normal text-gray-400 ml-1">(税込)</span></dt>
+                                        <dd id="grandTotal" class="font-bold text-2xl text-sky-700">¥35,310</dd>
                                     </div>
                                 </dl>
 
                                 <button id="place-order" class="w-full bg-sky-600 hover:bg-sky-700 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold py-3.5 rounded-xl mt-6 shadow-md hover:shadow-lg transform active:scale-95 transition-all">
                                     注文を確定する
                                 </button>
-                                
+
                                 <div id="form-alert" class="mt-4 text-sm font-bold text-red-600 hidden bg-red-50 p-3 rounded-xl border border-red-200 flex items-start gap-2" aria-live="polite">
                                     <span class="material-symbols-outlined text-[20px] shrink-0">error</span>
                                     <span>入力内容に不備があります。赤枠の項目を確認してください。</span>
                                 </div>
                             </section>
-                            
+
                             <p class="text-xs text-gray-400 mt-4 text-center">
                                 キャンセルポリシー等の注意事項を必ずご確認ください。
                             </p>
@@ -286,7 +423,7 @@
         <div id="org-modal" class="fixed inset-0 z-50 hidden" aria-modal="true" role="dialog">
             <div class="absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity" id="org-backdrop"></div>
             <div class="relative z-10 w-full max-w-4xl mx-auto mt-10 md:mt-20 bg-white md:rounded-2xl shadow-2xl flex flex-col max-h-[85vh] overflow-hidden">
-                
+
                 <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100">
                     <h3 class="font-bold text-lg text-gray-800 flex items-center gap-2">
                         <span class="material-symbols-outlined text-sky-600">apartment</span>
@@ -297,8 +434,12 @@
                     </button>
                 </div>
 
-                <div class="flex-1 overflow-hidden flex flex-col md:flex-row bg-gray-50 min-h-[300px]">
-                    
+                <div class="px-6 pt-3 -mb-1">
+                    <p class="text-xs text-gray-500">末端の組織（その先に階層がない項目）を選択すると「決定」できます。3階層に満たない組織でも選択可能です。</p>
+                </div>
+
+                <div class="flex-1 overflow-hidden flex flex-col md:flex-row bg-gray-50 min-h-[300px] mt-2">
+
                     <div class="flex-1 border-r border-gray-200 flex flex-col h-1/2 md:h-auto">
                         <div class="px-4 py-2 bg-gray-100/50 border-b text-xs font-bold text-gray-500 uppercase tracking-wider">事業部・本部 (Level 1)</div>
                         <div id="col-1" class="flex-1 overflow-y-auto p-2 space-y-1 bg-white">
@@ -338,17 +479,17 @@
                 <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100 bg-gray-50/50">
                     <h2 id="privacy-modal-title" class="text-lg font-bold text-gray-800 flex items-center gap-2">
                         <span class="material-symbols-outlined text-sky-600">policy</span>
-                        プライバシーポリシー
+                        キャンセルポリシー
                     </h2>
                     <button type="button" id="privacy-close" class="p-1 rounded-full hover:bg-gray-200 transition" aria-label="閉じる">
                         <span class="material-symbols-outlined text-gray-500 text-xl">close</span>
                     </button>
                 </div>
                 <div class="px-6 py-6 max-h-[60vh] overflow-y-auto text-sm leading-relaxed text-gray-700 space-y-4">
-                    <p>本サービスでは、お申込みおよび受講に必要な範囲で、お客様の氏名・メールアドレス・住所・電話番号等の個人情報を取得・利用します。</p>
-                    <p>取得した個人情報は、受講に関するご連絡、教材発送等の目的のみに利用し、法令に基づく場合を除き、ご本人の同意なく第三者に提供することはありません。</p>
+                    <p>お申込み後のキャンセル・受講内容の変更につきましては、以下の規定に基づき対応いたします。</p>
+                    <p>申込受付期間内のキャンセルは無償で承ります。申込受付期間終了後のキャンセルは、教材の手配状況に応じて所定のキャンセル料が発生する場合があります。</p>
                     <div class="p-4 bg-gray-50 rounded-xl border border-gray-100 text-xs text-gray-500">
-                        （デモ用のダミーテキストです。実際にはここに詳細な条文が入ります。）
+                        （デモ用のダミーテキストです。実際には募集ごとに設定されたキャンセルポリシー本文が表示されます。）
                     </div>
                 </div>
                 <div class="px-6 py-4 border-t border-gray-100 bg-white space-y-4">

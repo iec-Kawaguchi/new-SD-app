@@ -21,10 +21,9 @@ window.addEventListener('DOMContentLoaded', () => {
     const isCustomer = initialRole === 'customer';
 
     function applyGridClass(el) {
-        el.classList.remove('list-grid', 'no-std-tag', 'supplier-grid');
+        el.classList.remove('list-grid', 'supplier-grid');
         el.classList.add('list-grid');
         if (isSupplier) el.classList.add('supplier-grid');
-        if (noStdTag) el.classList.add('no-std-tag');
     }
 
     // =========================================================
@@ -52,7 +51,51 @@ window.addEventListener('DOMContentLoaded', () => {
         orgs: new Set(),
     };
     let keyword = '';
-    let noStdTag = false;
+
+    // 標準タグ設定（カテゴリ単位の非表示）。Set に入っているカテゴリは非表示。
+    const STD_CATS = ['target', 'genre', 'level', 'format', 'other'];
+    const hiddenStdCats = new Set();
+    const allStdHidden = () => hiddenStdCats.size === STD_CATS.length;
+
+    // 並び替え用ラベル（メニュー表示・アクティブ表示）
+    const STD_CAT_LABELS = { target: '対象・階層', genre: 'ジャンル', level: '難易度', format: '受講形態', other: 'その他' };
+    const CUSTOM_CAT_LABELS = { target: '対象', genre: 'ジャンル', level: 'レベル', other: 'その他' };
+
+    // 標準タグの { カテゴリ, 並び順 } レジストリ（モック用デモ値。
+    // 実装では StandardTagMaster.Category / SortOrder を参照する）。
+    // 同名タグが必ず同じカテゴリ・並び順になるよう「タグ名」で一意に定義する。
+    const STD_TAG_META = {
+        // 対象・階層 (target)
+        'リーダーシップ':     { cat: 'target', order: 1 },
+        'マネジメント':       { cat: 'target', order: 2 },
+        '労務':               { cat: 'target', order: 3 },
+        // ジャンル (genre)
+        'PCスキル':           { cat: 'genre',  order: 1 },
+        'DX':                 { cat: 'genre',  order: 2 },
+        'マーケティング':     { cat: 'genre',  order: 3 },
+        '営業':               { cat: 'genre',  order: 4 },
+        '会計':               { cat: 'genre',  order: 5 },
+        '統計':               { cat: 'genre',  order: 6 },
+        // 難易度 (level)
+        '思考法':             { cat: 'level',  order: 1 },
+        '仕事力':             { cat: 'level',  order: 2 },
+        // 受講形態 (format)
+        '文章力':             { cat: 'format', order: 1 },
+        'コミュニケーション': { cat: 'format', order: 2 },
+        // その他 (other)
+        'マナー':             { cat: 'other',  order: 1 },
+        'コンプライアンス':   { cat: 'other',  order: 2 },
+    };
+
+    // カスタムタグの { カテゴリ, 並び順 } レジストリ（モック用デモ値。
+    // 実装では CustomTagMaster.Category / SortOrder を参照する）。
+    const CUSTOM_TAG_META = {
+        '管理職向け':   { cat: 'target', order: 1 },
+        '新人向け':     { cat: 'target', order: 2 },
+        '働き方改革':   { cat: 'genre',  order: 1 },
+        '人気':         { cat: 'other',  order: 1 },
+        'おすすめ':     { cat: 'other',  order: 2 },
+    };
 
     // 現在スライドパネルで開いているrow ID
     let openPanelRowId = null;
@@ -193,10 +236,10 @@ window.addEventListener('DOMContentLoaded', () => {
             : '';
 
         return `
-        <div class="row group list-grid items-center py-3 px-4 border-b border-gray-100 transition-colors ${rowBgClass} ${noStdTag ? 'no-std-tag' : ''} ${isSupplier ? 'supplier-grid' : ''}"
+        <div class="row group list-grid items-center py-3 px-4 border-b border-gray-100 transition-colors ${rowBgClass} ${isSupplier ? 'supplier-grid' : ''}"
             data-id="${d.id}"
             data-title="${d.title}" data-code="${d.code}" data-org="${d.org}"
-            data-std="${d.stdTag || ''}" data-custom="${customTags.join(',')}"
+            data-std="${d.stdTag || ''}" data-std-cat="${d.stdCat || ''}" data-custom="${customTags.join(',')}"
             data-is-new="${showNewBadge}"
             data-is-new-entry="${isNewEntry}"
             data-delete-requested="${isDeleteRequested ? '1' : '0'}">
@@ -231,12 +274,9 @@ window.addEventListener('DOMContentLoaded', () => {
                 ${statusBadgeHtml}
             </div>
 
-            <div class="flex items-center gap-1 flex-wrap std-tag-col" data-col="stdTag">
-                ${d.stdTag ? `<span class="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] bg-blue-50 text-blue-700 border border-blue-100 truncate max-w-full">${d.stdTag}</span>` : ''}
-            </div>
-
-            <div class="flex items-center gap-1 flex-wrap" data-col="customTag">
-                ${customTags.map(t => `<span class="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] bg-white text-gray-600 border border-gray-200">${t}</span>`).join('')}
+            <div class="flex items-center gap-1 flex-wrap" data-col="tags">
+                ${d.stdTag ? `<span class="std-badge inline-flex items-center px-2 py-0.5 rounded-md text-[10px] bg-blue-50 text-blue-700 border border-blue-100 truncate max-w-full">${d.stdTag}</span>` : ''}
+                <span class="custom-tags contents">${customTags.map(t => `<span class="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] bg-white text-gray-600 border border-gray-200">${t}</span>`).join('')}</span>
                 <button class="add-tag-btn opacity-0 group-hover:opacity-100 text-gray-400 hover:text-blue-600 transition-colors inline-flex items-center p-0.5 rounded hover:bg-blue-50" title="タグ追加"><span class="material-symbols-outlined text-[16px]">add</span></button>
             </div>
         </div>`;
@@ -277,6 +317,20 @@ window.addEventListener('DOMContentLoaded', () => {
         updateSelectAllState();
         refreshBulkbar();
         renderFilterChips();
+        updateListCount();
+    }
+
+    // メイン一覧の件数表示（全 N 件中 M 件表示）
+    function updateListCount() {
+        const totalEl = document.getElementById('list-total');
+        const filteredEl = document.getElementById('list-filtered');
+        if (totalEl) totalEl.textContent = allData.length;
+        const visible = Array.from(document.querySelectorAll('#rows .row'))
+            .filter(r => r.style.display !== 'none').length;
+        if (filteredEl) filteredEl.textContent = visible;
+        // 空状態（データはあるが絞り込み結果が0件）
+        const emptyEl = document.getElementById('empty-state');
+        if (emptyEl) emptyEl.classList.toggle('hidden', !(allData.length > 0 && visible === 0));
     }
 
     // =========================================================
@@ -408,21 +462,135 @@ window.addEventListener('DOMContentLoaded', () => {
     });
 
     // =========================================================
-    // 標準タグ列の表示切替
+    // 標準タグ設定（カテゴリ単位の表示切替）
     // =========================================================
     function applyStdTagVisibility() {
-        document.querySelectorAll('.std-tag-col').forEach(el => {
-            el.classList.toggle('hidden', noStdTag);
-        });
-        document.querySelectorAll('.list-grid').forEach(el => {
-            el.classList.toggle('no-std-tag', noStdTag);
+        // タグは1列に集約済みのため、標準タグの非表示は「列ごと」ではなく
+        // 該当する標準タグバッジ単位で行う（カスタムタグは常に表示）。
+        const allHidden = allStdHidden();
+        document.querySelectorAll('#rows .row').forEach(row => {
+            const cat = row.dataset.stdCat || '';
+            const badge = row.querySelector('.std-badge');
+            if (badge) badge.classList.toggle('hidden', allHidden || hiddenStdCats.has(cat));
         });
     }
 
-    document.getElementById('no-std-tag')?.addEventListener('change', e => {
-        noStdTag = e.target.checked;
+    function updateStdTagBadge() {
+        const badge = document.getElementById('std-tag-badge');
+        if (!badge) return;
+        if (hiddenStdCats.size > 0) {
+            badge.textContent = hiddenStdCats.size;
+            badge.classList.remove('hidden');
+            badge.classList.add('inline-flex');
+        } else {
+            badge.classList.add('hidden');
+            badge.classList.remove('inline-flex');
+        }
+    }
+
+    // 標準タグ設定メニュー開閉
+    const stdTagBtn = document.getElementById('std-tag-btn');
+    const stdTagPanel = document.getElementById('std-tag-panel');
+    stdTagBtn?.addEventListener('click', e => {
+        e.stopPropagation();
+        stdTagPanel?.classList.toggle('hidden');
+    });
+    document.addEventListener('click', e => {
+        if (!document.getElementById('std-tag-container')?.contains(e.target)) {
+            stdTagPanel?.classList.add('hidden');
+        }
+    });
+
+    // カテゴリ別トグル（チェック=表示 / 外す=非表示）
+    document.querySelectorAll('.std-cat-chk').forEach(chk => {
+        chk.addEventListener('change', () => {
+            const cat = chk.dataset.cat;
+            if (chk.checked) hiddenStdCats.delete(cat);
+            else hiddenStdCats.add(cat);
+            markDirty();
+            updateStdTagBadge();
+            applyStdTagVisibility();
+        });
+    });
+
+    document.getElementById('std-show-all')?.addEventListener('click', () => {
+        hiddenStdCats.clear();
+        document.querySelectorAll('.std-cat-chk').forEach(c => c.checked = true);
         markDirty();
+        updateStdTagBadge();
         applyStdTagVisibility();
+    });
+    document.getElementById('std-hide-all')?.addEventListener('click', () => {
+        STD_CATS.forEach(c => hiddenStdCats.add(c));
+        document.querySelectorAll('.std-cat-chk').forEach(c => c.checked = false);
+        markDirty();
+        updateStdTagBadge();
+        applyStdTagVisibility();
+    });
+
+    // =========================================================
+    // 並び替え（タグカテゴリ単位・昇順）
+    // 選んだカテゴリの並び順（昇順）でリストを並べ替える。
+    // 同一カテゴリに複数タグがある行は最小の並び順を採用。
+    // 当該カテゴリのタグを持たない行は末尾へ（相対順を維持）。
+    // 実際の並び順を書き換える（未保存マーク → 保存時に mef_sortno へ反映）。
+    // =========================================================
+    const sortBtn = document.getElementById('sort-btn');
+    const sortPanel = document.getElementById('sort-panel');
+    sortBtn?.addEventListener('click', e => {
+        e.stopPropagation();
+        sortPanel?.classList.toggle('hidden');
+    });
+    document.addEventListener('click', e => {
+        if (!document.getElementById('sort-container')?.contains(e.target)) {
+            sortPanel?.classList.add('hidden');
+        }
+    });
+
+    // 行 d がカテゴリ cat で持つタグの最小並び順を返す（該当タグなしは Infinity）
+    function minTagSortOrder(d, tagType, cat) {
+        const orders = [];
+        if (tagType === 'std') {
+            if (d.stdTag && d.stdCat === cat) orders.push(d.stdOrder ?? 0);
+        } else {
+            const tags = Array.isArray(d.custom) ? d.custom : String(d.custom || '').split(',').filter(Boolean);
+            tags.forEach(t => {
+                const m = CUSTOM_TAG_META[t];
+                if (m && m.cat === cat) orders.push(m.order);
+            });
+        }
+        return orders.length ? Math.min(...orders) : Infinity;
+    }
+
+    function sortByTagCategory(tagType, cat) {
+        // 安定ソート（同値は元の順序を維持）
+        allData = allData
+            .map((d, i) => ({ d, i, key: minTagSortOrder(d, tagType, cat) }))
+            .sort((a, b) => (a.key - b.key) || (a.i - b.i))
+            .map(x => x.d);
+
+        // allData を正としてリストを再描画
+        loaded = 0;
+        rowsEl.innerHTML = '';
+        appendChunk();
+        markDirty();
+
+        // アクティブな並び替え条件をボタンに表示
+        const labels = tagType === 'std' ? STD_CAT_LABELS : CUSTOM_CAT_LABELS;
+        const prefix = tagType === 'std' ? '標準: ' : 'カスタム: ';
+        const al = document.getElementById('sort-active-label');
+        if (al) {
+            al.textContent = prefix + (labels[cat] || cat);
+            al.classList.remove('hidden');
+            al.classList.add('inline-flex');
+        }
+    }
+
+    document.querySelectorAll('.sort-opt').forEach(btn => {
+        btn.addEventListener('click', () => {
+            sortByTagCategory(btn.dataset.tagType, btn.dataset.cat);
+            sortPanel?.classList.add('hidden');
+        });
     });
 
     // =========================================================
@@ -536,7 +704,7 @@ window.addEventListener('DOMContentLoaded', () => {
         if (openPanelRowId === id) closeSlidePanel();
         row.remove();
         markDirty();
-        updateOrderLabels(); refreshBulkbar();
+        updateOrderLabels(); refreshBulkbar(); updateListCount();
     });
 
     btnBulkPhysical?.addEventListener('click', () => {
@@ -551,7 +719,7 @@ window.addEventListener('DOMContentLoaded', () => {
         loaded -= ids.length;
         if (ids.includes(String(openPanelRowId))) closeSlidePanel();
         markDirty();
-        updateOrderLabels(); refreshBulkbar(); updateSelectAllState();
+        updateOrderLabels(); refreshBulkbar(); updateSelectAllState(); updateListCount();
     });
 
     // =========================================================
@@ -777,7 +945,7 @@ window.addEventListener('DOMContentLoaded', () => {
                 <div class="mt-5">
                     <h4 class="text-xs font-bold text-gray-700 mb-2 flex items-center gap-1">
                         <span class="material-symbols-outlined text-[14px] text-gray-400">event_busy</span>
-                        非公開日設定
+                        カート非表示期間設定
                     </h4>
                     <div class="space-y-2">
                         <div class="flex items-center gap-2">
@@ -789,16 +957,20 @@ window.addEventListener('DOMContentLoaded', () => {
                             <input type="date" ${isCustomer || isSupplier ? 'disabled' : ''} class="rounded-md border ${isCustomer || isSupplier ? 'border-gray-200 bg-gray-100 text-gray-400 cursor-not-allowed' : 'border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500'} px-3 py-1.5 text-sm flex-1">
                         </div>
                     </div>
-                    ${isCustomer || isSupplier ? '<p class="mt-1 text-xs text-gray-400">非公開日の設定はIECが行います</p>' : ''}
+                    ${isCustomer || isSupplier ? '<p class="mt-1 text-xs text-gray-400">カート非表示期間の設定はIECが行います</p>' : ''}
                 </div>
 
-                <div class="mt-5 pt-5 border-t border-gray-100 bg-gray-50 -mx-5 -mb-5 px-5 pb-5" data-visible-for="iec, supplier">
+                <div class="mt-5 pt-5 border-t border-gray-100 bg-gray-50 -mx-5 -mb-5 px-5 pb-5" data-visible-for="iec, supplier, customer">
                     <h4 class="text-sm font-bold text-gray-800 mb-1.5 flex items-center gap-1">
                         <span class="material-symbols-outlined text-[14px] text-gray-400">sticky_note_2</span>
                         掲載判断コメント
                     </h4>
-                    <p class="text-xs text-gray-400 mb-2">変更は「変更を保存する」で確定されます</p>
-                    <textarea id="course-comment" class="w-full min-h-[90px] rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 resize-y bg-white" placeholder="削除希望の理由やメモを記入...">${savedComment}</textarea>
+                    ${isCustomer
+                        ? `<p class="text-xs text-gray-400 mb-2">IEC・他団体が入力したコメントを表示しています（参照のみ）</p>
+                           <div class="w-full min-h-[90px] rounded-lg border border-gray-200 px-3 py-2 text-sm text-gray-600 bg-gray-100 whitespace-pre-wrap">${savedComment || '<span class="text-gray-400 italic">コメントはありません</span>'}</div>`
+                        : `<p class="text-xs text-gray-400 mb-2">変更は「変更を保存する」で確定されます</p>
+                           <textarea id="course-comment" class="w-full min-h-[90px] rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 resize-y bg-white" placeholder="削除希望の理由やメモを記入...">${savedComment}</textarea>`
+                    }
                 </div>
             </div>`;
 
@@ -813,7 +985,7 @@ window.addEventListener('DOMContentLoaded', () => {
             });
         }
 
-        // 非公開日変更 → 未保存マーク
+        // カート非表示期間変更 → 未保存マーク
         panelContent.querySelectorAll('input[type="date"]').forEach(dateInput => {
             dateInput.addEventListener('change', () => markDirty());
         });
@@ -826,6 +998,12 @@ window.addEventListener('DOMContentLoaded', () => {
     // =========================================================
     let modalData = [];
 
+    // IEC が承認済みのバージョンを持つフライヤーか（プレビュー活性判定）
+    const APPROVED_COMPOSITE = ['承認済', '修正中', '修正申請中', '否認（修正）'];
+    function isIecApproved(d) {
+        return d.eduCode === 'IEC' || APPROVED_COMPOSITE.includes(d.compositeStatus);
+    }
+
     function normalizeCourseMaster(d) {
         const stdTagNames = (d.standardTagIds || [])
             .map(id => STANDARD_TAGS.find(t => t.id === id)?.name)
@@ -836,6 +1014,8 @@ window.addEventListener('DOMContentLoaded', () => {
             code: d.tkfCode || d.hanCode || '',
             org: d.org || '',
             stdTag: stdTagNames.join(','),
+            exclusive: d.exclusiveFlg === true,   // 企業専用コース
+            approved: isIecApproved(d),           // IEC承認済み（プレビュー活性）
             options: Array.isArray(d.courses) ? d.courses.map(c => ({
                 id: c.sortNo, name: c.name || '', price: c.price ?? 0,
                 length: c.period ? `${c.period}か月` : '-'
@@ -861,19 +1041,21 @@ window.addEventListener('DOMContentLoaded', () => {
     function buildOptionPopover(options) {
         if (!options || !options.length) return '';
         const nf = new Intl.NumberFormat('ja-JP');
+        // 「選択肢なし」（1件のみでオプション名が空）の場合は「オプション」列を表示しない
+        const isNoOption = options.length === 1 && !options[0].name;
         const rows = options.map(o => `
             <tr class="border-b border-gray-100 last:border-0">
-                <td class="py-1 pr-3 text-gray-700 whitespace-nowrap">${o.name || `オプション${o.id}`}</td>
+                ${isNoOption ? '' : `<td class="py-1 pr-3 text-gray-700 whitespace-nowrap">${o.name || '-'}</td>`}
                 <td class="py-1 pr-3 text-gray-500 whitespace-nowrap">${o.length || '-'}</td>
                 <td class="py-1 text-gray-700 whitespace-nowrap text-right">¥${typeof o.price === 'number' ? nf.format(o.price) : (o.price || '-')}</td>
             </tr>`).join('');
         return `
-            <div class="hidden group-hover/opt:block absolute top-full left-1/2 -translate-x-1/2 mt-1 z-50 bg-white border border-gray-200 rounded-lg shadow-xl p-3 w-72 pointer-events-none">
+            <div class="hidden group-hover/opt:block absolute top-full left-1/2 -translate-x-1/2 mt-1 z-50 bg-white border border-gray-200 rounded-lg shadow-xl p-3 w-72 pointer-events-none text-left">
                 <div class="text-[10px] font-bold text-gray-400 mb-2 uppercase tracking-wide">オプション</div>
                 <table class="w-full text-xs">
                     <thead>
                         <tr class="text-gray-400 border-b border-gray-100">
-                            <th class="pb-1 pr-3 text-left font-normal">受講形態</th>
+                            ${isNoOption ? '' : `<th class="pb-1 pr-3 text-left font-normal">オプション</th>`}
                             <th class="pb-1 pr-3 text-left font-normal">期間</th>
                             <th class="pb-1 text-right font-normal">受講料</th>
                         </tr>
@@ -887,15 +1069,25 @@ window.addEventListener('DOMContentLoaded', () => {
         const q = (document.getElementById('modal-q')?.value || '').toLowerCase();
         const org = document.getElementById('modal-org-filter')?.value || '';
         const std = document.getElementById('modal-std-filter')?.value || '';
+        const showExclusive = document.getElementById('modal-show-exclusive')?.checked || false;
         const addedIds = new Set(allData.map(d => String(d.id)));
 
-        const filtered = modalData.filter(d => {
+        // 母集団（企業専用設定を反映した総数）
+        const population = modalData.filter(d => showExclusive || !d.exclusive);
+
+        const filtered = population.filter(d => {
             const hay = `${d.title} ${d.code} ${d.org}`.toLowerCase();
             if (q && !hay.includes(q)) return false;
             if (org && d.org !== org) return false;
             if (std && d.stdTag !== std) return false;
             return true;
         });
+
+        // 件数表示更新
+        const totalEl = document.getElementById('modal-total-count');
+        const filteredEl = document.getElementById('modal-filtered-count');
+        if (totalEl) totalEl.textContent = population.length;
+        if (filteredEl) filteredEl.textContent = filtered.length;
 
         const modalRows = document.getElementById('modal-rows');
         if (!modalRows) return;
@@ -914,16 +1106,31 @@ window.addEventListener('DOMContentLoaded', () => {
                     `<span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] bg-blue-50 text-blue-700 border border-blue-100 truncate">${t}</span>`
                   ).join('') + (stdTagList.length > 2 ? `<span class="text-[10px] text-gray-400 shrink-0">+${stdTagList.length - 2}</span>` : '')
                 : '';
+            const exclusiveBadge = d.exclusive
+                ? `<span class="shrink-0 inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold bg-purple-50 text-purple-700 border border-purple-200" title="企業専用コース">企業専用</span>`
+                : '';
+            // プレビュー: IEC承認済みのみアクティブ（別タブで開く）
+            const previewCell = d.approved
+                ? `<a href="./course-master.html?preview=${encodeURIComponent(d.code)}" target="_blank" rel="noopener" onclick="event.stopPropagation()" class="flex justify-center text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded p-1 transition-colors" title="プレビューを別タブで開く">
+                       <span class="material-symbols-outlined icon-md">open_in_new</span>
+                   </a>`
+                : `<span class="flex justify-center text-gray-300 cursor-not-allowed p-1" title="IEC未承認のためプレビューできません">
+                       <span class="material-symbols-outlined icon-md">open_in_new</span>
+                   </span>`;
             return `
-                <label class="grid grid-cols-[3rem_1fr_12rem_8rem_5rem_8rem] items-center px-6 py-3 border-b border-gray-50 ${isAdded ? 'opacity-40 cursor-not-allowed bg-gray-50' : 'hover:bg-blue-50 cursor-pointer'} transition-colors">
+                <label class="grid grid-cols-[3rem_1fr_12rem_8rem_5rem_8rem_5rem] items-center px-6 py-3 border-b border-gray-50 ${isAdded ? 'opacity-40 cursor-not-allowed bg-gray-50' : 'hover:bg-blue-50 cursor-pointer'} transition-colors">
                     <div class="flex justify-center">
                         <input type="checkbox" class="modal-sel rounded border-gray-300 text-blue-600 h-4 w-4" data-id="${d.id}" ${isAdded ? 'disabled' : ''}>
                     </div>
-                    <span class="truncate text-sm font-medium text-gray-800">${d.title}</span>
+                    <div class="flex items-center gap-1.5 min-w-0">
+                        <span class="truncate text-sm font-medium text-gray-800">${d.title}</span>
+                        ${exclusiveBadge}
+                    </div>
                     <span class="text-xs text-gray-500 font-mono">${d.code}</span>
                     <span class="text-xs text-gray-500">${d.org}</span>
                     ${optBadge}
                     <div class="flex flex-wrap gap-1 items-start">${stdBadge}</div>
+                    ${previewCell}
                 </label>`;
         }).join('');
 
@@ -952,7 +1159,7 @@ window.addEventListener('DOMContentLoaded', () => {
     document.getElementById('cancel-course-modal')?.addEventListener('click', closeCourseModal);
     document.getElementById('course-modal')?.addEventListener('click', e => { if (e.target === document.getElementById('course-modal')) closeCourseModal(); });
 
-    ['modal-q', 'modal-org-filter', 'modal-std-filter'].forEach(id => {
+    ['modal-q', 'modal-org-filter', 'modal-std-filter', 'modal-show-exclusive'].forEach(id => {
         document.getElementById(id)?.addEventListener('input', renderModalList);
         document.getElementById(id)?.addEventListener('change', renderModalList);
     });
@@ -1088,12 +1295,11 @@ window.addEventListener('DOMContentLoaded', () => {
             d.custom = newTags;
             row.dataset.custom = newTags.join(',');
 
-            const col = row.querySelector('[data-col="customTag"]');
+            const col = row.querySelector('.custom-tags');
             if (col) {
                 col.innerHTML = newTags.map(t =>
                     `<span class="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] bg-white text-gray-600 border border-gray-200">${t}</span>`
-                ).join('') +
-                `<button class="add-tag-btn opacity-0 group-hover:opacity-100 text-gray-400 hover:text-blue-600 transition-colors inline-flex items-center p-0.5 rounded hover:bg-blue-50" title="タグ追加"><span class="material-symbols-outlined text-[16px]">add</span></button>`;
+                ).join('');
             }
         });
 
@@ -1146,12 +1352,11 @@ window.addEventListener('DOMContentLoaded', () => {
         const row = rowsEl.querySelector(`.row[data-id="${currentEditingRowId}"]`);
         if (row) {
             row.dataset.custom = selectedTags.join(',');
-            const col = row.querySelector('[data-col="customTag"]');
+            const col = row.querySelector('.custom-tags');
             if (col) {
                 col.innerHTML = selectedTags.map(t =>
                     `<span class="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] bg-white text-gray-600 border border-gray-200">${t}</span>`
-                ).join('') +
-                `<button class="add-tag-btn opacity-0 group-hover:opacity-100 text-gray-400 hover:text-blue-600 transition-colors inline-flex items-center p-0.5 rounded hover:bg-blue-50" title="タグ追加"><span class="material-symbols-outlined text-[16px]">add</span></button>`;
+                ).join('');
             }
         }
         closeTagModal();
@@ -1214,8 +1419,19 @@ window.addEventListener('DOMContentLoaded', () => {
     // 差し戻し実行（モック: アラートで完了を示す）
     document.getElementById('confirm-reject')?.addEventListener('click', () => {
         const comment = document.getElementById('reject-comment')?.value || '';
+        clearDirty(); // 終端アクション（再提案依頼）は未保存分も含めて確定するため未保存状態を解除
         alert(`差し戻しが完了しました。\n${comment ? `コメント: ${comment}` : '（コメントなし）'}\n\n※モック: 実際にはIECへ通知し、募集一覧へ遷移します。`);
         closeRejectModal();
+    });
+
+    // 終端アクション（コースを提案する／提案を承認）: 未保存分も含めて確定 → 未保存状態を解除
+    document.getElementById('propose-btn')?.addEventListener('click', () => {
+        clearDirty();
+        alert('コースを提案しました。\n\n※モック: 実際にはIECへ通知し、募集一覧へ遷移します。');
+    });
+    document.getElementById('approve-btn')?.addEventListener('click', () => {
+        clearDirty();
+        alert('提案を承認しました。\n\n※モック: 実際には募集一覧へ遷移します。');
     });
 
     // =========================================================
@@ -1246,9 +1462,14 @@ window.addEventListener('DOMContentLoaded', () => {
         allData = isSupplier ? data.filter(d => d.org === '他団体B') : data;
 
         // 既存データには isNewEntry=false、isNew はデータの isNew を引き継ぐ
-        allData.forEach(d => {
+        // 標準タグのカテゴリ・並び順はタグ名で一貫させる（同名タグは必ず同じカテゴリ・並び順）。
+        // レジストリ未定義のタグ（モーダル追加分など）はカテゴリなし扱い（並び替え時は末尾）。
+        allData.forEach((d) => {
             if (d.isNewEntry === undefined) d.isNewEntry = false;
             if (d.isNew === undefined) d.isNew = false;
+            const meta = STD_TAG_META[d.stdTag];
+            if (d.stdCat === undefined) d.stdCat = meta?.cat || '';
+            if (d.stdOrder === undefined) d.stdOrder = meta?.order ?? 0;
         });
 
         loaded = 0;

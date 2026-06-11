@@ -204,5 +204,62 @@
         highlightActiveByHref(mount);
     }
 
-    global.MockUI = { injectHeader, injectSidebar };
+    // =========================================================
+    // 汎用ポップオーバー
+    // data-popover-trigger="key" のボタンで data-popover="key" のパネルを開閉。
+    // 常時バナーを1行チップに圧縮し、本文をポップオーバーへ退避する用途。
+    // イベント委譲のため動的に追加された要素にも有効。
+    // =========================================================
+    function closeAllPopovers() {
+        document.querySelectorAll('[data-popover]').forEach(p => p.classList.add('hidden'));
+    }
+
+    function wireContextPopovers() {
+        document.addEventListener('click', e => {
+            const trigger = e.target.closest('[data-popover-trigger]');
+            if (trigger) {
+                const key = trigger.getAttribute('data-popover-trigger');
+                const panel = document.querySelector(`[data-popover="${key}"]`);
+                if (panel) {
+                    const willOpen = panel.classList.contains('hidden');
+                    closeAllPopovers();
+                    panel.classList.toggle('hidden', !willOpen);
+                    return; // 同一ハンドラ内で処理完了（外側クリック判定へ進ませない）
+                }
+            }
+            // パネル外クリックで閉じる（パネル内クリックは維持）
+            if (!e.target.closest('[data-popover]')) closeAllPopovers();
+        });
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Escape') closeAllPopovers();
+        });
+    }
+
+    // =========================================================
+    // 汎用ディスクロージャー（折りたたみ）
+    // data-disclosure-trigger="key" のボタンで data-disclosure="key" を開閉。
+    // 領域を食う常設セクションをデフォルト閉のバーに圧縮する用途。
+    // 外側クリックでは閉じない（展開中のフォーム操作を妨げないため）。
+    // =========================================================
+    function wireDisclosures() {
+        document.addEventListener('click', e => {
+            const trigger = e.target.closest('[data-disclosure-trigger]');
+            if (!trigger) return;
+            const key = trigger.getAttribute('data-disclosure-trigger');
+            const panel = document.querySelector(`[data-disclosure="${key}"]`);
+            if (!panel) return;
+            const isOpen = !panel.classList.toggle('hidden');
+            trigger.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+            const chev = trigger.querySelector('[data-disclosure-chevron]');
+            if (chev) chev.style.transform = isOpen ? 'rotate(180deg)' : '';
+        });
+    }
+
+    // defer 読み込みのため DOMContentLoaded 前に登録され確実に発火する
+    document.addEventListener('DOMContentLoaded', () => {
+        wireContextPopovers();
+        wireDisclosures();
+    });
+
+    global.MockUI = { injectHeader, injectSidebar, wireContextPopovers, wireDisclosures };
 })(window);

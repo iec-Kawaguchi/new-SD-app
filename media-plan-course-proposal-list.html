@@ -46,50 +46,44 @@
                                 <p class="text-xs text-gray-500 mt-0.5">●●食品株式会社様 FY26SD募集</p>
                             </div>
                         </div>
-                    </div>
 
-                    <div class="flex flex-col flex-1 min-h-0 gap-4">
+                        <!-- A: コンテキストバー（制作媒体 + 提案要望／supplier専用・タイトル横へ移動） -->
+                        <div class="shrink-0 flex flex-wrap items-center justify-end gap-2" data-visible-for="supplier">
 
-                        <!-- A: Vendor専用エリア（制作する媒体 + 提案要望コメント） -->
-                        <div class="shrink-0 flex flex-col gap-2" data-visible-for="supplier">
-
-                            <!-- 制作する媒体バッジ（常時表示） -->
-                            <div class="flex items-center gap-2.5 px-4 py-2.5 rounded-lg border border-gray-200 bg-white shadow-sm">
+                            <!-- 制作する媒体（常時表示・チップ） -->
+                            <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border border-gray-200 bg-white shadow-sm">
                                 <span class="material-symbols-outlined text-gray-400 icon-sm">article</span>
                                 <span class="text-xs font-medium text-gray-600 shrink-0">制作する媒体</span>
                                 <div class="w-px h-4 bg-gray-200 shrink-0"></div>
-                                <div class="flex flex-wrap gap-1.5">
-                                    <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium bg-sky-100 text-sky-700 border border-sky-200">
-                                        <span class="material-symbols-outlined" style="font-size:13px">language</span>WEBサイト
-                                    </span>
-                                    <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium bg-violet-100 text-violet-700 border border-violet-200">
-                                        <span class="material-symbols-outlined" style="font-size:13px">auto_stories</span>パンフレット
-                                    </span>
-                                </div>
+                                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium bg-sky-100 text-sky-700 border border-sky-200">
+                                    <span class="material-symbols-outlined" style="font-size:13px">language</span>WEBサイト
+                                </span>
+                                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium bg-violet-100 text-violet-700 border border-violet-200">
+                                    <span class="material-symbols-outlined" style="font-size:13px">auto_stories</span>パンフレット
+                                </span>
                             </div>
 
-                            <!-- 提案要望コメント（コメントがある場合のみ表示） -->
-                            <div id="notifications" class="transition-all duration-300">
-                                <div class="relative overflow-hidden rounded-lg border border-blue-100 bg-blue-50/50 shadow-sm">
-                                    <div class="px-5 py-4 flex gap-4 items-start">
-                                        <div class="shrink-0 mt-0.5">
-                                            <span class="material-symbols-outlined text-blue-600 icon-md">info</span>
-                                        </div>
-                                        <div class="flex-1 min-w-0">
-                                            <div class="flex items-center justify-between">
-                                                <h3 class="text-sm font-bold text-blue-900">提案要望</h3>
-                                                <button id="notificationCloseButton" class="text-blue-400 hover:text-blue-700 hover:bg-blue-100 rounded-full p-1 transition-colors">
-                                                    <span class="material-symbols-outlined icon-md block">close</span>
-                                                </button>
-                                            </div>
-                                            <div class="mt-1 text-sm text-blue-800/80 leading-relaxed">
-                                                ●●食品株式会社様の中期経営計画にのっとり、デジタルシフトを実現するためのITスキルやITリテラシー強化に寄与するコースを積極的に採用したいとの要望をいただいております。
-                                            </div>
-                                        </div>
+                            <!-- 提案要望（チップ＋popover・本文は折りたたみ） -->
+                            <div class="relative">
+                                <button data-popover-trigger="proposal-request" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-blue-200 bg-blue-50/60 text-blue-700 text-xs font-medium hover:bg-blue-100 transition-colors shadow-sm">
+                                    <span class="material-symbols-outlined icon-sm">info</span>
+                                    <span>提案要望あり</span>
+                                    <span class="material-symbols-outlined icon-sm">expand_more</span>
+                                </button>
+                                <div data-popover="proposal-request" class="hidden absolute top-full right-0 mt-2 w-[30rem] max-w-[90vw] bg-white border border-gray-200 rounded-xl shadow-lg z-20 overflow-hidden">
+                                    <div class="px-4 py-3 border-b border-gray-100 bg-blue-50/40 flex items-center gap-2">
+                                        <span class="material-symbols-outlined text-blue-600 icon-sm">campaign</span>
+                                        <h3 class="text-sm font-bold text-blue-900">提案要望</h3>
+                                    </div>
+                                    <div class="px-4 py-3 text-sm text-gray-700 leading-relaxed">
+                                        ●●食品株式会社様の中期経営計画にのっとり、デジタルシフトを実現するためのITスキルやITリテラシー強化に寄与するコースを積極的に採用したいとの要望をいただいております。
                                     </div>
                                 </div>
                             </div>
                         </div>
+                    </div>
+
+                    <div class="flex flex-col flex-1 min-h-0 gap-4">
 
                         <!-- コースリストセクション（全幅） -->
                         <section class="flex-1 flex flex-col min-h-0 bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
@@ -156,13 +150,85 @@
                                         </div>
                                     </div>
 
-                                    <!-- 標準タグを採用しない（IEC専用・業務設定） -->
-                                    <label class="flex items-center gap-2 cursor-pointer select-none ml-1" data-visible-for="iec">
-                                        <input type="checkbox" id="no-std-tag" class="rounded border-gray-300 text-blue-600 focus:ring-blue-500 h-4 w-4">
-                                        <span class="text-sm text-gray-600">標準タグを採用しない</span>
-                                    </label>
+                                    <!-- 並び替え（IEC・Customer専用・タグカテゴリ単位の昇順並び替え） -->
+                                    <div class="relative ml-1" id="sort-container" data-visible-for="iec, customer">
+                                        <button id="sort-btn" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-md border border-gray-200 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors shadow-sm">
+                                            <span class="material-symbols-outlined icon-sm">swap_vert</span>
+                                            <span>並び替え</span>
+                                            <span id="sort-active-label" class="hidden items-center px-1.5 h-5 rounded bg-blue-50 text-blue-700 text-[10px] font-bold border border-blue-100 leading-none"></span>
+                                        </button>
 
-                                    <div class="ml-auto">
+                                        <!-- 並び替えメニュー -->
+                                        <div id="sort-panel" class="hidden absolute top-full left-0 mt-2 w-64 bg-white border border-gray-200 rounded-xl shadow-lg z-20 overflow-hidden">
+                                            <div class="px-4 py-3 border-b border-gray-100">
+                                                <p class="text-xs font-bold text-gray-700">タグのカテゴリで並び替え</p>
+                                                <p class="text-[11px] text-gray-400 mt-0.5">選んだカテゴリの並び順（昇順）でリストを並び替えます。同一カテゴリに複数タグがある場合は最小の並び順を採用します。</p>
+                                            </div>
+                                            <div class="max-h-80 overflow-y-auto custom-scrollbar py-1">
+                                                <div class="px-4 pt-2 pb-1 text-[10px] font-bold text-gray-400 uppercase tracking-wider">標準タグ</div>
+                                                <button class="sort-opt w-full flex items-center gap-2 px-4 py-1.5 text-sm text-gray-700 hover:bg-blue-50 transition-colors text-left" data-tag-type="std" data-cat="target">対象・階層</button>
+                                                <button class="sort-opt w-full flex items-center gap-2 px-4 py-1.5 text-sm text-gray-700 hover:bg-blue-50 transition-colors text-left" data-tag-type="std" data-cat="genre">ジャンル</button>
+                                                <button class="sort-opt w-full flex items-center gap-2 px-4 py-1.5 text-sm text-gray-700 hover:bg-blue-50 transition-colors text-left" data-tag-type="std" data-cat="level">難易度</button>
+                                                <button class="sort-opt w-full flex items-center gap-2 px-4 py-1.5 text-sm text-gray-700 hover:bg-blue-50 transition-colors text-left" data-tag-type="std" data-cat="format">受講形態</button>
+                                                <button class="sort-opt w-full flex items-center gap-2 px-4 py-1.5 text-sm text-gray-700 hover:bg-blue-50 transition-colors text-left" data-tag-type="std" data-cat="other">その他</button>
+                                                <div class="px-4 pt-2 pb-1 mt-1 border-t border-gray-50 text-[10px] font-bold text-gray-400 uppercase tracking-wider">カスタムタグ</div>
+                                                <button class="sort-opt w-full flex items-center gap-2 px-4 py-1.5 text-sm text-gray-700 hover:bg-blue-50 transition-colors text-left" data-tag-type="custom" data-cat="target">対象</button>
+                                                <button class="sort-opt w-full flex items-center gap-2 px-4 py-1.5 text-sm text-gray-700 hover:bg-blue-50 transition-colors text-left" data-tag-type="custom" data-cat="genre">ジャンル</button>
+                                                <button class="sort-opt w-full flex items-center gap-2 px-4 py-1.5 text-sm text-gray-700 hover:bg-blue-50 transition-colors text-left" data-tag-type="custom" data-cat="level">レベル</button>
+                                                <button class="sort-opt w-full flex items-center gap-2 px-4 py-1.5 text-sm text-gray-700 hover:bg-blue-50 transition-colors text-left" data-tag-type="custom" data-cat="other">その他</button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- 標準タグ設定（IEC専用・カテゴリ単位の採用可否） -->
+                                    <div class="relative ml-1" id="std-tag-container" data-visible-for="iec">
+                                        <button id="std-tag-btn" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-md border border-gray-200 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors shadow-sm">
+                                            <span class="material-symbols-outlined icon-sm">sell</span>
+                                            <span>標準タグ設定</span>
+                                            <span id="std-tag-badge" class="hidden items-center justify-center min-w-[1.25rem] h-5 px-1.5 rounded-full bg-amber-500 text-white text-[10px] font-bold leading-none">0</span>
+                                        </button>
+
+                                        <!-- 標準タグ設定メニュー -->
+                                        <div id="std-tag-panel" class="hidden absolute top-full left-0 mt-2 w-72 bg-white border border-gray-200 rounded-xl shadow-lg z-20 overflow-hidden">
+                                            <div class="px-4 py-3 border-b border-gray-100">
+                                                <p class="text-xs font-bold text-gray-700">標準タグの表示カテゴリ</p>
+                                                <p class="text-[11px] text-gray-400 mt-0.5">非表示にしたカテゴリの標準タグは募集サイト・一覧で表示されません。</p>
+                                            </div>
+                                            <div class="p-2 space-y-0.5">
+                                                <label class="flex items-center justify-between gap-2 cursor-pointer hover:bg-gray-50 rounded px-2 py-1.5">
+                                                    <span class="text-sm text-gray-700">対象・階層</span>
+                                                    <input type="checkbox" class="std-cat-chk rounded border-gray-300 text-blue-600 h-4 w-4" data-cat="target" checked>
+                                                </label>
+                                                <label class="flex items-center justify-between gap-2 cursor-pointer hover:bg-gray-50 rounded px-2 py-1.5">
+                                                    <span class="text-sm text-gray-700">ジャンル</span>
+                                                    <input type="checkbox" class="std-cat-chk rounded border-gray-300 text-blue-600 h-4 w-4" data-cat="genre" checked>
+                                                </label>
+                                                <label class="flex items-center justify-between gap-2 cursor-pointer hover:bg-gray-50 rounded px-2 py-1.5">
+                                                    <span class="text-sm text-gray-700">難易度</span>
+                                                    <input type="checkbox" class="std-cat-chk rounded border-gray-300 text-blue-600 h-4 w-4" data-cat="level" checked>
+                                                </label>
+                                                <label class="flex items-center justify-between gap-2 cursor-pointer hover:bg-gray-50 rounded px-2 py-1.5">
+                                                    <span class="text-sm text-gray-700">受講形態</span>
+                                                    <input type="checkbox" class="std-cat-chk rounded border-gray-300 text-blue-600 h-4 w-4" data-cat="format" checked>
+                                                </label>
+                                                <label class="flex items-center justify-between gap-2 cursor-pointer hover:bg-gray-50 rounded px-2 py-1.5">
+                                                    <span class="text-sm text-gray-700">その他</span>
+                                                    <input type="checkbox" class="std-cat-chk rounded border-gray-300 text-blue-600 h-4 w-4" data-cat="other" checked>
+                                                </label>
+                                            </div>
+                                            <div class="px-4 py-2.5 border-t border-gray-100 bg-gray-50/50 flex items-center justify-between">
+                                                <button id="std-show-all" class="text-xs text-blue-600 hover:underline">すべて表示</button>
+                                                <button id="std-hide-all" class="text-xs text-gray-500 hover:text-gray-700 hover:underline">すべて非表示</button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- 件数表示（全ロール） -->
+                                    <span class="ml-auto text-xs text-gray-500 whitespace-nowrap">
+                                        全 <span id="list-total" class="font-bold text-gray-700">0</span> 件中
+                                        <span id="list-filtered" class="font-bold text-blue-700">0</span> 件表示
+                                    </span>
+                                    <div>
                                         <button id="open-course-modal" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-md bg-blue-600 text-white text-sm font-bold hover:bg-blue-700 shadow-sm hover:shadow transition-all"
                                             data-visible-for="iec, supplier">
                                             <span class="material-symbols-outlined icon-sm">add</span>
@@ -195,8 +261,13 @@
                                 <div class="flex items-center">コース名</div>
                                 <div class="flex items-center" data-col="org">団体</div>
                                 <div class="flex items-center justify-center">状態</div>
-                                <div class="flex items-center std-tag-col" data-col="stdTag">標準タグ</div>
-                                <div class="flex items-center" data-col="customTag">カスタムタグ</div>
+                                <div class="flex items-center gap-1.5" data-col="tags">
+                                    <span>タグ</span>
+                                    <span class="inline-flex items-center gap-0.5 text-[10px] font-medium text-gray-400">
+                                        <span class="w-2 h-2 rounded-sm bg-blue-100 border border-blue-200"></span>標準
+                                        <span class="w-2 h-2 rounded-sm bg-white border border-gray-300 ml-1"></span>カスタム
+                                    </span>
+                                </div>
                             </div>
 
                             <!-- D: 行リスト -->
@@ -209,14 +280,20 @@
                                     <div class="h-14 rounded-lg bg-gray-50 animate-pulse border border-gray-100"></div>
                                 </div>
                                 <div id="rows" class="divide-y divide-gray-100"></div>
+                                <!-- 空状態（検索・フィルターで0件） -->
+                                <div id="empty-state" class="hidden flex flex-col items-center justify-center py-16 text-center">
+                                    <span class="material-symbols-outlined text-gray-300" style="font-size:48px">search_off</span>
+                                    <p class="mt-2 text-sm font-medium text-gray-500">該当するコースがありません</p>
+                                    <p class="mt-1 text-xs text-gray-400">検索キーワードやフィルター条件を変更してください</p>
+                                </div>
                                 <div id="sentinel" class="h-4"></div>
                             </div>
 
-                            <!-- E/F: 一括操作バー & フッター -->
-                            <div class="bg-white border-t border-gray-200 px-6 py-4 flex flex-col shrink-0">
+                            <!-- E/F: 一括操作バー & フッター（高さ固定・選択時もレイアウトシフトなし） -->
+                            <div class="bg-white border-t border-gray-200 px-6 flex items-center shrink-0 min-h-[4.5rem]">
 
-                                <!-- E: 一括操作バー -->
-                                <div id="bulkbar" class="hidden flex items-center gap-3 w-full mb-4 p-3 bg-blue-50 rounded-lg border border-blue-100 flex-wrap">
+                                <!-- E: 一括操作バー（def-bar と排他表示・同一コンテナ内で入れ替え） -->
+                                <div id="bulkbar" class="hidden flex items-center gap-3 w-full p-2 bg-blue-50 rounded-lg border border-blue-100 flex-wrap">
                                     <div class="flex items-center gap-2">
                                         <span class="material-symbols-outlined text-blue-600 icon-md">check_circle</span>
                                         <p class="text-sm font-bold text-blue-900"><span id="selCount">0</span> 件選択中</p>
@@ -267,7 +344,7 @@
                                             変更を保存する
                                         </button>
                                         <!-- コースを提案する: Vendor専用・IsDone=false の場合に表示 -->
-                                        <button class="px-6 py-2.5 text-sm font-bold rounded-md bg-blue-600 text-white hover:bg-blue-700 shadow-sm hover:shadow transition-all"
+                                        <button id="propose-btn" class="px-6 py-2.5 text-sm font-bold rounded-md bg-blue-600 text-white hover:bg-blue-700 shadow-sm hover:shadow transition-all"
                                             data-visible-for="supplier">
                                             コースを提案する
                                         </button>
@@ -281,7 +358,7 @@
                                             data-visible-for="customer">
                                             再提案を依頼する
                                         </button>
-                                        <button class="px-6 py-2.5 text-sm font-bold rounded-md bg-blue-600 text-white hover:bg-blue-700 shadow-sm hover:shadow transition-all"
+                                        <button id="approve-btn" class="px-6 py-2.5 text-sm font-bold rounded-md bg-blue-600 text-white hover:bg-blue-700 shadow-sm hover:shadow transition-all"
                                             data-visible-for="customer">
                                             提案を承認
                                         </button>
@@ -337,21 +414,34 @@
                     <select id="modal-std-filter" class="rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 min-w-[10rem]">
                         <option value="">標準タグ: 指定なし</option>
                     </select>
-                    <!-- 残り提案可能件数（Vendor専用・ProposalLimit設定時のみ表示） -->
-                    <div id="modal-proposal-limit" data-visible-for="supplier" class="ml-auto flex items-center gap-1.5 text-sm text-gray-600 bg-white border border-gray-200 rounded-md px-3 py-1.5 shadow-sm">
-                        <span class="material-symbols-outlined icon-sm text-blue-500">info</span>
-                        残り <span id="modal-remaining-count" class="font-bold text-blue-700 mx-0.5">3</span> 件提案可能
+                    <!-- 企業専用コースも表示する（デフォルトOFF） -->
+                    <label class="flex items-center gap-2 cursor-pointer select-none">
+                        <input type="checkbox" id="modal-show-exclusive" class="rounded border-gray-300 text-blue-600 focus:ring-blue-500 h-4 w-4">
+                        <span class="text-sm text-gray-600">企業専用コースも表示する</span>
+                    </label>
+                    <div class="ml-auto flex items-center gap-3">
+                        <!-- 件数表示 -->
+                        <span class="text-xs text-gray-500 whitespace-nowrap">
+                            全 <span id="modal-total-count" class="font-bold text-gray-700">0</span> 件中
+                            <span id="modal-filtered-count" class="font-bold text-blue-700">0</span> 件表示
+                        </span>
+                        <!-- 残り提案可能件数（Vendor専用・ProposalLimit設定時のみ表示） -->
+                        <div id="modal-proposal-limit" data-visible-for="supplier" class="flex items-center gap-1.5 text-sm text-gray-600 bg-white border border-gray-200 rounded-md px-3 py-1.5 shadow-sm">
+                            <span class="material-symbols-outlined icon-sm text-blue-500">info</span>
+                            残り <span id="modal-remaining-count" class="font-bold text-blue-700 mx-0.5">3</span> 件提案可能
+                        </div>
                     </div>
                 </div>
 
                 <div id="modal-list" class="flex-1 overflow-y-auto custom-scrollbar bg-white">
-                    <div class="grid grid-cols-[3rem_1fr_12rem_8rem_5rem_8rem] text-xs font-bold text-gray-500 bg-gray-50 border-b border-gray-200 px-6 py-3 sticky top-0 z-10">
+                    <div class="grid grid-cols-[3rem_1fr_12rem_8rem_5rem_8rem_5rem] text-xs font-bold text-gray-500 bg-gray-50 border-b border-gray-200 px-6 py-3 sticky top-0 z-10">
                         <div class="text-center">選択</div>
                         <div>コース名</div>
                         <div>コード</div>
                         <div>団体</div>
                         <div class="text-center">オプション</div>
                         <div>標準タグ</div>
+                        <div class="text-center">プレビュー</div>
                     </div>
                     <div id="modal-rows" class="divide-y divide-gray-100"></div>
                 </div>
@@ -508,20 +598,14 @@
         </div>
 
         <style>
-            /* グリッドレイアウト */
+            /* グリッドレイアウト（標準タグ・カスタムタグを「タグ」1列に集約） */
             .list-grid {
                 display: grid;
-                grid-template-columns: 3rem 4rem 5rem 1fr 8rem 5rem 10rem 1fr;
+                grid-template-columns: 3rem 4rem 5rem 1fr 8rem 5rem 1.5fr;
             }
-            .list-grid.no-std-tag {
-                grid-template-columns: 3rem 4rem 5rem 1fr 8rem 5rem 1fr;
-            }
-            /* Vendor: No.列非表示（カスタムタグ列は参照のみ表示） */
+            /* Vendor: No.列非表示 */
             .list-grid.supplier-grid {
-                grid-template-columns: 3rem 4rem 1fr 8rem 5rem 10rem 1fr;
-            }
-            .list-grid.supplier-grid.no-std-tag {
-                grid-template-columns: 3rem 4rem 1fr 8rem 5rem 1fr;
+                grid-template-columns: 3rem 4rem 1fr 8rem 5rem 1.5fr;
             }
         </style>
 
