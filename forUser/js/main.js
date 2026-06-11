@@ -292,6 +292,9 @@ const CourseApp = (() => {
             Core.applyAndRender();
         },
 
+        // データは起動時に一括ロード済み。ここでは保持済みリストを BATCH_SIZE 件ずつ
+        // DOM へ段階描画するだけ（サーバーアクセス・疑似遅延なしの同期処理）。
+        // 大量フライヤー（最大400件想定）での初回描画負荷を抑えるための描画分割。
         loadMore: () => {
             const container = document.getElementById(CONFIG.SELECTORS.container);
             const sentinel = document.getElementById(CONFIG.SELECTORS.sentinel);
@@ -299,20 +302,23 @@ const CourseApp = (() => {
             if (state.currentOffset >= state.filteredList.length) { sentinel.classList.add('hidden'); return; }
 
             state.isLoading = true;
-            sentinel.classList.remove('opacity-0');
 
-            setTimeout(() => {
-                const nextBatch = state.filteredList.slice(state.currentOffset, state.currentOffset + CONFIG.BATCH_SIZE);
-                container.insertAdjacentHTML('beforeend', nextBatch.map(Templates.card).join(''));
-                state.currentOffset += nextBatch.length;
+            const nextBatch = state.filteredList.slice(state.currentOffset, state.currentOffset + CONFIG.BATCH_SIZE);
+            container.insertAdjacentHTML('beforeend', nextBatch.map(Templates.card).join(''));
+            state.currentOffset += nextBatch.length;
 
-                UI.ViewMode.apply();
-                Core.syncFavorites(container);
+            UI.ViewMode.apply();
+            Core.syncFavorites(container);
 
-                state.isLoading = false;
-                if (state.currentOffset >= state.filteredList.length) sentinel.classList.add('hidden');
-                else sentinel.classList.add('opacity-0');
-            }, 300);
+            state.isLoading = false;
+            if (state.currentOffset >= state.filteredList.length) { sentinel.classList.add('hidden'); return; }
+            sentinel.classList.add('opacity-0');
+
+            // 1バッチ描画後もセンチネルが画面内に残っている場合（初期リストが短く
+            // ビューポートを埋めない等）は、続けて次バッチを描画して隙間を埋める。
+            if (sentinel.getBoundingClientRect().top < window.innerHeight) {
+                requestAnimationFrame(Core.loadMore);
+            }
         },
 
         syncFavorites: (container) => {
@@ -621,16 +627,18 @@ const CourseApp = (() => {
             },
             setMode: (mode) => { state.viewMode = mode; UI.ViewMode.updateButtons(); UI.ViewMode.apply(); },
             updateButtons: () => {
+                // vis: ボタンごとの表示制御。リストは SP だとグリッドと同形のためデスクトップ専用。
+                //      グリッド／スーパースリムは SP でも切替可能にする。
                 const map = {
-                    grid:    CONFIG.SELECTORS.viewToggleGrid,
-                    list:    CONFIG.SELECTORS.viewToggleList,
-                    compact: CONFIG.SELECTORS.viewToggleCompact
+                    grid:    { id: CONFIG.SELECTORS.viewToggleGrid,    vis: 'flex' },
+                    list:    { id: CONFIG.SELECTORS.viewToggleList,    vis: 'hidden md:flex' },
+                    compact: { id: CONFIG.SELECTORS.viewToggleCompact, vis: 'flex' }
                 };
                 const on = "bg-sky-100 text-sky-700 shadow-inner";
                 const off = "text-gray-500 hover:bg-gray-100 hover:text-gray-700";
                 Object.keys(map).forEach(mode => {
-                    const btn = document.getElementById(map[mode]);
-                    if (btn) btn.className = `flex p-2 rounded-full transition ${state.viewMode === mode ? on : off}`;
+                    const btn = document.getElementById(map[mode].id);
+                    if (btn) btn.className = `${map[mode].vis} p-2 rounded-full transition ${state.viewMode === mode ? on : off}`;
                 });
             },
             apply: () => {

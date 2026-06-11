@@ -145,5 +145,145 @@ const courseList = [
         price: 27500, period: 4, url: "#", isNew: false,
         image: null, org: "テックアカデミア", applicants: 207,
         tags: [{ text: "マネジメント", type: "genre" }, { text: "専門", type: "level" }, { text: "資格", type: "genre" }]
+    },
+    {
+        id: "121", title: "PowerPoint 資料デザイン術",
+        desc: "伝わる資料の構成・配色・図解のコツを習得。テンプレートに頼らない説得力ある一枚を。",
+        price: 13200, period: 2, url: "#", isNew: true,
+        image: null, org: "IEC", applicants: 298,
+        tags: [{ text: "業務効率", type: "genre" }, { text: "全社員", type: "target" }, { text: "実践", type: "level" }]
+    },
+    {
+        id: "122", title: "Word 差し込み印刷・長文作成",
+        desc: "見出し・目次・差し込み印刷など、ビジネス文書を効率よく作る実務テクニックを学習。",
+        price: 9900, period: 1, url: "#", isNew: false,
+        image: null, org: "IEC", applicants: 176,
+        tags: [{ text: "業務効率", type: "genre" }, { text: "入門", type: "level" }]
+    },
+    {
+        id: "123", title: "生成AI 活用 実践ワークショップ",
+        desc: "ChatGPTを業務に組み込むためのプロンプト設計と社内活用事例をハンズオンで体験。",
+        price: 26400, period: 3, url: "#", isNew: true,
+        image: null, org: "テックアカデミア", applicants: 461,
+        tags: [{ text: "AI", type: "genre" }, { text: "業務効率", type: "genre" }, { text: "実践", type: "level" }]
+    },
+    {
+        id: "124", title: "管理職のための1on1入門",
+        desc: "部下の成長を促す対話の進め方。傾聴・フィードバック・目標設定の基本を身につける。",
+        price: 17600, period: 2, url: "#", isNew: false,
+        image: null, org: "グローバル人材研究所", applicants: 211,
+        tags: [{ text: "マネジメント", type: "genre" }, { text: "管理職", type: "target" }, { text: "実践", type: "level" }]
+    },
+    {
+        id: "125", title: "TOEIC(R) スコアアップ集中講座",
+        desc: "頻出パターンを押さえた解法と語彙強化で、短期間でのスコア向上を目指します。",
+        price: 23100, period: 4, url: "#", isNew: false,
+        image: null, org: "グローバル人材研究所", applicants: 389,
+        tags: [{ text: "語学", type: "genre" }, { text: "資格", type: "genre" }, { text: "実践", type: "level" }]
+    },
+    {
+        id: "126", title: "数字に強くなる 管理会計入門",
+        desc: "原価・損益分岐点・予実管理など、意思決定に役立つ管理会計の考え方をやさしく解説。",
+        price: 16500, period: 2, url: "#", isNew: false,
+        image: null, org: "ファイナンス総研", applicants: 163,
+        tags: [{ text: "経理", type: "genre" }, { text: "管理職", type: "target" }, { text: "基礎", type: "level" }]
+    },
+    {
+        id: "127", title: "ハラスメント防止研修",
+        desc: "パワハラ・セクハラの線引きと、起こさせない職場づくりのポイントを事例で学ぶ。",
+        price: 6600, period: 1, url: "#", isNew: false,
+        image: null, org: "リーガル教育サービス", applicants: 478,
+        tags: [{ text: "コンプライアンス", type: "genre" }, { text: "全社員", type: "target" }, { text: "100%補助", type: "other" }]
+    },
+    {
+        id: "128", title: "SQL ではじめるデータ抽出",
+        desc: "業務データを自分で取り出すためのSQL基礎。SELECT・集計・結合をハンズオンで習得。",
+        price: 21800, period: 3, url: "#", isNew: true,
+        image: null, org: "テックアカデミア", applicants: 254,
+        tags: [{ text: "IT", type: "genre" }, { text: "データ", type: "genre" }, { text: "入門", type: "level" }]
+    },
+    {
+        id: "129", title: "デザイン思考ワークショップ",
+        desc: "ユーザー起点で課題を発見し、アイデアを形にするデザイン思考のプロセスを体験します。",
+        price: 19800, period: 2, url: "#", isNew: false,
+        image: null, org: "日本ビジネス教育協会", applicants: 142,
+        tags: [{ text: "思考法", type: "genre" }, { text: "実践", type: "level" }]
+    },
+    {
+        id: "130", title: "新入社員のためのビジネスマナー",
+        desc: "挨拶・電話応対・報連相など、社会人の第一歩を体系的に。配属前の総仕上げに最適。",
+        price: 7700, period: 1, url: "#", isNew: true,
+        image: null, org: "日本ビジネス教育協会", applicants: 502,
+        tags: [{ text: "基礎", type: "level" }, { text: "若手", type: "target" }, { text: "社内推薦", type: "other" }]
+    },
+    {
+        id: "131", title: "Excel ピボットテーブル実践",
+        desc: "大量データを瞬時に集計・分析。ピボットテーブルとグラフで意思決定を加速させる。",
+        price: 14300, period: 2, url: "#", isNew: false,
+        image: "../img/course_c.webp", org: "IEC", applicants: 327,
+        tags: [{ text: "業務効率", type: "genre" }, { text: "データ", type: "genre" }, { text: "実践", type: "level" }]
+    },
+    {
+        id: "132", title: "交渉力・調整力を高める",
+        desc: "利害が対立する場面での合意形成のコツ。社内外の交渉に使える実践フレームを学ぶ。",
+        price: 18700, period: 2, url: "#", isNew: false,
+        image: null, org: "日本ビジネス教育協会", applicants: 188,
+        tags: [{ text: "コミュニケーション", type: "genre" }, { text: "実践", type: "level" }, { text: "管理職", type: "target" }]
+    },
+    {
+        id: "133", title: "個人情報保護法・最新実務",
+        desc: "改正法のポイントと、現場で求められる個人データの取扱い・安全管理措置を整理。",
+        price: 15400, period: 2, url: "#", isNew: false,
+        image: null, org: "リーガル教育サービス", applicants: 96,
+        tags: [{ text: "法務", type: "genre" }, { text: "コンプライアンス", type: "genre" }, { text: "管理職", type: "target" }]
+    },
+    {
+        id: "134", title: "ストレスマネジメント基礎",
+        desc: "セルフケアの考え方とリラクゼーション技法で、心身のコンディションを整える習慣を。",
+        price: 9900, period: 1, url: "#", isNew: false,
+        image: null, org: "メンタルヘルス研究センター", applicants: 201,
+        tags: [{ text: "メンタル", type: "genre" }, { text: "セルフケア", type: "genre" }, { text: "全社員", type: "target" }]
+    },
+    {
+        id: "135", title: "クリティカルシンキング応用",
+        desc: "前提を疑い、論点を見極める思考の技術。会議や提案の質を一段引き上げる応用編。",
+        price: 17600, period: 3, url: "#", isNew: false,
+        image: null, org: "日本ビジネス教育協会", applicants: 167,
+        tags: [{ text: "思考法", type: "genre" }, { text: "専門", type: "level" }]
+    },
+    {
+        id: "136", title: "はじめてのSNSマーケティング",
+        desc: "Instagram・X・LINEを使った集客の基本。投稿設計から効果測定までを一気通貫で学ぶ。",
+        price: 16500, period: 2, url: "#", isNew: true,
+        image: null, org: "デジタルマーケ学院", applicants: 312,
+        tags: [{ text: "マーケティング", type: "genre" }, { text: "入門", type: "level" }]
+    },
+    {
+        id: "137", title: "財務分析で見抜く企業の実力",
+        desc: "決算書を組み合わせて収益性・安全性・成長性を読み解く、一歩進んだ財務スキル。",
+        price: 22000, period: 3, url: "#", isNew: false,
+        image: null, org: "ファイナンス総研", applicants: 124,
+        tags: [{ text: "経理", type: "genre" }, { text: "専門", type: "level" }, { text: "管理職", type: "target" }]
+    },
+    {
+        id: "138", title: "ビジネス英会話 中級",
+        desc: "会議・電話・出張で使える実践フレーズ。ロールプレイで使える英語を体に染み込ませる。",
+        price: 24200, period: 4, url: "#", isNew: false,
+        image: null, org: "グローバル人材研究所", applicants: 233,
+        tags: [{ text: "語学", type: "genre" }, { text: "グローバル", type: "genre" }, { text: "実践", type: "level" }]
+    },
+    {
+        id: "139", title: "DX推進リーダー養成講座",
+        desc: "データとデジタルで業務を変える推進役へ。事例とフレームでDXの進め方を体系的に学ぶ。",
+        price: 29700, period: 6, url: "#", isNew: true,
+        image: null, org: "テックアカデミア", applicants: 158,
+        tags: [{ text: "IT", type: "genre" }, { text: "マネジメント", type: "genre" }, { text: "専門", type: "level" }, { text: "管理職", type: "target" }]
+    },
+    {
+        id: "140", title: "傾聴力・コーチング入門",
+        desc: "相手の本音を引き出す聴き方と問いかけ。部下・後輩の主体性を引き出す対話の基礎。",
+        price: 13200, period: 2, url: "#", isNew: false,
+        image: null, org: "メンタルヘルス研究センター", applicants: 219,
+        tags: [{ text: "コミュニケーション", type: "genre" }, { text: "マネジメント", type: "genre" }, { text: "基礎", type: "level" }]
     }
 ];
