@@ -418,12 +418,12 @@
                         class="px-4 py-2 rounded-md bg-white border border-gray-300 text-gray-700 font-medium hover:bg-gray-50 hover:border-gray-400 transition-all shadow-sm text-sm">
                         キャンセル
                     </button>
-                    <!-- 否認する（IEC / 未承認・申請中バージョン表示中のみ） -->
+                    <!-- 否認する（IEC / 申請中・修正申請中バージョン表示中のみ） -->
                     <button id="btnRejectInModal"
                         class="hidden px-4 py-2 rounded-md bg-white border border-red-300 text-red-600 font-medium hover:bg-red-50 shadow-sm transition-all text-sm">
                         否認する
                     </button>
-                    <!-- 承認する（IEC / 未承認・申請中バージョン表示中のみ） -->
+                    <!-- 承認する（IEC / 申請中・修正申請中バージョン表示中のみ） -->
                     <button id="btnApproveInModal"
                         class="hidden px-4 py-2 rounded-md bg-green-600 text-white font-bold hover:bg-green-700 shadow-sm transition-all text-sm">
                         承認する
@@ -528,10 +528,6 @@
                     <div class="flex flex-col gap-1">
                         <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">対象コース</p>
                         <p id="rcCourseName" class="text-sm font-medium text-gray-800"></p>
-                    </div>
-                    <div class="flex flex-col gap-1">
-                        <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">否認バージョン</p>
-                        <p id="rcRejectedVer" class="text-sm text-gray-700"></p>
                     </div>
                     <div class="flex flex-col gap-1">
                         <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">否認理由</p>
@@ -845,14 +841,14 @@
                     if (isIec || cs === '作成中' || cs === '修正中') {
                         editPart = miActive('js-open-modal', 'edit', 'text-gray-400 group-hover:text-gray-500', '編集する', `data-id="${c.id}"`);
                     } else if (cs === '承認済') {
-                        editPart = miDisabled('edit', '編集する', '「バージョンアップ申請」から修正してください');
+                        editPart = miDisabled('edit', '編集する', '「修正申請」から修正してください');
                     } else { // 申請中 / 修正申請中（Vendor）
                         editPart = miDisabled('edit', '編集する', 'IEC審査中は編集できません');
                     }
 
-                    // [編集] バージョンアップ申請：Vendor かつ 承認済 のみ表示
+                    // [編集] 修正申請：Vendor かつ 承認済 のみ表示
                     const versionUpPart = (!isIec && cs === '承認済')
-                        ? miActive('js-version-up', 'upgrade', 'text-violet-400 group-hover:text-violet-500', 'バージョンアップ申請', `data-id="${c.id}"`)
+                        ? miActive('js-version-up', 'upgrade', 'text-violet-400 group-hover:text-violet-500', '修正申請', `data-id="${c.id}"`)
                         : '';
 
                     // [編集] コピーして新規作成：全状態で常時可
@@ -999,16 +995,13 @@
             const rejectionCommentModal = document.getElementById('rejectionCommentModal');
 
             const openRejectionCommentModal = (flyer) => {
-                let rejectedVer, rejectionComment;
+                let rejectionComment;
                 if (flyer.draft && flyer.draft.rejectionComment) {
-                    rejectedVer      = flyer.draft.ver;
                     rejectionComment = flyer.draft.rejectionComment;
                 } else {
-                    rejectedVer      = flyer.ver;
                     rejectionComment = flyer.rejectionComment || '';
                 }
                 document.getElementById('rcCourseName').textContent       = flyer.name;
-                document.getElementById('rcRejectedVer').textContent      = `Ver.${rejectedVer}`;
                 document.getElementById('rcRejectionComment').textContent = rejectionComment;
                 rejectionCommentModal.classList.remove('hidden');
                 rejectionCommentModal.classList.add('flex');
@@ -1582,7 +1575,7 @@
                     alert(`（モック）版下PDFプレビューを別タブで開きます。\n${pdfPreviewBtn.dataset.url || ''}`);
                     return;
                 }
-                // バージョンアップ申請
+                // 修正申請
                 const versionUpBtn = e.target.closest('.js-version-up');
                 if (versionUpBtn) {
                     e.preventDefault();
