@@ -59,7 +59,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
     // 並び替え用ラベル（メニュー表示・アクティブ表示）
     const STD_CAT_LABELS = { target: '対象・階層', genre: 'ジャンル', level: '難易度', format: '受講形態', other: 'その他' };
-    const CUSTOM_CAT_LABELS = { target: '対象', genre: 'ジャンル', level: 'レベル', other: 'その他' };
+    const CUSTOM_CAT_LABELS = { target: '対象', genre: 'ジャンル', level: 'レベル', format: '受講形態', other: 'その他' };
 
     // 標準タグの { カテゴリ, 並び順 } レジストリ（モック用デモ値。
     // 実装では StandardTagMaster.Category / SortOrder を参照する）。
@@ -87,15 +87,12 @@ window.addEventListener('DOMContentLoaded', () => {
         'コンプライアンス':   { cat: 'other',  order: 2 },
     };
 
-    // カスタムタグの { カテゴリ, 並び順 } レジストリ（モック用デモ値。
-    // 実装では CustomTagMaster.Category / SortOrder を参照する）。
-    const CUSTOM_TAG_META = {
-        '管理職向け':   { cat: 'target', order: 1 },
-        '新人向け':     { cat: 'target', order: 2 },
-        '働き方改革':   { cat: 'genre',  order: 1 },
-        '人気':         { cat: 'other',  order: 1 },
-        'おすすめ':     { cat: 'other',  order: 2 },
-    };
+    // カスタムタグの { カテゴリ, 並び順 } はタグマスタ(tagData)を単一ソースとして参照する。
+    // 実装では CustomTagMaster.Type(=カテゴリ) / SortOrder に対応。
+    // タグ名で引けるよう name -> { cat, order } のマップに変換する。
+    const CUSTOM_TAG_META = Object.fromEntries(
+        tagData.map(t => [t.name, { cat: t.type, order: t.sortOrder }])
+    );
 
     // 現在スライドパネルで開いているrow ID
     let openPanelRowId = null;
@@ -1206,6 +1203,7 @@ window.addEventListener('DOMContentLoaded', () => {
         target: document.getElementById('tag-group-target'),
         genre: document.getElementById('tag-group-genre'),
         level: document.getElementById('tag-group-level'),
+        format: document.getElementById('tag-group-format'),
         other: document.getElementById('tag-group-other'),
     };
 
@@ -1218,6 +1216,7 @@ window.addEventListener('DOMContentLoaded', () => {
         target: document.getElementById('bulk-tag-group-target'),
         genre: document.getElementById('bulk-tag-group-genre'),
         level: document.getElementById('bulk-tag-group-level'),
+        format: document.getElementById('bulk-tag-group-format'),
         other: document.getElementById('bulk-tag-group-other'),
     };
 

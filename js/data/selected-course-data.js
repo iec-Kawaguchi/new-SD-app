@@ -8,7 +8,7 @@ export const selectedCourseData = [
     "org": "IEC",
     "isNew": false,
     "stdTag": "マナー",
-    "custom": ["おすすめ"],
+    "custom": ["新人・内定者"],
     "options":[
       {"id":1, "name":"郵便版", "price":19910, "length":"3か月"},
       {"id":2, "name":"WEB版", "price":19910, "length":"3か月"}
@@ -21,7 +21,7 @@ export const selectedCourseData = [
     "org": "IEC",
     "isNew": false,
     "stdTag": "PCスキル",
-    "custom": ["新人向け"],
+    "custom": ["新人・内定者", "OAスキル（Excel/PPT）"],
     "options":[
       {"id":1, "name":"通常版", "price":19910, "length":"3か月"},
       {"id":2, "name":"課題増量版", "price":23110, "length":"4か月"}
@@ -34,7 +34,7 @@ export const selectedCourseData = [
     "org": "IEC",
     "isNew": false,
     "stdTag": "マーケティング",
-    "custom": ["管理職向け"],
+    "custom": ["管理職"],
     "options":[
       {"id":1, "name":"", "price":19910, "length":"3か月"}
     ]
@@ -46,7 +46,7 @@ export const selectedCourseData = [
     "org": "他団体B",
     "isNew": false,
     "stdTag": "文章力",
-    "custom": ["おすすめ", "新人向け"],
+    "custom": ["若手社員（1-3年目）", "基礎・初級"],
     "options":[
       {"id":1, "name":"郵送版", "price":17800, "length":"2か月"},
       {"id":2, "name":"WEB版", "price":17800, "length":"2か月"}
@@ -59,7 +59,7 @@ export const selectedCourseData = [
     "org": "IEC",
     "isNew": false,
     "stdTag": "会計",
-    "custom": ["管理職向け"],
+    "custom": ["基礎・初級"],
     "options":[
       {"id":1, "name":"", "price":21000, "length":"3か月"}
     ]
@@ -71,7 +71,7 @@ export const selectedCourseData = [
     "org": "他団体C",
     "isNew": false,
     "stdTag": "仕事力",
-    "custom": ["働き方改革"],
+    "custom": ["中堅社員"],
     "options":[
       {"id":1, "name":"通常版", "price":18900, "length":"2か月"},
       {"id":2, "name":"演習追加版", "price":21900, "length":"3か月"}
@@ -84,7 +84,7 @@ export const selectedCourseData = [
     "org": "他団体B",
     "isNew": false,
     "stdTag": "思考法",
-    "custom": ["おすすめ"],
+    "custom": ["ロジカルシンキング"],
     "options":[
       {"id":1, "name":"", "price":19800, "length":"3か月"}
     ]
@@ -96,7 +96,7 @@ export const selectedCourseData = [
     "org": "IEC",
     "isNew": false,
     "stdTag": "DX",
-    "custom": ["人気"],
+    "custom": ["DX・ITスキル", "eラーニング"],
     "options":[
       {"id":1, "name":"WEB版", "price":23000, "length":"3か月"},
       {"id":2, "name":"ケース学習版", "price":26000, "length":"4か月"}
@@ -109,7 +109,7 @@ export const selectedCourseData = [
     "org": "IEC",
     "isNew": false,
     "stdTag": "労務",
-    "custom": ["管理職向け"],
+    "custom": ["管理職"],
     "options":[
       {"id":1, "name":"", "price":22000, "length":"3か月"}
     ]
@@ -121,7 +121,7 @@ export const selectedCourseData = [
     "org": "他団体B",
     "isNew": false,
     "stdTag": "コミュニケーション",
-    "custom": ["おすすめ"],
+    "custom": ["コミュニケーション"],
     "options":[
       {"id":1, "name":"通常版", "price":18500, "length":"2か月"},
       {"id":2, "name":"演習多め版", "price":21500, "length":"3か月"}
@@ -134,7 +134,7 @@ export const selectedCourseData = [
     "org": "他団体C",
     "isNew": false,
     "stdTag": "PCスキル",
-    "custom": ["新人向け"],
+    "custom": ["OAスキル（Excel/PPT）"],
     "options":[
       {"id":1, "name":"", "price":19910, "length":"3か月"}
     ]
@@ -146,7 +146,7 @@ export const selectedCourseData = [
     "org": "IEC",
     "isNew": false,
     "stdTag": "コンプライアンス",
-    "custom": [],
+    "custom": ["コンプライアンス"],
     "options":[
       {"id":1, "name":"郵送版", "price":19910, "length":"3か月"},
       {"id":2, "name":"WEB版", "price":19910, "length":"3か月"}
@@ -159,7 +159,7 @@ export const selectedCourseData = [
     "org": "IEC",
     "isNew": false,
     "stdTag": "思考法",
-    "custom": ["人気"],
+    "custom": ["応用・実践"],
     "options":[
       {"id":1, "name":"", "price":24000, "length":"3か月"}
     ]
@@ -171,7 +171,7 @@ export const selectedCourseData = [
     "org": "他団体C",
     "isNew": false,
     "stdTag": "営業",
-    "custom": ["新人向け"],
+    "custom": ["営業職", "基礎・初級"],
     "options":[
       {"id":1, "name":"通常版", "price":20500, "length":"3か月"},
       {"id":2, "name":"実践課題版", "price":23500, "length":"4か月"}
@@ -184,7 +184,7 @@ export const selectedCourseData = [
     "org": "他団体B",
     "isNew": false,
     "stdTag": "マネジメント",
-    "custom": ["管理職向け"],
+    "custom": ["マネジメント"],
     "options":[
       {"id":1, "name":"", "price":22500, "length":"3か月"}
     ]
@@ -196,7 +196,7 @@ export const selectedCourseData = [
     "org": "IEC",
     "isNew": false,
     "stdTag": "PCスキル",
-    "custom": ["新人向け"],
+    "custom": ["OAスキル（Excel/PPT）", "WEB添削"],
     "options":[
       {"id":1, "name":"郵送版", "price":18900, "length":"2か月"},
       {"id":2, "name":"WEB版", "price":18900, "length":"2か月"}
@@ -209,7 +209,7 @@ export const selectedCourseData = [
     "org": "他団体C",
     "isNew": false,
     "stdTag": "統計",
-    "custom": ["おすすめ"],
+    "custom": ["応用・実践"],
     "options":[
       {"id":1, "name":"", "price":26000, "length":"4か月"}
     ]
@@ -221,7 +221,7 @@ export const selectedCourseData = [
     "org": "IEC",
     "isNew": false,
     "stdTag": "リーダーシップ",
-    "custom": ["管理職向け"],
+    "custom": ["リーダー・係長級", "昇格要件"],
     "options":[
       {"id":1, "name":"通常版", "price":23000, "length":"3か月"},
       {"id":2, "name":"演習追加版", "price":26000, "length":"4か月"}
@@ -246,7 +246,7 @@ export const selectedCourseData = [
     "org": "IEC",
     "isNew": false,
     "stdTag": "コンプライアンス",
-    "custom": ["おすすめ"],
+    "custom": ["コンプライアンス", "選抜型研修"],
     "options":[
       {"id":1, "name":"WEB版", "price":19910, "length":"3か月"},
       {"id":2, "name":"WEB＋演習版", "price":23110, "length":"4か月"}
