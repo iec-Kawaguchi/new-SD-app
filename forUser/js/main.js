@@ -185,16 +185,20 @@ const CourseApp = (() => {
                         <span class="material-symbols-outlined text-[22px]" aria-hidden="true">favorite</span>
                     </button>
                     <div class="card-body flex flex-col flex-1">
-                        ${course.isNew ? `<span class="card-new-flag hidden items-center px-1.5 py-0.5 rounded bg-amber-400 text-white text-[10px] font-bold shrink-0">NEW</span>` : ''}
-                        <div class="card-tags flex gap-2 flex-wrap">${tagsHtml}</div>
-                        <h3 class="card-title font-bold text-slate-900 line-clamp-2 group-hover:text-sky-600 transition-colors">${course.title}</h3>
-                        <p class="card-desc text-sm text-slate-500 leading-normal">${course.desc}</p>
-                        <div class="card-meta flex items-end justify-between">
-                            <div>
-                                <span class="text-lg font-bold text-slate-900">${course.price.toLocaleString()}<span class="text-xs font-normal text-slate-500 ml-0.5">円</span></span>
-                            </div>
-                            <div class="flex items-center text-xs font-bold text-slate-500 bg-slate-50 px-3 py-1 rounded-full border border-slate-100">
-                                <span class="material-symbols-outlined text-sm mr-1.5" aria-hidden="true">schedule</span> ${course.period}ヶ月
+                        <div class="card-tags flex flex-wrap items-center gap-2">
+                            ${course.isNew ? `<span class="card-new-flag hidden items-center px-1.5 py-0.5 rounded bg-amber-400 text-white text-[10px] font-bold shrink-0">NEW</span>` : ''}
+                            ${tagsHtml}
+                        </div>
+                        <div class="card-main flex flex-col flex-1">
+                            <h3 class="card-title font-bold text-slate-900 line-clamp-2 group-hover:text-sky-600 transition-colors">${course.title}</h3>
+                            <p class="card-desc text-sm text-slate-500 leading-normal">${course.desc}</p>
+                            <div class="card-meta flex items-end justify-between">
+                                <div>
+                                    <span class="text-lg font-bold text-slate-900">${course.price.toLocaleString()}<span class="text-xs font-normal text-slate-500 ml-0.5">円</span></span>
+                                </div>
+                                <div class="flex items-center text-xs font-bold text-slate-500 bg-slate-50 px-3 py-1 rounded-full border border-slate-100">
+                                    <span class="material-symbols-outlined text-sm mr-1.5" aria-hidden="true">schedule</span> ${course.period}ヶ月
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -571,6 +575,7 @@ const CourseApp = (() => {
                     wrap:    [],
                     body:    ['flex-col', 'p-3.5', 'md:p-4'],
                     tags:    ['mb-1', 'md:mb-1.5'],
+                    main:    ['flex-col', 'flex-1'],
                     title:   ['text-base', 'md:text-lg', 'mb-0.5', 'line-clamp-2'],
                     desc:    ['line-clamp-2', 'mb-1.5', 'md:mb-2'],
                     meta:    ['items-end', 'justify-between', 'mt-auto', 'pt-2', 'md:pt-2.5', 'border-t', 'border-slate-100'],
@@ -582,19 +587,21 @@ const CourseApp = (() => {
                     wrap:    ['md:w-48', 'lg:w-60', 'md:self-stretch', 'shrink-0', 'md:aspect-auto'],
                     body:    ['flex-col', 'px-3.5', 'py-2.5'],
                     tags:    ['mb-0.5'],
+                    main:    ['flex-col', 'flex-1'],
                     title:   ['text-base', 'mb-0.5', 'line-clamp-2'],
                     desc:    ['line-clamp-1', 'mb-0.5', 'hidden', 'md:block'],
                     meta:    ['items-end', 'justify-between', 'mt-0.5'],
                     newFlag: ['hidden'],
                     fav:     []
                 },
-                // スーパースリム: サムネ・タグ・説明・お気に入りを省き、コース名／受講料／受講期間のみ1行表示
+                // スーパースリム: サムネ・説明・お気に入りを省き、1行目=タグ（NEWは先頭）、2行目=コース名／受講料／受講期間
                 compact: {
-                    card:    ['flex-row', 'items-center', 'rounded-xl'],
+                    card:    ['flex-col', 'rounded-xl'],
                     wrap:    ['hidden'],
-                    body:    ['flex-row', 'items-center', 'gap-3', 'px-4', 'py-2.5'],
-                    tags:    ['hidden'],
-                    title:   ['text-sm', 'md:text-base', 'truncate', 'flex-1', 'min-w-0'],
+                    body:    ['flex-col', 'gap-1', 'px-4', 'py-2.5'],
+                    tags:    [],
+                    main:    ['flex-row', 'items-center', 'gap-3'],
+                    title:   ['text-sm', 'md:text-base', 'flex-1', 'min-w-0'],
                     desc:    ['hidden'],
                     meta:    ['items-center', 'justify-end', 'gap-3', 'shrink-0'],
                     newFlag: ['inline-flex'],
@@ -606,7 +613,8 @@ const CourseApp = (() => {
             RESET: {
                 card:    ['flex-col', 'md:flex-row', 'md:items-stretch', 'flex-row', 'items-center', 'rounded-3xl', 'rounded-2xl', 'rounded-xl', 'hover:-translate-y-1'],
                 wrap:    ['md:w-48', 'lg:w-60', 'md:self-stretch', 'shrink-0', 'md:aspect-auto', 'hidden'],
-                body:    ['flex-col', 'p-3.5', 'md:p-4', 'px-3.5', 'px-4', 'py-3', 'py-2.5', 'flex-row', 'items-center', 'gap-3'],
+                body:    ['flex-col', 'p-3.5', 'md:p-4', 'px-3.5', 'px-4', 'py-3', 'py-2.5', 'flex-row', 'items-center', 'gap-1', 'gap-3'],
+                main:    ['flex-col', 'flex-row', 'flex-1', 'items-center', 'gap-3'],
                 tags:    ['mb-0.5', 'mb-1', 'mb-1.5', 'md:mb-1.5', 'md:mb-2', 'hidden'],
                 title:   ['text-base', 'text-sm', 'md:text-base', 'md:text-lg', 'mb-0.5', 'mb-1', 'line-clamp-2', 'truncate', 'flex-1', 'min-w-0'],
                 desc:    ['line-clamp-1', 'line-clamp-2', 'mb-0.5', 'mb-1', 'mb-1.5', 'mb-2', 'md:mb-2', 'md:mb-3', 'hidden', 'md:block'],
@@ -663,6 +671,7 @@ const CourseApp = (() => {
                     wrap:    card.querySelector('.course-img-wrapper'),
                     body:    card.querySelector('.card-body'),
                     tags:    card.querySelector('.card-tags'),
+                    main:    card.querySelector('.card-main'),
                     title:   card.querySelector('.card-title'),
                     desc:    card.querySelector('.card-desc'),
                     meta:    card.querySelector('.card-meta'),
